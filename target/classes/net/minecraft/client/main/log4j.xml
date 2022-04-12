@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="ERROR">
+	<Appenders>
+		<Console name="STDOUT">
+			<PatternLayout
+				pattern="%style{%date{DEFAULT}}{yellow}
+                [%t] %highlight{%-5level}{FATAL=bg_red, ERROR=red, WARN=yellow, INFO=green} %logger{36} - %message\n" />
+		</Console>
+		<RollingFile name="logOutput"
+			fileName="Yiffur/Yiffur.log"
+			filePattern="Yiffur/Yiffur-%d{yyyy-MM-dd}-%i.log.gz">
+			<PatternLayout
+				pattern="%d{DEFAULT} [%t] %-5level %logger{36} - %msg%n" />
+			<Policies>
+				<SizeBasedTriggeringPolicy size="19500KB" />
+			</Policies>
+		</RollingFile>
+	</Appenders>
+	<Loggers>
+		<Root level="DEBUG">
+			<AppenderRef ref="STDOUT" />
+			<AppenderRef ref="logOutput" />
+		</Root>
+	</Loggers>
+</Configuration>

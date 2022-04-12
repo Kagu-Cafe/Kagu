@@ -1,0 +1,34 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>xyz.yiffur</groupId>
+	<artifactId>yiffur</artifactId>
+	<version>0.0.1</version>
+	<name>Yiffur</name>
+	<description>OwO</description>
+
+	<dependencies>
+	
+		<!-- Fixed log4j rce -->
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
+			<version>2.17.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-api</artifactId>
+			<version>2.17.2</version>
+		</dependency>
+		
+		<!-- Needed for optifine -->
+		<dependency>
+			<groupId>javax.vecmath</groupId>
+			<artifactId>vecmath</artifactId>
+			<version>1.5.2</version>
+		</dependency>
+		
+	</dependencies>
+
+</project>
