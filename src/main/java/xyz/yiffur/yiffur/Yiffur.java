@@ -5,6 +5,8 @@ import org.apache.logging.log4j.Logger;
 
 import xyz.yiffur.yiffur.commands.CommandManager;
 import xyz.yiffur.yiffur.eventBus.EventBus;
+import xyz.yiffur.yiffur.font.FontUtils;
+import xyz.yiffur.yiffur.font.GlyphMap;
 import xyz.yiffur.yiffur.mods.ModuleManager;
 
 /**
@@ -36,6 +38,10 @@ public class Yiffur {
 		logger.info("Starting the command manager...");
 		CommandManager.start();
 		logger.info("Started the command manager");
+		
+		logger.info("Loading fonts...");
+		FontUtils.start();
+		logger.info("Loaded fonts");
 		
 		logger.info("Yiffur has been started");
 		

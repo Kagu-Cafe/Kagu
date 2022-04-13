@@ -66,6 +66,5 @@
 	<classpathentry kind="lib" path="mc libs/tv/twitch/twitch/6.5/twitch-6.5.jar"/>
 	<classpathentry kind="lib" path="mc libs/tv/twitch/twitch-external-platform/4.5/twitch-external-platform-4.5-natives-windows-64.jar"/>
 	<classpathentry kind="lib" path="mc libs/tv/twitch/twitch-platform/6.5/twitch-platform-6.5-natives-windows-64.jar"/>
-	<classpathentry kind="lib" path="mc libs/slick.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
