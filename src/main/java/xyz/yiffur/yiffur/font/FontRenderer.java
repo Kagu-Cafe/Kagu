@@ -3,6 +3,7 @@
  */
 package xyz.yiffur.yiffur.font;
 
+import java.awt.Color;
 import java.awt.Font;
 import java.io.File;
 
@@ -11,7 +12,10 @@ import javax.imageio.ImageIO;
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.texture.DynamicTexture;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import xyz.yiffur.yiffur.font.GlyphUtils.GlyphMap;
 
 /**
@@ -62,26 +66,20 @@ public class FontRenderer {
 		GlStateManager.pushMatrix();
 		GlStateManager.pushAttrib();
 		
-		// Colors
-		float red = (float)(color >> 16 & 255) / 255.0F;
-		float blue = (float)(color >> 8 & 255) / 255.0F;
-		float green = (float)(color & 255) / 255.0F;
-		float alpha = (float)(color >> 24 & 255) / 255.0F;
-		
 		// If the text has a shadow
 		if (shadow) {
-			GL11.glColor4f(0, 0, 0, alpha);
+			// Colors
+			float alpha = (float)(color >> 24 & 255) / 255.0F;
 			for (char c : string.toCharArray()) {
-				offset += drawChar(c, x + offset + 1, y + 1);
+				offset += drawChar(c, x + offset + 1, y + 1, new Color(0, 0, 0, alpha).getRGB());
 			}
 		}
 		
-		GL11.glColor4f(red, green, blue, alpha);
 		offset = 0;
 		
 		// Non shadow text
 		for (char c : string.toCharArray()) {
-			offset += drawChar(c, x + offset, y);
+			offset += drawChar(c, x + offset, y, color);
 		}
 		
 		GlStateManager.popAttrib();
@@ -97,7 +95,7 @@ public class FontRenderer {
 	 * @param y The y post to draw at
 	 * @return
 	 */
-	public double drawChar(char c, double x, double y) {
+	public double drawChar(char c, double x, double y, int color) {
 		Glyph glyph = glyphMap.getMapping().get(c);
 		
 		// If the font doesn't have a glyph for that character than return
@@ -111,6 +109,12 @@ public class FontRenderer {
 		// Draw character
 		GlStateManager.pushMatrix();
 		GlStateManager.pushAttrib();
+		
+		// Color
+		float red = (float)(color >> 16 & 255) / 255.0F;
+		float blue = (float)(color >> 8 & 255) / 255.0F;
+		float green = (float)(color & 255) / 255.0F;
+		float alpha = (float)(color >> 24 & 255) / 255.0F;
 		
 		// Scaling
 		GlStateManager.scale(scale, scale, scale);
@@ -127,21 +131,31 @@ public class FontRenderer {
 		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST); // Nearest looks better on anti aliased text as well as non anti aliased text compared to GL_LINEAR
 		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
 		
-		GL11.glBegin(GL11.GL_QUADS);
+//		GL11.glBegin(GL11.GL_QUADS);
+//		
+//		GL11.glTexCoord2d(glyph.getScaledX(), glyph.getScaledY());
+//		GL11.glVertex2d(x, y);
+//		
+//		GL11.glTexCoord2d(glyph.getScaledX(), glyph.getScaledY() + glyph.getScaledHeight());
+//		GL11.glVertex2d(x, y + glyph.getHeight());
+//		
+//		GL11.glTexCoord2d(glyph.getScaledX() + glyph.getScaledWidth(), glyph.getScaledY() + glyph.getScaledHeight());
+//		GL11.glVertex2d(x + glyph.getWidth(), y + glyph.getHeight());
+//		
+//		GL11.glTexCoord2d(glyph.getScaledX() + glyph.getScaledWidth(), glyph.getScaledY());
+//		GL11.glVertex2d(x + glyph.getWidth(), y);
+//		
+//		GL11.glEnd();
 		
-		GL11.glTexCoord2d(glyph.getScaledX(), glyph.getScaledY());
-		GL11.glVertex2d(x, y);
-		
-		GL11.glTexCoord2d(glyph.getScaledX(), glyph.getScaledY() + glyph.getScaledHeight());
-		GL11.glVertex2d(x, y + glyph.getHeight());
-		
-		GL11.glTexCoord2d(glyph.getScaledX() + glyph.getScaledWidth(), glyph.getScaledY() + glyph.getScaledHeight());
-		GL11.glVertex2d(x + glyph.getWidth(), y + glyph.getHeight());
-		
-		GL11.glTexCoord2d(glyph.getScaledX() + glyph.getScaledWidth(), glyph.getScaledY());
-		GL11.glVertex2d(x + glyph.getWidth(), y);
-		
-		GL11.glEnd();
+		Tessellator tessellator = Tessellator.getInstance();
+        WorldRenderer worldrenderer = tessellator.getWorldRenderer();
+        
+        worldrenderer.begin(7, DefaultVertexFormats.POSITION_TEX_COLOR);
+        worldrenderer.pos(x, y, 0).tex(glyph.getScaledX(), glyph.getScaledY()).color(red, green, blue, alpha).endVertex();
+        worldrenderer.pos(x, y + glyph.getHeight(), 0).tex(glyph.getScaledX(), glyph.getScaledY() + glyph.getScaledHeight()).color(red, green, blue, alpha).endVertex();
+        worldrenderer.pos(x + glyph.getWidth(), y + glyph.getHeight(), 0).tex(glyph.getScaledX() + glyph.getScaledWidth(), glyph.getScaledY() + glyph.getScaledHeight()).color(red, green, blue, alpha).endVertex();
+        worldrenderer.pos(x + glyph.getWidth(), y, 0).tex(glyph.getScaledX() + glyph.getScaledWidth(), glyph.getScaledY()).color(red, green, blue, alpha).endVertex();
+        tessellator.draw();
 		
 		GlStateManager.popAttrib();
 		GlStateManager.popMatrix();
