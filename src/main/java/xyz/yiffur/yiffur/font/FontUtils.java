@@ -21,16 +21,8 @@ public class FontUtils {
 		
 	}
 	
-	// These are the fonts that I used to test, the bugs are most likely caused when the glyphs are loaded from the texture, 
-	// 		most likely an issue with positioning of the coords
-	// I would look into it and fix it but it's 1am and if I stick to 10 pt font I should be fine for now
-	public static final FontRenderer ROBOTO_REGULAR_30 = new FontRenderer("Roboto-Regular.ttf", 30, false, Font.PLAIN); // broken
-	public static final FontRenderer ROBOTO_REGULAR_20 = new FontRenderer("Roboto-Regular.ttf", 20, false, Font.PLAIN); // weird kerning
-	public static final FontRenderer ROBOTO_REGULAR_10 = new FontRenderer("Roboto-Regular.ttf", 10, false, Font.PLAIN); // works flawlessly
-	public static final FontRenderer ROBOTO_REGULAR_5 = new FontRenderer("Roboto-Regular.ttf", 5, false, Font.PLAIN); // broken
-	public static final FontRenderer ROBOTO_REGULAR_1 = new FontRenderer("Roboto-Regular.ttf", 1, false, Font.PLAIN); // broken
-	
-	public static final FontRenderer OPENSANS_REGULAR_10 = new FontRenderer("OpenSans-Regular.ttf", 10, false, Font.PLAIN); // some letters have weird kerning, some don't
+	public static FontRenderer ROBOTO_LIGHT_10 = new FontRenderer(getFontFromInputStream(FontUtils.class.getResourceAsStream("Roboto-Light.ttf"), 20, Font.PLAIN), 0.5);
+	public static FontRenderer ROBOTO_REGULAR_10 = new FontRenderer(getFontFromInputStream(FontUtils.class.getResourceAsStream("Roboto-Regular.ttf"), 20, Font.PLAIN), 0.5);
 	
 	/**
 	 * Gets a font from an inputstream

@@ -43,6 +43,8 @@ import net.minecraft.util.StringUtils;
 import net.minecraft.world.border.WorldBorder;
 import optifine.Config;
 import optifine.CustomColors;
+import xyz.yiffur.yiffur.eventBus.Event.EventPosition;
+import xyz.yiffur.yiffur.eventBus.impl.Event2DRender;
 
 public class GuiIngame extends Gui
 {
@@ -115,6 +117,15 @@ public class GuiIngame extends Gui
 
     public void renderGameOverlay(float partialTicks)
     {
+    	
+        // Yiffur hook
+        {
+        	Event2DRender event2dRender = new Event2DRender(EventPosition.PRE);
+        	event2dRender.post();
+        	if (event2dRender.isCanceled())
+        		return;
+        }
+    	
         ScaledResolution scaledresolution = new ScaledResolution(this.mc);
         int i = scaledresolution.getScaledWidth();
         int j = scaledresolution.getScaledHeight();
@@ -349,6 +360,13 @@ public class GuiIngame extends Gui
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         GlStateManager.disableLighting();
         GlStateManager.enableAlpha();
+        
+        // Yiffur hook
+        {
+        	Event2DRender event2dRender = new Event2DRender(EventPosition.POST);
+        	event2dRender.post();
+        }
+        
     }
 
     protected void renderTooltip(ScaledResolution sr, float partialTicks)

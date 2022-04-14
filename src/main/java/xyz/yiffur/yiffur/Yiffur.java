@@ -6,14 +6,17 @@ import org.apache.logging.log4j.Logger;
 import xyz.yiffur.yiffur.commands.CommandManager;
 import xyz.yiffur.yiffur.eventBus.EventBus;
 import xyz.yiffur.yiffur.font.FontUtils;
-import xyz.yiffur.yiffur.font.GlyphMap;
 import xyz.yiffur.yiffur.mods.ModuleManager;
+import xyz.yiffur.yiffur.ui.Hud;
 
 /**
  * @author lavaflowglow
  *
  */
 public class Yiffur {
+	
+	private static String name = "Yiffur";
+	private static double version = -0;
 	
 	private static Logger logger = LogManager.getLogger();
 	
@@ -43,8 +46,26 @@ public class Yiffur {
 		FontUtils.start();
 		logger.info("Loaded fonts");
 		
+		logger.info("Hooking the hud...");
+		EventBus.setSubscriber(new Hud(), true);
+		logger.info("Hooked the hud");
+		
 		logger.info("Yiffur has been started");
 		
 	}
-	
+
+	/**
+	 * @return the name
+	 */
+	public static String getName() {
+		return name;
+	}
+
+	/**
+	 * @return the version
+	 */
+	public static double getVersion() {
+		return version;
+	}
+
 }

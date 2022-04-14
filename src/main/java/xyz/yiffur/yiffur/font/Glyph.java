@@ -1,56 +1,68 @@
-/**
- * 
- */
 package xyz.yiffur.yiffur.font;
 
-/**
- * @author lavaflowglow
- *
- */
 public class Glyph {
 
-	/**
-	 * 
-	 * @param x      The x coord of the char on the image
-	 * @param y      The y coord of the char on the image
-	 * @param width  The width of the char on the image
-	 * @param height The height of the char on the image
-	 */
-	public Glyph(int x, int y, int width, int height) {
-		this.x = x;
-		this.y = y;
-		this.width = width + 2;
-		this.height = height + 2;
-	}
+    public Glyph(int width, int height, double scaledX, double scaledY, double scaledWidth, double scaledHeight,
+            int renderYOffset) {
+        this.width = width;
+        this.height = height;
+        this.scaledX = scaledX;
+        this.scaledY = scaledY;
+        this.scaledWidth = scaledWidth;
+        this.scaledHeight = scaledHeight;
+        this.renderYOffset = renderYOffset;
+    }
 
-	private int x, y, width, height;
+    private int width, height, renderYOffset;
+    private double scaledX, scaledY, scaledWidth, scaledHeight;
 
-	/**
-	 * @return the x
-	 */
-	public int getX() {
-		return x;
-	}
+    /**
+     * @return the width
+     */
+    public int getWidth() {
+        return width;
+    }
 
-	/**
-	 * @return the y
-	 */
-	public int getY() {
-		return y;
-	}
+    /**
+     * @return the height
+     */
+    public int getHeight() {
+        return height;
+    }
+    
+    /**
+     * @return the scaledX
+     */
+    public double getScaledX() {
+        return scaledX;
+    }
 
-	/**
-	 * @return the width
-	 */
-	public int getWidth() {
-		return width;
-	}
+    /**
+     * @return the scaledY
+     */
+    public double getScaledY() {
+        return scaledY;
+    }
 
-	/**
-	 * @return the height
-	 */
-	public int getHeight() {
-		return height;
-	}
+    /**
+     * @return the scaledWidth
+     */
+    public double getScaledWidth() {
+        return scaledWidth;
+    }
+
+    /**
+     * @return the scaledHeight
+     */
+    public double getScaledHeight() {
+        return scaledHeight;
+    }
+
+    /**
+     * @return the renderYOffset
+     */
+    public double getRenderYOffset() {
+        return renderYOffset;
+    }
 
 }
