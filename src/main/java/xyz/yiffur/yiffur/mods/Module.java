@@ -3,6 +3,8 @@
  */
 package xyz.yiffur.yiffur.mods;
 
+import xyz.yiffur.yiffur.eventBus.Event.EventPosition;
+import xyz.yiffur.yiffur.eventBus.impl.EventModuleStateUpdate;
 import xyz.yiffur.yiffur.settings.Setting;
 
 /**
@@ -22,8 +24,17 @@ public abstract class Module {
 	/**
 	 * Called when the client starts, it will add settings and do other shit
 	 */
-	public void initialize() {
-	}
+	public void initialize() {}
+	
+	/**
+	 * Called when the module is enabled
+	 */
+	public void onEnable() {}
+	
+	/**
+	 * Called when the module is disabled
+	 */
+	public void onDisable() {}
 
 	/**
 	 * @param settings An array of settings that will replace the current array of
@@ -60,7 +71,19 @@ public abstract class Module {
 	public String[] getInfo() {
 		return info;
 	}
-
+	
+	/**
+	 * @param separator The separator to use
+	 * @return the info array formatted as a string
+	 */
+	public String getInfoAsString(String separator) {
+		String info = "";
+		for (String str : getInfo()) {
+			info += separator + str;
+		}
+		return info;
+	}
+	
 	/**
 	 * @return the settings
 	 */
@@ -93,21 +116,76 @@ public abstract class Module {
 	 * Toggle the module
 	 */
 	public void toggle() {
+		// Yiffur hook
+		{
+			EventModuleStateUpdate eventModuleStateUpdate = new EventModuleStateUpdate(EventPosition.PRE, isEnabled(), isDisabled());
+			eventModuleStateUpdate.post();
+			if (eventModuleStateUpdate.isCanceled())
+				return;
+		}
+		
 		enabled = !enabled;
+		
+		// Calls the onEnable or onDisable method
+		if (isEnabled()){
+			onEnable();
+		}else{
+			onDisable();
+		}
+		
+		// Yiffur hook
+		{
+			EventModuleStateUpdate eventModuleStateUpdate = new EventModuleStateUpdate(EventPosition.POST, isDisabled(), isEnabled());
+			eventModuleStateUpdate.post();
+			if (eventModuleStateUpdate.isCanceled())
+				return;
+		}
 	}
 	
 	/**
 	 * Disables the module, does nothing if the module is already disabled
 	 */
 	public void disable() {
+		// Yiffur hook
+		{
+			EventModuleStateUpdate eventModuleStateUpdate = new EventModuleStateUpdate(EventPosition.PRE, isEnabled(), false);
+			eventModuleStateUpdate.post();
+			if (eventModuleStateUpdate.isCanceled())
+				return;
+		}
+		
 		enabled = false;
+		
+		// Yiffur hook
+		{
+			EventModuleStateUpdate eventModuleStateUpdate = new EventModuleStateUpdate(EventPosition.POST, isEnabled(), false);
+			eventModuleStateUpdate.post();
+			if (eventModuleStateUpdate.isCanceled())
+				return;
+		}
 	}
 	
 	/**
 	 * Enables the module, does nothing if the module is already enabled
 	 */
 	public void enable() {
+		// Yiffur hook
+		{
+			EventModuleStateUpdate eventModuleStateUpdate = new EventModuleStateUpdate(EventPosition.PRE, isEnabled(), true);
+			eventModuleStateUpdate.post();
+			if (eventModuleStateUpdate.isCanceled())
+				return;
+		}
+		
 		enabled = true;
+		
+		// Yiffur hook
+		{
+			EventModuleStateUpdate eventModuleStateUpdate = new EventModuleStateUpdate(EventPosition.POST, isEnabled(), true);
+			eventModuleStateUpdate.post();
+			if (eventModuleStateUpdate.isCanceled())
+				return;
+		}
 	}
 	
 	/**

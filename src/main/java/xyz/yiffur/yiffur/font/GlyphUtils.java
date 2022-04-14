@@ -69,6 +69,8 @@ public class GlyphUtils {
 			Graphics2D tempGraphics = new BufferedImage(100, 100, BufferedImage.TYPE_INT_ARGB).createGraphics();
 			tempGraphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, antiAliasing ? RenderingHints.VALUE_ANTIALIAS_ON : RenderingHints.VALUE_ANTIALIAS_OFF);
 			tempGraphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, antiAliasing ? RenderingHints.VALUE_TEXT_ANTIALIAS_ON : RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
+//			glyphMap.setFontHeight((float) Math.floor(maxCharHeight)); // Needed because descent and ascent shouldn't count towards font height
+			glyphMap.setFontHeight((float) font.getSize()); // For some reason this works better? It shouldn't but if it works it works
 			maxDescent = Math.abs(tempGraphics.getFontMetrics().getMaxDescent());
 			maxCharHeight += Math.abs(tempGraphics.getFontMetrics(font).getMaxDescent());
 		}
@@ -124,6 +126,7 @@ public class GlyphUtils {
 		private boolean isAntiAliased = false;
 		private BufferedImage bufferedImage;
 		private Map<Character, Glyph> mapping = new HashMap<Character, Glyph>();
+		private float fontHeight = 0;
 
 		/**
 		 * @return the isAntiAliased
@@ -166,6 +169,21 @@ public class GlyphUtils {
 		public void setMapping(Map<Character, Glyph> mapping) {
 			this.mapping = mapping;
 		}
+
+		/**
+		 * @return the fontHeight
+		 */
+		public float getFontHeight() {
+			return fontHeight;
+		}
+
+		/**
+		 * @param fontHeight the fontHeight to set
+		 */
+		public void setFontHeight(float fontHeight) {
+			this.fontHeight = fontHeight;
+		}
+
 	}
 
 }

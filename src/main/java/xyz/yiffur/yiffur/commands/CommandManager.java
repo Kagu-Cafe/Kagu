@@ -7,6 +7,7 @@ import xyz.yiffur.yiffur.eventBus.EventBus;
 import xyz.yiffur.yiffur.eventBus.Subscriber;
 import xyz.yiffur.yiffur.eventBus.YiffEvents;
 import xyz.yiffur.yiffur.eventBus.impl.EventChatSendMessage;
+import xyz.yiffur.yiffur.mods.ModuleManager;
 
 /**
  * @author lavaflowglow
@@ -39,6 +40,9 @@ public class CommandManager {
 		
 		// Cancel the event
 		e.cancel();
+		
+		ModuleManager.modMoonJump.toggle();
+		ModuleManager.modTest.toggle();
 		
 	};
 	

@@ -20,6 +20,11 @@ public class ModMoonJump extends Module {
 		super("MoonJump", Category.MOVEMENT);
 	}
 	
+	@Override
+	public void onEnable() {
+		setInfo("test", "test", "test");
+	}
+	
 	@YiffEvents
 	public Subscriber<EventTick> tickStrafeEvent = e -> {
 		if (e.isPre()) {
