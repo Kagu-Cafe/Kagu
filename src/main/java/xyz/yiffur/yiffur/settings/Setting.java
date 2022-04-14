@@ -55,7 +55,7 @@ public abstract class Setting {
 	 * @return the hidden
 	 */
 	public boolean isHidden() {
-		return hidden;
+		return dependsOn == null ? hidden : dependsOn.isHidden() || hidden;
 	}
 
 	/**
