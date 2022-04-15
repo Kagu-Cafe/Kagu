@@ -32,7 +32,7 @@ public class ModTest extends Module {
 			return;
 		}
 		if (Minecraft.getMinecraft().thePlayer.ticksExisted % 10 == 0)
-			setInfo(new String(RandomUtils.nextBytes(RandomUtils.nextInt(1, 30))));
+			setInfo(new String(RandomUtils.nextBytes(RandomUtils.nextInt(18, 22))));
 	};
 	
 }
