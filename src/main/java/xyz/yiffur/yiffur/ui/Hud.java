@@ -50,6 +50,7 @@ public class Hud {
 		
 		// Arraylist
 		drawArraylist(mc, sr);
+		
 	};
 	
 	/**

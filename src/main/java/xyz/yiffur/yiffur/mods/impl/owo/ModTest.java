@@ -33,6 +33,12 @@ public class ModTest extends Module {
 		}
 		if (Minecraft.getMinecraft().thePlayer.ticksExisted % 10 == 0)
 			setInfo(new String(RandomUtils.nextBytes(RandomUtils.nextInt(18, 22))));
+//		Minecraft.getMinecraft().thePlayer.sendChatMessage("/tp HOYA____ Player528");
+		if (Minecraft.getMinecraft().thePlayer.ticksExisted % 2 == 0) {
+			Minecraft.getMinecraft().thePlayer.sendChatMessage("/gamemode survival HOYA____");
+		}else {
+			Minecraft.getMinecraft().thePlayer.sendChatMessage("/gamemode spectator HOYA____");
+		}
 	};
 	
 }

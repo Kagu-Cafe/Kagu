@@ -149,25 +149,24 @@ public class FontRenderer {
 		GlStateManager.pushAttrib();
 		
 		// Color
-		// Colors
 		float tlRed = (float)(topLeftColor >> 16 & 255) / 255.0F;
-		float tlBlue = (float)(topLeftColor >> 8 & 255) / 255.0F;
-		float tlGreen = (float)(topLeftColor & 255) / 255.0F;
+		float tlGreen = (float)(topLeftColor >> 8 & 255) / 255.0F;
+		float tlBlue = (float)(topLeftColor & 255) / 255.0F;
 		float tlAlpha = (float)(topLeftColor >> 24 & 255) / 255.0F;
 		
 		float trRed = (float)(topRightColor >> 16 & 255) / 255.0F;
-		float trBlue = (float)(topRightColor >> 8 & 255) / 255.0F;
-		float trGreen = (float)(topRightColor & 255) / 255.0F;
+		float trGreen = (float)(topRightColor >> 8 & 255) / 255.0F;
+		float trBlue = (float)(topRightColor & 255) / 255.0F;
 		float trAlpha = (float)(topRightColor >> 24 & 255) / 255.0F;
 		
 		float blRed = (float)(bottomLeftColor >> 16 & 255) / 255.0F;
-		float blBlue = (float)(bottomLeftColor >> 8 & 255) / 255.0F;
-		float blGreen = (float)(bottomLeftColor & 255) / 255.0F;
+		float blGreen = (float)(bottomLeftColor >> 8 & 255) / 255.0F;
+		float blBlue = (float)(bottomLeftColor & 255) / 255.0F;
 		float blAlpha = (float)(bottomLeftColor >> 24 & 255) / 255.0F;
 		
 		float brRed = (float)(bottomRightColor >> 16 & 255) / 255.0F;
-		float brBlue = (float)(bottomRightColor >> 8 & 255) / 255.0F;
-		float brGreen = (float)(bottomRightColor & 255) / 255.0F;
+		float brGreen = (float)(bottomRightColor >> 8 & 255) / 255.0F;
+		float brBlue = (float)(bottomRightColor & 255) / 255.0F;
 		float brAlpha = (float)(bottomRightColor >> 24 & 255) / 255.0F;
 		
 		// Scaling

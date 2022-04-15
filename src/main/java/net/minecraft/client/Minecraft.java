@@ -169,6 +169,7 @@ import net.minecraft.world.storage.ISaveHandler;
 import net.minecraft.world.storage.WorldInfo;
 import xyz.yiffur.yiffur.Yiffur;
 import xyz.yiffur.yiffur.eventBus.Event.EventPosition;
+import xyz.yiffur.yiffur.eventBus.impl.EventKeyUpdate;
 import xyz.yiffur.yiffur.eventBus.impl.EventTick;
 
 import org.apache.commons.io.IOUtils;
@@ -1895,9 +1896,21 @@ public class Minecraft implements IThreadListener, IPlayerUsage
 
             while (Keyboard.next())
             {
-                int k = Keyboard.getEventKey() == 0 ? Keyboard.getEventCharacter() + 256 : Keyboard.getEventKey();
-                KeyBinding.setKeyBindState(k, Keyboard.getEventKeyState());
-
+            	
+            	int k = Keyboard.getEventKey() == 0 ? Keyboard.getEventCharacter() + 256 : Keyboard.getEventKey();
+            	boolean isPressed = Keyboard.getEventKeyState();
+            	
+                // Yiffur hook
+                {
+                	EventKeyUpdate eventKeyUpdate = new EventKeyUpdate(EventPosition.PRE, k, isPressed);
+                	eventKeyUpdate.post();
+                	if (eventKeyUpdate.isCanceled()) {
+                		break;
+                	}
+                }
+                
+                KeyBinding.setKeyBindState(k, isPressed);
+                
                 if (Keyboard.getEventKeyState())
                 {
                     KeyBinding.onTick(k);
@@ -1921,7 +1934,7 @@ public class Minecraft implements IThreadListener, IPlayerUsage
                 }
 
                 this.dispatchKeypresses();
-
+                
                 if (Keyboard.getEventKeyState())
                 {
                     if (k == 62 && this.entityRenderer != null)
@@ -2062,6 +2075,16 @@ public class Minecraft implements IThreadListener, IPlayerUsage
                         }
                     }
                 }
+                
+                // Yiffur hook
+                {
+                	EventKeyUpdate eventKeyUpdate = new EventKeyUpdate(EventPosition.POST, k, isPressed);
+                	eventKeyUpdate.post();
+                	if (eventKeyUpdate.isCanceled()) {
+                		break;
+                	}
+                }
+                
             }
 
             for (int l = 0; l < 9; ++l)

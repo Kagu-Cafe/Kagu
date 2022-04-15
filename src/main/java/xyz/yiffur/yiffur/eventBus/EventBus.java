@@ -26,7 +26,6 @@ public class EventBus {
 	 */
 	public static void start() {
 		setSubscriber(new EventBus(), true);
-		distribute(null);
 	}
 	
 	/**

@@ -8,6 +8,7 @@ import xyz.yiffur.yiffur.eventBus.EventBus;
 import xyz.yiffur.yiffur.font.FontUtils;
 import xyz.yiffur.yiffur.mods.ModuleManager;
 import xyz.yiffur.yiffur.ui.Hud;
+import xyz.yiffur.yiffur.ui.clickgui.GuiClickgui;
 
 /**
  * @author lavaflowglow
@@ -42,10 +43,17 @@ public class Yiffur {
 		CommandManager.start();
 		logger.info("Started the command manager");
 		
+		// Start the clickgui
+		logger.info("Starting the clickgui...");
+		GuiClickgui.getInstance().start();
+		logger.info("Started the clickgui");
+		
+		// Load fonts
 		logger.info("Loading fonts...");
 		FontUtils.start();
 		logger.info("Loaded fonts");
 		
+		// Hook the hud
 		logger.info("Hooking the hud...");
 		EventBus.setSubscriber(new Hud(), true);
 		logger.info("Hooked the hud");
