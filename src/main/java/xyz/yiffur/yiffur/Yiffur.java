@@ -3,10 +3,14 @@ package xyz.yiffur.yiffur;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import net.minecraft.client.Minecraft;
 import xyz.yiffur.yiffur.commands.CommandManager;
 import xyz.yiffur.yiffur.eventBus.EventBus;
+import xyz.yiffur.yiffur.eventBus.Event.EventPosition;
+import xyz.yiffur.yiffur.eventBus.impl.EventCheatTick;
 import xyz.yiffur.yiffur.font.FontUtils;
 import xyz.yiffur.yiffur.mods.ModuleManager;
+import xyz.yiffur.yiffur.ui.GuiMainMenu;
 import xyz.yiffur.yiffur.ui.Hud;
 import xyz.yiffur.yiffur.ui.clickgui.GuiClickgui;
 
@@ -17,7 +21,7 @@ import xyz.yiffur.yiffur.ui.clickgui.GuiClickgui;
 public class Yiffur {
 	
 	private static String name = "Yiffur";
-	private static double version = -0;
+	private static double version = 0;
 	
 	private static Logger logger = LogManager.getLogger();
 	
@@ -48,10 +52,45 @@ public class Yiffur {
 		GuiClickgui.getInstance().start();
 		logger.info("Started the clickgui");
 		
+		// Start a cheat loop thread
+		logger.info("Starting the cheat loop thread...");
+		Thread cheatThread = new Thread(() -> {
+			double tps = 64;
+			while (true) {
+				try {
+					Thread.sleep((long) (1000 / tps));
+				} catch (Exception e) {
+					// TODO: handle exception
+				}
+				// Yiffur hook
+				{
+					EventCheatTick eventCheatTick = new EventCheatTick(EventPosition.PRE);
+					eventCheatTick.post();
+					if (eventCheatTick.isCanceled())
+						continue;
+				}
+				// Yiffur hook
+				{
+					EventCheatTick eventCheatTick = new EventCheatTick(EventPosition.POST);
+					eventCheatTick.post();
+					if (eventCheatTick.isCanceled())
+						continue;
+				}
+			}
+		}, "Cheat loop");
+		cheatThread.setDaemon(true);
+		cheatThread.start();
+		logger.info("Started the cheat loop thread");
+		
 		// Load fonts
 		logger.info("Loading fonts...");
 		FontUtils.start();
 		logger.info("Loaded fonts");
+		
+		// Load the main menu
+		logger.info("Loading the main menu...");
+		GuiMainMenu.start();
+		logger.info("Loaded the main menu");
 		
 		// Hook the hud
 		logger.info("Hooking the hud...");

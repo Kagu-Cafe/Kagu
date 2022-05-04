@@ -17,7 +17,6 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.gui.GuiDownloadTerrain;
-import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.client.gui.MapItemRenderer;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.multiplayer.WorldClient;
@@ -88,6 +87,7 @@ import org.lwjgl.util.glu.GLU;
 import org.lwjgl.util.glu.Project;
 import shadersmod.client.Shaders;
 import shadersmod.client.ShadersRender;
+import xyz.yiffur.yiffur.ui.GuiMainMenu;
 
 public class EntityRenderer implements IResourceManagerReloadListener
 {
@@ -318,7 +318,7 @@ public class EntityRenderer implements IResourceManagerReloadListener
         }
     }
 
-    private void loadShader(ResourceLocation resourceLocationIn)
+    public void loadShader(ResourceLocation resourceLocationIn)
     {
         if (OpenGlHelper.isFramebufferEnabled())
         {
@@ -2828,5 +2828,20 @@ public class EntityRenderer implements IResourceManagerReloadListener
             this.fxaaShaders[p_setFxaaShader_1_] = this.theShaderGroup;
             return this.useShader;
         }
-    }
+	}
+
+	/**
+	 * @return the theShaderGroup
+	 */
+	public ShaderGroup getTheShaderGroup() {
+		return theShaderGroup;
+	}
+
+	/**
+	 * @param theShaderGroup the theShaderGroup to set
+	 */
+	public void setTheShaderGroup(ShaderGroup theShaderGroup) {
+		this.theShaderGroup = theShaderGroup;
+	}
+
 }

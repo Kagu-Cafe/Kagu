@@ -173,6 +173,8 @@ public class FontRenderer {
 		GlStateManager.scale(scale, scale, scale);
 		x *= 1 / scale;
 		y *= 1 / scale;
+		x = Math.ceil(x);
+		y = Math.ceil(y);
 		
 		// Render
 		GL11.glEnable(GL11.GL_BLEND);
@@ -182,13 +184,13 @@ public class FontRenderer {
         GlStateManager.shadeModel(GL11.GL_SMOOTH);
         
 		GlStateManager.bindTexture(glyphsTexture.getGlTextureId());
-		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, forceLinear ? GL11.GL_LINEAR : GL11.GL_NEAREST); // Nearest looks better on anti aliased text as well as non anti aliased text compared to GL_LINEAR
+		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, forceLinear ? GL11.GL_LINEAR : GL11.GL_NEAREST);
 		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, forceLinear ? GL11.GL_LINEAR : GL11.GL_NEAREST);
 		
 		Tessellator tessellator = Tessellator.getInstance();
         WorldRenderer worldrenderer = tessellator.getWorldRenderer();
         
-        worldrenderer.begin(6, DefaultVertexFormats.POSITION_TEX_COLOR);
+        worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
         worldrenderer.pos(x, y, 0).tex(glyph.getScaledX(), glyph.getScaledY()).color(tlRed, tlGreen, tlBlue, tlAlpha).endVertex();
         worldrenderer.pos(x, y + glyph.getHeight(), 0).tex(glyph.getScaledX(), glyph.getScaledY() + glyph.getScaledHeight()).color(blRed, blGreen, blBlue, blAlpha).endVertex();
         worldrenderer.pos(x + glyph.getWidth(), y + glyph.getHeight(), 0).tex(glyph.getScaledX() + glyph.getScaledWidth(), glyph.getScaledY() + glyph.getScaledHeight()).color(brRed, brGreen, brBlue, brAlpha).endVertex();

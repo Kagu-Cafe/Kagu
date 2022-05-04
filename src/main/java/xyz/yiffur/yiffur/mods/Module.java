@@ -196,7 +196,8 @@ public abstract class Module {
 		COMBAT("Combat", 0xffe63e3e), 
 		MOVEMENT("Movement", 0xff3dd979), 
 		VISUAL("Visual", 0xff3dc2d9),
-		OWO("OwO", 0xffff4af6), 
+		PLAYER("Player", 0xffd9883d),
+		OWO("Test", 0xffff4af6), 
 		MISC("Miscellaneous", 0xfffff34a);
 
 		private String name;

@@ -12,7 +12,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.model.ModelBanner;
 import net.minecraft.client.model.ModelBase;
@@ -78,6 +77,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraftforge.common.property.IUnlistedProperty;
+import xyz.yiffur.yiffur.ui.GuiMainMenu;
 
 public class Reflector
 {

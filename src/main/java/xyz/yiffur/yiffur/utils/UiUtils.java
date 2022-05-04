@@ -3,12 +3,18 @@
  */
 package xyz.yiffur.yiffur.utils;
 
+import java.awt.Color;
+
+import javax.vecmath.Vector4d;
+
 import org.lwjgl.opengl.GL11;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.util.ResourceLocation;
 
 /**
  * @author lavaflowglow
@@ -30,7 +36,6 @@ public class UiUtils {
 	 */
 	public static void drawGradientRect(double left, double top, double right, double bottom, int topLeftColor, int topRightColor, int bottomLeftColor, int bottomRightColor) {
 		
-		// The following is a method from inside the game that I modified
         if (left < right)
         {
         	double i = left;
@@ -206,6 +211,31 @@ public class UiUtils {
         GlStateManager.popAttrib();
         GlStateManager.popMatrix();
         
+	}
+	
+	/**
+	 * Enables wireframe mode
+	 */
+	public static void enableWireframe() {
+		GL11.glPolygonMode(GL11.GL_FRONT, GL11.GL_LINE);
+		GL11.glPolygonMode(GL11.GL_BACK, GL11.GL_LINE);
+	}
+	
+	/**
+	 * Disables wireframe mode
+	 */
+	public static void disableWireframe() {
+		GL11.glPolygonMode(GL11.GL_FRONT, GL11.GL_FILL);
+		GL11.glPolygonMode(GL11.GL_BACK, GL11.GL_FILL);
+	}
+	
+	/**
+	 * Turns a vector into a color that can be used with minecraft's draw utils
+	 * @param vectorColor The color as a vector
+	 * @return The color as an int
+	 */
+	public static int getColorFromVector(Vector4d vectorColor) {
+		return new Color((float)vectorColor.x, (float)vectorColor.y, (float)vectorColor.z, (float)vectorColor.w).getRGB();
 	}
 	
 }

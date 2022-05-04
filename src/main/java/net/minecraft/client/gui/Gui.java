@@ -47,18 +47,18 @@ public class Gui
     /**
      * Draws a solid color rectangle with the specified coordinates and color (ARGB format). Args: x1, y1, x2, y2, color
      */
-    public static void drawRect(int left, int top, int right, int bottom, int color)
+    public static void drawRect(double left, double top, double right, double bottom, int color)
     {
         if (left < right)
         {
-            int i = left;
+        	double i = left;
             left = right;
             right = i;
         }
 
         if (top < bottom)
         {
-            int j = top;
+        	double j = top;
             top = bottom;
             bottom = j;
         }
@@ -80,7 +80,7 @@ public class Gui
         worldrenderer.pos((double)left, (double)top, 0.0D).endVertex();
         tessellator.draw();
         GlStateManager.enableTexture2D();
-        GlStateManager.disableBlend();
+//        GlStateManager.disableBlend(); // Removed because it was useless and buggy
     }
 
     /**
@@ -184,10 +184,10 @@ public class Gui
     /**
      * Draws a textured rectangle at z = 0. Args: x, y, u, v, width, height, textureWidth, textureHeight
      */
-    public static void drawModalRectWithCustomSizedTexture(int x, int y, float u, float v, int width, int height, float textureWidth, float textureHeight)
+    public static void drawModalRectWithCustomSizedTexture(double x, double y, double u, double v, double width, double height, double textureWidth, double textureHeight)
     {
-        float f = 1.0F / textureWidth;
-        float f1 = 1.0F / textureHeight;
+    	double f = 1.0F / textureWidth;
+    	double f1 = 1.0F / textureHeight;
         Tessellator tessellator = Tessellator.getInstance();
         WorldRenderer worldrenderer = tessellator.getWorldRenderer();
         worldrenderer.begin(7, DefaultVertexFormats.POSITION_TEX);

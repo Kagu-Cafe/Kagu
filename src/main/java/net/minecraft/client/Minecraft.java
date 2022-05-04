@@ -46,7 +46,6 @@ import net.minecraft.client.gui.GuiControls;
 import net.minecraft.client.gui.GuiGameOver;
 import net.minecraft.client.gui.GuiIngame;
 import net.minecraft.client.gui.GuiIngameMenu;
-import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.client.gui.GuiMemoryErrorScreen;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiSleepMP;
@@ -171,6 +170,7 @@ import xyz.yiffur.yiffur.Yiffur;
 import xyz.yiffur.yiffur.eventBus.Event.EventPosition;
 import xyz.yiffur.yiffur.eventBus.impl.EventKeyUpdate;
 import xyz.yiffur.yiffur.eventBus.impl.EventTick;
+import xyz.yiffur.yiffur.ui.GuiMainMenu;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.Validate;

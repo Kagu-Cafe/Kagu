@@ -21,8 +21,11 @@ public class FontUtils {
 		
 	}
 	
+	public static FontRenderer ROBOTO_LIGHT_48 = new FontRenderer(getFontFromInputStream(FontUtils.class.getResourceAsStream("Roboto-Light.ttf"), 48, Font.PLAIN), 1);
 	public static FontRenderer ROBOTO_LIGHT_10 = new FontRenderer(getFontFromInputStream(FontUtils.class.getResourceAsStream("Roboto-Light.ttf"), 20, Font.PLAIN), 0.5);
 	public static FontRenderer ROBOTO_REGULAR_10 = new FontRenderer(getFontFromInputStream(FontUtils.class.getResourceAsStream("Roboto-Regular.ttf"), 20, Font.PLAIN), 0.5);
+	
+	public static FontRenderer STRATUM2_MEDIUM_13 = new FontRenderer(getFontFromInputStream(FontUtils.class.getResourceAsStream("stratum2-medium.ttf"), 26, Font.PLAIN), 0.5);
 	
 	/**
 	 * Gets a font from an inputstream

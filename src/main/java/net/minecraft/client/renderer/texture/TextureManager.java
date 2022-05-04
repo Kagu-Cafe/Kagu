@@ -201,4 +201,12 @@ public class TextureManager implements ITickable, IResourceManagerReloadListener
             }
         }
     }
+
+	/**
+	 * @return the mapTextureObjects
+	 */
+	public Map getMapTextureObjects() {
+		return mapTextureObjects;
+	}
+
 }

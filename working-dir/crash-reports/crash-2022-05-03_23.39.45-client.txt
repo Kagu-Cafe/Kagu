@@ -1,0 +1,92 @@
+---- Minecraft Crash Report ----
+// Daisy, daisy...
+
+Time: 5/3/22 11:39 PM
+Description: Rendering screen
+
+java.lang.Error: Unresolved compilation problem: 
+	The method drawRect(int, int, int, int, int) in the type Gui is not applicable for the arguments (int, int, int, int, Vector4d)
+
+	at xyz.yiffur.yiffur.ui.clickgui.GuiClickgui.drawScreen(GuiClickgui.java:132)
+	at net.minecraft.client.renderer.EntityRenderer.func_181560_a(EntityRenderer.java:1389)
+	at net.minecraft.client.Minecraft.runGameLoop(Minecraft.java:1132)
+	at net.minecraft.client.Minecraft.run(Minecraft.java:423)
+	at net.minecraft.client.main.Main.main(Main.java:131)
+	at Start.main(Start.java:16)
+
+
+A detailed walkthrough of the error, its code path and all known details is as follows:
+---------------------------------------------------------------------------------------
+
+-- Head --
+Stacktrace:
+	at xyz.yiffur.yiffur.ui.clickgui.GuiClickgui.drawScreen(GuiClickgui.java:132)
+
+-- Screen render details --
+Details:
+	Screen name: xyz.yiffur.yiffur.ui.clickgui.GuiClickgui
+	Mouse location: Scaled: (488, 508). Absolute: (976, 0)
+	Screen size: Scaled: (960, 509). Absolute: (1920, 1017). Scale factor of 2
+
+-- Affected level --
+Details:
+	Level name: MpServer
+	All players: 1 total; [EntityPlayerSP['Player990'/27828, l='MpServer', x=489.86, y=75.00, z=2809.50]]
+	Chunk stats: MultiplayerChunkCache: 289, 289
+	Level seed: 0
+	Level generator: ID 02 - largeBiomes, ver 0. Features enabled: false
+	Level generator options: 
+	Level spawn location: 584.00,64.00,166.00 - World: (584,64,166), Chunk: (at 8,4,6 in 36,10; contains blocks 576,0,160 to 591,255,175), Region: (1,0; contains chunks 32,0 to 63,31, blocks 512,0,0 to 1023,255,511)
+	Level time: 536709 game time, 61652 day time
+	Level dimension: 0
+	Level storage version: 0x00000 - Unknown?
+	Level weather: Rain time: 0 (now: false), thunder time: 0 (now: false)
+	Level game mode: Game mode: creative (ID 1). Hardcore: false. Cheats: false
+	Forced entities: 79 total; [EntitySheep['Sheep'/27909, l='MpServer', x=439.22, y=66.00, z=2804.31], EntitySheep['Sheep'/27910, l='MpServer', x=436.06, y=67.00, z=2831.00], EntitySheep['Sheep'/27911, l='MpServer', x=439.16, y=67.00, z=2822.66], EntitySheep['Sheep'/27912, l='MpServer', x=446.69, y=68.00, z=2854.38], EntitySheep['Sheep'/27913, l='MpServer', x=446.06, y=68.00, z=2851.00], EntitySheep['Sheep'/27914, l='MpServer', x=434.03, y=70.00, z=2869.97], EntityPig['Pig'/27918, l='MpServer', x=460.72, y=71.00, z=2754.22], EntityPig['Pig'/27919, l='MpServer', x=463.28, y=69.00, z=2764.94], EntitySkeleton['Skeleton'/28047, l='MpServer', x=547.50, y=55.00, z=2749.50], EntitySheep['Sheep'/27920, l='MpServer', x=449.44, y=69.00, z=2855.78], EntityPig['Pig'/28048, l='MpServer', x=547.97, y=72.00, z=2747.00], EntitySheep['Sheep'/27921, l='MpServer', x=458.53, y=70.00, z=2853.09], EntitySheep['Sheep'/28049, l='MpServer', x=549.72, y=68.00, z=2808.16], EntitySheep['Sheep'/27922, l='MpServer', x=452.16, y=70.00, z=2860.81], EntitySheep['Sheep'/27923, l='MpServer', x=448.06, y=69.00, z=2855.13], EntitySkeleton['Skeleton'/28563, l='MpServer', x=540.50, y=53.00, z=2763.50], EntityPig['Pig'/27924, l='MpServer', x=454.97, y=69.00, z=2873.06], EntityBat['Bat'/28568, l='MpServer', x=506.11, y=20.02, z=2889.49], EntityPig['Pig'/27934, l='MpServer', x=464.63, y=70.00, z=2861.56], EntitySpider['Spider'/28062, l='MpServer', x=564.69, y=52.00, z=2773.97], EntityPig['Pig'/27935, l='MpServer', x=469.94, y=70.00, z=2856.88], EntityPig['Pig'/27936, l='MpServer', x=465.50, y=69.00, z=2866.50], EntityBat['Bat'/28066, l='MpServer', x=571.19, y=20.91, z=2885.41], EntityPig['Pig'/27941, l='MpServer', x=487.59, y=71.00, z=2733.69], EntityPig['Pig'/27942, l='MpServer', x=487.34, y=72.00, z=2748.78], EntityPig['Pig'/27943, l='MpServer', x=470.28, y=73.00, z=2806.47], EntityPig['Pig'/27944, l='MpServer', x=498.47, y=72.00, z=2786.43], EntityPig['Pig'/27945, l='MpServer', x=483.75, y=73.00, z=2787.06], EntitySheep['Sheep'/27946, l='MpServer', x=473.13, y=73.00, z=2803.38], EntityCow['Cow'/27947, l='MpServer', x=486.03, y=70.00, z=2851.94], EntityPig['Pig'/27948, l='MpServer', x=481.94, y=71.00, z=2845.97], EntityPlayerSP['Player990'/27828, l='MpServer', x=489.86, y=75.00, z=2809.50], EntityZombie['Zombie'/27966, l='MpServer', x=509.50, y=51.00, z=2736.50], EntityPig['Pig'/27968, l='MpServer', x=505.00, y=71.00, z=2763.91], EntityPig['Pig'/27969, l='MpServer', x=496.16, y=72.00, z=2777.16], EntityPig['Pig'/27970, l='MpServer', x=509.66, y=71.00, z=2779.19], EntityPig['Pig'/27971, l='MpServer', x=507.97, y=72.00, z=2829.94], EntitySheep['Sheep'/27972, l='MpServer', x=496.94, y=73.00, z=2826.06], EntityZombie['Zombie'/29124, l='MpServer', x=531.50, y=28.00, z=2808.50], EntitySheep['Sheep'/27973, l='MpServer', x=491.32, y=72.00, z=2838.97], EntityZombie['Zombie'/29125, l='MpServer', x=527.50, y=28.00, z=2808.50], EntitySheep['Sheep'/27974, l='MpServer', x=501.38, y=70.00, z=2846.81], EntityZombie['Zombie'/28742, l='MpServer', x=526.50, y=45.00, z=2827.50], EntityCow['Cow'/27976, l='MpServer', x=497.81, y=69.00, z=2851.47], EntityCow['Cow'/27977, l='MpServer', x=509.97, y=67.00, z=2860.91], EntitySkeleton['Skeleton'/28873, l='MpServer', x=485.50, y=16.00, z=2883.50], EntityCow['Cow'/27978, l='MpServer', x=499.44, y=68.00, z=2855.44], EntitySkeleton['Skeleton'/27982, l='MpServer', x=511.41, y=40.00, z=2858.91], EntitySkeleton['Skeleton'/28751, l='MpServer', x=418.50, y=23.00, z=2885.50], EntitySkeleton['Skeleton'/28629, l='MpServer', x=509.50, y=50.00, z=2733.50], EntityCreeper['Creeper'/28757, l='MpServer', x=521.50, y=61.00, z=2766.50], EntityPig['Pig'/27990, l='MpServer', x=525.78, y=72.00, z=2760.56], EntityZombie['Zombie'/28630, l='MpServer', x=503.50, y=50.00, z=2730.50], EntityPig['Pig'/27991, l='MpServer', x=524.44, y=72.00, z=2759.03], EntityPig['Pig'/27992, l='MpServer', x=519.66, y=71.00, z=2764.81], EntitySheep['Sheep'/27993, l='MpServer', x=519.78, y=72.00, z=2797.91], EntitySheep['Sheep'/27995, l='MpServer', x=515.00, y=72.00, z=2815.06], EntitySheep['Sheep'/27999, l='MpServer', x=523.91, y=66.00, z=2888.41], EntityCreeper['Creeper'/28895, l='MpServer', x=539.50, y=50.00, z=2757.50], EntitySheep['Sheep'/28000, l='MpServer', x=527.31, y=67.00, z=2881.38], EntityCreeper['Creeper'/28896, l='MpServer', x=537.66, y=51.00, z=2752.91], EntityCreeper['Creeper'/27883, l='MpServer', x=414.50, y=24.00, z=2768.50], EntityCreeper['Creeper'/27884, l='MpServer', x=412.50, y=23.00, z=2769.50], EntitySheep['Sheep'/27887, l='MpServer', x=412.31, y=69.00, z=2857.47], EntitySheep['Sheep'/27888, l='MpServer', x=411.19, y=69.00, z=2858.19], EntitySheep['Sheep'/27889, l='MpServer', x=414.38, y=69.00, z=2864.78], EntityPig['Pig'/28018, l='MpServer', x=541.84, y=72.00, z=2732.03], EntityPig['Pig'/28019, l='MpServer', x=532.00, y=71.00, z=2737.91], EntityPig['Pig'/28020, l='MpServer', x=539.50, y=72.00, z=2737.16], EntitySheep['Sheep'/28022, l='MpServer', x=541.78, y=72.00, z=2773.47], EntitySheep['Sheep'/28023, l='MpServer', x=542.94, y=71.00, z=2760.94], EntityPig['Pig'/28024, l='MpServer', x=536.97, y=71.00, z=2757.06], EntitySheep['Sheep'/28026, l='MpServer', x=541.50, y=74.00, z=2770.50], EntitySheep['Sheep'/28027, l='MpServer', x=521.06, y=71.00, z=2774.09], EntityZombie['Zombie'/29436, l='MpServer', x=461.50, y=15.00, z=2885.50], EntityZombie['Zombie'/28029, l='MpServer', x=532.50, y=33.00, z=2801.50], EntitySheep['Sheep'/27901, l='MpServer', x=416.22, y=69.00, z=2852.19], EntitySheep['Sheep'/28030, l='MpServer', x=538.06, y=70.00, z=2817.94], EntityBat['Bat'/28031, l='MpServer', x=530.28, y=54.75, z=2861.75]]
+	Retry entities: 0 total; []
+	Server brand: vanilla
+	Server type: Integrated singleplayer server
+Stacktrace:
+	at net.minecraft.client.multiplayer.WorldClient.addWorldInfoToCrashReport(WorldClient.java:401)
+	at net.minecraft.client.Minecraft.addGraphicsAndWorldToCrashReport(Minecraft.java:2791)
+	at net.minecraft.client.Minecraft.run(Minecraft.java:444)
+	at net.minecraft.client.main.Main.main(Main.java:131)
+	at Start.main(Start.java:16)
+
+-- System Details --
+Details:
+	Minecraft Version: 1.8.8
+	Operating System: Windows 8.1 (amd64) version 6.3
+	CPU: 12x AMD Ryzen 5 2600 Six-Core Processor 
+	Java Version: 1.8.0_51, Oracle Corporation
+	Java VM Version: Java HotSpot(TM) 64-Bit Server VM (mixed mode), Oracle Corporation
+	Memory: 353837416 bytes (337 MB) / 704643072 bytes (672 MB) up to 3799515136 bytes (3623 MB)
+	JVM Flags: 0 total; 
+	IntCache: cache: 0, tcache: 0, allocated: 13, tallocated: 99
+	Launched Version: mcp
+	LWJGL: 2.9.4
+	OpenGL: NVIDIA GeForce GTX 1060 6GB/PCIe/SSE2 GL version 4.6.0 NVIDIA 496.76, NVIDIA Corporation
+	GL Caps: Using GL 1.3 multitexturing.
+Using GL 1.3 texture combiners.
+Using framebuffer objects because OpenGL 3.0 is supported and separate blending is supported.
+Shaders are available because OpenGL 2.1 is supported.
+VBOs are available because OpenGL 1.5 is supported.
+
+	Using VBOs: No
+	Is Modded: Very likely; Jar signature invalidated
+	Type: Client (map_client.txt)
+	Resource Packs: 
+	Current Language: English (US)
+	Profiler Position: N/A (disabled)
+	CPU: 12x AMD Ryzen 5 2600 Six-Core Processor 
+	OptiFine Version: OptiFine_1.8.8_HD_U_H8
+	Render Distance Chunks: 8
+	Mipmaps: 4
+	Anisotropic Filtering: 1
+	Antialiasing: 0
+	Multitexture: false
+	Shaders: null
+	OpenGlVersion: 4.6.0 NVIDIA 496.76
+	OpenGlRenderer: NVIDIA GeForce GTX 1060 6GB/PCIe/SSE2
+	OpenGlVendor: NVIDIA Corporation
+	CpuCount: 12

@@ -22,7 +22,6 @@ import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.GuiChat;
 import net.minecraft.client.gui.GuiDisconnected;
 import net.minecraft.client.gui.GuiDownloadTerrain;
-import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.client.gui.GuiMerchant;
 import net.minecraft.client.gui.GuiMultiplayer;
 import net.minecraft.client.gui.GuiScreen;
@@ -209,6 +208,8 @@ import net.minecraft.world.WorldProviderSurface;
 import net.minecraft.world.WorldSettings;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.storage.MapData;
+import xyz.yiffur.yiffur.ui.GuiMainMenu;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

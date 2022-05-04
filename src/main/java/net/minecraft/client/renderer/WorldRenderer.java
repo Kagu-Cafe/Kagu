@@ -478,7 +478,12 @@ public class WorldRenderer
     {
         this.needsUpdate = true;
     }
-
+    
+    public WorldRenderer color(double p_181666_1_, double p_181666_2_, double p_181666_3_, double p_181666_4_)
+    {
+        return color((float)p_181666_1_, (float)p_181666_2_, (float)p_181666_3_, (float)p_181666_4_);
+    }
+    
     public WorldRenderer color(float p_181666_1_, float p_181666_2_, float p_181666_3_, float p_181666_4_)
     {
         return this.color((int)(p_181666_1_ * 255.0F), (int)(p_181666_2_ * 255.0F), (int)(p_181666_3_ * 255.0F), (int)(p_181666_4_ * 255.0F));
