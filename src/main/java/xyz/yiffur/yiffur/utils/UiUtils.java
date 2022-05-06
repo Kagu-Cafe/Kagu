@@ -10,6 +10,7 @@ import javax.vecmath.Vector4d;
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
@@ -108,7 +109,7 @@ public class UiUtils {
 	 * @param color      The color of the rect
 	 * @param cornerSize How big the rounded corners should be
 	 */
-	public static void drawRoundedRect(double left, double top, double right, double bottom, int color, int cornerSize) {
+	public static void drawRoundedRect(double left, double top, double right, double bottom, int color, double cornerSize) {
 		drawRoundedRect(left, top, right, bottom, color, cornerSize, cornerSize, cornerSize, cornerSize);
 	}
 	
@@ -125,7 +126,7 @@ public class UiUtils {
 	 * @param cornerSizeBl The corner size for the bottom left corner
 	 * @param cornerSizeBr The corner size for the bottom right corner
 	 */
-	public static void drawRoundedRect(double left, double top, double right, double bottom, int color, int cornerSizeTl, int cornerSizeTr, int cornerSizeBl, int cornerSizeBr) {
+	public static void drawRoundedRect(double left, double top, double right, double bottom, int color, double cornerSizeTl, double cornerSizeTr, double cornerSizeBl, double cornerSizeBr) {
 		
 		// Vars
 		double stepsIncrement = 5;
@@ -205,7 +206,6 @@ public class UiUtils {
         tessellator.draw();
         
         GlStateManager.shadeModel(GL11.GL_FLAT);
-        GlStateManager.disableBlend();
         GlStateManager.enableAlpha();
         GlStateManager.enableTexture2D();
         GlStateManager.popAttrib();
@@ -236,6 +236,54 @@ public class UiUtils {
 	 */
 	public static int getColorFromVector(Vector4d vectorColor) {
 		return new Color((float)vectorColor.x, (float)vectorColor.y, (float)vectorColor.z, (float)vectorColor.w).getRGB();
+	}
+	
+	/**
+	 * Enables gl scissor
+	 * @param left The left side of the box
+	 * @param top The top of the box
+	 * @param right The right side of the box
+	 * @param bottom The bottom of the box
+	 */
+	public static void enableScissor(double left, double top, double right, double bottom) {
+		enableScissor((int)left, (int)top, (int)right, (int)bottom);
+	}
+	
+	/**
+	 * Enables gl scissor
+	 * @param left The left side of the box
+	 * @param top The top of the box
+	 * @param right The right side of the box
+	 * @param bottom The bottom of the box
+	 */
+	public static void enableScissor(int left, int top, int right, int bottom) {
+		
+		if (left > right) {
+			int temp = left;
+			left = right;
+			right = temp;
+		}
+		
+		if (top > bottom) {
+			int temp = top;
+			top = bottom;
+			bottom = temp;
+		}
+		
+		// Annoying gui scaling
+		ScaledResolution scaledResolution = new ScaledResolution(Minecraft.getMinecraft());
+		int scaleFactor = scaledResolution.getScaleFactor();
+		
+		GL11.glEnable(GL11.GL_SCISSOR_TEST);
+		GL11.glScissor(left * scaleFactor, top * scaleFactor, (right - left) * scaleFactor, (bottom - top) * scaleFactor);
+		
+	}
+	
+	/**
+	 * Disables gl scissor
+	 */
+	public static void disableScissor() {
+		GL11.glDisable(GL11.GL_SCISSOR_TEST);
 	}
 	
 }

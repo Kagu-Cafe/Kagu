@@ -52,6 +52,19 @@ public class FontRenderer {
 	private boolean forceLinear;
 	
 	/**
+	 * Draws a string that's centered on the x position
+	 * @param string The string to render
+	 * @param x The x pos of the string
+	 * @param y The y pos of the string
+	 * @param color The color to draw the string with
+	 * @return The width of the string
+	 */
+	public double drawCenteredString(String string, double x, double y, int color) {
+		return drawString(string, x - (getStringWidth(string) / 2), y, color, false);
+	}
+	
+	/**
+	 * Draws a string
 	 * @param string The string to render
 	 * @param x The x pos of the string
 	 * @param y The y pos of the string
@@ -63,6 +76,7 @@ public class FontRenderer {
 	}
 	
 	/**
+	 * Draws a string
 	 * @param string The string to render
 	 * @param x The x pos of the string
 	 * @param y The y pos of the string
@@ -75,6 +89,7 @@ public class FontRenderer {
 	}
 	
 	/**
+	 * Draws a string
 	 * @param string The string to render
 	 * @param x The x pos of the string
 	 * @param y The y pos of the string
@@ -89,6 +104,7 @@ public class FontRenderer {
 	}
 	
 	/**
+	 * Draws a string
 	 * @param string The string to render
 	 * @param x The x pos of the string
 	 * @param y The y pos of the string
@@ -123,7 +139,6 @@ public class FontRenderer {
 	
 	/**
 	 * Draws a single character from the glyph texture
-	 * 
 	 * @param c                The character to draw
 	 * @param x                The x pos to draw at
 	 * @param y                The y post to draw at
@@ -212,7 +227,7 @@ public class FontRenderer {
 	}
 
 	/**
-	 * 
+	 * Calculates the width of a string and returns it
 	 * @param str The string you want to measure
 	 * @return The width of the string
 	 */

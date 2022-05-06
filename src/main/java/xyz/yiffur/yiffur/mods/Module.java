@@ -49,6 +49,7 @@ public abstract class Module {
 	private Setting[] settings = new Setting[0]; // Any settings that the module may have
 	private Category category; // The category of the module
 	private boolean enabled = false;
+	private double clickguiExtension = 0, clickguiToggle = 0;
 
 	/**
 	 * @param info An array of strings that will be displayed next to the module on
@@ -104,7 +105,7 @@ public abstract class Module {
 	public boolean isEnabled() {
 		return enabled;
 	}
-
+	
 	/**
 	 * @return true if disabled
 	 */
@@ -113,7 +114,35 @@ public abstract class Module {
 	}
 	
 	/**
-	 * Toggle the module
+	 * @return the clickguiExtension
+	 */
+	public double getClickguiExtension() {
+		return clickguiExtension;
+	}
+
+	/**
+	 * @param clickguiExtension the clickguiExtension to set
+	 */
+	public void setClickguiExtension(double clickguiExtension) {
+		this.clickguiExtension = clickguiExtension;
+	}
+
+	/**
+	 * @return the clickguiToggle
+	 */
+	public double getClickguiToggle() {
+		return clickguiToggle;
+	}
+
+	/**
+	 * @param clickguiToggle the clickguiToggle to set
+	 */
+	public void setClickguiToggle(double clickguiToggle) {
+		this.clickguiToggle = clickguiToggle;
+	}
+
+	/**
+	 * Toggles the module
 	 */
 	public void toggle() {
 		// Yiffur hook

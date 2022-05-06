@@ -28,6 +28,7 @@ import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.shader.Framebuffer;
 import net.minecraft.util.ResourceLocation;
+import xyz.yiffur.yiffur.Yiffur;
 import xyz.yiffur.yiffur.eventBus.EventBus;
 import xyz.yiffur.yiffur.eventBus.Subscriber;
 import xyz.yiffur.yiffur.eventBus.YiffEvents;
@@ -39,6 +40,8 @@ import xyz.yiffur.yiffur.font.FontUtils;
 import xyz.yiffur.yiffur.mods.Module;
 import xyz.yiffur.yiffur.mods.ModuleManager;
 import xyz.yiffur.yiffur.mods.Module.Category;
+import xyz.yiffur.yiffur.settings.Setting;
+import xyz.yiffur.yiffur.ui.Colors;
 import xyz.yiffur.yiffur.utils.UiUtils;
 
 /**
@@ -79,22 +82,51 @@ public class GuiClickgui extends GuiScreen {
 				degrees += degreesPerCategory;
 			}
 		}
+		
+		// Assign modules to their category
+		{
+			for (Category category : Category.values()) {
+				List<Module> modules = new ArrayList<>();
+				for (Module module : ModuleManager.getModules()) {
+					if (module.getCategory() == category) {
+						modules.add(module);
+					}
+				}
+				Module[] categoryModules = new Module[0];
+				categoryModules = modules.toArray(categoryModules);
+				this.categoryModules.put(category, categoryModules);
+			}
+		}
+		
 	}
+	
+	// Colors
+	private Vector4d circleInnerSelectionColor = new Vector4d(1, 1, 1, 0.65),
+			circleOuterSelectionColor = new Vector4d(1, 1, 1, 0.005),
+			circleInnerBackgroundColor = new Vector4d(0.0784313725, 0.0784313725, 0.0784313725, 0.5),
+			circleOuterBackgroundColor = circleInnerBackgroundColor,
+			circleOutlineColor = new Vector4d(0.549019608, 0.549019608, 0.549019608, 1),
+			closeIconIdleColor = new Vector4d(1, 1, 1, 1),
+			closeIconHoverColor = new Vector4d(1, 0.309803922f, 0.309803922f, 1),
+			textColor = new Vector4d(1, 1, 1, 1);
 	
 	private double targetPosX = 0, targetPosY = 0, posX = 0, posY = 0, targetInnerCircleRadius = 0,
 			innerCircleRadius = 0, targetOuterCircleRadius = 0, outerCircleRadius = 0, degreesPerCategory = 0,
 			selectedScale = 1.075, boxSize = 0;
 	private Map<Category, Vector2d> categoryDegreesMap = new HashMap<>();
-	private Vector4d circleInnerSelectionColor = new Vector4d(1, 1, 1, 0.65),
-			circleOuterSelectionColor = new Vector4d(1, 1, 1, 0.005),
-			circleInnerBackgroundColor = new Vector4d(0.0784313725, 0.0784313725, 0.0784313725, 0.5),
-			circleOuterBackgroundColor = circleInnerBackgroundColor,
-			circleOutlineColor = new Vector4d(0.490196078, 0.490196078, 0.490196078, 1);
+	private Map<Category, Module[]> categoryModules = new HashMap<>();
 	private Category selectedCategory = null, lastHoveredCategory = null; // I am lazy so I'll just reuse the calculations from the render for the mouse click with this variable
+	private boolean closeCategoryOnClick = false; // I am still lazy
 	private Map<Category, Double> categorySliceScale = new HashMap<>();
+	private ResourceLocation closeIcon = new ResourceLocation("yiff/clickgui/close.png");
+	private boolean isLeftMouseDown = false, isLeftMouseClick = false;
+	private double scrollOffset = 0, scrollOffsetTarget = 0;
 	
 	@Override
 	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+		
+		FontRenderer boxTitleFr = FontUtils.STRATUM2_MEDIUM_18;
+		FontRenderer moduleAndSettingsFr = FontUtils.STRATUM2_MEDIUM_13;
 		
 		GlStateManager.pushMatrix();
 		GlStateManager.pushAttrib();
@@ -121,7 +153,7 @@ public class GuiClickgui extends GuiScreen {
 				double textSpacing = 0.65;
 				double textPosX = posX + Math.cos(Math.toRadians(rot)) * ((outerCircleRadius * categorySliceScale.get(category)) * textSpacing);
 				double textPosY = posY + Math.sin(Math.toRadians(rot)) * ((outerCircleRadius * categorySliceScale.get(category)) * textSpacing);
-				categoryFr.drawString(category.getName().toUpperCase(), textPosX - (categoryFr.getStringWidth(category.getName().toUpperCase()) * 0.5), textPosY, -1);
+				categoryFr.drawString(category.getName().toUpperCase(), textPosX - (categoryFr.getStringWidth(category.getName().toUpperCase()) * 0.5), textPosY, UiUtils.getColorFromVector(textColor));
 			}
 			
 		}
@@ -142,14 +174,101 @@ public class GuiClickgui extends GuiScreen {
 			left -= boxOffset;
 			right -= boxOffset;
 			
+			// Draws the main box
 			drawRect(left, top, right, bottom, UiUtils.getColorFromVector(circleInnerBackgroundColor));
-			UiUtils.enableWireframe();
-			drawRect(left, top, right, bottom, UiUtils.getColorFromVector(circleOutlineColor));
-			UiUtils.disableWireframe();
+			drawOutline(left, top, right, bottom, UiUtils.getColorFromVector(circleOutlineColor));
+			
+			// Scissor for the contents
+			UiUtils.enableScissor(left, top, right + 0.5, bottom);
+			
+			// Draws the title of the category and the separator line under it
+			double titlePadding = 2.5;
+			
+			// Title
+			boxTitleFr.drawString(selectedCategory == null ? (Yiffur.getName() + " v" + Yiffur.getVersion()) : selectedCategory.getName(), left + titlePadding, top + titlePadding, UiUtils.getColorFromVector(textColor));
+			
+			// Lines
+			drawHorizontalLine(left, right + 1, top + boxTitleFr.getFontHeight() + titlePadding, UiUtils.getColorFromVector(circleOutlineColor));
+			drawVerticalLine(right - (boxTitleFr.getFontHeight() + titlePadding + 1), top - 1, bottom, UiUtils.getColorFromVector(circleOutlineColor));
+			
+			// Close button
+			closeCategoryOnClick = mouseX > right - (boxTitleFr.getFontHeight() + titlePadding + 1) && mouseX < right && mouseY > top && mouseY < top + boxTitleFr.getFontHeight() + titlePadding;
+			mc.getTextureManager().bindTexture(closeIcon);
+			double imagePadding = 7;
+			double imageSize = right - (right - (boxTitleFr.getFontHeight() + titlePadding + 1)) - imagePadding;
+			GL11.glColor4d(closeIconIdleColor.getX(), closeIconIdleColor.getY(), closeIconIdleColor.getZ(), closeIconIdleColor.getW());
+			if (closeCategoryOnClick) {
+				GL11.glColor4d(closeIconHoverColor.getX(), closeIconHoverColor.getY(), closeIconHoverColor.getZ(), closeIconHoverColor.getW());
+			}
+			drawModalRectWithCustomSizedTexture(right - (boxTitleFr.getFontHeight() + titlePadding + 1) + (imagePadding / 2), top + (imagePadding / 2), 0, 0, imageSize, imageSize, imageSize, imageSize);
+			GlStateManager.color(1, 1, 1, 1);
+			
+			if (selectedCategory != null) {
+				
+				Module[] modules = categoryModules.get(selectedCategory);
+				double padding = 5; // Padding is used on the top, and bottom
+				double modsHeight = 0;
+				
+				// Calculate max height, needed for scrolling
+				for (Module mod : modules) {
+					modsHeight += moduleAndSettingsFr.getFontHeight() + (padding * 2);
+					if (mod.getClickguiExtension() > 0) {
+						double settingsHeight = 0;
+						for (Setting setting : mod.getSettings()) {
+							settingsHeight += moduleAndSettingsFr.getFontHeight() + (padding * 2);
+						}
+						settingsHeight *= mod.getClickguiExtension();
+						modsHeight += settingsHeight;
+					}
+				}
+				
+				// Draw scrollbar
+				
+				// Fix scissor
+				top += (boxTitleFr.getFontHeight() + titlePadding + 1);
+				right -= (boxTitleFr.getFontHeight() + titlePadding + 1);
+				UiUtils.enableScissor(left, top, right, bottom);
+				
+				// Draw all the modules and settings
+				double yOffset = scrollOffset;
+				double lineLength = moduleAndSettingsFr.getFontHeight() + padding;
+				for (Module mod : modules) {
+					
+					// No need to render stuff that the scissor will cut out
+					if (yOffset > bottom) {
+						break;
+					}
+					
+					// Toggle switch
+					double toggleSwitchLength = (right - left) * 0.08;
+					double switchPadding = toggleSwitchLength * 0.1;
+					if (isLeftMouseClick && mouseX > left && mouseX < left + toggleSwitchLength && mouseY > top + yOffset && mouseY < top + lineLength + yOffset) {
+						mod.toggle();
+						isLeftMouseClick = false;
+					}
+//					drawRect(left, top + yOffset, left + toggleSwitchLength, top + lineLength + yOffset, -1); // Used to test bounding box of the button
+					// Switch background
+					UiUtils.drawRoundedRect(left + switchPadding, top + yOffset + switchPadding, left + toggleSwitchLength - switchPadding, top + lineLength - switchPadding + yOffset, 0xff000000, (lineLength - (switchPadding + 1)) / 2);
+					// Switch circle
+					
+					// Module name
+					moduleAndSettingsFr.drawString(mod.getName(), left + 1.5 + toggleSwitchLength, top + yOffset + (padding / 2), UiUtils.getColorFromVector(textColor));
+					
+					yOffset += lineLength;
+				}
+				
+			}
+			
+			UiUtils.disableScissor();
+			
 		}
 		
 		GlStateManager.popAttrib();
 		GlStateManager.popMatrix();
+		
+        if (isLeftMouseClick) {
+        	isLeftMouseClick = false;
+        }
 		
 	}
 	
@@ -314,17 +433,37 @@ public class GuiClickgui extends GuiScreen {
         GlStateManager.enableTexture2D();
         GlStateManager.popAttrib();
         GlStateManager.popMatrix();
-		
+        
 	}
 	
 	@Override
 	protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
 		
 		// Click
-		if (lastHoveredCategory != null) {
+		if (closeCategoryOnClick) {
+			selectedCategory = null;
+			scrollOffset = 0;
+			scrollOffsetTarget = 0;
+		}
+		else if (lastHoveredCategory != null) {
 			selectedCategory = lastHoveredCategory;
+			scrollOffset = 0;
+			scrollOffsetTarget = 0;
 		}
 		
+		if (mouseButton == 0) {
+			isLeftMouseDown = true;
+			isLeftMouseClick = true;
+		}
+		
+	}
+	
+	@Override
+	protected void mouseReleased(int mouseX, int mouseY, int state) {
+		if (state == 0) {
+			isLeftMouseDown = false;
+			isLeftMouseClick = false;
+		}
 	}
 	
 	// For anybody trying to port this to their own client, the cheat tick loop runs at 64 ticks a second

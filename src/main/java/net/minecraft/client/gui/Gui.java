@@ -1,5 +1,7 @@
 package net.minecraft.client.gui;
 
+import org.lwjgl.opengl.GL11;
+
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
@@ -13,7 +15,22 @@ public class Gui
     public static final ResourceLocation statIcons = new ResourceLocation("textures/gui/container/stats_icons.png");
     public static final ResourceLocation icons = new ResourceLocation("textures/gui/icons.png");
     protected float zLevel;
+    
+    /**
+     * Draw a 1 pixel wide horizontal line. Args: x1, x2, y, color
+     */
+    public void drawHorizontalLine(double startX, double endX, double y, int color)
+    {
+        if (endX < startX)
+        {
+        	double i = startX;
+            startX = endX;
+            endX = i;
+        }
 
+        drawRect(startX, y, endX + 1, y + 1, color);
+    }
+    
     /**
      * Draw a 1 pixel wide horizontal line. Args: x1, x2, y, color
      */
@@ -28,7 +45,22 @@ public class Gui
 
         drawRect(startX, y, endX + 1, y + 1, color);
     }
+    
+    /**
+     * Draw a 1 pixel wide vertical line. Args : x, y1, y2, color
+     */
+    public void drawVerticalLine(double x, double startY, double endY, int color)
+    {
+        if (endY < startY)
+        {
+        	double i = startY;
+            startY = endY;
+            endY = i;
+        }
 
+        drawRect(x, startY + 1, x + 1, endY, color);
+    }
+    
     /**
      * Draw a 1 pixel wide vertical line. Args : x, y1, y2, color
      */
@@ -74,6 +106,46 @@ public class Gui
         GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
         GlStateManager.color(f, f1, f2, f3);
         worldrenderer.begin(7, DefaultVertexFormats.POSITION);
+        worldrenderer.pos((double)left, (double)bottom, 0.0D).endVertex();
+        worldrenderer.pos((double)right, (double)bottom, 0.0D).endVertex();
+        worldrenderer.pos((double)right, (double)top, 0.0D).endVertex();
+        worldrenderer.pos((double)left, (double)top, 0.0D).endVertex();
+        tessellator.draw();
+        GlStateManager.enableTexture2D();
+//        GlStateManager.disableBlend(); // Removed because it was useless and buggy
+    }
+    
+    /**
+     * Draws a colored rectangle outline with the specified coordinates and color (ARGB format). Args: x1, y1, x2, y2, color
+     */
+    public static void drawOutline(double left, double top, double right, double bottom, int color)
+    {
+        if (left < right)
+        {
+        	double i = left;
+            left = right;
+            right = i;
+        }
+
+        if (top < bottom)
+        {
+        	double j = top;
+            top = bottom;
+            bottom = j;
+        }
+
+        float f3 = (float)(color >> 24 & 255) / 255.0F;
+        float f = (float)(color >> 16 & 255) / 255.0F;
+        float f1 = (float)(color >> 8 & 255) / 255.0F;
+        float f2 = (float)(color & 255) / 255.0F;
+        Tessellator tessellator = Tessellator.getInstance();
+        WorldRenderer worldrenderer = tessellator.getWorldRenderer();
+        GlStateManager.enableBlend();
+        GlStateManager.disableTexture2D();
+        GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
+        GL11.glLineWidth(2.5f);
+        GlStateManager.color(f, f1, f2, f3);
+        worldrenderer.begin(GL11.GL_LINE_LOOP, DefaultVertexFormats.POSITION);
         worldrenderer.pos((double)left, (double)bottom, 0.0D).endVertex();
         worldrenderer.pos((double)right, (double)bottom, 0.0D).endVertex();
         worldrenderer.pos((double)right, (double)top, 0.0D).endVertex();
