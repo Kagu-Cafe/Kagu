@@ -14,7 +14,7 @@ import xyz.yiffur.yiffur.settings.Setting;
  *
  */
 public class ModeSetting extends Setting {
-
+	
 	/**
 	 * @param dependsOn
 	 * @param name

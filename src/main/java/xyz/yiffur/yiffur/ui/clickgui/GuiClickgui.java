@@ -25,6 +25,7 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.shader.Framebuffer;
 import net.minecraft.util.ResourceLocation;
@@ -106,9 +107,8 @@ public class GuiClickgui extends GuiScreen {
 			circleInnerBackgroundColor = new Vector4d(0.0784313725, 0.0784313725, 0.0784313725, 0.5),
 			circleOuterBackgroundColor = circleInnerBackgroundColor,
 			circleOutlineColor = new Vector4d(0.549019608, 0.549019608, 0.549019608, 1),
-			idleColor = new Vector4d(1, 1, 1, 1),
-			closeHoverColor = new Vector4d(1, 0.309803922f, 0.309803922f, 1),
-			accentColor = new Vector4d(0.309803922f, 1, 0.309803922f, 1),
+			idleColor = circleOutlineColor,
+			accentColor = new Vector4d(1, 1, 1, 1),
 			textColor = new Vector4d(1, 1, 1, 1);
 	
 	private double targetPosX = 0, targetPosY = 0, posX = 0, posY = 0, targetInnerCircleRadius = 0,
@@ -200,7 +200,7 @@ public class GuiClickgui extends GuiScreen {
 			double imageSize = right - (right - (boxTitleFr.getFontHeight() + titlePadding + 1)) - imagePadding;
 			GL11.glColor4d(idleColor.getX(), idleColor.getY(), idleColor.getZ(), idleColor.getW());
 			if (closeCategoryOnClick) {
-				GL11.glColor4d(closeHoverColor.getX(), closeHoverColor.getY(), closeHoverColor.getZ(), closeHoverColor.getW());
+				GL11.glColor4d(accentColor.getX(), accentColor.getY(), accentColor.getZ(), accentColor.getW());
 			}
 			drawModalRectWithCustomSizedTexture(right - (boxTitleFr.getFontHeight() + titlePadding + 1) + (imagePadding / 2), top + (imagePadding / 2), 0, 0, imageSize, imageSize, imageSize, imageSize);
 			GlStateManager.color(1, 1, 1, 1);
