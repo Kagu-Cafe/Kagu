@@ -15,6 +15,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 
 /**
@@ -284,6 +285,35 @@ public class UiUtils {
 	 */
 	public static void disableScissor() {
 		GL11.glDisable(GL11.GL_SCISSOR_TEST);
+	}
+	
+	/**
+	 * Lerps a color
+	 * @param startColor The start color
+	 * @param endColor   The end color
+	 * @param t          The lerp value
+	 * @return The lerped color
+	 */
+	public static Vector4d lerpColor(Vector4d startColor, Vector4d endColor, double t) {
+		t = MathHelper.clamp_double(t, 0, 1);
+		double inverseT = 1 - t;
+		
+		return new Vector4d((startColor.getX() * t) + (endColor.getX() * inverseT), 
+				(startColor.getY() * t) + (endColor.getY() * inverseT), 
+				(startColor.getZ() * t) + (endColor.getZ() * inverseT), 
+				(startColor.getW() * t) + (endColor.getW() * inverseT));
+	}
+	
+	/**
+	 * Calls glcolor with an int
+	 * @param color The color to use
+	 */
+	public static void glColorWithInt(int color) {
+		float red = (float) (color >> 16 & 255) / 255.0F;
+		float green = (float) (color >> 8 & 255) / 255.0F;
+		float blue = (float) (color & 255) / 255.0F;
+		float alpha = (float) (color >> 24 & 255) / 255.0F;
+		GlStateManager.color(red, green, blue, alpha);
 	}
 	
 }

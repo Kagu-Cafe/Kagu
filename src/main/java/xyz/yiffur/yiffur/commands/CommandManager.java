@@ -41,9 +41,6 @@ public class CommandManager {
 		// Cancel the event
 		e.cancel();
 		
-		ModuleManager.modMoonJump.toggle();
-		ModuleManager.modTest.toggle();
-		
 	};
 	
 }

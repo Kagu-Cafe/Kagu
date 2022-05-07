@@ -25,6 +25,15 @@ public class ModeSetting extends Setting {
 		super(dependsOn, name);
 		this.modes.addAll(Arrays.asList(modes));
 	}
+	
+	/**
+	 * @param name
+	 * @param defaultMode The default mode
+	 * @param modes The modes, must include the default mode
+	 */
+	public ModeSetting(String name, String defaultMode, String... modes) {
+		this(null, name, defaultMode, modes);
+	}
 
 	private List<String> modes = new ArrayList<>();
 	private int modeIndex;

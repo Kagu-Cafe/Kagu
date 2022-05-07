@@ -20,7 +20,15 @@ public class BooleanSetting extends Setting {
 		super(dependsOn, name);
 		this.enabled = enabled;
 	}
-
+	
+	/**
+	 * @param name      The name of the module
+	 * @param enabled   Whether the setting is enabled by default or not
+	 */
+	public BooleanSetting(String name, boolean enabled) {
+		this(null, name, enabled);
+	}
+	
 	private boolean enabled;
 
 	/**

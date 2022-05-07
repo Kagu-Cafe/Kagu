@@ -1,0 +1,104 @@
+---- Minecraft Crash Report ----
+// Hi. I'm Minecraft, and I'm a crashaholic.
+
+Time: 5/6/22 6:23 PM
+Description: Updating screen events
+
+java.lang.NullPointerException: Updating screen events
+	at net.minecraft.client.renderer.texture.DynamicTexture.<init>(DynamicTexture.java:23)
+	at net.minecraft.client.resources.ResourcePackListEntryDefault.<init>(ResourcePackListEntryDefault.java:28)
+	at net.minecraft.client.gui.GuiScreenResourcePacks.initGui(GuiScreenResourcePacks.java:66)
+	at net.minecraft.client.gui.GuiScreen.setWorldAndResolution(GuiScreen.java:548)
+	at net.minecraft.client.Minecraft.displayGuiScreen(Minecraft.java:1002)
+	at net.minecraft.client.gui.GuiOptions.actionPerformed(GuiOptions.java:201)
+	at net.minecraft.client.gui.GuiScreen.mouseClicked(GuiScreen.java:503)
+	at net.minecraft.client.gui.GuiScreen.handleMouseInput(GuiScreen.java:599)
+	at net.minecraft.client.gui.GuiScreen.handleInput(GuiScreen.java:568)
+	at net.minecraft.client.Minecraft.runTick(Minecraft.java:1789)
+	at net.minecraft.client.Minecraft.runGameLoop(Minecraft.java:1106)
+	at net.minecraft.client.Minecraft.run(Minecraft.java:423)
+	at net.minecraft.client.main.Main.main(Main.java:131)
+	at Start.main(Start.java:16)
+
+
+A detailed walkthrough of the error, its code path and all known details is as follows:
+---------------------------------------------------------------------------------------
+
+-- Head --
+Stacktrace:
+	at net.minecraft.client.renderer.texture.DynamicTexture.<init>(DynamicTexture.java:23)
+	at net.minecraft.client.resources.ResourcePackListEntryDefault.<init>(ResourcePackListEntryDefault.java:28)
+	at net.minecraft.client.gui.GuiScreenResourcePacks.initGui(GuiScreenResourcePacks.java:66)
+	at net.minecraft.client.gui.GuiScreen.setWorldAndResolution(GuiScreen.java:548)
+	at net.minecraft.client.Minecraft.displayGuiScreen(Minecraft.java:1002)
+	at net.minecraft.client.gui.GuiOptions.actionPerformed(GuiOptions.java:201)
+	at net.minecraft.client.gui.GuiScreen.mouseClicked(GuiScreen.java:503)
+	at net.minecraft.client.gui.GuiScreen.handleMouseInput(GuiScreen.java:599)
+	at net.minecraft.client.gui.GuiScreen.handleInput(GuiScreen.java:568)
+
+-- Affected screen --
+Details:
+	Screen name: net.minecraft.client.gui.GuiScreenResourcePacks
+
+-- Affected level --
+Details:
+	Level name: MpServer
+	All players: 1 total; [EntityPlayerSP['Player688'/98, l='MpServer', x=-145.13, y=71.00, z=-457.81]]
+	Chunk stats: MultiplayerChunkCache: 286, 286
+	Level seed: 0
+	Level generator: ID 02 - largeBiomes, ver 0. Features enabled: false
+	Level generator options: 
+	Level spawn location: 584.00,64.00,166.00 - World: (584,64,166), Chunk: (at 8,4,6 in 36,10; contains blocks 576,0,160 to 591,255,175), Region: (1,0; contains chunks 32,0 to 63,31, blocks 512,0,0 to 1023,255,511)
+	Level time: 733077 game time, 45390 day time
+	Level dimension: 0
+	Level storage version: 0x00000 - Unknown?
+	Level weather: Rain time: 0 (now: false), thunder time: 0 (now: false)
+	Level game mode: Game mode: creative (ID 1). Hardcore: false. Cheats: false
+	Forced entities: 25 total; [EntityItem['item.item.dyePowder.black'/906, l='MpServer', x=-82.91, y=35.00, z=-482.63], EntityZombie['Zombie'/1435, l='MpServer', x=-218.50, y=31.00, z=-445.50], EntityZombie['Zombie'/1436, l='MpServer', x=-218.50, y=31.00, z=-446.50], EntityZombie['Zombie'/1447, l='MpServer', x=-99.50, y=71.35, z=-379.60], EntityChicken['Chicken'/1450, l='MpServer', x=-99.50, y=71.00, z=-379.50], EntityZombie['Zombie'/1453, l='MpServer', x=-137.94, y=68.00, z=-493.53], EntityCreeper['Creeper'/1460, l='MpServer', x=-217.50, y=68.00, z=-507.50], EntitySpider['Spider'/566, l='MpServer', x=-98.50, y=70.00, z=-383.50], EntityCreeper['Creeper'/1462, l='MpServer', x=-215.50, y=68.00, z=-501.50], EntityCreeper['Creeper'/1470, l='MpServer', x=-136.50, y=68.00, z=-495.50], EntityZombie['Zombie'/711, l='MpServer', x=-91.50, y=56.00, z=-469.50], EntitySquid['Squid'/586, l='MpServer', x=-195.88, y=55.88, z=-448.53], EntityBat['Bat'/1360, l='MpServer', x=-214.21, y=20.86, z=-456.21], EntityBat['Bat'/1362, l='MpServer', x=-214.50, y=20.38, z=-456.16], EntityZombie['Zombie'/1114, l='MpServer', x=-95.50, y=34.00, z=-506.50], EntityPlayerSP['Player688'/98, l='MpServer', x=-145.13, y=71.00, z=-457.81], EntityCreeper['Creeper'/484, l='MpServer', x=-165.50, y=23.00, z=-431.50], EntityCreeper['Creeper'/1383, l='MpServer', x=-132.50, y=71.00, z=-389.50], EntityZombie['Zombie'/615, l='MpServer', x=-218.66, y=71.00, z=-422.66], EntityCreeper['Creeper'/1129, l='MpServer', x=-85.50, y=64.00, z=-428.50], EntitySpider['Spider'/1257, l='MpServer', x=-106.50, y=70.00, z=-475.50], EntitySkeleton['Skeleton'/621, l='MpServer', x=-106.59, y=57.00, z=-385.69], EntitySkeleton['Skeleton'/1009, l='MpServer', x=-95.53, y=70.00, z=-459.50], EntityCreeper['Creeper'/1011, l='MpServer', x=-95.34, y=70.00, z=-460.34], EntityCreeper['Creeper'/1401, l='MpServer', x=-86.31, y=49.00, z=-473.59]]
+	Retry entities: 0 total; []
+	Server brand: vanilla
+	Server type: Integrated singleplayer server
+Stacktrace:
+	at net.minecraft.client.multiplayer.WorldClient.addWorldInfoToCrashReport(WorldClient.java:401)
+	at net.minecraft.client.Minecraft.addGraphicsAndWorldToCrashReport(Minecraft.java:2791)
+	at net.minecraft.client.Minecraft.run(Minecraft.java:444)
+	at net.minecraft.client.main.Main.main(Main.java:131)
+	at Start.main(Start.java:16)
+
+-- System Details --
+Details:
+	Minecraft Version: 1.8.8
+	Operating System: Windows 8.1 (amd64) version 6.3
+	CPU: 12x AMD Ryzen 5 2600 Six-Core Processor 
+	Java Version: 1.8.0_51, Oracle Corporation
+	Java VM Version: Java HotSpot(TM) 64-Bit Server VM (mixed mode), Oracle Corporation
+	Memory: 622883680 bytes (594 MB) / 1020264448 bytes (973 MB) up to 3799515136 bytes (3623 MB)
+	JVM Flags: 0 total; 
+	IntCache: cache: 0, tcache: 0, allocated: 13, tallocated: 99
+	Launched Version: mcp
+	LWJGL: 2.9.4
+	OpenGL: NVIDIA GeForce GTX 1060 6GB/PCIe/SSE2 GL version 4.6.0 NVIDIA 496.76, NVIDIA Corporation
+	GL Caps: Using GL 1.3 multitexturing.
+Using GL 1.3 texture combiners.
+Using framebuffer objects because OpenGL 3.0 is supported and separate blending is supported.
+Shaders are available because OpenGL 2.1 is supported.
+VBOs are available because OpenGL 1.5 is supported.
+
+	Using VBOs: No
+	Is Modded: Very likely; Jar signature invalidated
+	Type: Client (map_client.txt)
+	Resource Packs: 
+	Current Language: English (US)
+	Profiler Position: N/A (disabled)
+	CPU: 12x AMD Ryzen 5 2600 Six-Core Processor 
+	OptiFine Version: OptiFine_1.8.8_HD_U_H8
+	Render Distance Chunks: 8
+	Mipmaps: 4
+	Anisotropic Filtering: 1
+	Antialiasing: 0
+	Multitexture: false
+	Shaders: null
+	OpenGlVersion: 4.6.0 NVIDIA 496.76
+	OpenGlRenderer: NVIDIA GeForce GTX 1060 6GB/PCIe/SSE2
+	OpenGlVendor: NVIDIA Corporation
+	CpuCount: 12
