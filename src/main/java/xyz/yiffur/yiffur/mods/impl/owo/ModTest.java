@@ -30,12 +30,15 @@ public class ModTest extends Module {
 	}
 	
 	public static BooleanSetting booleanSetting = new BooleanSetting("Boolean setting", false);
-	public static DecimalSetting decimalSetting = new DecimalSetting("Decimal setting", 1, 0, 10, 0.25);
+	public static DecimalSetting decimalSetting1 = new DecimalSetting("Decimal setting 1", 1, 0, 10, 0.25),
+								 decimalSetting2 = new DecimalSetting("Decimal setting 2", 1, -10, 10, 0.25),
+								 decimalSetting3 = new DecimalSetting("Decimal setting 3", 1, 10, 20, 0.25);
+	
 	public static ModeSetting modeSetting = new ModeSetting("Mode setting", "Test 1", "Test 2", "Test 3");
 	
 	@Override
 	public void initialize() {
-		setSettings(booleanSetting, decimalSetting, modeSetting);
+		setSettings(booleanSetting, decimalSetting1, decimalSetting2, decimalSetting3, modeSetting);
 	}
 	
 	@YiffEvents
@@ -45,12 +48,6 @@ public class ModTest extends Module {
 		}
 		if (Minecraft.getMinecraft().thePlayer.ticksExisted % 10 == 0)
 			setInfo(new String(RandomUtils.nextBytes(RandomUtils.nextInt(18, 22))));
-//		Minecraft.getMinecraft().thePlayer.sendChatMessage("/tp HOYA____ Player528");
-		if (Minecraft.getMinecraft().thePlayer.ticksExisted % 2 == 0) {
-			Minecraft.getMinecraft().thePlayer.sendChatMessage("/gamemode survival HOYA____");
-		}else {
-			Minecraft.getMinecraft().thePlayer.sendChatMessage("/gamemode spectator HOYA____");
-		}
 	};
 	
 }

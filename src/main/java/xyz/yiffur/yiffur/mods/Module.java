@@ -48,7 +48,7 @@ public abstract class Module {
 	private String[] info = new String[0]; // The info displayed next to the name on the arraylist
 	private Setting[] settings = new Setting[0]; // Any settings that the module may have
 	private Category category; // The category of the module
-	private boolean enabled = false;
+	private boolean enabled = false, isClickguiExtended = false;
 	private double clickguiExtension = 0, clickguiToggle = 0;
 
 	/**
@@ -139,6 +139,20 @@ public abstract class Module {
 	 */
 	public void setClickguiToggle(double clickguiToggle) {
 		this.clickguiToggle = clickguiToggle;
+	}
+
+	/**
+	 * @return the isClickguiExtended
+	 */
+	public boolean isClickguiExtended() {
+		return isClickguiExtended;
+	}
+
+	/**
+	 * @param isClickguiExtended the isClickguiExtended to set
+	 */
+	public void setClickguiExtended(boolean isClickguiExtended) {
+		this.isClickguiExtended = isClickguiExtended;
 	}
 
 	/**

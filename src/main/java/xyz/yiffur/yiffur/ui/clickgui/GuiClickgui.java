@@ -22,12 +22,14 @@ import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.shader.Framebuffer;
+import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 import xyz.yiffur.yiffur.Yiffur;
 import xyz.yiffur.yiffur.eventBus.EventBus;
@@ -42,6 +44,11 @@ import xyz.yiffur.yiffur.mods.Module;
 import xyz.yiffur.yiffur.mods.ModuleManager;
 import xyz.yiffur.yiffur.mods.Module.Category;
 import xyz.yiffur.yiffur.settings.Setting;
+import xyz.yiffur.yiffur.settings.impl.BooleanSetting;
+import xyz.yiffur.yiffur.settings.impl.DecimalSetting;
+import xyz.yiffur.yiffur.settings.impl.IntegerSetting;
+import xyz.yiffur.yiffur.settings.impl.LongSetting;
+import xyz.yiffur.yiffur.settings.impl.ModeSetting;
 import xyz.yiffur.yiffur.ui.Colors;
 import xyz.yiffur.yiffur.utils.UiUtils;
 
@@ -111,6 +118,7 @@ public class GuiClickgui extends GuiScreen {
 			accentColor = new Vector4d(1, 1, 1, 1),
 			textColor = new Vector4d(1, 1, 1, 1);
 	
+	// Other stuff	
 	private double targetPosX = 0, targetPosY = 0, posX = 0, posY = 0, targetInnerCircleRadius = 0,
 			innerCircleRadius = 0, targetOuterCircleRadius = 0, outerCircleRadius = 0, degreesPerCategory = 0,
 			selectedScale = 1.075, boxSize = 0;
@@ -120,9 +128,10 @@ public class GuiClickgui extends GuiScreen {
 	private boolean closeCategoryOnClick = false; // I am still lazy
 	private Map<Category, Double> categorySliceScale = new HashMap<>();
 	private ResourceLocation closeIcon = new ResourceLocation("yiff/clickgui/close.png"), toggleBackground = new ResourceLocation("yiff/clickgui/toggle_background.png"),
-			toggleCircle = new ResourceLocation("yiff/clickgui/toggle_circle.png");
+			toggleCircle = new ResourceLocation("yiff/clickgui/toggle_circle.png"), settingsCog = new ResourceLocation("yiff/clickgui/settings.png");
 	private boolean isLeftMouseDown = false, isLeftMouseClick = false;
 	private double scrollOffset = 0, scrollOffsetTarget = 0;
+	private Setting selectedSetting = null;
 	
 	@Override
 	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
@@ -234,6 +243,10 @@ public class GuiClickgui extends GuiScreen {
 				// Draw all the modules and settings
 				double yOffset = scrollOffset;
 				double lineLength = moduleAndSettingsFr.getFontHeight() + padding;
+				
+				// So the user cannot click on item outside of the box
+				boolean mouseOutsideOfBox = mouseY < top || mouseY > bottom || mouseX < left || mouseX > right;
+				
 				for (Module mod : modules) {
 					
 					// No need to render stuff that the scissor will cut out
@@ -243,28 +256,164 @@ public class GuiClickgui extends GuiScreen {
 					
 					// Toggle switch
 					double toggleSwitchLength = lineLength * 1.6;
-					if (isLeftMouseClick && mouseX > left && mouseX < left + toggleSwitchLength && mouseY > top + yOffset && mouseY < top + lineLength + yOffset) {
+					if (!mouseOutsideOfBox && isLeftMouseClick && mouseX > left && mouseX < left + toggleSwitchLength && mouseY > top + yOffset && mouseY < top + lineLength + yOffset) {
 						mod.toggle();
 						isLeftMouseClick = false;
 					}
 					
 //					drawRect(left, top + yOffset, left + toggleSwitchLength, top + lineLength + yOffset, -1); // Used to test bounding box of the button
 					
-					// Switch background
-					Vector4d lerpedToggleColor = UiUtils.lerpColor(idleColor, accentColor, mod.getClickguiToggle());
-					GL11.glColor4d(lerpedToggleColor.getX(), lerpedToggleColor.getY(), lerpedToggleColor.getZ(), lerpedToggleColor.getW());
-					Minecraft.getMinecraft().getTextureManager().bindTexture(toggleBackground);
-					drawModalRectWithCustomSizedTexture(left, top + yOffset, 0, 0, toggleSwitchLength, lineLength, toggleSwitchLength, lineLength);
-					
-					// Switch circle
-					Minecraft.getMinecraft().getTextureManager().bindTexture(toggleCircle);
-					GL11.glDisable(GL11.GL_BLEND);
-					drawModalRectWithCustomSizedTexture(left + (toggleSwitchLength - (toggleSwitchLength * 0.62)) * (1 - mod.getClickguiToggle()), top + yOffset, 0, 0, lineLength, lineLength, lineLength, lineLength);
-					
-					GlStateManager.color(1, 1, 1, 1);
+					{
+						// Switch background
+						Vector4d lerpedToggleColor = UiUtils.lerpColor(idleColor, accentColor, mod.getClickguiToggle());
+						GL11.glColor4d(lerpedToggleColor.getX(), lerpedToggleColor.getY(), lerpedToggleColor.getZ(), lerpedToggleColor.getW());
+						Minecraft.getMinecraft().getTextureManager().bindTexture(toggleBackground);
+						drawModalRectWithCustomSizedTexture(left, top + yOffset, 0, 0, toggleSwitchLength, lineLength, toggleSwitchLength, lineLength);
+						
+						// Switch circle
+						Minecraft.getMinecraft().getTextureManager().bindTexture(toggleCircle);
+						GL11.glDisable(GL11.GL_BLEND);
+						drawModalRectWithCustomSizedTexture(left + (toggleSwitchLength - (toggleSwitchLength * 0.62)) * (1 - mod.getClickguiToggle()), top + yOffset, 0, 0, lineLength, lineLength, lineLength, lineLength);
+					}
 					
 					// Module name
 					moduleAndSettingsFr.drawString(mod.getName(), left + toggleSwitchLength, top + yOffset + (padding / 2), UiUtils.getColorFromVector(textColor));
+					
+					// Settings cog
+					if (mod.getSettings().length > 0) {
+						
+						GlStateManager.pushMatrix();
+						{
+							// Cog rotation
+							GlStateManager.translate(left + toggleSwitchLength + moduleAndSettingsFr.getStringWidth(mod.getName()) + 1 + (lineLength * 0.5), top + yOffset + (lineLength * 0.5), 0);
+							GL11.glRotated(90 * mod.getClickguiExtension(), 0, 0, 1);
+							GlStateManager.translate(-(left + toggleSwitchLength + moduleAndSettingsFr.getStringWidth(mod.getName()) + 1 + (lineLength * 0.5)), -(top + yOffset + (lineLength * 0.5)), 0);
+							
+							Vector4d lerpedSettingsColor = UiUtils.lerpColor(idleColor, accentColor, 1 - mod.getClickguiExtension());
+							GL11.glColor4d(lerpedSettingsColor.getX(), lerpedSettingsColor.getY(), lerpedSettingsColor.getZ(), lerpedSettingsColor.getW());
+							Minecraft.getMinecraft().getTextureManager().bindTexture(settingsCog);
+							drawModalRectWithCustomSizedTexture(left + toggleSwitchLength + moduleAndSettingsFr.getStringWidth(mod.getName()) + 1, top + yOffset, 0, 0, lineLength, lineLength, lineLength, lineLength);
+							if (!mouseOutsideOfBox && isLeftMouseClick
+									&& mouseX >= left + toggleSwitchLength + moduleAndSettingsFr.getStringWidth(mod.getName()) + 1 
+									&& mouseX <= left + toggleSwitchLength + moduleAndSettingsFr.getStringWidth(mod.getName()) + 1 + lineLength 
+									&& mouseY >= top + yOffset 
+									&& mouseY <= top + yOffset + lineLength 
+									) {
+								mod.setClickguiExtended(!mod.isClickguiExtended());
+							}
+						}
+						GlStateManager.popMatrix();
+						
+						GlStateManager.pushMatrix();
+						
+						// Calculate the height for the settings
+						double sizeOfSettings = 0;
+						double settingOffsetY = 0;
+						for (Setting setting : mod.getSettings()) {
+							if (setting.isHidden())
+								continue;
+							sizeOfSettings += lineLength;
+						}
+						settingOffsetY = -(sizeOfSettings * (1 - mod.getClickguiExtension()));
+						
+						// Scissor for the settings
+						UiUtils.enableScissor(left + toggleSwitchLength, top + yOffset + (padding / 2) + lineLength, right, bottom);
+						
+						// Draw all the settings and handle mouse movements
+						for (Setting setting : mod.getSettings()) {
+							
+							boolean isMouseInsideSettingBox = !mouseOutsideOfBox 
+															&& mouseX >= left + toggleSwitchLength
+															&& mouseX <= right
+															&& mouseY >= top + yOffset + (padding / 2) + lineLength
+															&& mouseY < bottom;
+							settingOffsetY += lineLength;
+							
+							// Draw boolean setting
+							if (setting instanceof BooleanSetting) {
+								BooleanSetting booleanSetting = (BooleanSetting)setting;
+								
+								// Switch background
+								Vector4d lerpedToggleColor = UiUtils.lerpColor(idleColor, accentColor, booleanSetting.getClickguiToggleStatus());
+								GL11.glColor4d(lerpedToggleColor.getX(), lerpedToggleColor.getY(), lerpedToggleColor.getZ(), lerpedToggleColor.getW());
+								Minecraft.getMinecraft().getTextureManager().bindTexture(toggleBackground);
+								drawModalRectWithCustomSizedTexture(left + (toggleSwitchLength * 0.96), top + yOffset + settingOffsetY, 0, 0, toggleSwitchLength, lineLength, toggleSwitchLength, lineLength);
+								
+								// Switch circle
+								Minecraft.getMinecraft().getTextureManager().bindTexture(toggleCircle);
+								GL11.glDisable(GL11.GL_BLEND);
+								drawModalRectWithCustomSizedTexture(left + (toggleSwitchLength * 0.96) + (toggleSwitchLength - (toggleSwitchLength * 0.62)) * (1 - booleanSetting.getClickguiToggleStatus()), top + yOffset + settingOffsetY, 0, 0, lineLength, lineLength, lineLength, lineLength);
+								GlStateManager.color(1, 1, 1, 1);
+								
+								if (isMouseInsideSettingBox && mouseX < left + (toggleSwitchLength * 1.96) && mouseY > top + yOffset + settingOffsetY && mouseY < top + yOffset + settingOffsetY + lineLength 
+										&& isLeftMouseClick) {
+									booleanSetting.toggle();
+								}
+								
+								// Setting name
+								moduleAndSettingsFr.drawString(setting.getName(), left + (toggleSwitchLength * 1.96), top + yOffset + (padding / 2) + settingOffsetY, UiUtils.getColorFromVector(textColor));
+							}
+							
+							// Draw decimal setting
+							else if (setting instanceof DecimalSetting) {
+								DecimalSetting decimalSetting = (DecimalSetting)setting;
+								double value = decimalSetting.getValue();
+								double range = decimalSetting.getMax() - decimalSetting.getMin();
+								double sliderValue = value - decimalSetting.getMin();
+								double sliderPercent = sliderValue / range;
+								
+								// Change logic
+								if (selectedSetting == setting && !isLeftMouseDown) {
+									selectedSetting = null;
+								}
+								if (selectedSetting == null && isLeftMouseClick && isMouseInsideSettingBox && mouseY >= top + yOffset + (padding / 2) + settingOffsetY && mouseY <= top + yOffset + (padding / 2) + settingOffsetY + moduleAndSettingsFr.getFontHeight()) {
+									selectedSetting = setting;
+								}
+								if (selectedSetting == setting) {
+									double pixelRange = right - (left + toggleSwitchLength);
+									double fixedMouseX = mouseX - (left + toggleSwitchLength);
+									double newValuePercent = MathHelper.clamp_double(fixedMouseX / pixelRange, 0, 1);
+									decimalSetting.setValue(decimalSetting.getMin() + (range * newValuePercent));
+									sliderPercent = newValuePercent;
+								}
+								
+								// Render bar
+								GL11.glEnable(GL11.GL_BLEND);
+								drawRect(left + toggleSwitchLength, top + yOffset + (padding / 2) + settingOffsetY,
+										left + toggleSwitchLength + ((right - (left + toggleSwitchLength)) * sliderPercent),
+										top + yOffset + (padding / 2) + settingOffsetY
+												+ moduleAndSettingsFr.getFontHeight(),
+										UiUtils.getColorFromVector(new Vector4d(accentColor.getX(), accentColor.getY(),
+												accentColor.getZ(), 0.4)));
+								
+								// Setting name
+								moduleAndSettingsFr.drawString(setting.getName() + ": " + value, left + toggleSwitchLength, top + yOffset + (padding / 2) + settingOffsetY, UiUtils.getColorFromVector(textColor));
+								
+							}
+							
+							// Draw integer setting
+							else if (setting instanceof IntegerSetting) {
+								
+							}
+							
+							// Draw long setting
+							else if (setting instanceof LongSetting) {
+								
+							}
+							
+							// Draw mode setting
+							else if (setting instanceof ModeSetting) {
+								moduleAndSettingsFr.drawString(setting.getName(), left + toggleSwitchLength, top + yOffset + (padding / 2) + settingOffsetY, UiUtils.getColorFromVector(textColor));
+							}
+							
+						}
+						yOffset += sizeOfSettings * mod.getClickguiExtension();
+						
+						GlStateManager.popMatrix();
+						
+					}
+					// Fix scissor for the rest of the modules
+					UiUtils.enableScissor(left, top, right, bottom);
 					
 					yOffset += lineLength;
 				}
@@ -478,6 +627,19 @@ public class GuiClickgui extends GuiScreen {
 		}
 	}
 	
+	@Override
+	public void initGui() {
+		if (selectedCategory == null) {
+			ScaledResolution sr = new ScaledResolution(Minecraft.getMinecraft());
+			posX = sr.getScaledWidth_double() / 2;
+			targetPosX = posX;
+			posY = sr.getScaledHeight_double() / 2;
+			targetPosY = posY;
+			outerCircleRadius = 0;
+			innerCircleRadius = 0;
+		}
+	}
+	
 	// For anybody trying to port this to their own client, the cheat tick loop runs at 64 ticks a second
 	@YiffEvents
 	public Subscriber<EventCheatTick> onPreTick = e -> {
@@ -544,7 +706,7 @@ public class GuiClickgui extends GuiScreen {
 			
 		}
 		
-		// Box animation
+		// Box animations
 		double boxTarget = selectedCategory == null ? 0 : 1;
 		if (boxSize == boxTarget) {}
 		else if (boxSize > boxTarget) {
@@ -553,13 +715,58 @@ public class GuiClickgui extends GuiScreen {
 			boxSize += (boxTarget - boxSize) * animationSpeed;
 		}
 		
-		// Toggle animations
+		// Module animations
 		for (Module mod : ModuleManager.getModules()) {
+			
+			// Toggle
 			if (mod.isDisabled()) {
 				mod.setClickguiToggle(mod.getClickguiToggle() + ((1 - mod.getClickguiToggle()) * animationSpeed));
 			}else {
 				mod.setClickguiToggle(mod.getClickguiToggle() - (mod.getClickguiToggle() * animationSpeed));
 			}
+			
+			// Expansion
+			if (mod.isClickguiExtended()) {
+				mod.setClickguiExtension(mod.getClickguiExtension() + ((1 - mod.getClickguiExtension()) * animationSpeed));
+			}else {
+				mod.setClickguiExtension(mod.getClickguiExtension() - (mod.getClickguiExtension() * animationSpeed));
+			}
+			
+			// Setting animations
+			for (Setting setting : mod.getSettings()) {
+				
+				// Boolean setting animation
+				if (setting instanceof BooleanSetting) {
+					BooleanSetting booleanSetting = (BooleanSetting)setting;
+					if (booleanSetting.isDisabled()) {
+						booleanSetting.setClickguiToggleStatus(booleanSetting.getClickguiToggleStatus() + ((1 - booleanSetting.getClickguiToggleStatus()) * animationSpeed));
+					}else {
+						booleanSetting.setClickguiToggleStatus(booleanSetting.getClickguiToggleStatus() - (booleanSetting.getClickguiToggleStatus() * animationSpeed));
+					}
+				}
+				
+				// Decimal setting animation
+				else if (setting instanceof DecimalSetting) {
+					
+				}
+				
+				// Integer setting animation
+				else if (setting instanceof IntegerSetting) {
+					
+				}
+				
+				// Long setting animation
+				else if (setting instanceof LongSetting) {
+					
+				}
+				
+				// Mode setting animation
+				else if (setting instanceof ModeSetting) {
+					
+				}
+				
+			}
+			
 		}
 		
 	};

@@ -30,6 +30,7 @@ public class BooleanSetting extends Setting {
 	}
 	
 	private boolean enabled;
+	private double clickguiToggleStatus = 0;
 
 	/**
 	 * @return True if the client is enabled, false otherwise
@@ -46,10 +47,17 @@ public class BooleanSetting extends Setting {
 	}
 	
 	/**
-	 * @param enabled the enabled to set
+	 * Disables the setting, does nothing if the setting is already disabled
 	 */
-	public void setEnabled(boolean enabled) {
-		this.enabled = enabled;
+	public void disable() {
+		enabled = false;
+	}
+	
+	/**
+	 * Enables the setting, does nothing if the setting is already enabled
+	 */
+	public void enable() {
+		enabled = true;
 	}
 	
 	/**
@@ -58,5 +66,19 @@ public class BooleanSetting extends Setting {
 	public void toggle() {
 		enabled = !enabled;
 	}
-	
+
+	/**
+	 * @return the clickguiToggleStatus
+	 */
+	public double getClickguiToggleStatus() {
+		return clickguiToggleStatus;
+	}
+
+	/**
+	 * @param clickguiToggleStatus the clickguiToggleStatus to set
+	 */
+	public void setClickguiToggleStatus(double clickguiToggleStatus) {
+		this.clickguiToggleStatus = clickguiToggleStatus;
+	}
+
 }

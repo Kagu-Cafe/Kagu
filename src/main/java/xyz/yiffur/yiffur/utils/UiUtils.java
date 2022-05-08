@@ -247,7 +247,7 @@ public class UiUtils {
 	 * @param bottom The bottom of the box
 	 */
 	public static void enableScissor(double left, double top, double right, double bottom) {
-		enableScissor((int)left, (int)top, (int)right, (int)bottom);
+		enableScissor((int)Math.floor(left), (int)Math.floor(top), (int)Math.ceil(right), (int)Math.ceil(bottom));
 	}
 	
 	/**
@@ -276,7 +276,7 @@ public class UiUtils {
 		int scaleFactor = scaledResolution.getScaleFactor();
 		
 		GL11.glEnable(GL11.GL_SCISSOR_TEST);
-		GL11.glScissor(left * scaleFactor, top * scaleFactor, (right - left) * scaleFactor, (bottom - top) * scaleFactor);
+		GL11.glScissor(left * scaleFactor, (scaledResolution.getScaledHeight() - (top + (bottom - top))) * scaleFactor, (right - left) * scaleFactor, (bottom - top) * scaleFactor);
 		
 	}
 	
