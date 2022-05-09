@@ -127,8 +127,9 @@ public class GuiClickgui extends GuiScreen {
 	private Category selectedCategory = null, lastHoveredCategory = null; // I am lazy so I'll just reuse the calculations from the render for the mouse click with this variable
 	private boolean closeCategoryOnClick = false; // I am still lazy
 	private Map<Category, Double> categorySliceScale = new HashMap<>();
-	private ResourceLocation closeIcon = new ResourceLocation("yiff/clickgui/close.png"), toggleBackground = new ResourceLocation("yiff/clickgui/toggle_background.png"),
-			toggleCircle = new ResourceLocation("yiff/clickgui/toggle_circle.png"), settingsCog = new ResourceLocation("yiff/clickgui/settings.png");
+	private ResourceLocation closeIcon = new ResourceLocation("yiff/clickgui/close.png"), toggleBackground = new ResourceLocation("yiff/clickgui/toggle_background.png"), 
+			toggleCircle = new ResourceLocation("yiff/clickgui/toggle_circle.png"), settingsCog = new ResourceLocation("yiff/clickgui/settings.png"), 
+			modeDropdown = new ResourceLocation("yiff/clickgui/modeDropdown.png");
 	private boolean isLeftMouseDown = false, isLeftMouseClick = false;
 	private double scrollOffset = 0, scrollOffsetTarget = 0;
 	private Setting selectedSetting = null;
@@ -321,6 +322,8 @@ public class GuiClickgui extends GuiScreen {
 						
 						// Draw all the settings and handle mouse movements
 						for (Setting setting : mod.getSettings()) {
+							if (setting.isHidden())
+								continue;
 							
 							boolean isMouseInsideSettingBox = !mouseOutsideOfBox 
 															&& mouseX >= left + toggleSwitchLength
@@ -403,7 +406,50 @@ public class GuiClickgui extends GuiScreen {
 							
 							// Draw mode setting
 							else if (setting instanceof ModeSetting) {
-								moduleAndSettingsFr.drawString(setting.getName(), left + toggleSwitchLength, top + yOffset + (padding / 2) + settingOffsetY, UiUtils.getColorFromVector(textColor));
+								ModeSetting modeSetting = (ModeSetting)setting;
+								
+								if (modeSetting.getModes().size() > 0) {
+									
+									// Setting outline
+									UiUtils.enableWireframe();
+									drawRect(
+											left + toggleSwitchLength
+													+ moduleAndSettingsFr.getStringWidth(setting.getName() + ": ") - 2,
+											top + yOffset + (padding / 2) + settingOffsetY - 1,
+											left + toggleSwitchLength
+													+ moduleAndSettingsFr.getStringWidth(setting.getName() + ": ")
+													+ moduleAndSettingsFr.getStringWidth(modeSetting.getMode())
+													+ moduleAndSettingsFr.getFontHeight() + 2,
+											top + yOffset + (padding / 2) + settingOffsetY
+													+ moduleAndSettingsFr.getFontHeight() + 1,
+											UiUtils.getColorFromVector(new Vector4d(circleOutlineColor.getX(), circleOutlineColor.getY(), circleOutlineColor.getZ(), 1 - modeSetting.getClickguiToggleStatus())));
+									UiUtils.disableWireframe();
+									
+									// Setting name
+									moduleAndSettingsFr.drawString(setting.getName() + ": " + modeSetting.getMode(),
+											left + toggleSwitchLength, top + yOffset + (padding / 2) + settingOffsetY,
+											UiUtils.getColorFromVector(textColor));
+									
+									// Dropdown icon
+									Vector4d lerpedModeColor = UiUtils.lerpColor(idleColor, accentColor, 1 - modeSetting.getClickguiToggleStatus());
+									GL11.glColor4d(lerpedModeColor.getX(), lerpedModeColor.getY(), lerpedModeColor.getZ(), lerpedModeColor.getW());
+									Minecraft.getMinecraft().getTextureManager().bindTexture(modeDropdown);
+									drawModalRectWithCustomSizedTexture(
+											left + toggleSwitchLength + 2
+													+ moduleAndSettingsFr.getStringWidth(
+															setting.getName() + ": " + modeSetting.getMode()),
+											top + yOffset + (padding / 2) + settingOffsetY, 0, 0,
+											moduleAndSettingsFr.getFontHeight(), moduleAndSettingsFr.getFontHeight(),
+											moduleAndSettingsFr.getFontHeight(), moduleAndSettingsFr.getFontHeight());
+									GlStateManager.color(1, 1, 1, 1);
+									
+								}else {
+									
+									// Setting name
+									moduleAndSettingsFr.drawString(setting.getName(), left + toggleSwitchLength, top + yOffset + (padding / 2) + settingOffsetY, UiUtils.getColorFromVector(textColor));
+									
+								}
+								
 							}
 							
 						}

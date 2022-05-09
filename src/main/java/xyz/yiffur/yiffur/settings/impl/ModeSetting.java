@@ -37,7 +37,9 @@ public class ModeSetting extends Setting {
 
 	private List<String> modes = new ArrayList<>();
 	private int modeIndex;
-
+	private double clickguiToggleStatus = 0;
+	private boolean clickguiExtended = false;
+	
 	/**
 	 * @return the modes
 	 */
@@ -60,7 +62,6 @@ public class ModeSetting extends Setting {
 	}
 	
 	/**
-	 * 
 	 * @param mode The mode that you want to check
 	 * @return Whether or not the passed in mode is the current mode
 	 */
@@ -68,4 +69,32 @@ public class ModeSetting extends Setting {
 		return modes.get(modeIndex).equals(mode);
 	}
 	
+	/**
+	 * @return the clickguiToggleStatus
+	 */
+	public double getClickguiToggleStatus() {
+		return clickguiToggleStatus;
+	}
+
+	/**
+	 * @param clickguiToggleStatus the clickguiToggleStatus to set
+	 */
+	public void setClickguiToggleStatus(double clickguiToggleStatus) {
+		this.clickguiToggleStatus = clickguiToggleStatus;
+	}
+
+	/**
+	 * @return the clickguiExtended
+	 */
+	public boolean isClickguiExtended() {
+		return clickguiExtended;
+	}
+
+	/**
+	 * @param clickguiExtended the clickguiExtended to set
+	 */
+	public void setClickguiExtended(boolean clickguiExtended) {
+		this.clickguiExtended = clickguiExtended;
+	}
+
 }
