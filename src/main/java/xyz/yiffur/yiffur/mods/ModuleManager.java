@@ -23,8 +23,10 @@ public class ModuleManager {
 	public static ModTest modTest = new ModTest();
 
 	// An array of all the modules in the client
-	private static Module[] modules = new Module[] {
+	private static final Module[] MODULES = new Module[] {
 			modMoonJump,
+			modTest,
+			modTest,
 			modTest
 	};
 
@@ -34,7 +36,7 @@ public class ModuleManager {
 	public static void start() {
 		logger.info("Loading modules...");
 		
-		for (Module module : modules) {
+		for (Module module : MODULES) {
 			module.initialize(); // Initialize the module
 			EventBus.setSubscriber(module, true); // Subscribe any listeners to the event bus
 		}
@@ -46,7 +48,7 @@ public class ModuleManager {
 	 * @return the modules
 	 */
 	public static Module[] getModules() {
-		return modules;
+		return MODULES;
 	}
 
 }

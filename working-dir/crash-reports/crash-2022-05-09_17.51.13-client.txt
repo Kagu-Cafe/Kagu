@@ -1,0 +1,96 @@
+---- Minecraft Crash Report ----
+// You should try our sister game, Minceraft!
+
+Time: 5/9/22 5:51 PM
+Description: Rendering screen
+
+java.lang.Error: Unresolved compilation problem: 
+	Syntax error on token "Invalid Character", delete this token
+
+	at xyz.yiffur.yiffur.ui.clickgui.GuiClickgui.drawSlice(GuiClickgui.java:618)
+	at xyz.yiffur.yiffur.ui.clickgui.GuiClickgui.drawSlice(GuiClickgui.java:512)
+	at xyz.yiffur.yiffur.ui.clickgui.GuiClickgui.drawScreen(GuiClickgui.java:156)
+	at net.minecraft.client.renderer.EntityRenderer.func_181560_a(EntityRenderer.java:1389)
+	at net.minecraft.client.Minecraft.runGameLoop(Minecraft.java:1132)
+	at net.minecraft.client.Minecraft.run(Minecraft.java:423)
+	at net.minecraft.client.main.Main.main(Main.java:131)
+	at Start.main(Start.java:16)
+
+
+A detailed walkthrough of the error, its code path and all known details is as follows:
+---------------------------------------------------------------------------------------
+
+-- Head --
+Stacktrace:
+	at xyz.yiffur.yiffur.ui.clickgui.GuiClickgui.drawSlice(GuiClickgui.java:618)
+	at xyz.yiffur.yiffur.ui.clickgui.GuiClickgui.drawSlice(GuiClickgui.java:512)
+	at xyz.yiffur.yiffur.ui.clickgui.GuiClickgui.drawScreen(GuiClickgui.java:156)
+
+-- Screen render details --
+Details:
+	Screen name: xyz.yiffur.yiffur.ui.clickgui.GuiClickgui
+	Mouse location: Scaled: (478, 254). Absolute: (957, 508)
+	Screen size: Scaled: (960, 509). Absolute: (1920, 1017). Scale factor of 2
+
+-- Affected level --
+Details:
+	Level name: MpServer
+	All players: 1 total; [EntityPlayerSP['Player468'/221, l='MpServer', x=647.69, y=69.00, z=-479.31]]
+	Chunk stats: MultiplayerChunkCache: 263, 263
+	Level seed: 0
+	Level generator: ID 02 - largeBiomes, ver 0. Features enabled: false
+	Level generator options: 
+	Level spawn location: 676.00,64.00,-835.00 - World: (676,64,-835), Chunk: (at 4,4,13 in 42,-53; contains blocks 672,0,-848 to 687,255,-833), Region: (1,-2; contains chunks 32,-64 to 63,-33, blocks 512,0,-1024 to 1023,255,-513)
+	Level time: 1429771 game time, 2817 day time
+	Level dimension: 0
+	Level storage version: 0x00000 - Unknown?
+	Level weather: Rain time: 0 (now: false), thunder time: 0 (now: false)
+	Level game mode: Game mode: creative (ID 1). Hardcore: false. Cheats: false
+	Forced entities: 25 total; [EntitySkeleton['Skeleton'/7301, l='MpServer', x=572.50, y=17.00, z=-426.50], EntityBat['Bat'/8205, l='MpServer', x=652.91, y=26.13, z=-471.25], EntityItem['item.item.arrow'/6931, l='MpServer', x=660.31, y=68.00, z=-475.59], EntityItem['item.item.arrow'/6805, l='MpServer', x=711.97, y=66.00, z=-451.59], EntityItem['item.item.bone'/6933, l='MpServer', x=659.97, y=68.00, z=-476.84], EntityCreeper['Creeper'/8356, l='MpServer', x=709.50, y=32.00, z=-447.50], EntityCreeper['Creeper'/8621, l='MpServer', x=574.50, y=15.00, z=-416.50], EntityCreeper['Creeper'/8631, l='MpServer', x=656.63, y=40.00, z=-471.97], EntityZombie['Zombie'/6841, l='MpServer', x=711.50, y=25.00, z=-499.50], EntityZombie['Zombie'/6842, l='MpServer', x=711.50, y=25.00, z=-501.50], EntityZombie['Zombie'/7363, l='MpServer', x=686.50, y=16.00, z=-410.50], EntityItem['item.item.arrow'/6980, l='MpServer', x=665.00, y=68.00, z=-482.59], EntitySkeleton['Skeleton'/9284, l='MpServer', x=577.50, y=49.00, z=-436.50], EntityCreeper['Creeper'/5702, l='MpServer', x=711.50, y=33.00, z=-450.50], EntityZombie['Zombie'/9298, l='MpServer', x=723.50, y=15.00, z=-454.50], EntityPlayerSP['Player468'/221, l='MpServer', x=647.69, y=69.00, z=-479.31], EntityZombie['Zombie'/9319, l='MpServer', x=718.50, y=51.00, z=-494.50], EntitySkeleton['Skeleton'/6121, l='MpServer', x=707.50, y=18.00, z=-550.50], EntityWitch['Witch'/7403, l='MpServer', x=729.50, y=14.00, z=-411.50], EntityZombie['Zombie'/7787, l='MpServer', x=723.50, y=47.00, z=-480.50], EntityBat['Bat'/9073, l='MpServer', x=658.50, y=34.97, z=-468.66], EntityBat['Bat'/9074, l='MpServer', x=664.16, y=34.38, z=-464.25], EntityBat['Bat'/9076, l='MpServer', x=663.44, y=32.88, z=-467.50], EntityBat['Bat'/8826, l='MpServer', x=665.53, y=47.28, z=-531.97], EntityBat['Bat'/8828, l='MpServer', x=666.22, y=48.00, z=-535.75]]
+	Retry entities: 0 total; []
+	Server brand: vanilla
+	Server type: Integrated singleplayer server
+Stacktrace:
+	at net.minecraft.client.multiplayer.WorldClient.addWorldInfoToCrashReport(WorldClient.java:401)
+	at net.minecraft.client.Minecraft.addGraphicsAndWorldToCrashReport(Minecraft.java:2791)
+	at net.minecraft.client.Minecraft.run(Minecraft.java:444)
+	at net.minecraft.client.main.Main.main(Main.java:131)
+	at Start.main(Start.java:16)
+
+-- System Details --
+Details:
+	Minecraft Version: 1.8.8
+	Operating System: Windows 8.1 (amd64) version 6.3
+	CPU: 12x AMD Ryzen 5 2600 Six-Core Processor 
+	Java Version: 1.8.0_51, Oracle Corporation
+	Java VM Version: Java HotSpot(TM) 64-Bit Server VM (mixed mode), Oracle Corporation
+	Memory: 766002088 bytes (730 MB) / 1654128640 bytes (1577 MB) up to 3799515136 bytes (3623 MB)
+	JVM Flags: 0 total; 
+	IntCache: cache: 0, tcache: 0, allocated: 12, tallocated: 98
+	Launched Version: mcp
+	LWJGL: 2.9.4
+	OpenGL: NVIDIA GeForce GTX 1060 6GB/PCIe/SSE2 GL version 4.6.0 NVIDIA 496.76, NVIDIA Corporation
+	GL Caps: Using GL 1.3 multitexturing.
+Using GL 1.3 texture combiners.
+Using framebuffer objects because OpenGL 3.0 is supported and separate blending is supported.
+Shaders are available because OpenGL 2.1 is supported.
+VBOs are available because OpenGL 1.5 is supported.
+
+	Using VBOs: No
+	Is Modded: Very likely; Jar signature invalidated
+	Type: Client (map_client.txt)
+	Resource Packs: DistastefulBannock V1.0
+	Current Language: English (US)
+	Profiler Position: N/A (disabled)
+	CPU: 12x AMD Ryzen 5 2600 Six-Core Processor 
+	OptiFine Version: OptiFine_1.8.8_HD_U_H8
+	Render Distance Chunks: 8
+	Mipmaps: 4
+	Anisotropic Filtering: 1
+	Antialiasing: 0
+	Multitexture: false
+	Shaders: null
+	OpenGlVersion: 4.6.0 NVIDIA 496.76
+	OpenGlRenderer: NVIDIA GeForce GTX 1060 6GB/PCIe/SSE2
+	OpenGlVendor: NVIDIA Corporation
+	CpuCount: 12

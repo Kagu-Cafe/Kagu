@@ -314,11 +314,12 @@ public class GuiClickgui extends GuiScreen {
 							if (setting.isHidden())
 								continue;
 							sizeOfSettings += lineLength;
+							if (setting instanceof ModeSetting) {
+								ModeSetting modeSetting = (ModeSetting)setting;
+								sizeOfSettings += (lineLength * modeSetting.getModes().size()) * modeSetting.getClickguiToggleStatus();
+							}
 						}
 						settingOffsetY = -(sizeOfSettings * (1 - mod.getClickguiExtension()));
-						
-						// Scissor for the settings
-						UiUtils.enableScissor(left + toggleSwitchLength, top + yOffset + (padding / 2) + lineLength, right, bottom);
 						
 						// Draw all the settings and handle mouse movements
 						for (Setting setting : mod.getSettings()) {
@@ -331,6 +332,9 @@ public class GuiClickgui extends GuiScreen {
 															&& mouseY >= top + yOffset + (padding / 2) + lineLength
 															&& mouseY < bottom;
 							settingOffsetY += lineLength;
+							
+							// Scissor for the settings
+							UiUtils.enableScissor(left + toggleSwitchLength, Math.min(bottom, top + yOffset + (padding / 2) + lineLength), right, bottom);
 							
 							// Draw boolean setting
 							if (setting instanceof BooleanSetting) {
@@ -348,6 +352,7 @@ public class GuiClickgui extends GuiScreen {
 								drawModalRectWithCustomSizedTexture(left + (toggleSwitchLength * 0.96) + (toggleSwitchLength - (toggleSwitchLength * 0.62)) * (1 - booleanSetting.getClickguiToggleStatus()), top + yOffset + settingOffsetY, 0, 0, lineLength, lineLength, lineLength, lineLength);
 								GlStateManager.color(1, 1, 1, 1);
 								
+								// Toggle
 								if (isMouseInsideSettingBox && mouseX < left + (toggleSwitchLength * 1.96) && mouseY > top + yOffset + settingOffsetY && mouseY < top + yOffset + settingOffsetY + lineLength 
 										&& isLeftMouseClick) {
 									booleanSetting.toggle();
@@ -365,7 +370,7 @@ public class GuiClickgui extends GuiScreen {
 								double sliderValue = value - decimalSetting.getMin();
 								double sliderPercent = sliderValue / range;
 								
-								// Change logic
+								// Change value
 								if (selectedSetting == setting && !isLeftMouseDown) {
 									selectedSetting = null;
 								}
@@ -410,38 +415,66 @@ public class GuiClickgui extends GuiScreen {
 								
 								if (modeSetting.getModes().size() > 0) {
 									
-									// Setting outline
-									UiUtils.enableWireframe();
-									drawRect(
-											left + toggleSwitchLength
-													+ moduleAndSettingsFr.getStringWidth(setting.getName() + ": ") - 2,
-											top + yOffset + (padding / 2) + settingOffsetY - 1,
-											left + toggleSwitchLength
-													+ moduleAndSettingsFr.getStringWidth(setting.getName() + ": ")
-													+ moduleAndSettingsFr.getStringWidth(modeSetting.getMode())
-													+ moduleAndSettingsFr.getFontHeight() + 2,
-											top + yOffset + (padding / 2) + settingOffsetY
-													+ moduleAndSettingsFr.getFontHeight() + 1,
-											UiUtils.getColorFromVector(new Vector4d(circleOutlineColor.getX(), circleOutlineColor.getY(), circleOutlineColor.getZ(), 1 - modeSetting.getClickguiToggleStatus())));
-									UiUtils.disableWireframe();
-									
 									// Setting name
 									moduleAndSettingsFr.drawString(setting.getName() + ": " + modeSetting.getMode(),
 											left + toggleSwitchLength, top + yOffset + (padding / 2) + settingOffsetY,
 											UiUtils.getColorFromVector(textColor));
 									
 									// Dropdown icon
-									Vector4d lerpedModeColor = UiUtils.lerpColor(idleColor, accentColor, 1 - modeSetting.getClickguiToggleStatus());
-									GL11.glColor4d(lerpedModeColor.getX(), lerpedModeColor.getY(), lerpedModeColor.getZ(), lerpedModeColor.getW());
-									Minecraft.getMinecraft().getTextureManager().bindTexture(modeDropdown);
-									drawModalRectWithCustomSizedTexture(
-											left + toggleSwitchLength + 2
-													+ moduleAndSettingsFr.getStringWidth(
-															setting.getName() + ": " + modeSetting.getMode()),
-											top + yOffset + (padding / 2) + settingOffsetY, 0, 0,
-											moduleAndSettingsFr.getFontHeight(), moduleAndSettingsFr.getFontHeight(),
-											moduleAndSettingsFr.getFontHeight(), moduleAndSettingsFr.getFontHeight());
-									GlStateManager.color(1, 1, 1, 1);
+									GlStateManager.pushMatrix();
+									{
+										
+										// Rotate icon
+										GlStateManager.translate(left + toggleSwitchLength + 2 + moduleAndSettingsFr.getStringWidth(setting.getName() + ": " + modeSetting.getMode()) + (moduleAndSettingsFr.getFontHeight() / 2), top + yOffset + (padding / 2) + settingOffsetY + (moduleAndSettingsFr.getFontHeight() / 2), 0);
+										GL11.glRotated(-180 * modeSetting.getClickguiToggleStatus(), 0, 0, 1);
+										GlStateManager.translate(-(left + toggleSwitchLength + 2 + moduleAndSettingsFr.getStringWidth(setting.getName() + ": " + modeSetting.getMode()) + (moduleAndSettingsFr.getFontHeight() / 2)), -(top + yOffset + (padding / 2) + settingOffsetY + (moduleAndSettingsFr.getFontHeight() / 2)), 0);
+										
+										// Draw
+										Vector4d lerpedModeColor = UiUtils.lerpColor(idleColor, accentColor, 1 - modeSetting.getClickguiToggleStatus());
+										GL11.glColor4d(lerpedModeColor.getX(), lerpedModeColor.getY(), lerpedModeColor.getZ(), lerpedModeColor.getW());
+										Minecraft.getMinecraft().getTextureManager().bindTexture(modeDropdown);
+										drawModalRectWithCustomSizedTexture(left + toggleSwitchLength + 2 + moduleAndSettingsFr.getStringWidth(setting.getName() + ": " + modeSetting.getMode()),
+												top + yOffset + (padding / 2) + settingOffsetY, 0, 0,
+												moduleAndSettingsFr.getFontHeight(), moduleAndSettingsFr.getFontHeight(),
+												moduleAndSettingsFr.getFontHeight(), moduleAndSettingsFr.getFontHeight());
+										GlStateManager.color(1, 1, 1, 1);
+										
+									}
+									GlStateManager.popMatrix();
+									
+									// Horizontal lines
+									{
+										double hLineLeft = left + toggleSwitchLength + moduleAndSettingsFr.getStringWidth(setting.getName() + ": ");
+										double hLineRight = left + toggleSwitchLength + 2 + moduleAndSettingsFr.getStringWidth(setting.getName() + ": " + modeSetting.getMode()) + moduleAndSettingsFr.getFontHeight();
+										hLineRight = hLineLeft + (hLineRight - hLineLeft - 1) * (1 - modeSetting.getClickguiToggleStatus());
+										if (hLineRight - hLineLeft > 0.3)
+											drawHorizontalLine(hLineLeft, hLineRight, top + yOffset + (padding / 2) + settingOffsetY + moduleAndSettingsFr.getFontHeight(), UiUtils.getColorFromVector(idleColor));
+									}
+									
+									// Change mode
+									if (isMouseInsideSettingBox && isLeftMouseClick) {
+										if (mouseX >= left + toggleSwitchLength + 2 + moduleAndSettingsFr.getStringWidth(setting.getName() + ":") 
+											&& mouseX <= left + toggleSwitchLength + 2 + moduleAndSettingsFr.getStringWidth(setting.getName() + ": " + modeSetting.getMode())+ moduleAndSettingsFr.getFontHeight() 
+											&& mouseY >= top + yOffset + (padding / 2) + settingOffsetY 
+											&& mouseY <= top + yOffset + (padding / 2) + settingOffsetY + moduleAndSettingsFr.getFontHeight()) {
+											modeSetting.setClickguiExtended(!modeSetting.isClickguiExtended());
+										}
+									}
+									
+									// Draw modes
+									double modeYOffset = -(lineLength * modeSetting.getModes().size()) * (1 - modeSetting.getClickguiToggleStatus());
+									double modeScissorTop = top + yOffset + (padding / 2) + settingOffsetY + lineLength;
+									double modeScissorBottom = top + yOffset + (padding / 2) + settingOffsetY + lineLength + ((lineLength * modeSetting.getModes().size() * modeSetting.getClickguiToggleStatus()));
+									modeScissorBottom = Math.min(bottom, modeScissorBottom);
+									modeScissorTop = Math.min(bottom, modeScissorTop);
+									UiUtils.enableScissor(left + (toggleSwitchLength * 2), modeScissorTop, right, modeScissorBottom);
+									for (String mode : modeSetting.getModes()) {
+										settingOffsetY += lineLength;
+										
+										// Draw mode
+										moduleAndSettingsFr.drawString(mode, left + (toggleSwitchLength * 2), top + yOffset + (padding / 2) + settingOffsetY + modeYOffset, UiUtils.getColorFromVector(textColor));
+										
+									}
 									
 								}else {
 									
@@ -615,7 +648,7 @@ public class GuiClickgui extends GuiScreen {
 					mouseAngle -= 360;
 				
 				// Check if the mouse angle is in the slice angles
-				if (mouseAngle >= angles.getX() && mouseAngle <= angles.getY()) {
+				if (mouseAngle >= angles.getX() && mouseAngle < angles.getY()) {
 					
 					// Check the distance of the mouse compared to the circles
 					boolean isOutsideInner = Math.sqrt(((posY - mouseY)*(posY - mouseY)) + ((posX - mouseX)*(posX - mouseX))) >= innerCircleRadius;
@@ -684,6 +717,7 @@ public class GuiClickgui extends GuiScreen {
 			outerCircleRadius = 0;
 			innerCircleRadius = 0;
 		}
+		selectedSetting = null;
 	}
 	
 	// For anybody trying to port this to their own client, the cheat tick loop runs at 64 ticks a second
@@ -808,7 +842,12 @@ public class GuiClickgui extends GuiScreen {
 				
 				// Mode setting animation
 				else if (setting instanceof ModeSetting) {
-					
+					ModeSetting modeSetting = (ModeSetting)setting;
+					if (modeSetting.isClickguiExtended()) {
+						modeSetting.setClickguiToggleStatus(modeSetting.getClickguiToggleStatus() + ((1 - modeSetting.getClickguiToggleStatus()) * animationSpeed));
+					}else {
+						modeSetting.setClickguiToggleStatus(modeSetting.getClickguiToggleStatus() - (modeSetting.getClickguiToggleStatus() * animationSpeed));
+					}
 				}
 				
 			}

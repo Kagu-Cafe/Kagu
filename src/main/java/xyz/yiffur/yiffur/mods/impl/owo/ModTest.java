@@ -34,7 +34,7 @@ public class ModTest extends Module {
 								 decimalSetting2 = new DecimalSetting("Decimal setting 2", 1, -10, 10, 0.25),
 								 decimalSetting3 = new DecimalSetting("Decimal setting 3", 1, 10, 20, 0.25);
 	
-	public static ModeSetting modeSetting = new ModeSetting("Mode setting", "Test 1", "Test 2", "Test 3");
+	public static ModeSetting modeSetting = new ModeSetting("Mode setting", "Test 1", "Test 1", "Test 2", "Test 3");
 	
 	@Override
 	public void initialize() {
