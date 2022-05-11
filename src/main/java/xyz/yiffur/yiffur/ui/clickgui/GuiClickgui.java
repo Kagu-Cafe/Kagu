@@ -534,6 +534,7 @@ public class GuiClickgui extends GuiScreen {
 										if (isInsideModeBox && mouseY >= top + yOffset + (padding / 2) + settingOffsetY + modeYOffset && mouseY <= top + yOffset + (padding / 2) + settingOffsetY + modeYOffset + lineLength) {
 											if (isLeftMouseClick) {
 												modeSetting.setMode(mode);
+												modeSetting.setClickguiExtended(false);
 											}
 											drawVerticalLine(left + (toggleSwitchLength * 2) - 5, top + yOffset + (padding / 2) + settingOffsetY + modeYOffset, top + yOffset + (padding / 2) + settingOffsetY + modeYOffset + moduleAndSettingsFr.getFontHeight(), UiUtils.getColorFromVector(accentColor));
 										}
@@ -565,7 +566,6 @@ public class GuiClickgui extends GuiScreen {
 				
 				// Limit the scroll wheel to not go off the bottom of the box
 				double trueModsHeight = modsHeight + modeSettingScrollFix - (lineLength * ((bottom - top) / lineLength));
-				System.out.println(scrollOffsetTarget + " " + trueModsHeight);
 				if (scrollOffsetTarget < -trueModsHeight)
 					scrollOffsetTarget = -trueModsHeight;
 				if (scrollOffsetTarget > 0)
@@ -792,6 +792,8 @@ public class GuiClickgui extends GuiScreen {
 			innerCircleRadius = 0;
 		}
 		selectedSetting = null;
+		
+		Mouse.getDWheel();
 	}
 	
 	// For anybody trying to port this to their own client, the cheat tick loop runs at 64 ticks a second

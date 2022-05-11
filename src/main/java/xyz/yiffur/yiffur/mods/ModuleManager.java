@@ -8,7 +8,7 @@ import org.apache.logging.log4j.Logger;
 
 import xyz.yiffur.yiffur.eventBus.EventBus;
 import xyz.yiffur.yiffur.mods.impl.move.ModMoonJump;
-import xyz.yiffur.yiffur.mods.impl.owo.ModTest;
+import xyz.yiffur.yiffur.mods.impl.yiff.ModTest;
 
 /**
  * @author lavaflowglow
@@ -25,8 +25,6 @@ public class ModuleManager {
 	// An array of all the modules in the client
 	private static final Module[] MODULES = new Module[] {
 			modMoonJump,
-			modTest,
-			modTest,
 			modTest
 	};
 

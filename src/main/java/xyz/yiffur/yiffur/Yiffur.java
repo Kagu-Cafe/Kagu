@@ -9,6 +9,7 @@ import xyz.yiffur.yiffur.eventBus.EventBus;
 import xyz.yiffur.yiffur.eventBus.Event.EventPosition;
 import xyz.yiffur.yiffur.eventBus.impl.EventCheatTick;
 import xyz.yiffur.yiffur.font.FontUtils;
+import xyz.yiffur.yiffur.managers.FileManager;
 import xyz.yiffur.yiffur.mods.ModuleManager;
 import xyz.yiffur.yiffur.ui.GuiMainMenu;
 import xyz.yiffur.yiffur.ui.Hud;
@@ -46,6 +47,11 @@ public class Yiffur {
 		logger.info("Starting the command manager...");
 		CommandManager.start();
 		logger.info("Started the command manager");
+		
+		// Start the file manager
+		logger.info("Starting the file manager...");
+		FileManager.start();
+		logger.info("Started the file manager");
 		
 		// Start the clickgui
 		logger.info("Starting the clickgui...");
