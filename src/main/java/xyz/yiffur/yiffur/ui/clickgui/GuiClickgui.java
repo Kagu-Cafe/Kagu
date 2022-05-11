@@ -17,6 +17,7 @@ import javax.vecmath.Vector3d;
 import javax.vecmath.Vector4d;
 
 import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.EXTFramebufferObject;
 import org.lwjgl.opengl.GL11;
 
@@ -143,6 +144,9 @@ public class GuiClickgui extends GuiScreen {
 		GlStateManager.pushMatrix();
 		GlStateManager.pushAttrib();
 		
+		// Scroll wheel
+		scrollOffsetTarget += (Mouse.getDWheel() * 0.15) * (Minecraft.isRunningOnMac ? -1 : 1);
+		
 		// Draw all the category slices
 		for (Category category : Category.values()) {
 			
@@ -234,10 +238,11 @@ public class GuiClickgui extends GuiScreen {
 					}
 				}
 				
-				// Draw scrollbar
+				// So the scroll bar works correctly
+				double modeSettingScrollFix = 0;
 				
 				// Fix scissor
-				top += (boxTitleFr.getFontHeight() + titlePadding + 1);
+				top += (boxTitleFr.getFontHeight() + titlePadding + 2);
 				right -= (boxTitleFr.getFontHeight() + titlePadding + 1);
 				UiUtils.enableScissor(left, top, right, bottom);
 				
@@ -334,7 +339,7 @@ public class GuiClickgui extends GuiScreen {
 							settingOffsetY += lineLength;
 							
 							// Scissor for the settings
-							UiUtils.enableScissor(left + toggleSwitchLength, Math.min(bottom, top + yOffset + (padding / 2) + lineLength), right, bottom);
+							UiUtils.enableScissor(left + toggleSwitchLength, Math.max(top, Math.min(bottom + 1, top + yOffset + (padding / 2) + lineLength)), right, bottom);
 							
 							// Draw boolean setting
 							if (setting instanceof BooleanSetting) {
@@ -399,13 +404,55 @@ public class GuiClickgui extends GuiScreen {
 								
 							}
 							
-							// Draw integer setting
-							else if (setting instanceof IntegerSetting) {
+							// Draw integer and long setting, pretty much the same code as the decimal setting but uses longs instead of doubles
+							else if (setting instanceof IntegerSetting || setting instanceof LongSetting) {
+								long value = 0, min = 0, max = 0;
+								if (setting instanceof IntegerSetting) {
+									IntegerSetting integerSetting = (IntegerSetting)setting;
+									value = integerSetting.getValue();
+									min = integerSetting.getMin();
+									max = integerSetting.getMax();
+								}else {
+									LongSetting longSetting = (LongSetting)setting;
+									value = longSetting.getValue();
+									min = longSetting.getMin();
+									max = longSetting.getMax();
+								}
+								long range = max - min;
+								double sliderValue = value - min;
+								double sliderPercent = sliderValue / range;
 								
-							}
-							
-							// Draw long setting
-							else if (setting instanceof LongSetting) {
+								// Change value
+								if (selectedSetting == setting && !isLeftMouseDown) {
+									selectedSetting = null;
+								}
+								if (selectedSetting == null && isLeftMouseClick && isMouseInsideSettingBox && mouseY >= top + yOffset + (padding / 2) + settingOffsetY && mouseY <= top + yOffset + (padding / 2) + settingOffsetY + moduleAndSettingsFr.getFontHeight()) {
+									selectedSetting = setting;
+								}
+								if (selectedSetting == setting) {
+									double pixelRange = right - (left + toggleSwitchLength);
+									double fixedMouseX = mouseX - (left + toggleSwitchLength);
+									double newValuePercent = MathHelper.clamp_double(fixedMouseX / pixelRange, 0, 1);
+									long endResult = (long)(min + (range * newValuePercent));
+									if (setting instanceof IntegerSetting) {
+										((IntegerSetting)setting).setValue(Double.valueOf(endResult).intValue());
+									}else {
+										((LongSetting)setting).setValue(Double.valueOf(endResult).longValue());
+									}
+									sliderPercent = newValuePercent;
+								}
+								
+								// Render bar
+								GL11.glEnable(GL11.GL_BLEND);
+								drawRect(left + toggleSwitchLength, top + yOffset + (padding / 2) + settingOffsetY,
+										left + toggleSwitchLength + ((right - (left + toggleSwitchLength)) * sliderPercent),
+										top + yOffset + (padding / 2) + settingOffsetY
+												+ moduleAndSettingsFr.getFontHeight(),
+										UiUtils.getColorFromVector(new Vector4d(accentColor.getX(), accentColor.getY(),
+												accentColor.getZ(), 0.4)));
+								
+								// Setting name
+								moduleAndSettingsFr.drawString(setting.getName() + ": " + value, left + toggleSwitchLength, top + yOffset + (padding / 2) + settingOffsetY, UiUtils.getColorFromVector(textColor));
 								
 							}
 							
@@ -465,16 +512,34 @@ public class GuiClickgui extends GuiScreen {
 									double modeYOffset = -(lineLength * modeSetting.getModes().size()) * (1 - modeSetting.getClickguiToggleStatus());
 									double modeScissorTop = top + yOffset + (padding / 2) + settingOffsetY + lineLength;
 									double modeScissorBottom = top + yOffset + (padding / 2) + settingOffsetY + lineLength + ((lineLength * modeSetting.getModes().size() * modeSetting.getClickguiToggleStatus()));
-									modeScissorBottom = Math.min(bottom, modeScissorBottom);
-									modeScissorTop = Math.min(bottom, modeScissorTop);
-									UiUtils.enableScissor(left + (toggleSwitchLength * 2), modeScissorTop, right, modeScissorBottom);
+									modeScissorBottom = Math.max(top, Math.max(top + yOffset + (padding / 2) + lineLength, Math.min(bottom, modeScissorBottom)));
+									modeScissorTop = Math.max(top, Math.max(top + yOffset + (padding / 2) + lineLength, Math.min(bottom, modeScissorTop)));
+									UiUtils.enableScissor(left + (toggleSwitchLength * 2) - 5, modeScissorTop, right, modeScissorBottom);
+									double modeSettingRemoveAfterDraw = 0;
+									
 									for (String mode : modeSetting.getModes()) {
 										settingOffsetY += lineLength;
+										modeSettingRemoveAfterDraw += lineLength * (1 - modeSetting.getClickguiToggleStatus());
+										modeSettingScrollFix += lineLength * modeSetting.getClickguiToggleStatus();
+										
+//										boolean isInsideModeBox = isMouseInsideSettingBox && mouseX > left + (toggleSwitchLength * 2) && mouseX < left + (toggleSwitchLength * 2) + moduleAndSettingsFr.getStringWidth(mode) + 5 
+//												&& mouseY > modeScissorTop && mouseX < modeScissorBottom;
+										boolean isInsideModeBox = isMouseInsideSettingBox && mouseX > left + (toggleSwitchLength * 2) - 5 && mouseX < right 
+												&& mouseY > modeScissorTop && mouseY < modeScissorBottom;
 										
 										// Draw mode
 										moduleAndSettingsFr.drawString(mode, left + (toggleSwitchLength * 2), top + yOffset + (padding / 2) + settingOffsetY + modeYOffset, UiUtils.getColorFromVector(textColor));
 										
+										// Click mode
+										if (isInsideModeBox && mouseY >= top + yOffset + (padding / 2) + settingOffsetY + modeYOffset && mouseY <= top + yOffset + (padding / 2) + settingOffsetY + modeYOffset + lineLength) {
+											if (isLeftMouseClick) {
+												modeSetting.setMode(mode);
+											}
+											drawVerticalLine(left + (toggleSwitchLength * 2) - 5, top + yOffset + (padding / 2) + settingOffsetY + modeYOffset, top + yOffset + (padding / 2) + settingOffsetY + modeYOffset + moduleAndSettingsFr.getFontHeight(), UiUtils.getColorFromVector(accentColor));
+										}
+										
 									}
+									settingOffsetY -= modeSettingRemoveAfterDraw;
 									
 								}else {
 									
@@ -495,7 +560,16 @@ public class GuiClickgui extends GuiScreen {
 					UiUtils.enableScissor(left, top, right, bottom);
 					
 					yOffset += lineLength;
+					
 				}
+				
+				// Limit the scroll wheel to not go off the bottom of the box
+				double trueModsHeight = modsHeight + modeSettingScrollFix - (lineLength * ((bottom - top) / lineLength));
+				System.out.println(scrollOffsetTarget + " " + trueModsHeight);
+				if (scrollOffsetTarget < -trueModsHeight)
+					scrollOffsetTarget = -trueModsHeight;
+				if (scrollOffsetTarget > 0)
+					scrollOffsetTarget = 0;
 				
 			}
 			
@@ -740,6 +814,14 @@ public class GuiClickgui extends GuiScreen {
 		double animationSpeed = 0.1;
 		
 		posY = targetPosY;
+		
+		// Scroll wheel
+		if (scrollOffset == scrollOffsetTarget) {}
+		else if (scrollOffset > scrollOffsetTarget) {
+			scrollOffset -= (scrollOffset - scrollOffsetTarget) * (animationSpeed * 3);
+		}else {
+			scrollOffset += (scrollOffsetTarget - scrollOffset) * (animationSpeed * 3);
+		}
 		
 		// Pos x
 		if (posX == targetPosX) {}

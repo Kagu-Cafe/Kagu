@@ -12,6 +12,8 @@ import xyz.yiffur.yiffur.eventBus.impl.EventTick;
 import xyz.yiffur.yiffur.mods.Module;
 import xyz.yiffur.yiffur.settings.impl.BooleanSetting;
 import xyz.yiffur.yiffur.settings.impl.DecimalSetting;
+import xyz.yiffur.yiffur.settings.impl.IntegerSetting;
+import xyz.yiffur.yiffur.settings.impl.LongSetting;
 import xyz.yiffur.yiffur.settings.impl.ModeSetting;
 
 /**
@@ -30,15 +32,21 @@ public class ModTest extends Module {
 	}
 	
 	public static BooleanSetting booleanSetting = new BooleanSetting("Boolean setting", false);
-	public static DecimalSetting decimalSetting1 = new DecimalSetting("Decimal setting 1", 1, 0, 10, 0.25),
-								 decimalSetting2 = new DecimalSetting("Decimal setting 2", 1, -10, 10, 0.25),
-								 decimalSetting3 = new DecimalSetting("Decimal setting 3", 1, 10, 20, 0.25);
+	public static DecimalSetting decimalSetting1 = new DecimalSetting("Decimal setting 1", 1, 0, 10, 0.25), 
+								 decimalSetting2 = new DecimalSetting("Decimal setting 2", 1, -10, 10, 0.25), 
+								 decimalSetting3 = new DecimalSetting("Decimal setting 3", 10, 10, 20, 0.25);
+	public static IntegerSetting integerSetting1 = new IntegerSetting("Integer setting 1", 1, 0, 10, 1), 
+								 integerSetting2 = new IntegerSetting("Integer setting 2", 1, -10, 10, 1), 
+								 integerSetting3 = new IntegerSetting("Integer setting 3", 10, 10, 20, 1);
+	public static LongSetting longSetting1 = new LongSetting("Long setting 1", 1, 0, 10, 1), 
+							  longSetting2 = new LongSetting("Long setting 2", 1, -10, 10, 1), 
+							  longSetting3 = new LongSetting("Long setting 3", 10, 10, 20, 1);
 	
 	public static ModeSetting modeSetting = new ModeSetting("Mode setting", "Test 1", "Test 1", "Test 2", "Test 3");
 	
 	@Override
 	public void initialize() {
-		setSettings(booleanSetting, decimalSetting1, decimalSetting2, decimalSetting3, modeSetting);
+		setSettings(booleanSetting, decimalSetting1, decimalSetting2, decimalSetting3, modeSetting, integerSetting1, integerSetting2, integerSetting3, longSetting1, longSetting2, longSetting3);
 	}
 	
 	@YiffEvents
