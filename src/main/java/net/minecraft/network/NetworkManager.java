@@ -32,6 +32,8 @@ import java.net.SocketAddress;
 import java.util.Queue;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import javax.crypto.SecretKey;
+
+import net.minecraft.client.Minecraft;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.CryptManager;
@@ -173,6 +175,28 @@ public class NetworkManager extends SimpleChannelInboundHandler<Packet>
     }
 
     public void sendPacket(Packet packetIn)
+    {
+        if (this.isChannelOpen())
+        {
+            this.flushOutboundQueue();
+            this.dispatchPacket(packetIn, (GenericFutureListener <? extends Future <? super Void >> [])null);
+        }
+        else
+        {
+            this.field_181680_j.writeLock().lock();
+
+            try
+            {
+                this.outboundPacketsQueue.add(new NetworkManager.InboundHandlerTuplePacketListener(packetIn, (GenericFutureListener[])null));
+            }
+            finally
+            {
+                this.field_181680_j.writeLock().unlock();
+            }
+        }
+    }
+    
+    public void sendPacketNoEvent(Packet packetIn)
     {
         if (this.isChannelOpen())
         {
