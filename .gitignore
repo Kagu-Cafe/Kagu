@@ -1,3 +1,6 @@
-
 target/*
 *.class
+working-dir/**
+*.mca
+*.dat_old
+*.dat
