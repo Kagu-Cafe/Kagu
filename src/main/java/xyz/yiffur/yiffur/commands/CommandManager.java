@@ -17,6 +17,7 @@ import xyz.yiffur.yiffur.eventBus.YiffEvents;
 import xyz.yiffur.yiffur.eventBus.impl.EventChatSendMessage;
 import xyz.yiffur.yiffur.eventBus.impl.EventKeyUpdate;
 import xyz.yiffur.yiffur.mods.ModuleManager;
+import xyz.yiffur.yiffur.utils.ChatUtils;
 
 /**
  * @author lavaflowglow
@@ -78,11 +79,13 @@ public class CommandManager {
 				
 				// No arg comand
 				if (actionRequirement.getRequiredArgs().length == 0) {
-					String[] commandArgs = new String[args.length - 1]; // The same as args but without the command
-					for (int j = 0; j < args.length - 1; j++) {
-						commandArgs[j] = args[j + 1];
+					String[] commandArgs = new String[args.length - 1 - actionRequirement.getRequiredArgs().length]; // The same as args but without the command or required args
+					for (int j = 0; j < args.length - 1 - actionRequirement.getRequiredArgs().length; j++) {
+						commandArgs[j] = args[j + 1 + actionRequirement.getRequiredArgs().length];
 					}
-					actionRequirement.getCommandAction().execute(commandArgs);
+					if (actionRequirement.getCommandAction().execute(commandArgs)) {
+						return;
+					}
 				}
 				
 				// Multi arg command
@@ -94,17 +97,20 @@ public class CommandManager {
 					// True if all the args matched up, if any were false it would have broken the
 					// loop by now
 					if (i == actionRequirement.getRequiredArgs().length - 1) {
-						String[] commandArgs = new String[args.length - 1]; // The same as args but without the command
-						for (int j = 0; j < args.length - 1; j++) {
-							commandArgs[j] = args[j + 1];
+						String[] commandArgs = new String[args.length - 1 - actionRequirement.getRequiredArgs().length]; // The same as args but without the command or required args
+						for (int j = 0; j < args.length - 1 - actionRequirement.getRequiredArgs().length; j++) {
+							commandArgs[j] = args[j + 1 + actionRequirement.getRequiredArgs().length];
 						}
-						actionRequirement.getCommandAction().execute(commandArgs);
+						if (actionRequirement.getCommandAction().execute(commandArgs)) {
+							return;
+						}
 					}
 					
 				}
 
 			}
 			
+			ChatUtils.addChatMessage("Usage: ." + command.getName(), command.getUsage());
 			break;
 			
 		}

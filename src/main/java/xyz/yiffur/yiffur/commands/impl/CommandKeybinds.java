@@ -5,8 +5,6 @@ package xyz.yiffur.yiffur.commands.impl;
 
 import xyz.yiffur.yiffur.commands.Command;
 import xyz.yiffur.yiffur.commands.CommandAction;
-import xyz.yiffur.yiffur.commands.CommandManager;
-import xyz.yiffur.yiffur.utils.ChatUtils;
 
 /**
  * @author lavaflowglow
@@ -23,10 +21,7 @@ public class CommandKeybinds extends Command {
 	}, "load");
 	
 	private static ActionRequirement list = new ActionRequirement((CommandAction)args -> {
-		for (Command command : CommandManager.getCommands()) {
-			ChatUtils.addChatMessage(command.getName() + " - ." + command.getName() + " " + command.getUsage());
-		}
-		return true;
+		return false;
 	}, "list");
 	
 	public CommandKeybinds() {
