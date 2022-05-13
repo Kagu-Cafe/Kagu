@@ -3,6 +3,7 @@
  */
 package xyz.yiffur.yiffur.mods;
 
+import net.minecraft.client.Minecraft;
 import xyz.yiffur.yiffur.eventBus.Event.EventPosition;
 import xyz.yiffur.yiffur.eventBus.impl.EventModuleStateUpdate;
 import xyz.yiffur.yiffur.settings.Setting;
@@ -43,13 +44,15 @@ public abstract class Module {
 	protected void setSettings(Setting... settings) {
 		this.settings = settings;
 	}
-
+	
 	private String name = ""; // The name of the module
 	private String[] info = new String[0]; // The info displayed next to the name on the arraylist
 	private Setting[] settings = new Setting[0]; // Any settings that the module may have
 	private Category category; // The category of the module
 	private boolean enabled = false, isClickguiExtended = false;
 	private double clickguiExtension = 0, clickguiToggle = 0;
+	
+	protected static Minecraft mc = Minecraft.getMinecraft(); // The minecraft instance used for the modules
 
 	/**
 	 * @param info An array of strings that will be displayed next to the module on
