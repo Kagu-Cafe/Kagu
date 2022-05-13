@@ -21,7 +21,7 @@ public class CommandKeybinds extends Command {
 	}, "load");
 	
 	private static ActionRequirement list = new ActionRequirement((CommandAction)args -> {
-		return false;
+		return true;
 	}, "list");
 	
 	public CommandKeybinds() {
