@@ -5,6 +5,7 @@ package xyz.yiffur.yiffur.mods.impl.move;
 
 import xyz.yiffur.yiffur.eventBus.Subscriber;
 import xyz.yiffur.yiffur.eventBus.YiffEvents;
+import xyz.yiffur.yiffur.eventBus.impl.EventPlayerUpdate;
 import xyz.yiffur.yiffur.eventBus.impl.EventTick;
 import xyz.yiffur.yiffur.mods.Module;
 import xyz.yiffur.yiffur.settings.impl.BooleanSetting;
@@ -28,7 +29,10 @@ public class ModSprint extends Module {
 	}
 	
 	@YiffEvents
-	public Subscriber<EventTick> onTick = e -> {
+	public Subscriber<EventPlayerUpdate> onUpdate = e -> {
+		if (e.isPost())
+			return;
+		
 		if (mc.thePlayer.onGround && mc.thePlayer.getFoodStats().getFoodLevel() >= 3
 				&& !mc.thePlayer.isCollidedHorizontally && !mc.thePlayer.isEating() && !mc.thePlayer.isSprinting()
 				&& (omni.isDisabled() ? mc.thePlayer.moveForward > 0

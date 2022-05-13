@@ -9,6 +9,7 @@ import org.apache.logging.log4j.Logger;
 import xyz.yiffur.yiffur.eventBus.EventBus;
 import xyz.yiffur.yiffur.mods.impl.move.ModMoonJump;
 import xyz.yiffur.yiffur.mods.impl.move.ModSprint;
+import xyz.yiffur.yiffur.mods.impl.player.ModNoFall;
 import xyz.yiffur.yiffur.mods.impl.yiff.ModTest;
 
 /**
@@ -23,12 +24,21 @@ public class ModuleManager {
 	public static ModMoonJump modMoonJump = new ModMoonJump();
 	public static ModTest modTest = new ModTest();
 	public static ModSprint modSprint = new ModSprint();
-
+	public static ModNoFall modNoFall = new ModNoFall();
+	
 	// An array of all the modules in the client
 	private static final Module[] MODULES = new Module[] {
-			modMoonJump,
+			
+			// Test
 			modTest,
-			modSprint
+			
+			// Movement
+			modMoonJump,
+			modSprint,
+			
+			// Player
+			modNoFall
+			
 	};
 
 	/**

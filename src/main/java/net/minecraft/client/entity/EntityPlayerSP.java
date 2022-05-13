@@ -53,6 +53,7 @@ import net.minecraft.world.IInteractionObject;
 import net.minecraft.world.World;
 import xyz.yiffur.yiffur.eventBus.Event.EventPosition;
 import xyz.yiffur.yiffur.eventBus.impl.EventChatSendMessage;
+import xyz.yiffur.yiffur.eventBus.impl.EventPlayerUpdate;
 
 public class EntityPlayerSP extends AbstractClientPlayer
 {
@@ -191,7 +192,32 @@ public class EntityPlayerSP extends AbstractClientPlayer
     public void onUpdateWalkingPlayer()
     {
         boolean flag = this.isSprinting();
-
+        boolean flag1 = this.isSneaking();
+        
+        // Yiffur hook
+		double posX = this.posX, posY = this.posY, posZ = this.posZ, motionX = this.motionX, motionY = this.motionY,
+				motionZ = this.motionZ;
+        float rotationYaw = this.rotationYaw, rotationPitch = rotationYaw;
+        boolean onGround = this.onGround;
+		{
+			EventPlayerUpdate eventPlayerUpdate = new EventPlayerUpdate(EventPosition.PRE, flag, flag1, onGround, posX,
+					posY, posZ, motionX, motionY, motionZ, rotationYaw, rotationPitch);
+			eventPlayerUpdate.post();
+			if (eventPlayerUpdate.isCanceled())
+				return;
+			flag = eventPlayerUpdate.isSprinting();
+			flag1 = eventPlayerUpdate.isSneaking();
+			onGround = eventPlayerUpdate.isOnGround();
+			posX = eventPlayerUpdate.getPosX();
+			posY = eventPlayerUpdate.getPosY();
+			posZ = eventPlayerUpdate.getPosZ();
+			motionX = eventPlayerUpdate.getMotionX();
+			motionY = eventPlayerUpdate.getMotionY();
+			motionZ = eventPlayerUpdate.getMotionZ();
+			rotationYaw = eventPlayerUpdate.getRotationYaw();
+			rotationPitch = eventPlayerUpdate.getRotationPitch();
+		}
+        
         if (flag != this.serverSprintState)
         {
             if (flag)
@@ -205,9 +231,7 @@ public class EntityPlayerSP extends AbstractClientPlayer
 
             this.serverSprintState = flag;
         }
-
-        boolean flag1 = this.isSneaking();
-
+        
         if (flag1 != this.serverSneakState)
         {
             if (flag1)
@@ -224,11 +248,11 @@ public class EntityPlayerSP extends AbstractClientPlayer
 
         if (this.isCurrentViewEntity())
         {
-            double d0 = this.posX - this.lastReportedPosX;
+            double d0 = posX - this.lastReportedPosX;
             double d1 = this.getEntityBoundingBox().minY - this.lastReportedPosY;
-            double d2 = this.posZ - this.lastReportedPosZ;
-            double d3 = (double)(this.rotationYaw - this.lastReportedYaw);
-            double d4 = (double)(this.rotationPitch - this.lastReportedPitch);
+            double d2 = posZ - this.lastReportedPosZ;
+            double d3 = (double)(rotationYaw - lastReportedYaw);
+            double d4 = (double)(rotationPitch - lastReportedPitch);
             boolean flag2 = d0 * d0 + d1 * d1 + d2 * d2 > 9.0E-4D || this.positionUpdateTicks >= 20;
             boolean flag3 = d3 != 0.0D || d4 != 0.0D;
 
@@ -236,24 +260,24 @@ public class EntityPlayerSP extends AbstractClientPlayer
             {
                 if (flag2 && flag3)
                 {
-                    this.sendQueue.addToSendQueue(new C03PacketPlayer.C06PacketPlayerPosLook(this.posX, this.getEntityBoundingBox().minY, this.posZ, this.rotationYaw, this.rotationPitch, this.onGround));
+                    this.sendQueue.addToSendQueue(new C03PacketPlayer.C06PacketPlayerPosLook(posX, this.getEntityBoundingBox().minY, posZ, rotationYaw, rotationPitch, onGround));
                 }
                 else if (flag2)
                 {
-                    this.sendQueue.addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(this.posX, this.getEntityBoundingBox().minY, this.posZ, this.onGround));
+                    this.sendQueue.addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(posX, this.getEntityBoundingBox().minY, posZ, onGround));
                 }
                 else if (flag3)
                 {
-                    this.sendQueue.addToSendQueue(new C03PacketPlayer.C05PacketPlayerLook(this.rotationYaw, this.rotationPitch, this.onGround));
+                    this.sendQueue.addToSendQueue(new C03PacketPlayer.C05PacketPlayerLook(rotationYaw, rotationPitch, onGround));
                 }
                 else
                 {
-                    this.sendQueue.addToSendQueue(new C03PacketPlayer(this.onGround));
+                    this.sendQueue.addToSendQueue(new C03PacketPlayer(onGround));
                 }
             }
             else
             {
-                this.sendQueue.addToSendQueue(new C03PacketPlayer.C06PacketPlayerPosLook(this.motionX, -999.0D, this.motionZ, this.rotationYaw, this.rotationPitch, this.onGround));
+                this.sendQueue.addToSendQueue(new C03PacketPlayer.C06PacketPlayerPosLook(motionX, -999.0D, motionZ, rotationYaw, rotationPitch, onGround));
                 flag2 = false;
             }
 
@@ -261,18 +285,26 @@ public class EntityPlayerSP extends AbstractClientPlayer
 
             if (flag2)
             {
-                this.lastReportedPosX = this.posX;
+                this.lastReportedPosX = posX;
                 this.lastReportedPosY = this.getEntityBoundingBox().minY;
-                this.lastReportedPosZ = this.posZ;
+                this.lastReportedPosZ = posZ;
                 this.positionUpdateTicks = 0;
             }
 
             if (flag3)
             {
-                this.lastReportedYaw = this.rotationYaw;
-                this.lastReportedPitch = this.rotationPitch;
+                this.lastReportedYaw = rotationYaw;
+                this.lastReportedPitch = rotationPitch;
             }
         }
+        
+        // Yiffur hook
+		{
+			EventPlayerUpdate eventPlayerUpdate = new EventPlayerUpdate(EventPosition.POST, flag, flag1, onGround, posX,
+					posY, posZ, motionX, motionY, motionZ, rotationYaw, rotationPitch);
+			eventPlayerUpdate.post();
+		}
+        
     }
 
     /**
