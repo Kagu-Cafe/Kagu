@@ -7,11 +7,15 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import xyz.yiffur.yiffur.eventBus.EventBus;
+import xyz.yiffur.yiffur.mods.impl.misc.ModTest;
 import xyz.yiffur.yiffur.mods.impl.move.ModMoonJump;
 import xyz.yiffur.yiffur.mods.impl.move.ModSprint;
 import xyz.yiffur.yiffur.mods.impl.player.ModNoFall;
+<<<<<<< HEAD
 import xyz.yiffur.yiffur.mods.impl.visual.ModAnimations;
 import xyz.yiffur.yiffur.mods.impl.yiff.ModTest;
+=======
+>>>>>>> d7e4fb509052ea18969e47bdb32abb176493abf8
 
 /**
  * @author lavaflowglow
@@ -22,15 +26,21 @@ public class ModuleManager {
 	private static Logger logger = LogManager.getLogger();
 	
 	// All the modules in the client
-	public static ModMoonJump modMoonJump = new ModMoonJump();
+	
+	// Misc
 	public static ModTest modTest = new ModTest();
+	
+	// Movement
+	public static ModMoonJump modMoonJump = new ModMoonJump();
 	public static ModSprint modSprint = new ModSprint();
+	
+	// Player
 	public static ModNoFall modNoFall = new ModNoFall();
 	public static ModAnimations modanimations = new ModAnimations();
 	// An array of all the modules in the client
 	private static final Module[] MODULES = new Module[] {
 			
-			// Test
+			// Misc
 			modTest,
 			//render
 			modanimations,
