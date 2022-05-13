@@ -1,7 +1,7 @@
 /**
  * 
  */
-package xyz.yiffur.yiffur.mods.impl.yiff;
+package xyz.yiffur.yiffur.mods.impl.misc;
 
 import org.apache.commons.lang3.RandomUtils;
 
@@ -23,7 +23,7 @@ import xyz.yiffur.yiffur.settings.impl.ModeSetting;
 public class ModTest extends Module {
 	
 	public ModTest() {
-		super("Test", Category.YIFF);
+		super("Test", Category.MISC);
 	}
 	
 	@Override
@@ -41,12 +41,13 @@ public class ModTest extends Module {
 	public static LongSetting longSetting1 = new LongSetting("Long setting 1", 1, 0, 10, 1), 
 							  longSetting2 = new LongSetting("Long setting 2", 1, -10, 10, 1), 
 							  longSetting3 = new LongSetting("Long setting 3", 10, 10, 20, 1);
-	
-	public static ModeSetting modeSetting = new ModeSetting("Mode setting", "Test 1", "Test 1", "Test 2", "Test 3");
+	public static ModeSetting modeSetting1 = new ModeSetting("Mode setting 1", "Test 1", "Test 1", "Test 2", "Test 3"),
+							  modeSetting2 = new ModeSetting("Mode setting 2", "Test 1", "Test 1"),
+							  modeSetting3 = new ModeSetting("Mode setting 3", "Test 1");
 	
 	@Override
 	public void initialize() {
-		setSettings(booleanSetting, decimalSetting1, decimalSetting2, decimalSetting3, modeSetting, integerSetting1, integerSetting2, integerSetting3, longSetting1, longSetting2, longSetting3);
+		setSettings(booleanSetting, decimalSetting1, decimalSetting2, decimalSetting3, modeSetting1, modeSetting2, modeSetting3, integerSetting1, integerSetting2, integerSetting3, longSetting1, longSetting2, longSetting3);
 	}
 	
 	@YiffEvents
