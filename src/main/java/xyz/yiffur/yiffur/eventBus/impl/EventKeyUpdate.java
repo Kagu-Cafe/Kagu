@@ -4,7 +4,6 @@
 package xyz.yiffur.yiffur.eventBus.impl;
 
 import xyz.yiffur.yiffur.eventBus.Event;
-import xyz.yiffur.yiffur.ui.clickgui.GuiClickgui;
 
 /**
  * @author lavaflowglow

@@ -29,8 +29,11 @@ import optifine.Config;
 import optifine.DynamicLights;
 import optifine.Reflector;
 
+import javax.vecmath.Vector4d;
+
 import org.lwjgl.opengl.GL11;
 import shadersmod.client.Shaders;
+import xyz.yiffur.yiffur.mods.ModuleManager;
 
 public class ItemRenderer
 {
@@ -312,8 +315,8 @@ public class ItemRenderer
         GlStateManager.translate(f1 * 0.0F, f1 * 0.0F, f1 * 0.1F);
         GlStateManager.scale(1.0F, 1.0F, 1.0F + f1 * 0.2F);
     }
-
-    private void func_178103_d()
+    
+	private void transformFirstPersonBlock()
     {
         GlStateManager.translate(-0.5F, 0.2F, 0.0F);
         GlStateManager.rotate(30.0F, 0.0F, 1.0F, 0.0F);
@@ -360,8 +363,12 @@ public class ItemRenderer
                         break;
 
                     case 4:
-                        this.transformFirstPersonItem(f, 0.0F);
-                        this.func_178103_d();
+                    	if (ModuleManager.modAnimations.isEnabled()) {
+                            this.transformFirstPersonItem(f, 0.0F);
+                            this.transformFirstPersonBlock();
+                    	}else {
+                    		
+                    	}
                         break;
 
                     case 5:
@@ -371,7 +378,8 @@ public class ItemRenderer
             }
             else
             {
-                this.func_178105_d(f1);
+            	if (ModuleManager.modAnimations.isDisabled() || ModuleManager.modAnimations.smallSwing.isDisabled())
+            		this.func_178105_d(f1);
                 this.transformFirstPersonItem(f, f1);
             }
 

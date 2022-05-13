@@ -11,11 +11,8 @@ import xyz.yiffur.yiffur.mods.impl.misc.ModTest;
 import xyz.yiffur.yiffur.mods.impl.move.ModMoonJump;
 import xyz.yiffur.yiffur.mods.impl.move.ModSprint;
 import xyz.yiffur.yiffur.mods.impl.player.ModNoFall;
-<<<<<<< HEAD
 import xyz.yiffur.yiffur.mods.impl.visual.ModAnimations;
-import xyz.yiffur.yiffur.mods.impl.yiff.ModTest;
-=======
->>>>>>> d7e4fb509052ea18969e47bdb32abb176493abf8
+import xyz.yiffur.yiffur.mods.impl.misc.ModTest;
 
 /**
  * @author lavaflowglow
@@ -36,14 +33,19 @@ public class ModuleManager {
 	
 	// Player
 	public static ModNoFall modNoFall = new ModNoFall();
-	public static ModAnimations modanimations = new ModAnimations();
+	
+	// Visual
+	public static ModAnimations modAnimations = new ModAnimations();
+	
 	// An array of all the modules in the client
 	private static final Module[] MODULES = new Module[] {
 			
 			// Misc
 			modTest,
-			//render
-			modanimations,
+			
+			// Visual
+			modAnimations,
+			
 			// Movement
 			modMoonJump,
 			modSprint,

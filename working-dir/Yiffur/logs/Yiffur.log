@@ -14808,3 +14808,5 @@ java.lang.Exception
 2022-05-12 20:32:04,545 [Client thread] ERROR net.minecraft.entity.item.EntityItem - Item entity 12530 has no item?!
 2022-05-12 20:32:05,397 [Client thread] ERROR net.minecraft.entity.item.EntityItem - Item entity 13025 has no item?!
 2022-05-12 20:32:05,397 [Client thread] ERROR net.minecraft.entity.item.EntityItem - Item entity 13025 has no item?!
+2022-05-13 14:33:27,412 [Client thread] ERROR net.minecraft.entity.item.EntityItem - Item entity 5812 has no item?!
+2022-05-13 14:33:27,415 [Client thread] ERROR net.minecraft.entity.item.EntityItem - Item entity 5812 has no item?!
