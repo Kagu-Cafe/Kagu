@@ -10,6 +10,7 @@ import xyz.yiffur.yiffur.eventBus.EventBus;
 import xyz.yiffur.yiffur.mods.impl.move.ModMoonJump;
 import xyz.yiffur.yiffur.mods.impl.move.ModSprint;
 import xyz.yiffur.yiffur.mods.impl.player.ModNoFall;
+import xyz.yiffur.yiffur.mods.impl.visual.ModAnimations;
 import xyz.yiffur.yiffur.mods.impl.yiff.ModTest;
 
 /**
@@ -25,13 +26,14 @@ public class ModuleManager {
 	public static ModTest modTest = new ModTest();
 	public static ModSprint modSprint = new ModSprint();
 	public static ModNoFall modNoFall = new ModNoFall();
-	
+	public static ModAnimations modanimations = new ModAnimations();
 	// An array of all the modules in the client
 	private static final Module[] MODULES = new Module[] {
 			
 			// Test
 			modTest,
-			
+			//render
+			modanimations,
 			// Movement
 			modMoonJump,
 			modSprint,
