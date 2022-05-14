@@ -9,6 +9,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import net.minecraft.client.Minecraft;
+import xyz.yiffur.yiffur.eventBus.impl.EventPlayerUpdate;
 import xyz.yiffur.yiffur.mods.Module;
 
 /**

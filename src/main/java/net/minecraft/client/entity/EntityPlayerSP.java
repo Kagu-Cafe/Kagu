@@ -197,7 +197,7 @@ public class EntityPlayerSP extends AbstractClientPlayer
         // Yiffur hook
 		double posX = this.posX, posY = this.posY, posZ = this.posZ, motionX = this.motionX, motionY = this.motionY,
 				motionZ = this.motionZ;
-        float rotationYaw = this.rotationYaw, rotationPitch = rotationYaw;
+        float rotationYaw = this.rotationYaw, rotationPitch = this.rotationPitch;
         boolean onGround = this.onGround;
 		{
 			EventPlayerUpdate eventPlayerUpdate = new EventPlayerUpdate(EventPosition.PRE, flag, flag1, onGround, posX,

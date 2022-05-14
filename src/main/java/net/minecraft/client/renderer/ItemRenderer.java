@@ -363,11 +363,11 @@ public class ItemRenderer
                         break;
 
                     case 4:
-                    	if (ModuleManager.modAnimations.isDisabled()) {
+                    	if (ModuleManager.modAnimations.isDisabled() || true) {
                             this.transformFirstPersonItem(f, 0.0F);
                             this.transformFirstPersonBlock();
                     	}else {
-                    		// Hook event here later
+                    		// Hook event here lateri
                     	}
                         break;
 
