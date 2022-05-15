@@ -35,7 +35,6 @@ public class EventBus {
 	 * @param e The event that's being distributed
 	 */
 	public static void distribute(Event e) {
-		
 		// Don't send events if the world or player is null
 		Minecraft mc = Minecraft.getMinecraft();
 		if (mc.theWorld == null || mc.thePlayer == null) {

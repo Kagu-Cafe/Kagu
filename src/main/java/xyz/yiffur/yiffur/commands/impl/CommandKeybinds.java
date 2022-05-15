@@ -25,7 +25,7 @@ public class CommandKeybinds extends Command {
 	}, "list");
 	
 	public CommandKeybinds() {
-		super("keybinds", "save/load/list name", save, load, list);
+		super("keybinds", "<save/load/list> <name>", save, load, list);
 	}
 	
 }

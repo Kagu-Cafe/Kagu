@@ -21,8 +21,8 @@ public class FileManager {
 	
 	// Files
 	public static final File
-						// Defaults dir
-						DEFAULT_KEYBIND_SET = new File(DEFAULTS_DIR, "keybinds.json");
+						// Defaults dir files
+						DEFAULT_KEYBIND_SET = new File(DEFAULTS_DIR, "keybinds.txt");
 	
 	/**
 	 * Called when the client starts
