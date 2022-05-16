@@ -112,11 +112,13 @@ public class CommandManager {
 
 			}
 			
+			// No command action had the correct usage
 			ChatUtils.addChatMessage("Usage: ." + command.getName(), command.getUsage());
 			return;
 			
 		}
 		
+		// No command has the correct name
 		ChatUtils.addChatMessage("Use \".help\" to get a list of client commands");
 	};
 	
