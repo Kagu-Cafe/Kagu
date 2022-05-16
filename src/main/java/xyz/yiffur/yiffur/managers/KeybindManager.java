@@ -93,7 +93,7 @@ public class KeybindManager {
 	 * Saves the keybinds to a file
 	 * @param file The file to save them to
 	 */
-	private static void save(File file) {
+	public static void save(File file) {
 		String save = "";
 		for (String module : keybinds.keySet()) {
 			save += (save.isEmpty() ? "" : "\n") + module + ":";
@@ -110,7 +110,7 @@ public class KeybindManager {
 	 * Saves the keybinds from a file
 	 * @param file The file to load them from
 	 */
-	private static void load(File file) {
+	public static void load(File file) {
 		String fileData = FileManager.readStringFromFile(file);
 		if (fileData.isEmpty())
 			return;

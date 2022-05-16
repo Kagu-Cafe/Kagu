@@ -22,7 +22,7 @@ public class FileManager {
 	// Files
 	public static final File
 						// Defaults dir files
-						DEFAULT_KEYBIND_SET = new File(DEFAULTS_DIR, "keybinds.txt");
+						DEFAULT_KEYBIND_SET = new File(DEFAULTS_DIR, "keybinds.e621");
 	
 	/**
 	 * Called when the client starts

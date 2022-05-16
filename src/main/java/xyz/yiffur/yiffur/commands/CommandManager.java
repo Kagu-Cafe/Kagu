@@ -113,10 +113,11 @@ public class CommandManager {
 			}
 			
 			ChatUtils.addChatMessage("Usage: ." + command.getName(), command.getUsage());
-			break;
+			return;
 			
 		}
 		
+		ChatUtils.addChatMessage("Use \".help\" to get a list of client commands");
 	};
 	
 	/**
