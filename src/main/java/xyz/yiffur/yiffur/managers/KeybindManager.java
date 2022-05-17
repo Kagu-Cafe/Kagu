@@ -37,8 +37,8 @@ public class KeybindManager {
 	public static void start() {
 		
 		// Load the default keybinds if they exist
-		if (FileManager.DEFAULT_KEYBIND_SET.exists()) {
-			load(FileManager.DEFAULT_KEYBIND_SET);
+		if (FileManager.DEFAULT_KEYBINDS.exists()) {
+			load(FileManager.DEFAULT_KEYBINDS);
 		}
 		
 		// Subscribe to the key event so we can use the keybinds
@@ -62,7 +62,7 @@ public class KeybindManager {
 		}else {
 			keybinds.put(module, binds.toArray(new Integer[0]));
 		}
-		save(FileManager.DEFAULT_KEYBIND_SET);
+		save(FileManager.DEFAULT_KEYBINDS);
 	}
 	
 	/**
@@ -72,7 +72,7 @@ public class KeybindManager {
 	public static void removeKeybind(String module) {
 		module = module.toLowerCase();
 		keybinds.remove(module);
-		save(FileManager.DEFAULT_KEYBIND_SET);
+		save(FileManager.DEFAULT_KEYBINDS);
 	}
 	
 	/**

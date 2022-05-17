@@ -43,7 +43,7 @@ public class CommandKeybinds extends Command {
 			return true;
 		}
 		KeybindManager.load(file);
-		KeybindManager.save(FileManager.DEFAULT_KEYBIND_SET);
+		KeybindManager.save(FileManager.DEFAULT_KEYBINDS);
 		ChatUtils.addChatMessage("Loaded keybinds from \"" + file.getName() + "\"");
 		return true;
 	}, "load");

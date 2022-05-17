@@ -17,13 +17,14 @@ public class FileManager {
 	public static final File 
 						YIFFUR_DIR = new File("Yiffur"), 
 						DEFAULTS_DIR = new File(YIFFUR_DIR, "defaults"), 
-						KEYBINDS_DIR = new File(YIFFUR_DIR, "keybinds");
+						KEYBINDS_DIR = new File(YIFFUR_DIR, "keybinds"),
+						CONFIGS_DIR = new File(YIFFUR_DIR, "configs");
 	
 	// Files
 	public static final File
 						
 						// Defaults
-						DEFAULT_KEYBIND_SET = new File(DEFAULTS_DIR, "keybinds.E621"),
+						DEFAULT_KEYBINDS = new File(DEFAULTS_DIR, "keybinds.E621"),
 						DEFAULT_CONFIG = new File(DEFAULTS_DIR, "config.yiff");
 	
 	/**
@@ -42,6 +43,10 @@ public class FileManager {
 		
 		if (!KEYBINDS_DIR.exists()) {
 			KEYBINDS_DIR.mkdirs();
+		}
+		
+		if (!CONFIGS_DIR.exists()) {
+			CONFIGS_DIR.mkdirs();
 		}
 		
 		// Create any missing files

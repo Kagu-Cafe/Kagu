@@ -58,7 +58,7 @@ public class ModeSetting extends Setting {
 	 * @return The current mode
 	 */
 	public String getMode() {
-		return modeIndex >= modes.size() ? modes.get(modeIndex = 0) : modes.get(modeIndex);
+		return modeIndex >= modes.size() ? (modes.size() == 0 ? "" : modes.get(modeIndex = 0)) : modes.get(modeIndex);
 	}
 	
 	/**

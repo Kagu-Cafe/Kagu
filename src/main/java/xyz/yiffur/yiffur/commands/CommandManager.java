@@ -9,6 +9,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiChat;
 import xyz.yiffur.yiffur.commands.Command.ActionRequirement;
 import xyz.yiffur.yiffur.commands.impl.CommandBind;
+import xyz.yiffur.yiffur.commands.impl.CommandConfig;
 import xyz.yiffur.yiffur.commands.impl.CommandHelp;
 import xyz.yiffur.yiffur.commands.impl.CommandKeybinds;
 import xyz.yiffur.yiffur.commands.impl.CommandSay;
@@ -36,6 +37,7 @@ public class CommandManager {
 	private static final Command[] COMMANDS = new Command[] {
 			new CommandHelp(),
 			new CommandKeybinds(),
+			new CommandConfig(),
 			new CommandBind(),
 			new CommandSay()
 	};
