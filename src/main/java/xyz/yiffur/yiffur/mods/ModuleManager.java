@@ -62,7 +62,6 @@ public class ModuleManager {
 		logger.info("Loading modules...");
 		
 		for (Module module : MODULES) {
-			module.initialize(); // Initialize the module
 			EventBus.setSubscriber(module, true); // Subscribe any listeners to the event bus
 		}
 		

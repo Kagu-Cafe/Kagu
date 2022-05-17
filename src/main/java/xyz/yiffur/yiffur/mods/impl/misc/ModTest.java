@@ -24,6 +24,7 @@ public class ModTest extends Module {
 	
 	public ModTest() {
 		super("Test", Category.MISC);
+		setSettings(booleanSetting, decimalSetting1, decimalSetting2, decimalSetting3, modeSetting1, modeSetting2, modeSetting3, integerSetting1, integerSetting2, integerSetting3, longSetting1, longSetting2, longSetting3);
 	}
 	
 	@Override
@@ -44,11 +45,6 @@ public class ModTest extends Module {
 	public static ModeSetting modeSetting1 = new ModeSetting("Mode setting 1", "Test 1", "Test 1", "Test 2", "Test 3"),
 							  modeSetting2 = new ModeSetting("Mode setting 2", "Test 1", "Test 1"),
 							  modeSetting3 = new ModeSetting("Mode setting 3", "Test 1");
-	
-	@Override
-	public void initialize() {
-		setSettings(booleanSetting, decimalSetting1, decimalSetting2, decimalSetting3, modeSetting1, modeSetting2, modeSetting3, integerSetting1, integerSetting2, integerSetting3, longSetting1, longSetting2, longSetting3);
-	}
 	
 	@YiffEvents
 	public Subscriber<EventTick> onTick = e -> {

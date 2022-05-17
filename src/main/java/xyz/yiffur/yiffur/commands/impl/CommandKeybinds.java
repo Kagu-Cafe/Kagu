@@ -24,7 +24,7 @@ public class CommandKeybinds extends Command {
 		for (String str : args) {
 			stitchedArgs += (stitchedArgs.isEmpty() ? "" : " ") + str;
 		}
-		File file = new File(FileManager.KEYBINDS_DIR, stitchedArgs + ".e621");
+		File file = new File(FileManager.KEYBINDS_DIR, stitchedArgs + ".E621");
 		ChatUtils.addChatMessage("Saved keybinds to \"" + file.getName() + "\"");
 		KeybindManager.save(file);
 		return true;
@@ -37,7 +37,7 @@ public class CommandKeybinds extends Command {
 		for (String str : args) {
 			stitchedArgs += (stitchedArgs.isEmpty() ? "" : " ") + str;
 		}
-		File file = new File(FileManager.KEYBINDS_DIR, stitchedArgs + ".e621");
+		File file = new File(FileManager.KEYBINDS_DIR, stitchedArgs + ".E621");
 		if (!file.exists()) {
 			ChatUtils.addChatMessage("Could not find file \"" + file.getName() + "\"");
 			return true;

@@ -19,19 +19,16 @@ public class ModNoFall extends Module {
 
 	public ModNoFall() {
 		super("Nofall", Category.PLAYER);
-
+		setSettings(mode);
 	}
 
 	public ModeSetting mode = new ModeSetting("Mode", "Spoof", "Spoof", "V2");
-
-	@Override
-	public void initialize() {
-		setSettings(mode);
-	}
+	
 	@YiffEvents
 	public Subscriber<EventTick> onTick = e -> {
 		setInfo(mode.getMode());
 	};
+	
 	@YiffEvents
 	public Subscriber<EventPlayerUpdate> onUpdate = e -> {
 		if (e.isPost())

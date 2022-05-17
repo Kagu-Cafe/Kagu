@@ -3,7 +3,11 @@
  */
 package xyz.yiffur.yiffur.mods;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import net.minecraft.client.Minecraft;
+import xyz.yiffur.yiffur.Yiffur;
 import xyz.yiffur.yiffur.eventBus.Event.EventPosition;
 import xyz.yiffur.yiffur.eventBus.impl.EventModuleStateUpdate;
 import xyz.yiffur.yiffur.settings.Setting;
@@ -13,19 +17,32 @@ import xyz.yiffur.yiffur.settings.Setting;
  *
  */
 public abstract class Module {
-
+	
+	private String name = ""; // The name of the module
+	private String[] info = new String[0]; // The info displayed next to the name on the arraylist
+	private Setting[] settings = new Setting[0]; // Any settings that the module may have
+	private Category category; // The category of the module
+	private boolean enabled = false, isClickguiExtended = false;
+	private double clickguiExtension = 0, clickguiToggle = 0;
+	
+	private static Logger logger = LogManager.getLogger();
+	
+	protected static Minecraft mc = Minecraft.getMinecraft(); // The minecraft instance used for the modules
+	
 	/**
 	 * @param name The name of the module
 	 */
 	public Module(String name, Category category) {
+		
+		// We use these two chars when saving and loading files, if the config name contains them it could create issues
+		if (name.contains(String.valueOf(Yiffur.UNIT_SEPARATOR)) || name.contains(String.valueOf(Yiffur.RECORD_SEPARATOR)) || name.contains(String.valueOf(Yiffur.GROUP_SEPARATOR))) {
+			logger.error("Name of module (" + name + ") contains a forbidden character, please refrain from using the unit and record separator character when naming modules as they break file loading");
+			System.exit(0);
+			return;
+		}
 		this.name = name;
 		this.category = category;
 	}
-
-	/**
-	 * Called when the client starts, it will add settings and do other shit
-	 */
-	public void initialize() {}
 	
 	/**
 	 * Called when the module is enabled
@@ -45,15 +62,6 @@ public abstract class Module {
 		this.settings = settings;
 	}
 	
-	private String name = ""; // The name of the module
-	private String[] info = new String[0]; // The info displayed next to the name on the arraylist
-	private Setting[] settings = new Setting[0]; // Any settings that the module may have
-	private Category category; // The category of the module
-	private boolean enabled = false, isClickguiExtended = false;
-	private double clickguiExtension = 0, clickguiToggle = 0;
-	
-	protected static Minecraft mc = Minecraft.getMinecraft(); // The minecraft instance used for the modules
-
 	/**
 	 * @param info An array of strings that will be displayed next to the module on
 	 *             the arraylist
@@ -254,6 +262,14 @@ public abstract class Module {
 		 * @param arraylistColor The color displayed on the arraylist
 		 */
 		Category(String name, int arraylistColor) {
+			
+			// We use these two chars when saving and loading files, if the config name contains them it could create issues
+			if (name.contains(String.valueOf(Yiffur.UNIT_SEPARATOR)) || name.contains(String.valueOf(Yiffur.RECORD_SEPARATOR)) || name.contains(String.valueOf(Yiffur.GROUP_SEPARATOR))) {
+				logger.error("Name of category (" + name + ") contains a forbidden character, please refrain from using the unit and record separator character when naming modules as they break file loading");
+				System.exit(0);
+				return;
+			}
+			
 			this.name = name;
 			this.arraylistColor = arraylistColor;
 		}

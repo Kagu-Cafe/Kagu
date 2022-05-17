@@ -21,8 +21,10 @@ public class FileManager {
 	
 	// Files
 	public static final File
-						// Defaults dir files
-						DEFAULT_KEYBIND_SET = new File(DEFAULTS_DIR, "keybinds.e621");
+						
+						// Defaults
+						DEFAULT_KEYBIND_SET = new File(DEFAULTS_DIR, "keybinds.E621"),
+						DEFAULT_CONFIG = new File(DEFAULTS_DIR, "config.yiff");
 	
 	/**
 	 * Called when the client starts

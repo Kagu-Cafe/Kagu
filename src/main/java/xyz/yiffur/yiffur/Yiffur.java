@@ -27,6 +27,10 @@ public class Yiffur {
 	
 	private static Logger logger = LogManager.getLogger();
 	
+	public static final char UNIT_SEPARATOR = (char)31;
+	public static final char RECORD_SEPARATOR = (char)30;
+	public static final char GROUP_SEPARATOR = (char)29;
+	
 	/**
 	 * The start method, everything should be initialized here
 	 */

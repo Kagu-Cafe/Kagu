@@ -19,14 +19,10 @@ public class ModSprint extends Module {
 
 	public ModSprint() {
 		super("Sprint", Category.MOVEMENT);
+		setSettings(omni);
 	}
 
 	public BooleanSetting omni = new BooleanSetting("Omni", false);
-
-	@Override
-	public void initialize() {
-		setSettings(omni);
-	}
 	
 	@YiffEvents
 	public Subscriber<EventPlayerUpdate> onUpdate = e -> {

@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import xyz.yiffur.yiffur.Yiffur;
 import xyz.yiffur.yiffur.eventBus.EventBus;
 import xyz.yiffur.yiffur.eventBus.Subscriber;
 import xyz.yiffur.yiffur.eventBus.YiffEvents;
@@ -91,19 +92,19 @@ public class KeybindManager {
 	
 	/**
 	 * Saves the keybinds to a file
-	 * @param file The file to save them to
+	 * @param saveFile The file to save them to
 	 */
-	public static void save(File file) {
+	public static void save(File saveFile) {
 		String save = "";
 		for (String module : keybinds.keySet()) {
-			save += (save.isEmpty() ? "" : "\n") + module + ":";
+			save += (save.isEmpty() ? "" : String.valueOf(Yiffur.UNIT_SEPARATOR)) + module + String.valueOf(Yiffur.GROUP_SEPARATOR);
 			String binds = "";
 			for (Integer bind : getKeybinds(module)) {
-				binds += (binds.isEmpty() ? "" : ",") + bind;
+				binds += (binds.isEmpty() ? "" : String.valueOf(Yiffur.RECORD_SEPARATOR)) + bind;
 			}
 			save += binds;
 		}
-		FileManager.writeStringToFile(file, save);
+		FileManager.writeStringToFile(saveFile, save);
 	}
 	
 	/**
@@ -115,12 +116,12 @@ public class KeybindManager {
 		if (fileData.isEmpty())
 			return;
 		keybinds.clear();
-		for (String bind : fileData.split("\n")) {
+		for (String bind : fileData.split(String.valueOf(Yiffur.UNIT_SEPARATOR))) {
 			try {
-				String[] bindArray = bind.split(":");
+				String[] bindArray = bind.split(String.valueOf(Yiffur.GROUP_SEPARATOR));
 				
 				List<Integer> keyCodes = new ArrayList<>();
-				for (String code : bindArray[1].split(",")) {
+				for (String code : bindArray[1].split(String.valueOf(Yiffur.RECORD_SEPARATOR))) {
 					keyCodes.add(Integer.valueOf(code));
 				}
 				

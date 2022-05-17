@@ -21,15 +21,11 @@ public class ModAnimations extends Module {
 
 	public ModAnimations() {
 		super("Animations", Category.VISUAL);
+		setSettings(smallSwing, smoothBlockTransfer, animation);
 	}
 	
 	public ModeSetting animation = new ModeSetting("Animation", "1.7", "1.7");
 	public BooleanSetting smallSwing = new BooleanSetting("Small swing", false);
 	public BooleanSetting smoothBlockTransfer = new BooleanSetting("Smooth block transfer", false);
-	
-	@Override
-	public void initialize() {
-		setSettings(smallSwing, smoothBlockTransfer, animation);
-	}
 	
 }
