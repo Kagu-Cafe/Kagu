@@ -32,8 +32,8 @@ public class ConfigManager {
 		// Serialize all the modules and settings in a format that our client can read
 		String config = "";
 		for (Module module : ModuleManager.getModules()) {
-			config += (config.isEmpty() ? "" : String.valueOf(Yiffur.UNIT_SEPARATOR)) + module.getName() + String.valueOf(Yiffur.GROUP_SEPARATOR) 
-				+ module.getCategory() + String.valueOf(Yiffur.GROUP_SEPARATOR) 
+			config += (config.isEmpty() ? "" : Yiffur.UNIT_SEPARATOR) + module.getName() + Yiffur.GROUP_SEPARATOR
+				+ module.getCategory() + Yiffur.GROUP_SEPARATOR
 				+ module.isEnabled();
 			for (Setting setting : module.getSettings()) {
 				
@@ -58,10 +58,10 @@ public class ConfigManager {
 					settingValue = ((ModeSetting)setting).getMode() + "";
 				}
 				
-				config += String.valueOf(Yiffur.GROUP_SEPARATOR) + setting.getName()
-						+ String.valueOf(Yiffur.RECORD_SEPARATOR) + setting.isHidden()
-						+ String.valueOf(Yiffur.RECORD_SEPARATOR) + settingType
-						+ String.valueOf(Yiffur.RECORD_SEPARATOR) + settingValue;
+				config += Yiffur.GROUP_SEPARATOR + setting.getName()
+						+ Yiffur.RECORD_SEPARATOR + setting.isHidden()
+						+ Yiffur.RECORD_SEPARATOR + settingType
+						+ Yiffur.RECORD_SEPARATOR + settingValue;
 				
 			}
 		}
@@ -80,10 +80,10 @@ public class ConfigManager {
 		// Load the file
 		String config = FileManager.readStringFromFile(file);
 		
-		String[] modulesString = config.split(String.valueOf(Yiffur.UNIT_SEPARATOR));
+		String[] modulesString = config.split(Yiffur.UNIT_SEPARATOR);
 		for (String moduleString : modulesString) {
 			
-			String[] moduleSplit = moduleString.split(String.valueOf(Yiffur.GROUP_SEPARATOR));
+			String[] moduleSplit = moduleString.split(Yiffur.GROUP_SEPARATOR);
 			
 			// Name and category
 			String name = moduleSplit[0];
@@ -101,7 +101,7 @@ public class ConfigManager {
 				// Load settings
 				if (moduleSplit.length > 3) for (int settingsIndex = 3; settingsIndex < moduleSplit.length; settingsIndex++) {
 					String settingString = moduleSplit[settingsIndex];
-					String[] settingSplit = settingString.split(String.valueOf(Yiffur.RECORD_SEPARATOR));
+					String[] settingSplit = settingString.split(Yiffur.RECORD_SEPARATOR);
 					
 					// Load the setting info
 					String settingName = settingSplit[0];

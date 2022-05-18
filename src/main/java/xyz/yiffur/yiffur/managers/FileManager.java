@@ -6,6 +6,7 @@ package xyz.yiffur.yiffur.managers;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.nio.charset.StandardCharsets;
 
 /**
  * @author lavaflowglow
@@ -92,7 +93,7 @@ public class FileManager {
 	 * @param str The string to write
 	 */
 	public static void writeStringToFile(File file, String str) {
-		writeBytesToFile(file, str.getBytes());
+		writeBytesToFile(file, str.getBytes(StandardCharsets.UTF_16));
 	}
 	
 	/**

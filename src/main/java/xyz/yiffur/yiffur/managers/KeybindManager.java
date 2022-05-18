@@ -97,10 +97,10 @@ public class KeybindManager {
 	public static void save(File saveFile) {
 		String save = "";
 		for (String module : keybinds.keySet()) {
-			save += (save.isEmpty() ? "" : String.valueOf(Yiffur.UNIT_SEPARATOR)) + module + String.valueOf(Yiffur.GROUP_SEPARATOR);
+			save += (save.isEmpty() ? "" : Yiffur.UNIT_SEPARATOR) + module + Yiffur.GROUP_SEPARATOR;
 			String binds = "";
 			for (Integer bind : getKeybinds(module)) {
-				binds += (binds.isEmpty() ? "" : String.valueOf(Yiffur.RECORD_SEPARATOR)) + bind;
+				binds += (binds.isEmpty() ? "" : Yiffur.RECORD_SEPARATOR) + bind;
 			}
 			save += binds;
 		}
@@ -116,12 +116,12 @@ public class KeybindManager {
 		if (fileData.isEmpty())
 			return;
 		keybinds.clear();
-		for (String bind : fileData.split(String.valueOf(Yiffur.UNIT_SEPARATOR))) {
+		for (String bind : fileData.split(Yiffur.UNIT_SEPARATOR)) {
 			try {
-				String[] bindArray = bind.split(String.valueOf(Yiffur.GROUP_SEPARATOR));
+				String[] bindArray = bind.split(Yiffur.GROUP_SEPARATOR);
 				
 				List<Integer> keyCodes = new ArrayList<>();
-				for (String code : bindArray[1].split(String.valueOf(Yiffur.RECORD_SEPARATOR))) {
+				for (String code : bindArray[1].split(Yiffur.RECORD_SEPARATOR)) {
 					keyCodes.add(Integer.valueOf(code));
 				}
 				

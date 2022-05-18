@@ -35,7 +35,7 @@ public abstract class Module {
 	public Module(String name, Category category) {
 		
 		// We use these two chars when saving and loading files, if the config name contains them it could create issues
-		if (name.contains(String.valueOf(Yiffur.UNIT_SEPARATOR)) || name.contains(String.valueOf(Yiffur.RECORD_SEPARATOR)) || name.contains(String.valueOf(Yiffur.GROUP_SEPARATOR))) {
+		if (name.contains(Yiffur.UNIT_SEPARATOR) || name.contains(Yiffur.RECORD_SEPARATOR) || name.contains(Yiffur.GROUP_SEPARATOR)) {
 			logger.error("Name of module (" + name + ") contains a forbidden character, please refrain from using the unit and record separator character when naming modules as they break file loading");
 			System.exit(0);
 			return;
@@ -264,7 +264,7 @@ public abstract class Module {
 		Category(String name, int arraylistColor) {
 			
 			// We use these two chars when saving and loading files, if the config name contains them it could create issues
-			if (name.contains(String.valueOf(Yiffur.UNIT_SEPARATOR)) || name.contains(String.valueOf(Yiffur.RECORD_SEPARATOR)) || name.contains(String.valueOf(Yiffur.GROUP_SEPARATOR))) {
+			if (name.contains(Yiffur.UNIT_SEPARATOR) || name.contains(Yiffur.RECORD_SEPARATOR) || name.contains(Yiffur.GROUP_SEPARATOR)) {
 				logger.error("Name of category (" + name + ") contains a forbidden character, please refrain from using the unit and record separator character when naming modules as they break file loading");
 				System.exit(0);
 				return;
