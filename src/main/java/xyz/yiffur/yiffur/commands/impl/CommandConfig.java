@@ -43,15 +43,15 @@ public class CommandConfig extends Command {
 			ChatUtils.addChatMessage("Could not find file \"" + file.getName() + "\"");
 			return true;
 		}
-		KeybindManager.load(file);
-		KeybindManager.save(FileManager.DEFAULT_CONFIG);
+		ConfigManager.load(file);
+		ConfigManager.save(FileManager.DEFAULT_CONFIG);
 		ChatUtils.addChatMessage("Loaded config from \"" + file.getName() + "\"");
 		return true;
 	}, "load");
 	
 	private static ActionRequirement list = new ActionRequirement((CommandAction)args -> {
 		String[] fileNames = FileManager.CONFIGS_DIR.list();
-		ChatUtils.addChatMessage("Found " + fileNames.length + " keybind file" + (fileNames.length == 1 ? "" : "s"));
+		ChatUtils.addChatMessage("Found " + fileNames.length + " config file" + (fileNames.length == 1 ? "" : "s"));
 		for (String fileName : fileNames) {
 			ChatUtils.addChatMessage("    " + fileName);
 		}
