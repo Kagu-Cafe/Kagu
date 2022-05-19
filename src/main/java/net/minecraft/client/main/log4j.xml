@@ -7,8 +7,8 @@
                 [%t] %highlight{%-5level}{FATAL=bg_red, ERROR=red, WARN=yellow, INFO=green} %logger{36} - %message\n" />
 		</Console>
 		<RollingFile name="logOutput"
-			fileName="Yiffur/logs/Yiffur.log"
-			filePattern="Yiffur/logs/Yiffur-%d{yyyy-MM-dd}-%i.log.gz"
+			fileName="Kagu/logs/Kagu.log"
+			filePattern="Kagu/logs/Kagu-%d{yyyy-MM-dd}-%i.log.gz"
 			maxBackupIndex="1">
 			<PatternLayout
 				pattern="%d{DEFAULT} [%t] %-5level %logger{36} - %msg%n" />
