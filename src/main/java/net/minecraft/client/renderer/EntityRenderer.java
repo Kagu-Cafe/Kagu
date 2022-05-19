@@ -2,6 +2,9 @@ package net.minecraft.client.renderer;
 
 import com.google.common.base.Predicates;
 import com.google.gson.JsonSyntaxException;
+
+import cafe.kagu.kagu.ui.GuiMainMenu;
+
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.nio.FloatBuffer;
@@ -87,7 +90,6 @@ import org.lwjgl.util.glu.GLU;
 import org.lwjgl.util.glu.Project;
 import shadersmod.client.Shaders;
 import shadersmod.client.ShadersRender;
-import xyz.yiffur.yiffur.ui.GuiMainMenu;
 
 public class EntityRenderer implements IResourceManagerReloadListener
 {

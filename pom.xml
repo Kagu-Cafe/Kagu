@@ -2,11 +2,12 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>xyz.yiffur</groupId>
-	<artifactId>yiffur</artifactId>
+	<groupId>cafe.kegu</groupId>
+	<artifactId>Kagu</artifactId>
 	<version>0.0.1</version>
-	<name>Yiffur</name>
-	<description>OwO</description>
+	<name>Kagu</name>
+	<url>https://Kagu.cafe</url>
+	<description>Kagu client</description>
 
 	<dependencies>
 
@@ -27,13 +28,6 @@
 			<groupId>javax.vecmath</groupId>
 			<artifactId>vecmath</artifactId>
 			<version>1.5.2</version>
-		</dependency>
-
-		<!-- Used for some files -->
-		<dependency>
-			<groupId>org.json</groupId>
-			<artifactId>json</artifactId>
-			<version>20220320</version>
 		</dependency>
 		
 	</dependencies>

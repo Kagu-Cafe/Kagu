@@ -13,6 +13,13 @@ import com.mojang.authlib.minecraft.MinecraftSessionService;
 import com.mojang.authlib.properties.Property;
 import com.mojang.authlib.properties.PropertyMap;
 import com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService;
+
+import cafe.kagu.kagu.Kagu;
+import cafe.kagu.kagu.eventBus.Event.EventPosition;
+import cafe.kagu.kagu.eventBus.impl.EventKeyUpdate;
+import cafe.kagu.kagu.eventBus.impl.EventTick;
+import cafe.kagu.kagu.ui.GuiMainMenu;
+
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -166,11 +173,6 @@ import net.minecraft.world.chunk.storage.AnvilSaveConverter;
 import net.minecraft.world.storage.ISaveFormat;
 import net.minecraft.world.storage.ISaveHandler;
 import net.minecraft.world.storage.WorldInfo;
-import xyz.yiffur.yiffur.Yiffur;
-import xyz.yiffur.yiffur.eventBus.Event.EventPosition;
-import xyz.yiffur.yiffur.eventBus.impl.EventKeyUpdate;
-import xyz.yiffur.yiffur.eventBus.impl.EventTick;
-import xyz.yiffur.yiffur.ui.GuiMainMenu;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.Validate;
@@ -565,8 +567,8 @@ public class Minecraft implements IThreadListener, IPlayerUsage
         this.checkGLError("Post startup");
         this.ingameGUI = new GuiIngame(this);
         
-        // Starting loading Yiffur here
-        Yiffur.start();
+        // Starting loading Kagu here
+        Kagu.start();
 
         if (this.serverName != null)
         {
@@ -1724,7 +1726,7 @@ public class Minecraft implements IThreadListener, IPlayerUsage
     public void runTick() throws IOException
     {
     	
-    	// Yiffur event hook
+    	// Kagu hook
     	{
     		EventTick eventTick = new EventTick(EventPosition.PRE);
     		eventTick.post();
@@ -1900,7 +1902,7 @@ public class Minecraft implements IThreadListener, IPlayerUsage
             	int k = Keyboard.getEventKey() == 0 ? Keyboard.getEventCharacter() + 256 : Keyboard.getEventKey();
             	boolean isPressed = Keyboard.getEventKeyState();
             	
-                // Yiffur hook
+                // Kagu hook
                 {
                 	EventKeyUpdate eventKeyUpdate = new EventKeyUpdate(EventPosition.PRE, k, isPressed);
                 	eventKeyUpdate.post();
@@ -2076,7 +2078,7 @@ public class Minecraft implements IThreadListener, IPlayerUsage
                     }
                 }
                 
-                // Yiffur hook
+                // Kagu hook
                 {
                 	EventKeyUpdate eventKeyUpdate = new EventKeyUpdate(EventPosition.POST, k, isPressed);
                 	eventKeyUpdate.post();
@@ -2284,7 +2286,7 @@ public class Minecraft implements IThreadListener, IPlayerUsage
         this.mcProfiler.endSection();
         this.systemTime = getSystemTime();
         
-    	// Yiffur event hook
+    	// Kagu hook
     	{
     		EventTick eventTick = new EventTick(EventPosition.POST);
     		eventTick.post();

@@ -6,8 +6,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.Configurator;
 
+import cafe.kagu.kagu.Kagu;
 import net.minecraft.client.main.Main;
-import xyz.yiffur.yiffur.Yiffur;
 
 public class Start
 {

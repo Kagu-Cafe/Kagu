@@ -3,6 +3,10 @@ package net.minecraft.client.gui;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+
+import cafe.kagu.kagu.eventBus.Event.EventPosition;
+import cafe.kagu.kagu.eventBus.impl.Event2DRender;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Random;
@@ -43,8 +47,6 @@ import net.minecraft.util.StringUtils;
 import net.minecraft.world.border.WorldBorder;
 import optifine.Config;
 import optifine.CustomColors;
-import xyz.yiffur.yiffur.eventBus.Event.EventPosition;
-import xyz.yiffur.yiffur.eventBus.impl.Event2DRender;
 
 public class GuiIngame extends Gui
 {
@@ -118,7 +120,7 @@ public class GuiIngame extends Gui
     public void renderGameOverlay(float partialTicks)
     {
     	
-        // Yiffur hook
+        // Kagu hook
         {
         	Event2DRender event2dRender = new Event2DRender(EventPosition.PRE);
         	event2dRender.post();
@@ -361,7 +363,7 @@ public class GuiIngame extends Gui
         GlStateManager.disableLighting();
         GlStateManager.enableAlpha();
         
-        // Yiffur hook
+        // Kagu hook
         {
         	Event2DRender event2dRender = new Event2DRender(EventPosition.POST);
         	event2dRender.post();

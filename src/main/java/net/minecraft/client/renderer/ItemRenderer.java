@@ -32,8 +32,11 @@ import optifine.Reflector;
 import javax.vecmath.Vector4d;
 
 import org.lwjgl.opengl.GL11;
+
+import cafe.kagu.kagu.eventBus.Event.EventPosition;
+import cafe.kagu.kagu.eventBus.impl.EventRenderItem;
+import cafe.kagu.kagu.mods.ModuleManager;
 import shadersmod.client.Shaders;
-import xyz.yiffur.yiffur.mods.ModuleManager;
 
 public class ItemRenderer
 {
@@ -100,7 +103,7 @@ public class ItemRenderer
         return blockIn != null && blockIn.getBlockLayer() == EnumWorldBlockLayer.TRANSLUCENT;
     }
 
-    private void func_178101_a(float angle, float p_178101_2_)
+    public void func_178101_a(float angle, float p_178101_2_)
     {
         GlStateManager.pushMatrix();
         GlStateManager.rotate(angle, 1.0F, 0.0F, 0.0F);
@@ -109,7 +112,7 @@ public class ItemRenderer
         GlStateManager.popMatrix();
     }
 
-    private void func_178109_a(AbstractClientPlayer clientPlayer)
+    public void func_178109_a(AbstractClientPlayer clientPlayer)
     {
         int i = this.mc.theWorld.getCombinedLight(new BlockPos(clientPlayer.posX, clientPlayer.posY + (double)clientPlayer.getEyeHeight(), clientPlayer.posZ), 0);
 
@@ -123,7 +126,7 @@ public class ItemRenderer
         OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, f, f1);
     }
 
-    private void func_178110_a(EntityPlayerSP entityplayerspIn, float partialTicks)
+    public void func_178110_a(EntityPlayerSP entityplayerspIn, float partialTicks)
     {
         float f = entityplayerspIn.prevRenderArmPitch + (entityplayerspIn.renderArmPitch - entityplayerspIn.prevRenderArmPitch) * partialTicks;
         float f1 = entityplayerspIn.prevRenderArmYaw + (entityplayerspIn.renderArmYaw - entityplayerspIn.prevRenderArmYaw) * partialTicks;
@@ -131,7 +134,7 @@ public class ItemRenderer
         GlStateManager.rotate((entityplayerspIn.rotationYaw - f1) * 0.1F, 0.0F, 1.0F, 0.0F);
     }
 
-    private float func_178100_c(float p_178100_1_)
+    public float func_178100_c(float p_178100_1_)
     {
         float f = 1.0F - p_178100_1_ / 45.0F + 0.1F;
         f = MathHelper.clamp_float(f, 0.0F, 1.0F);
@@ -139,7 +142,7 @@ public class ItemRenderer
         return f;
     }
 
-    private void renderRightArm(RenderPlayer renderPlayerIn)
+    public void renderRightArm(RenderPlayer renderPlayerIn)
     {
         GlStateManager.pushMatrix();
         GlStateManager.rotate(54.0F, 0.0F, 1.0F, 0.0F);
@@ -150,7 +153,7 @@ public class ItemRenderer
         GlStateManager.popMatrix();
     }
 
-    private void renderLeftArm(RenderPlayer renderPlayerIn)
+    public void renderLeftArm(RenderPlayer renderPlayerIn)
     {
         GlStateManager.pushMatrix();
         GlStateManager.rotate(92.0F, 0.0F, 1.0F, 0.0F);
@@ -161,7 +164,7 @@ public class ItemRenderer
         GlStateManager.popMatrix();
     }
 
-    private void renderPlayerArms(AbstractClientPlayer clientPlayer)
+    public void renderPlayerArms(AbstractClientPlayer clientPlayer)
     {
         this.mc.getTextureManager().bindTexture(clientPlayer.getLocationSkin());
         Render render = this.renderManager.getEntityRenderObject(this.mc.thePlayer);
@@ -176,7 +179,7 @@ public class ItemRenderer
         }
     }
 
-    private void renderItemMap(AbstractClientPlayer clientPlayer, float p_178097_2_, float p_178097_3_, float p_178097_4_)
+    public void renderItemMap(AbstractClientPlayer clientPlayer, float p_178097_2_, float p_178097_3_, float p_178097_4_)
     {
         float f = -0.4F * MathHelper.sin(MathHelper.sqrt_float(p_178097_4_) * (float)Math.PI);
         float f1 = 0.2F * MathHelper.sin(MathHelper.sqrt_float(p_178097_4_) * (float)Math.PI * 2.0F);
@@ -219,7 +222,7 @@ public class ItemRenderer
         }
     }
 
-    private void func_178095_a(AbstractClientPlayer clientPlayer, float p_178095_2_, float p_178095_3_)
+    public void func_178095_a(AbstractClientPlayer clientPlayer, float p_178095_2_, float p_178095_3_)
     {
         float f = -0.3F * MathHelper.sin(MathHelper.sqrt_float(p_178095_3_) * (float)Math.PI);
         float f1 = 0.4F * MathHelper.sin(MathHelper.sqrt_float(p_178095_3_) * (float)Math.PI * 2.0F);
@@ -246,7 +249,7 @@ public class ItemRenderer
         GlStateManager.enableCull();
     }
 
-    private void func_178105_d(float p_178105_1_)
+    public void func_178105_d(float p_178105_1_)
     {
         float f = -0.4F * MathHelper.sin(MathHelper.sqrt_float(p_178105_1_) * (float)Math.PI);
         float f1 = 0.2F * MathHelper.sin(MathHelper.sqrt_float(p_178105_1_) * (float)Math.PI * 2.0F);
@@ -254,7 +257,7 @@ public class ItemRenderer
         GlStateManager.translate(f, f1, f2);
     }
 
-    private void func_178104_a(AbstractClientPlayer clientPlayer, float p_178104_2_)
+    public void func_178104_a(AbstractClientPlayer clientPlayer, float p_178104_2_)
     {
         float f = (float)clientPlayer.getItemInUseCount() - p_178104_2_ + 1.0F;
         float f1 = f / (float)this.itemToRender.getMaxItemUseDuration();
@@ -276,7 +279,7 @@ public class ItemRenderer
     /**
      * Performs transformations prior to the rendering of a held item in first person.
      */
-    private void transformFirstPersonItem(float equipProgress, float swingProgress)
+    public void transformFirstPersonItem(float equipProgress, float swingProgress)
     {
         GlStateManager.translate(0.56F, -0.52F, -0.71999997F);
         GlStateManager.translate(0.0F, equipProgress * -0.6F, 0.0F);
@@ -289,7 +292,7 @@ public class ItemRenderer
         GlStateManager.scale(0.4F, 0.4F, 0.4F);
     }
 
-    private void func_178098_a(float p_178098_1_, AbstractClientPlayer clientPlayer)
+    public void func_178098_a(float p_178098_1_, AbstractClientPlayer clientPlayer)
     {
         GlStateManager.rotate(-18.0F, 0.0F, 0.0F, 1.0F);
         GlStateManager.rotate(-12.0F, 0.0F, 1.0F, 0.0F);
@@ -316,7 +319,7 @@ public class ItemRenderer
         GlStateManager.scale(1.0F, 1.0F, 1.0F + f1 * 0.2F);
     }
     
-	private void transformFirstPersonBlock()
+	public void transformFirstPersonBlock()
     {
         GlStateManager.translate(-0.5F, 0.2F, 0.0F);
         GlStateManager.rotate(30.0F, 0.0F, 1.0F, 0.0F);
@@ -329,9 +332,9 @@ public class ItemRenderer
      */
     public void renderItemInFirstPerson(float partialTicks)
     {
-        float f = 1.0F - (this.prevEquippedProgress + (this.equippedProgress - this.prevEquippedProgress) * partialTicks);
+        float equipProgress = 1.0F - (this.prevEquippedProgress + (this.equippedProgress - this.prevEquippedProgress) * partialTicks);
         EntityPlayerSP entityplayersp = this.mc.thePlayer;
-        float f1 = entityplayersp.getSwingProgress(partialTicks);
+        float swingProgress = entityplayersp.getSwingProgress(partialTicks);
         float f2 = entityplayersp.prevRotationPitch + (entityplayersp.rotationPitch - entityplayersp.prevRotationPitch) * partialTicks;
         float f3 = entityplayersp.prevRotationYaw + (entityplayersp.rotationYaw - entityplayersp.prevRotationYaw) * partialTicks;
         this.func_178101_a(f2, f3);
@@ -339,57 +342,85 @@ public class ItemRenderer
         this.func_178110_a(entityplayersp, partialTicks);
         GlStateManager.enableRescaleNormal();
         GlStateManager.pushMatrix();
-
-        if (this.itemToRender != null)
-        {
-            if (this.itemToRender.getItem() instanceof ItemMap)
+        
+        renderItemBlock:{
+            if (this.itemToRender != null)
             {
-                this.renderItemMap(entityplayersp, f2, f, f1);
-            }
-            else if (entityplayersp.getItemInUseCount() > 0)
-            {
+            	
                 EnumAction enumaction = this.itemToRender.getItemUseAction();
-
-                switch (ItemRenderer.ItemRenderer$1.field_178094_a[enumaction.ordinal()])
+                
+                // Kagu hook
                 {
-                    case 1:
-                        this.transformFirstPersonItem(f, 0.0F);
-                        break;
-
-                    case 2:
-                    case 3:
-                        this.func_178104_a(entityplayersp, partialTicks);
-                        this.transformFirstPersonItem(f, 0.0F);
-                        break;
-
-                    case 4:
-                    	if (ModuleManager.modAnimations.isDisabled() || true) {
-                            this.transformFirstPersonItem(f, 0.0F);
-                            this.transformFirstPersonBlock();
-                    	}else {
-                    		// Hook event here lateri
-                    	}
-                        break;
-
-                    case 5:
-                        this.transformFirstPersonItem(f, 0.0F);
-                        this.func_178098_a(partialTicks, entityplayersp);
+                	EventRenderItem eventRenderItem = new EventRenderItem(EventPosition.PRE, enumaction, equipProgress, swingProgress);
+                	eventRenderItem.post();
+                	if (eventRenderItem.isCanceled())
+                		break renderItemBlock;
+                	enumaction = eventRenderItem.getAction();
+                	equipProgress = eventRenderItem.getEquipProgress();
+                	swingProgress = eventRenderItem.getSwingProgress();
                 }
+            	
+                if (this.itemToRender.getItem() instanceof ItemMap)
+                {
+                    this.renderItemMap(entityplayersp, f2, equipProgress, swingProgress);
+                }
+                else if (entityplayersp.getItemInUseCount() > 0 || enumaction == EnumAction.CUSTOMBLOCK)
+                {
+                    
+                    switch (ItemRenderer.ItemRenderer$1.field_178094_a[enumaction.ordinal()])
+                    {
+                        case 1:
+                            this.transformFirstPersonItem(equipProgress, 0.0F);
+                            break;
+
+                        case 2:
+                        case 3:
+                            this.func_178104_a(entityplayersp, partialTicks);
+                            this.transformFirstPersonItem(equipProgress, 0.0F);
+                            break;
+
+                        case 4:
+                            this.transformFirstPersonItem(equipProgress, 0.0F);
+                            this.transformFirstPersonBlock();
+                            break;
+
+                        case 5:
+                            this.transformFirstPersonItem(equipProgress, 0.0F);
+                            this.func_178098_a(partialTicks, entityplayersp);
+                            break;
+                        
+                        // Custom block for animations
+                        case 6:{
+                        	
+                        }break;
+                    }
+                    
+                }
+                else
+                {
+                	this.func_178105_d(swingProgress);
+                    this.transformFirstPersonItem(equipProgress, swingProgress);
+                }
+                
+                // Kagu hook
+                {
+                	EventRenderItem eventRenderItem = new EventRenderItem(EventPosition.PRE, enumaction, equipProgress, swingProgress);
+                	eventRenderItem.post();
+                	if (eventRenderItem.isCanceled())
+                		break renderItemBlock;
+                	enumaction = eventRenderItem.getAction();
+                	equipProgress = eventRenderItem.getEquipProgress();
+                	swingProgress = eventRenderItem.getSwingProgress();
+                }
+                
+                this.renderItem(entityplayersp, this.itemToRender, ItemCameraTransforms.TransformType.FIRST_PERSON);
             }
-            else
+            else if (!entityplayersp.isInvisible())
             {
-            	if (ModuleManager.modAnimations.isDisabled() || ModuleManager.modAnimations.smallSwing.isDisabled())
-            		this.func_178105_d(f1);
-                this.transformFirstPersonItem(f, f1);
+                this.func_178095_a(entityplayersp, equipProgress, swingProgress);
             }
-
-            this.renderItem(entityplayersp, this.itemToRender, ItemCameraTransforms.TransformType.FIRST_PERSON);
         }
-        else if (!entityplayersp.isInvisible())
-        {
-            this.func_178095_a(entityplayersp, f, f1);
-        }
-
+        
         GlStateManager.popMatrix();
         GlStateManager.disableRescaleNormal();
         RenderHelper.disableStandardItemLighting();

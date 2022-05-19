@@ -4,6 +4,9 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.mojang.authlib.properties.PropertyMap;
 import com.mojang.authlib.properties.PropertyMap.Serializer;
+
+import cafe.kagu.kagu.Kagu;
+
 import java.io.File;
 import java.net.Authenticator;
 import java.net.InetSocketAddress;
@@ -21,7 +24,6 @@ import joptsimple.OptionSet;
 import joptsimple.OptionSpec;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.Session;
-import xyz.yiffur.yiffur.Yiffur;
 
 public class Main
 {

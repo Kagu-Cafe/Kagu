@@ -1,5 +1,8 @@
 package net.minecraft.client.entity;
 
+import cafe.kagu.kagu.eventBus.Event.EventPosition;
+import cafe.kagu.kagu.eventBus.impl.EventChatSendMessage;
+import cafe.kagu.kagu.eventBus.impl.EventPlayerUpdate;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.MovingSoundMinecartRiding;
 import net.minecraft.client.audio.PositionedSoundRecord;
@@ -51,9 +54,6 @@ import net.minecraft.util.MovementInput;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.IInteractionObject;
 import net.minecraft.world.World;
-import xyz.yiffur.yiffur.eventBus.Event.EventPosition;
-import xyz.yiffur.yiffur.eventBus.impl.EventChatSendMessage;
-import xyz.yiffur.yiffur.eventBus.impl.EventPlayerUpdate;
 
 public class EntityPlayerSP extends AbstractClientPlayer
 {
@@ -194,7 +194,7 @@ public class EntityPlayerSP extends AbstractClientPlayer
         boolean flag = this.isSprinting();
         boolean flag1 = this.isSneaking();
         
-        // Yiffur hook
+        // Kagu hook
 		double posX = this.posX, posY = this.posY, posZ = this.posZ, motionX = this.motionX, motionY = this.motionY,
 				motionZ = this.motionZ;
         float rotationYaw = this.rotationYaw, rotationPitch = this.rotationPitch;
@@ -298,7 +298,7 @@ public class EntityPlayerSP extends AbstractClientPlayer
             }
         }
         
-        // Yiffur hook
+        // Kagu hook
 		{
 			EventPlayerUpdate eventPlayerUpdate = new EventPlayerUpdate(EventPosition.POST, flag, flag1, onGround, posX,
 					posY, posZ, motionX, motionY, motionZ, rotationYaw, rotationPitch);
@@ -330,7 +330,7 @@ public class EntityPlayerSP extends AbstractClientPlayer
     public void sendChatMessage(String message)
     {
     	
-    	// Yiffur event hook
+    	// Kagu hook
     	{
     		EventChatSendMessage eventChatSendMessage = new EventChatSendMessage(EventPosition.PRE, message);
     		eventChatSendMessage.post();
@@ -342,7 +342,7 @@ public class EntityPlayerSP extends AbstractClientPlayer
     	
         this.sendQueue.addToSendQueue(new C01PacketChatMessage(message));
         
-    	// Yiffur event hook
+    	// Kagu hook
     	{
     		EventChatSendMessage eventChatSendMessage = new EventChatSendMessage(EventPosition.POST, message);
     		eventChatSendMessage.post();

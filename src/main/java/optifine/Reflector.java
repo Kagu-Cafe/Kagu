@@ -1,6 +1,9 @@
 package optifine;
 
 import com.google.common.base.Optional;
+
+import cafe.kagu.kagu.ui.GuiMainMenu;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -77,7 +80,6 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraftforge.common.property.IUnlistedProperty;
-import xyz.yiffur.yiffur.ui.GuiMainMenu;
 
 public class Reflector
 {
