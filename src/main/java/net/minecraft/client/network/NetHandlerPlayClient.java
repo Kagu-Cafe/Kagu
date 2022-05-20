@@ -5,7 +5,7 @@ import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.mojang.authlib.GameProfile;
 
-import cafe.kagu.kagu.ui.GuiMainMenu;
+import cafe.kagu.kagu.ui.gui.GuiMainMenu;
 import io.netty.buffer.Unpooled;
 import java.io.File;
 import java.io.IOException;

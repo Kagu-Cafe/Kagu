@@ -1,4 +1,4 @@
-package cafe.kagu.kagu.ui;
+package cafe.kagu.kagu.ui.gui;
 
 import java.io.IOException;
 

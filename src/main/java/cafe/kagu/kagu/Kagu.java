@@ -11,9 +11,9 @@ import cafe.kagu.kagu.font.FontUtils;
 import cafe.kagu.kagu.managers.FileManager;
 import cafe.kagu.kagu.managers.KeybindManager;
 import cafe.kagu.kagu.mods.ModuleManager;
-import cafe.kagu.kagu.ui.GuiMainMenu;
 import cafe.kagu.kagu.ui.Hud;
-import cafe.kagu.kagu.ui.clickgui.GuiClickgui;
+import cafe.kagu.kagu.ui.clickgui.GuiCsgoClickgui;
+import cafe.kagu.kagu.ui.gui.GuiMainMenu;
 import net.minecraft.client.Minecraft;
 
 /**
@@ -69,7 +69,7 @@ public class Kagu {
 		
 		// Start the clickgui
 		logger.info("Starting the clickgui...");
-		GuiClickgui.getInstance().start();
+		GuiCsgoClickgui.getInstance().start();
 		logger.info("Started the clickgui");
 		
 		// Start a cheat loop thread

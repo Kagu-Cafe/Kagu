@@ -57,20 +57,20 @@ import net.minecraft.util.ResourceLocation;
  * @author lavaflowglow
  *
  */
-public class GuiClickgui extends GuiScreen {
+public class GuiCsgoClickgui extends GuiScreen {
 	
 	// Private because this is an a singleton class
-	private GuiClickgui() {
+	private GuiCsgoClickgui() {
 		
 	}
 	
-	private static GuiClickgui instance;
+	private static GuiCsgoClickgui instance;
 	/**
 	 * @return The instance of the clickgui
 	 */
-	public static GuiClickgui getInstance() {
+	public static GuiCsgoClickgui getInstance() {
 		if (instance == null) {
-			instance = new GuiClickgui();
+			instance = new GuiCsgoClickgui();
 		}
 		return instance;
 	}

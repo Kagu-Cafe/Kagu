@@ -48,6 +48,10 @@ public class ModAnimations extends Module {
 		setInfo(blockAnimations.getMode());
 		ItemRenderer ir = mc.getItemRenderer();
 		
+		// Scaling and translations
+		GlStateManager.scale(itemScaleX.getValue(), itemScaleY.getValue(), itemScaleZ.getValue());
+		GlStateManager.translate(itemTranslateX.getValue(), itemTranslateY.getValue(), itemTranslateZ.getValue());
+		
 		// Sword block animations
 		if (!blockAnimations.is("None") && e.getAction() == EnumAction.BLOCK && mc.thePlayer.isUsingItem()) {
 			e.setAction(EnumAction.CUSTOMBLOCK);
@@ -92,10 +96,6 @@ public class ModAnimations extends Module {
 			}
 			
 		}
-		
-		// Scaling and translations
-		GlStateManager.scale(itemScaleX.getValue(), itemScaleY.getValue(), itemScaleZ.getValue());
-		GlStateManager.translate(itemTranslateX.getValue(), itemTranslateY.getValue(), itemTranslateZ.getValue());
 		
 	};
 	

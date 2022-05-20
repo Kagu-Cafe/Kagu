@@ -2,7 +2,7 @@ package optifine;
 
 import com.google.common.base.Optional;
 
-import cafe.kagu.kagu.ui.GuiMainMenu;
+import cafe.kagu.kagu.ui.gui.GuiMainMenu;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;

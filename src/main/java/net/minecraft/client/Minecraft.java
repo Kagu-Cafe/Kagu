@@ -18,7 +18,7 @@ import cafe.kagu.kagu.Kagu;
 import cafe.kagu.kagu.eventBus.Event.EventPosition;
 import cafe.kagu.kagu.eventBus.impl.EventKeyUpdate;
 import cafe.kagu.kagu.eventBus.impl.EventTick;
-import cafe.kagu.kagu.ui.GuiMainMenu;
+import cafe.kagu.kagu.ui.gui.GuiMainMenu;
 
 import java.awt.image.BufferedImage;
 import java.io.File;

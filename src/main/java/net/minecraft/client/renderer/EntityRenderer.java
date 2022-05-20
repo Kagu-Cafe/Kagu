@@ -3,7 +3,7 @@ package net.minecraft.client.renderer;
 import com.google.common.base.Predicates;
 import com.google.gson.JsonSyntaxException;
 
-import cafe.kagu.kagu.ui.GuiMainMenu;
+import cafe.kagu.kagu.ui.gui.GuiMainMenu;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
