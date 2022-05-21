@@ -16,6 +16,7 @@ import cafe.kagu.kagu.utils.ChatUtils;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.item.EnumAction;
+import net.minecraft.util.MathHelper;
 
 /**
  * @author lavaflowglow
@@ -25,10 +26,13 @@ public class ModAnimations extends Module {
 
 	public ModAnimations() {
 		super("Animations", Category.VISUAL);
-		setSettings(blockAnimations, itemScaleX, itemScaleY, itemScaleZ, itemTranslateX, itemTranslateY, itemTranslateZ);
+		setSettings(blockAnimations, playerArms, itemScaleX, itemScaleY, itemScaleZ, itemTranslateX, itemTranslateY, itemTranslateZ);
 	}
 	
-	public ModeSetting blockAnimations = new ModeSetting("Animation", "1.7", "1.7", "Orbit", "Spin", "Lollipop", "Slash", "None", "Test");
+	// Block animations
+	public ModeSetting blockAnimations = new ModeSetting("Animation", "1.7", "1.7", "Orbit", "Spin", "Lollipop", "Slash", "Tap", "Wiggle", "Swipe", "Bump", "None", "Test");
+	
+	public BooleanSetting playerArms = new BooleanSetting("Render arms", false);
 	
 	// Item scale
 	public DecimalSetting itemScaleX = new DecimalSetting("Item scale x", 1, -2, 2, 0.05);
@@ -87,6 +91,26 @@ public class ModAnimations extends Module {
 				ir.transformFirstPersonBlock();
 			}break;
 			
+			case "Tap":{
+				ir.transformFirstPersonItem(e.getEquipProgress(), -e.getSwingProgress());
+				ir.transformFirstPersonBlock();
+			}break;
+			
+			case "Wiggle":{
+				ir.transformFirstPersonItem(-(e.getSwingProgress() < 0.5 ? e.getSwingProgress() : (1 - e.getSwingProgress())) * 0.5f, e.getSwingProgress());
+				ir.transformFirstPersonBlock();
+			}break;
+			
+			case "Swipe":{
+				ir.transformFirstPersonItem(e.getEquipProgress(), (e.getSwingProgress() < 0.5 ? e.getSwingProgress() : (1 - e.getSwingProgress())) * 0.5f);
+				ir.transformFirstPersonBlock();
+			}break;
+			
+			case "Bump":{
+				ir.transformFirstPersonItem(-(e.getSwingProgress() < 0.5 ? e.getSwingProgress() : (1 - e.getSwingProgress())) * 0.5f, (e.getSwingProgress() < 0.5 ? e.getSwingProgress() : (1 - e.getSwingProgress())) * 0.15f);
+				ir.transformFirstPersonBlock();
+			}break;
+			
 			case "Test":{
 				ir.transformFirstPersonItem(e.getEquipProgress(), e.getSwingProgress());
 				ir.transformFirstPersonBlock();
@@ -96,6 +120,9 @@ public class ModAnimations extends Module {
 			}
 			
 		}
+		
+		if (playerArms.isEnabled())
+			ir.renderPlayerArms(mc.thePlayer);
 		
 	};
 	

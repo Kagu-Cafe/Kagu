@@ -31,10 +31,10 @@ public class UiUtils {
 	 * @param top              The top of the triangle
 	 * @param right            The right of the triangle
 	 * @param bottom           The bottom of the triangle
-	 * @param topLeftColor     The top left color of the triangle
-	 * @param topRightColor    The top right color of the triangle
-	 * @param bottomLeftColor  The bottom left color of the triangle
-	 * @param bottomRightColor The bottom right color of the triangle
+	 * @param topLeftColor     The top left color of the rect
+	 * @param topRightColor    The top right color of the rect
+	 * @param bottomLeftColor  The bottom left color of the rect
+	 * @param bottomRightColor The bottom right color of the rect
 	 */
 	public static void drawGradientRect(double left, double top, double right, double bottom, int topLeftColor, int topRightColor, int bottomLeftColor, int bottomRightColor) {
 		
@@ -111,7 +111,7 @@ public class UiUtils {
 	 * @param cornerSize How big the rounded corners should be
 	 */
 	public static void drawRoundedRect(double left, double top, double right, double bottom, int color, double cornerSize) {
-		drawRoundedRect(left, top, right, bottom, color, cornerSize, cornerSize, cornerSize, cornerSize);
+		drawRoundedRect(left, top, right, bottom, color, color, color, color, cornerSize, cornerSize, cornerSize, cornerSize);
 	}
 	
 	/**
@@ -128,6 +128,26 @@ public class UiUtils {
 	 * @param cornerSizeBr The corner size for the bottom right corner
 	 */
 	public static void drawRoundedRect(double left, double top, double right, double bottom, int color, double cornerSizeTl, double cornerSizeTr, double cornerSizeBl, double cornerSizeBr) {
+		drawRoundedRect(left, top, right, bottom, color, color, color, color, cornerSizeTl, cornerSizeTr, cornerSizeBl, cornerSizeBr);
+	}
+	
+	/**
+	 * Draws a rounded rect
+	 * 
+	 * @param left         The left of the rect
+	 * @param top          The top of the rect
+	 * @param right        The right of the rect
+	 * @param bottom       The bottom of the rect
+	 * @param topLeftColor     The top left color of the rect
+	 * @param topRightColor    The top right color of the rect
+	 * @param bottomLeftColor  The bottom left color of the rect
+	 * @param bottomRightColor The bottom right color of the rect
+	 * @param cornerSizeTl The corner size for the top left corner
+	 * @param cornerSizeTr The corner size for the top right corner
+	 * @param cornerSizeBl The corner size for the bottom left corner
+	 * @param cornerSizeBr The corner size for the bottom right corner
+	 */
+	public static void drawRoundedRect(double left, double top, double right, double bottom, int topLeftColor, int topRightColor, int bottomLeftColor, int bottomRightColor, double cornerSizeTl, double cornerSizeTr, double cornerSizeBl, double cornerSizeBr) {
 		
 		// Vars
 		double stepsIncrement = 5;
@@ -145,10 +165,25 @@ public class UiUtils {
 		}
 		
 		// Colors
-		float red = (float) (color >> 16 & 255) / 255.0F;
-		float green = (float) (color >> 8 & 255) / 255.0F;
-		float blue = (float) (color & 255) / 255.0F;
-		float alpha = (float) (color >> 24 & 255) / 255.0F;
+		float tlRed = (float)(topLeftColor >> 16 & 255) / 255.0F;
+		float tlGreen = (float)(topLeftColor >> 8 & 255) / 255.0F;
+		float tlBlue = (float)(topLeftColor & 255) / 255.0F;
+		float tlAlpha = (float)(topLeftColor >> 24 & 255) / 255.0F;
+		
+		float trRed = (float)(topRightColor >> 16 & 255) / 255.0F;
+		float trGreen = (float)(topRightColor >> 8 & 255) / 255.0F;
+		float trBlue = (float)(topRightColor & 255) / 255.0F;
+		float trAlpha = (float)(topRightColor >> 24 & 255) / 255.0F;
+		
+		float blRed = (float)(bottomLeftColor >> 16 & 255) / 255.0F;
+		float blGreen = (float)(bottomLeftColor >> 8 & 255) / 255.0F;
+		float blBlue = (float)(bottomLeftColor & 255) / 255.0F;
+		float blAlpha = (float)(bottomLeftColor >> 24 & 255) / 255.0F;
+		
+		float brRed = (float)(bottomRightColor >> 16 & 255) / 255.0F;
+		float brGreen = (float)(bottomRightColor >> 8 & 255) / 255.0F;
+		float brBlue = (float)(bottomRightColor & 255) / 255.0F;
+		float brAlpha = (float)(bottomRightColor >> 24 & 255) / 255.0F;
 		
 		// Draw
 		GlStateManager.pushMatrix();
@@ -166,41 +201,41 @@ public class UiUtils {
 		
 		// Top left
 		if (cornerSizeTl <= 0) {
-			worldRenderer.pos(left, top, 0).color(red, green, blue, alpha).endVertex();
+			worldRenderer.pos(left, top, 0).color(tlRed, tlGreen, tlBlue, tlAlpha).endVertex();
 		}else {
 			for (int i = 0; i <= 90; i += stepsIncrement) {
 				worldRenderer.pos(left + cornerSizeTl + Math.sin(i * Math.PI / 180) * cornerSizeTl * -1,
-						top + cornerSizeTl + Math.cos(i * Math.PI / 180) * cornerSizeTl * -1, 0).color(red, green, blue, alpha).endVertex();
+						top + cornerSizeTl + Math.cos(i * Math.PI / 180) * cornerSizeTl * -1, 0).color(tlRed, tlGreen, tlBlue, tlAlpha).endVertex();
 			}
 		}
 		
 		// Bottom left
 		if (cornerSizeBl <= 0) {
-			worldRenderer.pos(left, bottom, 0).color(red, green, blue, alpha).endVertex();
+			worldRenderer.pos(left, bottom, 0).color(blRed, blGreen, blBlue, blAlpha).endVertex();
 		}else {
 			for (int i = 90; i <= 180; i += stepsIncrement) {
 				worldRenderer.pos(left + cornerSizeBl + Math.sin(i * Math.PI / 180) * cornerSizeBl * -1,
-						bottom - cornerSizeBl + Math.cos(i * Math.PI / 180) * cornerSizeBl * -1, 0).color(red, green, blue, alpha).endVertex();
+						bottom - cornerSizeBl + Math.cos(i * Math.PI / 180) * cornerSizeBl * -1, 0).color(blRed, blGreen, blBlue, blAlpha).endVertex();
 			}
 		}
 		
 		// Bottom right
 		if (cornerSizeBr <= 0) {
-			worldRenderer.pos(right, bottom, 0).color(red, green, blue, alpha).endVertex();
+			worldRenderer.pos(right, bottom, 0).color(brRed, brGreen, brBlue, brAlpha).endVertex();
 		}else {
 			for (int i = 0; i <= 90; i += stepsIncrement) {
 				worldRenderer.pos(right - cornerSizeBr + Math.sin(i * Math.PI / 180) * cornerSizeBr,
-						bottom - cornerSizeBr + Math.cos(i * Math.PI / 180) * cornerSizeBr, 0).color(red, green, blue, alpha).endVertex();
+						bottom - cornerSizeBr + Math.cos(i * Math.PI / 180) * cornerSizeBr, 0).color(brRed, brGreen, brBlue, brAlpha).endVertex();
 			}
 		}
 		
 		// Top right
 		if (cornerSizeTr <= 0) {
-			worldRenderer.pos(right, top, 0).color(red, green, blue, alpha).endVertex();
+			worldRenderer.pos(right, top, 0).color(trRed, trGreen, trBlue, trAlpha).endVertex();
 		}else {
 			for (int i = 90; i <= 180; i += stepsIncrement) {
 				worldRenderer.pos(right - cornerSizeTr + Math.sin(i * Math.PI / 180) * cornerSizeTr,
-						top + cornerSizeTr + Math.cos(i * Math.PI / 180) * cornerSizeTr, 0).color(red, green, blue, alpha).endVertex();
+						top + cornerSizeTr + Math.cos(i * Math.PI / 180) * cornerSizeTr, 0).color(trRed, trGreen, trBlue, trAlpha).endVertex();
 			}
 		}
 		
@@ -314,6 +349,76 @@ public class UiUtils {
 		float blue = (float) (color & 255) / 255.0F;
 		float alpha = (float) (color >> 24 & 255) / 255.0F;
 		GlStateManager.color(red, green, blue, alpha);
+	}
+	
+	/**
+	 * Checks if the mouse is inside of a rounded rect using a mix of circle and rect bounding boxes
+	 * 
+	 * @param mouseX The x position of the mouse
+	 * @param mouseY The y position of the mouse
+	 * @param left         The left of the rect
+	 * @param top          The top of the rect
+	 * @param right        The right of the rect
+	 * @param bottom       The bottom of the rect
+	 * @param cornerSize The corner size
+	 */
+	public static boolean isMouseInsideRoundedRect(double mouseX, double mouseY, double left, double top, double right, double bottom, double cornerSize) {
+		
+		if (top > bottom) {
+			double temp = top;
+			top = bottom;
+			bottom = temp;
+		}
+		
+		if (left > right) {
+			double temp = left;
+			left = right;
+			right = temp;
+		}
+		
+		// Horizontal rect check
+		if (mouseX >= left && mouseX < right && mouseY >= top + cornerSize && mouseY <= bottom - cornerSize) {
+			return true;
+		}
+		
+		// Vertical rect check
+		if (mouseX >= left + cornerSize && mouseX <= right - cornerSize && mouseY >= top && mouseY <= bottom) {
+			return true;
+		}
+		
+		// Circle checks
+		
+		// Top checks
+		if (mouseY <= top + cornerSize) {
+			
+			// TL check
+			if (mouseX <= left + cornerSize && MathUtils.getDistance2D(mouseX, mouseY, left + cornerSize, top + cornerSize) <= cornerSize) {
+				return true;
+			}
+			
+			// TR check
+			if (mouseX >= right - cornerSize && MathUtils.getDistance2D(mouseX, mouseY, right - cornerSize, top + cornerSize) <= cornerSize) {
+				return true;
+			}
+			
+		}
+		
+		// Bottom checks
+		if (mouseY >= bottom - cornerSize) {
+			
+			// BL check
+			if (mouseX <= left + cornerSize && MathUtils.getDistance2D(mouseX, mouseY, left + cornerSize, bottom - cornerSize) <= cornerSize) {
+				return true;
+			}
+			
+			// BR check
+			if (mouseX >= right - cornerSize && MathUtils.getDistance2D(mouseX, mouseY, right - cornerSize, bottom - cornerSize) <= cornerSize) {
+				return true;
+			}
+			
+		}
+		
+		return false;
 	}
 	
 }

@@ -40,6 +40,9 @@ public class DefaultPlayerSkin
      */
     private static boolean isSlimSkin(UUID playerUUID)
     {
+    	if (playerUUID == null) {
+    		return true;
+    	}
         return (playerUUID.hashCode() & 1) == 1;
     }
 }
