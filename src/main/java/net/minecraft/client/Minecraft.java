@@ -18,7 +18,8 @@ import cafe.kagu.kagu.Kagu;
 import cafe.kagu.kagu.eventBus.Event.EventPosition;
 import cafe.kagu.kagu.eventBus.impl.EventKeyUpdate;
 import cafe.kagu.kagu.eventBus.impl.EventTick;
-import cafe.kagu.kagu.ui.gui.GuiMainMenu;
+import cafe.kagu.kagu.ui.gui.GuiCompactMainMenu;
+import cafe.kagu.kagu.ui.gui.MainMenuHandler;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -572,11 +573,11 @@ public class Minecraft implements IThreadListener, IPlayerUsage
 
         if (this.serverName != null)
         {
-            this.displayGuiScreen(new GuiConnecting(new GuiMainMenu(), this, this.serverName, this.serverPort));
+            this.displayGuiScreen(new GuiConnecting(MainMenuHandler.getMainMenu(), this, this.serverName, this.serverPort));
         }
         else
         {
-            this.displayGuiScreen(new GuiMainMenu());
+            this.displayGuiScreen(MainMenuHandler.getMainMenu());
         }
 
         this.renderEngine.deleteTexture(this.mojangLogo);
@@ -980,14 +981,14 @@ public class Minecraft implements IThreadListener, IPlayerUsage
 
         if (guiScreenIn == null && this.theWorld == null)
         {
-            guiScreenIn = new GuiMainMenu();
+            guiScreenIn = MainMenuHandler.getMainMenu();
         }
         else if (guiScreenIn == null && this.thePlayer.getHealth() <= 0.0F)
         {
             guiScreenIn = new GuiGameOver();
         }
 
-        if (guiScreenIn instanceof GuiMainMenu)
+        if (guiScreenIn instanceof GuiCompactMainMenu)
         {
             this.gameSettings.showDebugInfo = false;
             this.ingameGUI.getChatGUI().clearChatMessages();

@@ -101,10 +101,10 @@ public class GlyphUtils {
 				y = (int)Math.ceil(charBounds.getHeight());
 				graphics.drawString(String.valueOf(c), x, y);
 				
-				// Glyph, accounts for
-				Glyph glyph = new Glyph((int) charBounds.getWidth(), (int) maxCharHeight,
+				// Glyph
+				Glyph glyph = new Glyph((int) charBounds.getWidth(), (int) Math.ceil(maxCharHeight),
 						(double) x / (double) bufferedImage.getWidth(),
-						(bufferedImage.getHeight() - charBounds.getHeight()) / bufferedImage.getHeight(),
+						(Math.ceil(bufferedImage.getHeight()) - Math.ceil(charBounds.getHeight())) / Math.ceil(bufferedImage.getHeight()),
 						charBounds.getWidth() / bufferedImage.getWidth(),
 						1, (int) 0);
 				glyphMap.getMapping().put(c, glyph);

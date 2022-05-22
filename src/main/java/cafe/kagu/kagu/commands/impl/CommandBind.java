@@ -7,6 +7,7 @@ import org.lwjgl.input.Keyboard;
 
 import cafe.kagu.kagu.commands.Command;
 import cafe.kagu.kagu.commands.CommandAction;
+import cafe.kagu.kagu.managers.FileManager;
 import cafe.kagu.kagu.managers.KeybindManager;
 import cafe.kagu.kagu.mods.Module;
 import cafe.kagu.kagu.mods.ModuleManager;
@@ -30,6 +31,7 @@ public class CommandBind extends Command {
 				if (module.getName().equalsIgnoreCase(moduleName)) {
 					KeybindManager.addKeybind(module.getName(), keyCode);
 					ChatUtils.addChatMessage("Binded " + module.getName() + " to " + Keyboard.getKeyName(keyCode));
+					KeybindManager.save(FileManager.DEFAULT_KEYBINDS);
 					return true;
 				}
 			}
@@ -52,6 +54,7 @@ public class CommandBind extends Command {
 				if (module.getName().equalsIgnoreCase(moduleName)) {
 					KeybindManager.removeKeybind(module.getName());
 					ChatUtils.addChatMessage("Cleared binds for " + module.getName());
+					KeybindManager.save(FileManager.DEFAULT_KEYBINDS);
 					return true;
 				}
 			}

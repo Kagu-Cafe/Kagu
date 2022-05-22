@@ -2,7 +2,8 @@ package net.minecraft.client.gui;
 
 import java.io.IOException;
 
-import cafe.kagu.kagu.ui.gui.GuiMainMenu;
+import cafe.kagu.kagu.ui.gui.GuiCompactMainMenu;
+import cafe.kagu.kagu.ui.gui.MainMenuHandler;
 import net.minecraft.client.resources.I18n;
 
 public class GuiMemoryErrorScreen extends GuiScreen
@@ -25,7 +26,7 @@ public class GuiMemoryErrorScreen extends GuiScreen
     {
         if (button.id == 0)
         {
-            this.mc.displayGuiScreen(new GuiMainMenu());
+            this.mc.displayGuiScreen(MainMenuHandler.getMainMenu());
         }
         else if (button.id == 1)
         {

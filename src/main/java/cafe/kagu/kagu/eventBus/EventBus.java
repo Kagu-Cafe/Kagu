@@ -18,8 +18,8 @@ import net.minecraft.client.Minecraft;
  */
 public class EventBus {
 	
-	private static Map<Subscriber<? extends Event>, Class<? extends Event>> subscribers = new HashMap<Subscriber<? extends Event>, Class<? extends Event>>();
-	private static Map<Subscriber<? extends Event>, Module> moduleSubscribers = new HashMap<Subscriber<? extends Event>, Module>();
+	private static Map<Handler<? extends Event>, Class<? extends Event>> subscribers = new HashMap<Handler<? extends Event>, Class<? extends Event>>();
+	private static Map<Handler<? extends Event>, Module> moduleSubscribers = new HashMap<Handler<? extends Event>, Module>();
 	private static Logger logger = LogManager.getLogger();
 	
 	/**
@@ -42,7 +42,7 @@ public class EventBus {
 		}
 		
 		// Send the event
-		for (Subscriber<? extends Event> subscriber : subscribers.keySet()) {
+		for (Handler<? extends Event> subscriber : subscribers.keySet()) {
 			if (e.getClass().isAssignableFrom(subscribers.get(subscriber))) {
 				
 				// If subscriber is linked to module AND the module is disabled then cancel
@@ -88,7 +88,7 @@ public class EventBus {
 			try {
 				
 				// Check if the field is a subscriber object
-				if (!(field.get(obj) instanceof Subscriber<?>)) {
+				if (!(field.get(obj) instanceof Handler<?>)) {
 					continue;
 				}
 				
@@ -103,18 +103,18 @@ public class EventBus {
 				
 				// Subscribe or unsubscribe the subscriber
 				if (subscribed) {
-					subscribers.putIfAbsent((Subscriber<?>) field.get(obj), (Class<? extends Event>) eventClass);
+					subscribers.putIfAbsent((Handler<?>) field.get(obj), (Class<? extends Event>) eventClass);
 					
 					// If module then map the subscriber to the module
 					if (obj instanceof Module) {
-						moduleSubscribers.putIfAbsent((Subscriber<?>) field.get(obj), (Module) obj);
+						moduleSubscribers.putIfAbsent((Handler<?>) field.get(obj), (Module) obj);
 					}
 				}else {
-					subscribers.remove((Subscriber<?>) field.get(obj), eventClass);
+					subscribers.remove((Handler<?>) field.get(obj), eventClass);
 					
 					// If module then remove map the subscriber to the module
 					if (obj instanceof Module) {
-						moduleSubscribers.remove((Subscriber<?>) field.get(obj), (Module) obj);
+						moduleSubscribers.remove((Handler<?>) field.get(obj), (Module) obj);
 					}
 				}
 				

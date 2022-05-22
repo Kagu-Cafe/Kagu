@@ -3,7 +3,7 @@
  */
 package cafe.kagu.kagu.mods.impl.visual;
 
-import cafe.kagu.kagu.eventBus.Subscriber;
+import cafe.kagu.kagu.eventBus.Handler;
 import cafe.kagu.kagu.eventBus.EventHandler;
 import cafe.kagu.kagu.eventBus.impl.EventCheatTick;
 import cafe.kagu.kagu.eventBus.impl.EventRenderItem;
@@ -45,7 +45,7 @@ public class ModAnimations extends Module {
 	public DecimalSetting itemTranslateZ = new DecimalSetting("Item translate z", 0, -2, 2, 0.001);
 	
 	@EventHandler
-	private Subscriber<EventRenderItem> renderItem = e -> {
+	private Handler<EventRenderItem> renderItem = e -> {
 		if (e.isPost())
 			return;
 		

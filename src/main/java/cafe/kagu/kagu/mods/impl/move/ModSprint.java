@@ -3,7 +3,7 @@
  */
 package cafe.kagu.kagu.mods.impl.move;
 
-import cafe.kagu.kagu.eventBus.Subscriber;
+import cafe.kagu.kagu.eventBus.Handler;
 import cafe.kagu.kagu.eventBus.EventHandler;
 import cafe.kagu.kagu.eventBus.impl.EventPlayerUpdate;
 import cafe.kagu.kagu.eventBus.impl.EventTick;
@@ -25,7 +25,7 @@ public class ModSprint extends Module {
 	public BooleanSetting omni = new BooleanSetting("Omni", false);
 	
 	@EventHandler
-	public Subscriber<EventPlayerUpdate> onUpdate = e -> {
+	public Handler<EventPlayerUpdate> onUpdate = e -> {
 		if (e.isPost())
 			return;
 		

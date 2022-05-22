@@ -3,7 +3,7 @@
  */
 package cafe.kagu.kagu.mods.impl.player;
 
-import cafe.kagu.kagu.eventBus.Subscriber;
+import cafe.kagu.kagu.eventBus.Handler;
 import cafe.kagu.kagu.eventBus.EventHandler;
 import cafe.kagu.kagu.eventBus.impl.EventPlayerUpdate;
 import cafe.kagu.kagu.eventBus.impl.EventTick;
@@ -25,12 +25,12 @@ public class ModNoFall extends Module {
 	public ModeSetting mode = new ModeSetting("Mode", "Spoof", "Spoof", "V2");
 	
 	@EventHandler
-	public Subscriber<EventTick> onTick = e -> {
+	public Handler<EventTick> onTick = e -> {
 		setInfo(mode.getMode());
 	};
 	
 	@EventHandler
-	public Subscriber<EventPlayerUpdate> onUpdate = e -> {
+	public Handler<EventPlayerUpdate> onUpdate = e -> {
 		if (e.isPost())
 			return;
 		if (mode.is("Spoof")) {

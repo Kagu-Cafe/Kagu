@@ -10,16 +10,20 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.lwjgl.opengl.GL11;
+
 import cafe.kagu.kagu.Kagu;
-import cafe.kagu.kagu.eventBus.Subscriber;
+import cafe.kagu.kagu.eventBus.Handler;
 import cafe.kagu.kagu.eventBus.EventHandler;
 import cafe.kagu.kagu.eventBus.impl.Event2DRender;
 import cafe.kagu.kagu.font.FontRenderer;
 import cafe.kagu.kagu.font.FontUtils;
 import cafe.kagu.kagu.mods.Module;
 import cafe.kagu.kagu.mods.ModuleManager;
+import cafe.kagu.kagu.utils.StencilUtil;
 import cafe.kagu.kagu.utils.UiUtils;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 
@@ -30,7 +34,7 @@ import net.minecraft.client.renderer.GlStateManager;
 public class Hud {
 	
 	@EventHandler
-	public Subscriber<Event2DRender> renderHud = e -> {
+	public Handler<Event2DRender> renderHud = e -> {
 		
 		// We only want to render on the post event
 		if (e.isPre()) {
@@ -42,11 +46,11 @@ public class Hud {
 		ScaledResolution sr = new ScaledResolution(mc);
 		
 		// The fonts used
-		FontRenderer mainFr = FontUtils.ROBOTO_LIGHT_10;
+		FontRenderer mainFr = FontUtils.COMFORTAA_REGULAR_10_ANTI;
 		
 		// Render hud
-		mainFr.drawString(Kagu.getName() + " v" + Kagu.getVersion(), 4, 4, 0x80000000);
-		mainFr.drawString(Kagu.getName() + " v" + Kagu.getVersion(), 3, 3, -1);
+		mainFr.drawString(Kagu.getName() + " v" + Kagu.getVersion(), 3, 4, 0x80000000);
+		mainFr.drawString(Kagu.getName() + " v" + Kagu.getVersion(), 2, 3, -1);
 		
 		// Arraylist
 		drawArraylist(mc, sr);

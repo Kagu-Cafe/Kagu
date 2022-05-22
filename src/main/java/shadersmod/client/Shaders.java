@@ -42,6 +42,7 @@ import org.lwjgl.opengl.GL30;
 import org.lwjgl.opengl.GLContext;
 import org.lwjgl.util.glu.GLU;
 
+import cafe.kagu.kagu.utils.StencilUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;

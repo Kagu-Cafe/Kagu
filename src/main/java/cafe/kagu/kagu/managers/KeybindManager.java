@@ -12,7 +12,7 @@ import java.util.Map;
 
 import cafe.kagu.kagu.Kagu;
 import cafe.kagu.kagu.eventBus.EventBus;
-import cafe.kagu.kagu.eventBus.Subscriber;
+import cafe.kagu.kagu.eventBus.Handler;
 import cafe.kagu.kagu.eventBus.EventHandler;
 import cafe.kagu.kagu.eventBus.impl.EventKeyUpdate;
 import cafe.kagu.kagu.mods.Module;
@@ -136,7 +136,7 @@ public class KeybindManager {
 	 * Listener for the keybinds
 	 */
 	@EventHandler
-	private Subscriber<EventKeyUpdate> subscriber = e -> {
+	private Handler<EventKeyUpdate> subscriber = e -> {
 		if (e.isPost() || !e.isPressed())
 			return;
 		

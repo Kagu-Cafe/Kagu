@@ -23,7 +23,7 @@ import org.lwjgl.opengl.GL11;
 
 import cafe.kagu.kagu.Kagu;
 import cafe.kagu.kagu.eventBus.EventBus;
-import cafe.kagu.kagu.eventBus.Subscriber;
+import cafe.kagu.kagu.eventBus.Handler;
 import cafe.kagu.kagu.eventBus.EventHandler;
 import cafe.kagu.kagu.eventBus.impl.EventCheatTick;
 import cafe.kagu.kagu.eventBus.impl.EventKeyUpdate;
@@ -592,7 +592,7 @@ public class GuiCsgoClickgui extends GuiScreen {
 	}
 	
 	@EventHandler
-	public Subscriber<EventKeyUpdate> keyListener = eventKey -> {
+	public Handler<EventKeyUpdate> keyListener = eventKey -> {
 		
 		// We only want to listen for uncanceled, pre, key presses
 		if (eventKey.isCanceled() || !eventKey.isPressed() || eventKey.isPost()) {
@@ -798,7 +798,7 @@ public class GuiCsgoClickgui extends GuiScreen {
 	
 	// For anybody trying to port this to their own client, the cheat tick loop runs at 64 ticks a second
 	@EventHandler
-	public Subscriber<EventCheatTick> onPreTick = e -> {
+	public Handler<EventCheatTick> onPreTick = e -> {
 		if (e.isPost())
 			return;
 		

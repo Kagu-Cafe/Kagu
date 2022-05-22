@@ -15,7 +15,8 @@ import cafe.kagu.kagu.managers.KeybindManager;
 import cafe.kagu.kagu.mods.ModuleManager;
 import cafe.kagu.kagu.ui.Hud;
 import cafe.kagu.kagu.ui.clickgui.GuiCsgoClickgui;
-import cafe.kagu.kagu.ui.gui.GuiMainMenu;
+import cafe.kagu.kagu.ui.gui.GuiCompactMainMenu;
+import cafe.kagu.kagu.utils.StencilUtil;
 import net.minecraft.client.Minecraft;
 
 /**
@@ -74,6 +75,11 @@ public class Kagu {
 		GuiCsgoClickgui.getInstance().start();
 		logger.info("Started the clickgui");
 		
+		// Start the stencil util
+		logger.info("Starting the stencil util...");
+		StencilUtil.start();
+		logger.info("Started the stencil util");
+		
 		// Start a cheat loop thread
 		logger.info("Starting the cheat loop thread...");
 		Thread cheatThread = new Thread(() -> {
@@ -111,7 +117,7 @@ public class Kagu {
 		
 		// Load the main menu
 		logger.info("Loading the main menu...");
-		GuiMainMenu.start();
+		GuiCompactMainMenu.start();
 		logger.info("Loaded the main menu");
 		
 		// Hook the hud

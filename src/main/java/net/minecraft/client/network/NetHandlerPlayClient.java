@@ -5,7 +5,8 @@ import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.mojang.authlib.GameProfile;
 
-import cafe.kagu.kagu.ui.gui.GuiMainMenu;
+import cafe.kagu.kagu.ui.gui.GuiCompactMainMenu;
+import cafe.kagu.kagu.ui.gui.MainMenuHandler;
 import io.netty.buffer.Unpooled;
 import java.io.File;
 import java.io.IOException;
@@ -809,7 +810,7 @@ public class NetHandlerPlayClient implements INetHandlerPlayClient
         }
         else
         {
-            this.gameController.displayGuiScreen(new GuiDisconnected(new GuiMultiplayer(new GuiMainMenu()), "disconnect.lost", reason));
+            this.gameController.displayGuiScreen(new GuiDisconnected(new GuiMultiplayer(MainMenuHandler.getMainMenu()), "disconnect.lost", reason));
         }
     }
 

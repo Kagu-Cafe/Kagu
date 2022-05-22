@@ -526,4 +526,47 @@ public class RenderManager
     {
         return Collections.<String, RenderPlayer>unmodifiableMap(this.skinMap);
     }
+
+	/**
+	 * @return the renderPosX
+	 */
+	public double getRenderPosX() {
+		return renderPosX;
+	}
+
+	/**
+	 * @param renderPosX the renderPosX to set
+	 */
+	public void setRenderPosX(double renderPosX) {
+		this.renderPosX = renderPosX;
+	}
+
+	/**
+	 * @return the renderPosY
+	 */
+	public double getRenderPosY() {
+		return renderPosY;
+	}
+
+	/**
+	 * @param renderPosY the renderPosY to set
+	 */
+	public void setRenderPosY(double renderPosY) {
+		this.renderPosY = renderPosY;
+	}
+
+	/**
+	 * @return the renderPosZ
+	 */
+	public double getRenderPosZ() {
+		return renderPosZ;
+	}
+
+	/**
+	 * @param renderPosZ the renderPosZ to set
+	 */
+	public void setRenderPosZ(double renderPosZ) {
+		this.renderPosZ = renderPosZ;
+	}
+	
 }

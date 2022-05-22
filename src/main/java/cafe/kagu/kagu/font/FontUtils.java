@@ -21,12 +21,16 @@ public class FontUtils {
 		
 	}
 	
+	// Regular fonts
 	public static final FontRenderer ROBOTO_LIGHT_10 = new FontRenderer(getFontFromInputStream(FontUtils.class.getResourceAsStream("Roboto-Light.ttf"), 20, Font.PLAIN), 0.5);
 	public static final FontRenderer ROBOTO_REGULAR_10 = new FontRenderer(getFontFromInputStream(FontUtils.class.getResourceAsStream("Roboto-Regular.ttf"), 20, Font.PLAIN), 0.5);
 	
 	// The CS:GO font
 	public static final FontRenderer STRATUM2_MEDIUM_13 = new FontRenderer(getFontFromInputStream(FontUtils.class.getResourceAsStream("stratum2-medium.ttf"), 26, Font.PLAIN), 0.5);
 	public static final FontRenderer STRATUM2_MEDIUM_18 = new FontRenderer(getFontFromInputStream(FontUtils.class.getResourceAsStream("stratum2-medium.ttf"), 36, Font.PLAIN), 0.5);
+	
+	// Display fonts
+	public static final FontRenderer COMFORTAA_REGULAR_10_ANTI = new FontRenderer(getFontFromInputStream(FontUtils.class.getResourceAsStream("Comfortaa-Regular.ttf"), 20, Font.PLAIN), 0.5, true);
 	
 	/**
 	 * Gets a font from an inputstream

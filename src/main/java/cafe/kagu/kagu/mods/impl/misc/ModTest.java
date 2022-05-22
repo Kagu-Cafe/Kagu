@@ -5,7 +5,7 @@ package cafe.kagu.kagu.mods.impl.misc;
 
 import org.apache.commons.lang3.RandomUtils;
 
-import cafe.kagu.kagu.eventBus.Subscriber;
+import cafe.kagu.kagu.eventBus.Handler;
 import cafe.kagu.kagu.eventBus.EventHandler;
 import cafe.kagu.kagu.eventBus.impl.EventTick;
 import cafe.kagu.kagu.mods.Module;
@@ -14,6 +14,7 @@ import cafe.kagu.kagu.settings.impl.DecimalSetting;
 import cafe.kagu.kagu.settings.impl.IntegerSetting;
 import cafe.kagu.kagu.settings.impl.LongSetting;
 import cafe.kagu.kagu.settings.impl.ModeSetting;
+import cafe.kagu.kagu.utils.SpoofUtils;
 import net.minecraft.client.Minecraft;
 
 /**
@@ -47,7 +48,7 @@ public class ModTest extends Module {
 							  modeSetting3 = new ModeSetting("Mode setting 3", "Test 1");
 	
 	@EventHandler
-	public Subscriber<EventTick> onTick = e -> {
+	public Handler<EventTick> onTick = e -> {
 		if (e.isPost()) {
 			return;
 		}

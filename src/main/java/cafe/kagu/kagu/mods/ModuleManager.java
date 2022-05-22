@@ -12,6 +12,8 @@ import cafe.kagu.kagu.mods.impl.move.ModMoonJump;
 import cafe.kagu.kagu.mods.impl.move.ModSprint;
 import cafe.kagu.kagu.mods.impl.player.ModNoFall;
 import cafe.kagu.kagu.mods.impl.visual.ModAnimations;
+import cafe.kagu.kagu.mods.impl.visual.ModChestEsp;
+import cafe.kagu.kagu.mods.impl.visual.ModEsp;
 
 /**
  * @author lavaflowglow
@@ -35,6 +37,8 @@ public class ModuleManager {
 	
 	// Visual
 	public static ModAnimations modAnimations = new ModAnimations();
+	public static ModChestEsp modChestEsp = new ModChestEsp();
+	public static ModEsp modEsp = new ModEsp();
 	
 	// An array of all the modules in the client
 	private static final Module[] MODULES = new Module[] {
@@ -44,6 +48,8 @@ public class ModuleManager {
 			
 			// Visual
 			modAnimations,
+			modChestEsp,
+			modEsp,
 			
 			// Movement
 			modMoonJump,

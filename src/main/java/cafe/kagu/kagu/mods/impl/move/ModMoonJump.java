@@ -4,7 +4,7 @@
 package cafe.kagu.kagu.mods.impl.move;
 
 import cafe.kagu.kagu.eventBus.Event;
-import cafe.kagu.kagu.eventBus.Subscriber;
+import cafe.kagu.kagu.eventBus.Handler;
 import cafe.kagu.kagu.eventBus.EventHandler;
 import cafe.kagu.kagu.eventBus.impl.EventPlayerUpdate;
 import cafe.kagu.kagu.eventBus.impl.EventTick;
@@ -22,7 +22,7 @@ public class ModMoonJump extends Module {
 	}
 	
 	@EventHandler
-	public Subscriber<EventPlayerUpdate> onUpadate = e -> {
+	public Handler<EventPlayerUpdate> onUpadate = e -> {
 		if (e.isPost())
 			return;
 		Minecraft.getMinecraft().thePlayer.motionY += 0.05;

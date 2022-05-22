@@ -3,7 +3,11 @@ package net.minecraft.client.renderer;
 import com.google.common.base.Predicates;
 import com.google.gson.JsonSyntaxException;
 
-import cafe.kagu.kagu.ui.gui.GuiMainMenu;
+import cafe.kagu.kagu.eventBus.Event.EventPosition;
+import cafe.kagu.kagu.eventBus.impl.Event3DRender;
+import cafe.kagu.kagu.eventBus.impl.EventEntitiesRender;
+import cafe.kagu.kagu.ui.gui.GuiCompactMainMenu;
+import cafe.kagu.kagu.utils.SpoofUtils;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -480,8 +484,6 @@ public class EntityRenderer implements IResourceManagerReloadListener
                 {
                     flag = true;
                 }
-
-                d0 = d0;
             }
 
             if (this.mc.objectMouseOver != null)
@@ -993,7 +995,7 @@ public class EntityRenderer implements IResourceManagerReloadListener
             }
 
             boolean flag = false;
-
+            
             if (p_renderHand_3_)
             {
                 GlStateManager.pushMatrix();
@@ -1605,7 +1607,7 @@ public class EntityRenderer implements IResourceManagerReloadListener
             {
                 Shaders.beginSky();
             }
-
+            
             renderglobal.renderSky(partialTicks, pass);
 
             if (flag)
@@ -1713,9 +1715,19 @@ public class EntityRenderer implements IResourceManagerReloadListener
             {
                 Reflector.callVoid(Reflector.ForgeHooksClient_setRenderPass, new Object[] {Integer.valueOf(0)});
             }
-
-            renderglobal.renderEntities(entity, frustum, partialTicks);
-
+            
+            // Kagu hook with render code inside
+            {
+            	EventEntitiesRender eventEntitiesRender = new EventEntitiesRender(EventPosition.PRE, entity, frustum, partialTicks);
+            	eventEntitiesRender.post();
+            	if (!eventEntitiesRender.isCanceled()) {
+            		renderglobal.renderEntities(entity, frustum, partialTicks);
+            	}
+            	
+            	EventEntitiesRender eventEntitiesRenderPost = new EventEntitiesRender(EventPosition.POST, entity, frustum, partialTicks);
+            	eventEntitiesRenderPost.post();
+            }
+            
             if (Reflector.ForgeHooksClient_setRenderPass.exists())
             {
                 Reflector.callVoid(Reflector.ForgeHooksClient_setRenderPass, new Object[] {Integer.valueOf(-1)});
@@ -1854,6 +1866,7 @@ public class EntityRenderer implements IResourceManagerReloadListener
             RenderHelper.enableStandardItemLighting();
             this.mc.mcProfiler.endStartSection("entities");
             Reflector.callVoid(Reflector.ForgeHooksClient_setRenderPass, new Object[] {Integer.valueOf(1)});
+            
             this.mc.renderGlobal.renderEntities(entity, frustum, partialTicks);
             GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
             Reflector.callVoid(Reflector.ForgeHooksClient_setRenderPass, new Object[] {Integer.valueOf(-1)});
@@ -1871,7 +1884,25 @@ public class EntityRenderer implements IResourceManagerReloadListener
             this.mc.mcProfiler.endStartSection("aboveClouds");
             this.renderCloudsCheck(renderglobal, partialTicks, pass);
         }
-
+        
+        // Kagu hook
+        {
+        	Event3DRender event3dRender = new Event3DRender(EventPosition.PRE, partialTicks);
+        	GlStateManager.pushMatrix();
+        	GlStateManager.pushAttrib();
+        	GlStateManager.disableAlpha();
+        	GlStateManager.enableBlend();
+        	GlStateManager.disableTexture2D();
+        	GlStateManager.disableCull();
+        	event3dRender.post();
+        	GlStateManager.enableCull();
+        	GlStateManager.enableTexture2D();
+        	GlStateManager.enableAlpha();
+        	GlStateManager.disableBlend();
+        	GlStateManager.popAttrib();
+        	GlStateManager.popMatrix();
+        }
+        
         if (Reflector.ForgeHooksClient_dispatchRenderLast.exists())
         {
             this.mc.mcProfiler.endStartSection("forge_render_last");
@@ -2709,9 +2740,9 @@ public class EntityRenderer implements IResourceManagerReloadListener
             }
         }
 
-        if (this.mc.currentScreen instanceof GuiMainMenu)
+        if (this.mc.currentScreen instanceof GuiCompactMainMenu)
         {
-            this.updateMainMenu((GuiMainMenu)this.mc.currentScreen);
+            this.updateMainMenu((GuiCompactMainMenu)this.mc.currentScreen);
         }
 
         if (this.updatedWorld != world)
@@ -2750,7 +2781,7 @@ public class EntityRenderer implements IResourceManagerReloadListener
         }
     }
 
-    private void updateMainMenu(GuiMainMenu p_updateMainMenu_1_)
+    private void updateMainMenu(GuiCompactMainMenu p_updateMainMenu_1_)
     {
         try
         {
@@ -2775,7 +2806,7 @@ public class EntityRenderer implements IResourceManagerReloadListener
                 return;
             }
 
-            Field[] afield = GuiMainMenu.class.getDeclaredFields();
+            Field[] afield = GuiCompactMainMenu.class.getDeclaredFields();
 
             for (int k = 0; k < afield.length; ++k)
             {

@@ -12,7 +12,7 @@ import cafe.kagu.kagu.commands.impl.CommandHelp;
 import cafe.kagu.kagu.commands.impl.CommandKeybinds;
 import cafe.kagu.kagu.commands.impl.CommandSay;
 import cafe.kagu.kagu.eventBus.EventBus;
-import cafe.kagu.kagu.eventBus.Subscriber;
+import cafe.kagu.kagu.eventBus.Handler;
 import cafe.kagu.kagu.eventBus.EventHandler;
 import cafe.kagu.kagu.eventBus.impl.EventChatSendMessage;
 import cafe.kagu.kagu.eventBus.impl.EventKeyUpdate;
@@ -46,7 +46,7 @@ public class CommandManager {
 	 * Handles chat messages
 	 */
 	@EventHandler
-	public Subscriber<EventChatSendMessage> chatEventListener = e -> {
+	public Handler<EventChatSendMessage> chatEventListener = e -> {
 		
 		// Is the event is post than return, we only want pre events on this
 		if (e.isPost()) {
@@ -128,7 +128,7 @@ public class CommandManager {
 	 * Used so the chat opens when you click the period key
 	 */
 	@EventHandler
-	public Subscriber<EventKeyUpdate> onKeyUpdate = e -> {
+	public Handler<EventKeyUpdate> onKeyUpdate = e -> {
 		if (e.isPre() && Minecraft.getMinecraft().currentScreen == null && e.isPressed() && e.getKeyCode() == Keyboard.KEY_PERIOD) {
 			Minecraft.getMinecraft().displayGuiScreen(new GuiChat());
 		}
