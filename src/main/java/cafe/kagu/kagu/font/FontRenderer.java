@@ -30,7 +30,7 @@ public class FontRenderer {
 	 * @param forceLinear Whether or not the font renderer should use linear instead of nearest neighbor
 	 */
 	public FontRenderer(Font font, double scale, boolean forceLinear) {
-		glyphMap = GlyphUtils.genereateGlyphBufferedImageFromFont(font, true);
+		glyphMap = GlyphUtils.genereateGlyphBufferedImageFromFont(font, true, false);
 		glyphsTexture = new DynamicTexture(glyphMap.getBufferedImage());
 		this.scale = scale;
 		this.fontHeight = glyphMap.getFontHeight();
@@ -196,6 +196,12 @@ public class FontRenderer {
 		GlStateManager.enableAlpha();
 		GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		GlStateManager.enableTexture2D();
+		
+		// Should do stuff
+		GL11.glClearColor(0, 0, 0, 1);
+		GL11.glHint(GL11.GL_PERSPECTIVE_CORRECTION_HINT, GL11.GL_NICEST);
+		GL11.glPixelStorei(GL11.GL_UNPACK_ALIGNMENT, GL11.GL_TRUE);
+		
         GlStateManager.shadeModel(GL11.GL_SMOOTH);
         
 		GlStateManager.bindTexture(glyphsTexture.getGlTextureId());

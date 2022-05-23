@@ -9,18 +9,33 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class GlyphUtils {
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.lwjgl.opengl.GL11;
 
+import cafe.kagu.kagu.Kagu;
+
+public class GlyphUtils {
+	
+	private static Logger logger = LogManager.getLogger();
+	
 	/**
-	 * @param font The font to use
+	 * @param font                      The font to use
+	 * @param antiAliasing              Blend characters to make them look nicer,
+	 *                                  can look worse in some cases
+	 * @param aggressiveCharacterLimits Whether to remove many uncommon characters
+	 *                                  or not, auto set to true if the texture
+	 *                                  width is greater than the max width
 	 * @return A glyphMap which contains a buffered image and a map of chars to
 	 *         glyphs
 	 */
-	public static GlyphMap genereateGlyphBufferedImageFromFont(Font font, boolean antiAliasing) {
+	public static GlyphMap genereateGlyphBufferedImageFromFont(Font font, boolean antiAliasing, boolean aggressiveCharacterLimits) {
 		GlyphMap glyphMap = new GlyphMap();
 		glyphMap.setAntiAliased(antiAliasing);
 		
@@ -31,6 +46,11 @@ public class GlyphUtils {
 			List<Character> characters = new ArrayList<Character>();
 			for (int i = Character.MIN_VALUE; i <= Character.MAX_VALUE; i++) {
 				if (font.canDisplay((char) i)) {
+					
+					// Because of limits with the max texture width I now whitelist specific characters
+					if (!ArrayUtils.contains(Kagu.FONT_RENDERER_SUPPORTED_CHARACTERS, (char) i))
+						continue;
+					
 					characters.add((char) i);
 				}
 			}
@@ -78,6 +98,12 @@ public class GlyphUtils {
 		// Padding
 		maxCharHeight += 2;
 		maxCharWidth += 2;
+		
+		// If the texture is greater than the max texture width and the character list isn't being shortened then redo everything but remove uncommon characters
+		if (!aggressiveCharacterLimits && ((int)Math.ceil(maxCharWidth * (chars.length - 1))) >= GL11.glGetInteger(GL11.GL_MAX_TEXTURE_SIZE)) {
+			logger.error("Using aggressive character limits for the font \"" + font.getFontName() + "\", size " + font.getSize() + ". This may cause rendering issues for some uncommon/non english characters");
+			return genereateGlyphBufferedImageFromFont(font, antiAliasing, true);
+		}
 		
 		// Create a buffered image, it's just a long line of characters, no fancy squares or rectangles. This is the easiest and fastest way to do it
 		BufferedImage bufferedImage = new BufferedImage((int)Math.ceil(maxCharWidth * (chars.length - 1)), (int)Math.ceil(maxCharHeight), BufferedImage.TYPE_INT_ARGB);

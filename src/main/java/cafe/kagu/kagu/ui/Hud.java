@@ -46,7 +46,7 @@ public class Hud {
 		ScaledResolution sr = new ScaledResolution(mc);
 		
 		// The fonts used
-		FontRenderer mainFr = FontUtils.COMFORTAA_REGULAR_10_ANTI;
+		FontRenderer mainFr = FontUtils.STRATUM2_MEDIUM_13;
 		
 		// Render hud
 		mainFr.drawString(Kagu.getName() + " v" + Kagu.getVersion(), 3, 4, 0x80000000);
