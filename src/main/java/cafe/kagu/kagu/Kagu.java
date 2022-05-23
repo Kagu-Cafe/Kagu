@@ -38,6 +38,7 @@ public class Kagu {
 	public static final String RECORD_SEPARATOR = "👺";
 	public static final String GROUP_SEPARATOR = "🐀";
 	
+	// Only used if the font texture size is greater than the size limit
 	public static final char[] FONT_RENDERER_SUPPORTED_CHARACTERS = new char[] {
 			'1', '2', '3', '4', '5', '6', '7', '8', '9', '0', 
 			'q', 'w', 'e', 'r', 't', 'y', 'y', 'u', 'i', 'o', 'p', 
