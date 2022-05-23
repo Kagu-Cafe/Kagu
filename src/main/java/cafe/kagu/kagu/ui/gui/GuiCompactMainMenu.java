@@ -46,8 +46,8 @@ public class GuiCompactMainMenu extends GuiScreen {
 	
 	@Override
 	protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
-//		mc.displayGuiScreen(new GuiSelectWorld(this));
-		mc.displayGuiScreen(new GuiLanguage(this, this.mc.gameSettings, this.mc.getLanguageManager()));
+		mc.displayGuiScreen(new GuiSelectWorld(this));
+//		mc.displayGuiScreen(new GuiLanguage(this, this.mc.gameSettings, this.mc.getLanguageManager()));
 	}
 	
 }

@@ -36,6 +36,7 @@ import org.lwjgl.opengl.GL11;
 import cafe.kagu.kagu.eventBus.Event.EventPosition;
 import cafe.kagu.kagu.eventBus.impl.EventRenderItem;
 import cafe.kagu.kagu.mods.ModuleManager;
+import cafe.kagu.kagu.utils.UiUtils;
 import shadersmod.client.Shaders;
 
 public class ItemRenderer
@@ -68,6 +69,11 @@ public class ItemRenderer
 
     public void renderItem(EntityLivingBase entityIn, ItemStack heldStack, ItemCameraTransforms.TransformType transform)
     {
+    	
+    	if (ModuleManager.modEsp.isEnabled() && ModuleManager.modEsp.mode.is("Weird") && ModuleManager.modEsp.isSecondPass()) {
+    		ModuleManager.modEsp.getShader().unbind();
+    	}
+    	
         if (heldStack != null)
         {
             Item item = heldStack.getItem();

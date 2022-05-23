@@ -3324,4 +3324,12 @@ public class Minecraft implements IThreadListener, IPlayerUsage
     {
         this.field_181541_X = p_181537_1_;
     }
+    
+    /**
+	 * @return the timer
+	 */
+	public Timer getTimer() {
+		return timer;
+	}
+    
 }

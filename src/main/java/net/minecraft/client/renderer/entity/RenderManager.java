@@ -1,6 +1,13 @@
 package net.minecraft.client.renderer.entity;
 
 import com.google.common.collect.Maps;
+
+import cafe.kagu.kagu.eventBus.Event.EventPosition;
+import cafe.kagu.kagu.eventBus.impl.EventEntityRender;
+import cafe.kagu.kagu.mods.Module;
+import cafe.kagu.kagu.mods.ModuleManager;
+import cafe.kagu.kagu.mods.impl.visual.ModEsp;
+
 import java.util.Collections;
 import java.util.Map;
 import net.minecraft.block.Block;
@@ -351,9 +358,29 @@ public class RenderManager
 
         int j = i % 65536;
         int k = i / 65536;
+        
         OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float)j / 1.0F, (float)k / 1.0F);
+        
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-        return this.doRenderEntity(entity, d0 - this.renderPosX, d1 - this.renderPosY, d2 - this.renderPosZ, f, partialTicks, p_147936_3_);
+        
+        // Kagu hook
+        {
+        	EventEntityRender eventEntityRender = new EventEntityRender(EventPosition.PRE, entity, partialTicks);
+        	eventEntityRender.post();
+        	if (eventEntityRender.isCanceled())
+        		return false;
+        }
+        
+        // Do render and save result
+        boolean returnBool = this.doRenderEntity(entity, d0 - this.renderPosX, d1 - this.renderPosY, d2 - this.renderPosZ, f, partialTicks, p_147936_3_);
+        
+        // Kagu hook
+        {
+        	EventEntityRender eventEntityRender = new EventEntityRender(EventPosition.POST, entity, partialTicks);
+        	eventEntityRender.post();
+        }
+        
+        return returnBool;
     }
 
     public void renderWitherSkull(Entity entityIn, float partialTicks)
