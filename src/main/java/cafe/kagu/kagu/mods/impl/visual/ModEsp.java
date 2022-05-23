@@ -150,10 +150,9 @@ public class ModEsp extends Module {
 				
 				// Calculate the best box coords
 				for (Vector3f corner : corners) {
-					if (corner == null || corner.getZ() < 0 || corner.getZ() >= 1) {
-//						System.out.println(corner);
+					if (corner == null || corner.getZ() < 0 || corner.getZ() >= 1)
 						continue;
-					}
+					
 					left = Math.min(left, corner.getX());
 					top = Math.min(top, corner.getY());
 					right = Math.max(right, corner.getX());
@@ -169,7 +168,6 @@ public class ModEsp extends Module {
 				
 			}
 			
-//			System.out.println(draw2dEntities);
 			this.draw2dEntities = draw2dEntities;
 			
 		}
