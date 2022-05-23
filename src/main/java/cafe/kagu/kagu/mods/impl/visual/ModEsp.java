@@ -8,6 +8,7 @@ import java.util.ArrayList;
 
 import javax.vecmath.Vector3d;
 import javax.vecmath.Vector3f;
+import javax.vecmath.Vector4d;
 
 import org.lwjgl.opengl.GL11;
 
@@ -63,7 +64,7 @@ public class ModEsp extends Module {
 	}
 	
 	// ESP modes
-	public ModeSetting mode = new ModeSetting("Mode", "Kagu 2D", "Kagu 2D", "Test");
+	public ModeSetting mode = new ModeSetting("Mode", "Kagu 2D", "Kagu 2D", "Simple white", "Test");
 	
 	private Shader shader;
 	
@@ -98,24 +99,102 @@ public class ModEsp extends Module {
 	@EventHandler
 	private Handler<Event2DRender> onRender2D = e -> {
 		
-		if (mode.is("Kagu 2D")) {
+		if (e.isPost())
+			return;
+		
+		switch (mode.getMode()) {
 			
-			for (EspEntity ent : draw2dEntities) {
+			case "Simple white": {
 				UiUtils.enableWireframe();
-				Gui.drawRect(ent.getLeft(), ent.getTop(), ent.getRight(), ent.getBottom(), 0xffffffff);
+				for (EspEntity ent : draw2dEntities) {
+					Gui.drawRect(ent.getLeft(), ent.getTop(), ent.getRight(), ent.getBottom(), 0xffffffff);
+				}
 				UiUtils.disableWireframe();
-				FontRenderer nametagRenderer = FontUtils.ROBOTO_LIGHT_10;
-				nametagRenderer.drawCenteredString(ent.getEntityLivingBase().getName(), (ent.getLeft() + ent.getRight()) / 2, ent.getTop() - nametagRenderer.getFontHeight() - 1, 0xffffffff);
-			}
+			}break;
+			
+			case "Kagu 2D":{
+				
+				GlStateManager.pushMatrix();
+				GlStateManager.pushAttrib();
+				
+				for (EspEntity ent : draw2dEntities) {
+					
+					try {
+						double healthPercent = ent.getEntityLivingBase().getHealth() / ent.getEntityLivingBase().getMaxHealth();
+						int lerpedHealthColor = UiUtils.getColorFromVector(UiUtils.lerpColor(new Vector4d(1, 0, 0, 1), new Vector4d(0, 1, 0, 1), 
+								1 - (healthPercent)));
+						double lineWidth = 2;
+						double infoBarGap = lineWidth * 2;
+						int white = 0xffffffff;
+						int black = 0xff000000;
+						int blue = 0xff0000ff;
+						double cornerSize = 0.25;
+						
+						// Top left corner
+						Gui.drawRect(ent.getLeft() - lineWidth, ent.getTop() - lineWidth,
+								ent.getLeft() + (lineWidth / 2), ent.getTop() + (ent.getBottom() - ent.getTop()) * cornerSize, black);
+						Gui.drawRect(ent.getLeft() - lineWidth, ent.getTop() - lineWidth,
+								ent.getLeft() + (ent.getRight() - ent.getLeft()) * cornerSize, ent.getTop() + (lineWidth / 2), black);
+						Gui.drawRect(ent.getLeft() - (lineWidth / 2), ent.getTop() - (lineWidth / 2),
+								ent.getLeft(), ent.getTop() + (ent.getBottom() - ent.getTop()) * cornerSize - (lineWidth / 2), white);
+						Gui.drawRect(ent.getLeft() - (lineWidth / 2), ent.getTop() - (lineWidth / 2),
+								ent.getLeft() + (ent.getRight() - ent.getLeft()) * cornerSize - (lineWidth / 2), ent.getTop(), white);
+						
+						// Bottom left corner
+						Gui.drawRect(ent.getLeft() - lineWidth, ent.getBottom() - lineWidth,
+								ent.getLeft() + (lineWidth / 2), ent.getBottom() + (ent.getTop() - ent.getBottom()) * cornerSize, black);
+						Gui.drawRect(ent.getLeft() - lineWidth, ent.getBottom() - lineWidth,
+								ent.getLeft() + (ent.getRight() - ent.getLeft()) * cornerSize, ent.getBottom() + (lineWidth / 2), black);
+						Gui.drawRect(ent.getLeft() - (lineWidth / 2), ent.getBottom() - (lineWidth / 2),
+								ent.getLeft(), ent.getBottom() + (ent.getTop() - ent.getBottom()) * cornerSize + (lineWidth / 2), white);
+						Gui.drawRect(ent.getLeft() - (lineWidth / 2), ent.getBottom() - (lineWidth / 2),
+								ent.getLeft() + (ent.getRight() - ent.getLeft()) * cornerSize - (lineWidth / 2), ent.getBottom(), white);
+						
+						// Bottom right corner
+						Gui.drawRect(ent.getRight() - lineWidth, ent.getBottom() - lineWidth,
+								ent.getRight() + (lineWidth / 2), ent.getBottom() + (ent.getTop() - ent.getBottom()) * cornerSize, black);
+						Gui.drawRect(ent.getRight() + (lineWidth / 2), ent.getBottom() - lineWidth,
+								ent.getRight() + (ent.getLeft() - ent.getRight()) * cornerSize, ent.getBottom() + (lineWidth / 2), black);
+						Gui.drawRect(ent.getRight() - (lineWidth / 2), ent.getBottom() - (lineWidth / 2),
+								ent.getRight(), ent.getBottom() + (ent.getTop() - ent.getBottom()) * cornerSize + (lineWidth / 2), white);
+						Gui.drawRect(ent.getRight(), ent.getBottom() - (lineWidth / 2),
+								ent.getRight() + (ent.getLeft() - ent.getRight()) * cornerSize + (lineWidth / 2), ent.getBottom(), white);
+						
+						// Top right corner
+						Gui.drawRect(ent.getRight() - lineWidth, ent.getTop() - lineWidth,
+								ent.getRight() + (lineWidth / 2), ent.getTop() + (ent.getBottom() - ent.getTop()) * cornerSize, black);
+						Gui.drawRect(ent.getRight() + (lineWidth / 2), ent.getTop() - lineWidth,
+								ent.getRight() + (ent.getLeft() - ent.getRight()) * cornerSize, ent.getTop() + (lineWidth / 2), black);
+						Gui.drawRect(ent.getRight() - (lineWidth / 2), ent.getTop() - (lineWidth / 2),
+								ent.getRight(), ent.getTop() + (ent.getBottom() - ent.getTop()) * cornerSize - (lineWidth / 2), white);
+						Gui.drawRect(ent.getRight(), ent.getTop() - (lineWidth / 2),
+								ent.getRight() + (ent.getLeft() - ent.getRight()) * cornerSize + (lineWidth / 2), ent.getTop(), white);
+						
+						// Health bar
+						Gui.drawRect(ent.getLeft() - lineWidth - infoBarGap,
+								ent.getTop(),
+								ent.getLeft() - (lineWidth * 2) - infoBarGap, ent.getBottom(), black);
+						Gui.drawRect(ent.getLeft() - lineWidth - infoBarGap,
+								ent.getBottom() + (ent.getTop() - ent.getBottom()) * healthPercent,
+								ent.getLeft() - (lineWidth * 2) - infoBarGap, ent.getBottom(), healthPercent >= 1 ? blue : lerpedHealthColor);
+						
+					}catch(Exception e1) {}
+					
+				}
+				
+				GlStateManager.popAttrib();
+				GlStateManager.popMatrix();
+				GL11.glEnable(GL11.GL_BLEND);
+				
+			}break;
 			
 		}
-		
 	};
 	
 	@EventHandler
 	private Handler<Event3DRender> onRender3D = e -> {
 		
-		if (mode.is("Kagu 2D")) {
+		if (mode.is("Kagu 2D") || mode.is("Simple white")) {
 			
 			ArrayList<EspEntity> draw2dEntities = new ArrayList<EspEntity>();
 			for (Entity ent : mc.theWorld.loadedEntityList) {

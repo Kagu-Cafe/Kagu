@@ -120,14 +120,6 @@ public class GuiIngame extends Gui
     public void renderGameOverlay(float partialTicks)
     {
     	
-        // Kagu hook
-        {
-        	Event2DRender event2dRender = new Event2DRender(EventPosition.PRE);
-        	event2dRender.post();
-        	if (event2dRender.isCanceled())
-        		return;
-        }
-    	
         ScaledResolution scaledresolution = new ScaledResolution(this.mc);
         int i = scaledresolution.getScaledWidth();
         int j = scaledresolution.getScaledHeight();
@@ -362,6 +354,14 @@ public class GuiIngame extends Gui
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         GlStateManager.disableLighting();
         GlStateManager.enableAlpha();
+        
+        // Kagu hook
+        {
+        	Event2DRender event2dRender = new Event2DRender(EventPosition.PRE);
+        	event2dRender.post();
+        	if (event2dRender.isCanceled())
+        		return;
+        }
         
         // Kagu hook
         {
