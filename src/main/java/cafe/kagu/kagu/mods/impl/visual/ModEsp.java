@@ -117,7 +117,7 @@ public class ModEsp extends Module {
 		
 		if (mode.is("Kagu 2D")) {
 			
-			ArrayList<EspEntity> draw2dEntities = new ArrayList();
+			ArrayList<EspEntity> draw2dEntities = new ArrayList<EspEntity>();
 			for (Entity ent : mc.theWorld.loadedEntityList) {
 				
 				// Only get living entities
