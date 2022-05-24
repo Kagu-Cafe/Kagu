@@ -43,11 +43,6 @@ public class EventBus {
 			return;
 		}
 		
-		// Special handling
-		if (e instanceof EventTick && e.isPre()) {
-			DrawUtils3D.setFullBright(false);
-		}
-		
 		// Send the event
 		for (Handler<? extends Event> subscriber : subscribers.keySet()) {
 			if (e.getClass().isAssignableFrom(subscribers.get(subscriber))) {
