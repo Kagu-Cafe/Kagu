@@ -1,7 +1,5 @@
 package cafe.kagu.kagu;
 
-import java.io.File;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -18,7 +16,6 @@ import cafe.kagu.kagu.ui.clickgui.GuiCsgoClickgui;
 import cafe.kagu.kagu.ui.gui.GuiCompactMainMenu;
 import cafe.kagu.kagu.utils.SpoofUtils;
 import cafe.kagu.kagu.utils.StencilUtil;
-import net.minecraft.client.Minecraft;
 
 /**
  * @author lavaflowglow
@@ -66,6 +63,16 @@ public class Kagu {
 		EventBus.start();
 		logger.info("Started the event bus");
 		
+		// Start the stencil util
+		logger.info("Starting the stencil util...");
+		StencilUtil.start();
+		logger.info("Started the stencil util");
+		
+		// Start the spoof utils
+		logger.info("Starting the spoof utils...");
+		SpoofUtils.start();
+		logger.info("Started the spoof utils");
+		
 		// Start the module manager
 		logger.info("Starting the module manager...");
 		ModuleManager.start();
@@ -90,16 +97,6 @@ public class Kagu {
 		logger.info("Starting the clickgui...");
 		GuiCsgoClickgui.getInstance().start();
 		logger.info("Started the clickgui");
-		
-		// Start the stencil util
-		logger.info("Starting the stencil util...");
-		StencilUtil.start();
-		logger.info("Started the stencil util");
-		
-		// Start the spoof utils
-		logger.info("Starting the spoof utils...");
-		SpoofUtils.start();
-		logger.info("Started the spoof utils");
 		
 		// Start a cheat loop thread
 		logger.info("Starting the cheat loop thread...");

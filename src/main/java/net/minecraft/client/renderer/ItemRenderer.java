@@ -36,6 +36,7 @@ import org.lwjgl.opengl.GL11;
 import cafe.kagu.kagu.eventBus.Event.EventPosition;
 import cafe.kagu.kagu.eventBus.impl.EventRenderItem;
 import cafe.kagu.kagu.mods.ModuleManager;
+import cafe.kagu.kagu.utils.SpoofUtils;
 import cafe.kagu.kagu.utils.UiUtils;
 import shadersmod.client.Shaders;
 
@@ -350,6 +351,10 @@ public class ItemRenderer
             	
                 EnumAction enumaction = this.itemToRender.getItemUseAction();
                 
+                // Do blocking transformations if spoof block is enabled, only affects what the user sees, not user or client side blocking status
+                if (SpoofUtils.isSpoofBlocking())
+                	enumaction = EnumAction.BLOCK;
+                
                 // Kagu hook
                 {
                 	EventRenderItem eventRenderItem = new EventRenderItem(EventPosition.PRE, enumaction, equipProgress, swingProgress);
@@ -365,7 +370,7 @@ public class ItemRenderer
                 {
                     this.renderItemMap(entityplayersp, f2, equipProgress, swingProgress);
                 }
-                else if (entityplayersp.getItemInUseCount() > 0 || enumaction == EnumAction.CUSTOMBLOCK)
+                else if (entityplayersp.getItemInUseCount() > 0 || enumaction == EnumAction.CUSTOMBLOCK || SpoofUtils.isSpoofBlocking())
                 {
                     
                     switch (ItemRenderer.ItemRenderer$1.field_178094_a[enumaction.ordinal()])

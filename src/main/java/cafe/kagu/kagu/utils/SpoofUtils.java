@@ -31,6 +31,7 @@ public class SpoofUtils {
 		if (e.isPre()) {
 			spoofYaw = false;
 			spoofPitch = false;
+			spoofBlocking = false;
 		}else {
 			
 			if (!spoofYaw) {
@@ -118,6 +119,22 @@ public class SpoofUtils {
 	 */
 	public static boolean isSpoofPitch() {
 		return spoofPitch;
+	}
+	
+	private static boolean spoofBlocking = false;
+
+	/**
+	 * @return the spoofBlocking
+	 */
+	public static boolean isSpoofBlocking() {
+		return spoofBlocking;
+	}
+
+	/**
+	 * @param spoofBlocking the spoofBlocking to set
+	 */
+	public static void setSpoofBlocking(boolean spoofBlocking) {
+		SpoofUtils.spoofBlocking = spoofBlocking;
 	}
 
 }

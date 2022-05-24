@@ -123,7 +123,7 @@ public abstract class RendererLivingEntity<T extends EntityLivingBase> extends R
                 float f1 = this.interpolateRotation(entity.prevRotationYawHead, entity.rotationYawHead, partialTicks);
                 
                 // Spoofed rotation
-                if (SpoofUtils.isSpoofYaw()) {
+                if (SpoofUtils.isSpoofYaw() && entity == Minecraft.getMinecraft().thePlayer) {
                 	f = SpoofUtils.getSpoofedLastYaw() + (SpoofUtils.getSpoofedYaw() - SpoofUtils.getSpoofedLastYaw()) * partialTicks;
                 	f1 = f;
                 }
@@ -158,7 +158,7 @@ public abstract class RendererLivingEntity<T extends EntityLivingBase> extends R
                 float f8 = entity.prevRotationPitch + (entity.rotationPitch - entity.prevRotationPitch) * partialTicks;
                 
                 // Spoofed rotations
-                if (SpoofUtils.isSpoofPitch()) {
+                if (SpoofUtils.isSpoofPitch() && entity == Minecraft.getMinecraft().thePlayer) {
                 	f8 = SpoofUtils.getSpoofedLastPitch() + (SpoofUtils.getSpoofedPitch() - SpoofUtils.getSpoofedLastPitch()) * partialTicks;
                 }
                 

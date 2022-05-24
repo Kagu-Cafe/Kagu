@@ -13,6 +13,7 @@ import cafe.kagu.kagu.settings.impl.BooleanSetting;
 import cafe.kagu.kagu.settings.impl.DecimalSetting;
 import cafe.kagu.kagu.settings.impl.ModeSetting;
 import cafe.kagu.kagu.utils.ChatUtils;
+import cafe.kagu.kagu.utils.SpoofUtils;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.item.EnumAction;
@@ -57,7 +58,7 @@ public class ModAnimations extends Module {
 		GlStateManager.translate(itemTranslateX.getValue(), itemTranslateY.getValue(), itemTranslateZ.getValue());
 		
 		// Sword block animations
-		if (!blockAnimations.is("None") && e.getAction() == EnumAction.BLOCK && mc.thePlayer.isUsingItem()) {
+		if (!blockAnimations.is("None") && e.getAction() == EnumAction.BLOCK && (mc.thePlayer.isUsingItem() || SpoofUtils.isSpoofBlocking())) {
 			e.setAction(EnumAction.CUSTOMBLOCK);
 			
 			switch (blockAnimations.getMode()) {

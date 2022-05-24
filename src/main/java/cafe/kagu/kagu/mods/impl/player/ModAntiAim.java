@@ -13,7 +13,7 @@ import cafe.kagu.kagu.settings.impl.ModeSetting;
 import cafe.kagu.kagu.utils.SpoofUtils;
 
 /**
- * @author Moosh
+ * @author lavaflowglow
  *
  */
 public class ModAntiAim extends Module {
