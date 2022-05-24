@@ -67,6 +67,7 @@ public class ModEsp extends Module {
 		switch (mode.getMode()) {
 			
 			case "Simple white": {
+				GL11.glLineWidth(1);
 				UiUtils.enableWireframe();
 				for (EspEntity ent : draw2dEntities) {
 					Gui.drawRect(ent.getLeft(), ent.getTop(), ent.getRight(), ent.getBottom(), 0xffffffff);
