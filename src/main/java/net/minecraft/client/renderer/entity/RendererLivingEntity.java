@@ -3,6 +3,7 @@ package net.minecraft.client.renderer.entity;
 import com.google.common.collect.Lists;
 
 import cafe.kagu.kagu.mods.ModuleManager;
+import cafe.kagu.kagu.utils.SpoofUtils;
 
 import java.nio.FloatBuffer;
 import java.util.List;
@@ -120,8 +121,15 @@ public abstract class RendererLivingEntity<T extends EntityLivingBase> extends R
             {
                 float f = this.interpolateRotation(entity.prevRenderYawOffset, entity.renderYawOffset, partialTicks);
                 float f1 = this.interpolateRotation(entity.prevRotationYawHead, entity.rotationYawHead, partialTicks);
+                
+                // Spoofed rotation
+                if (SpoofUtils.isSpoofYaw()) {
+                	f = SpoofUtils.getSpoofedLastYaw() + (SpoofUtils.getSpoofedYaw() - SpoofUtils.getSpoofedLastYaw()) * partialTicks;
+                	f1 = f;
+                }
+                
                 float f2 = f1 - f;
-
+                
                 if (this.mainModel.isRiding && entity.ridingEntity instanceof EntityLivingBase)
                 {
                     EntityLivingBase entitylivingbase = (EntityLivingBase)entity.ridingEntity;
@@ -148,6 +156,12 @@ public abstract class RendererLivingEntity<T extends EntityLivingBase> extends R
                 }
 
                 float f8 = entity.prevRotationPitch + (entity.rotationPitch - entity.prevRotationPitch) * partialTicks;
+                
+                // Spoofed rotations
+                if (SpoofUtils.isSpoofPitch()) {
+                	f8 = SpoofUtils.getSpoofedLastPitch() + (SpoofUtils.getSpoofedPitch() - SpoofUtils.getSpoofedLastPitch()) * partialTicks;
+                }
+                
                 this.renderLivingAt(entity, x, y, z);
                 float f7 = this.handleRotationFloat(entity, partialTicks);
                 this.rotateCorpse(entity, f7, f, partialTicks);

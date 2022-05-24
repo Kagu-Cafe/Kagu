@@ -16,6 +16,7 @@ import cafe.kagu.kagu.mods.ModuleManager;
 import cafe.kagu.kagu.ui.Hud;
 import cafe.kagu.kagu.ui.clickgui.GuiCsgoClickgui;
 import cafe.kagu.kagu.ui.gui.GuiCompactMainMenu;
+import cafe.kagu.kagu.utils.SpoofUtils;
 import cafe.kagu.kagu.utils.StencilUtil;
 import net.minecraft.client.Minecraft;
 
@@ -94,6 +95,11 @@ public class Kagu {
 		logger.info("Starting the stencil util...");
 		StencilUtil.start();
 		logger.info("Started the stencil util");
+		
+		// Start the spoof utils
+		logger.info("Starting the spoof utils...");
+		SpoofUtils.start();
+		logger.info("Started the spoof utils");
 		
 		// Start a cheat loop thread
 		logger.info("Starting the cheat loop thread...");

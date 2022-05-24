@@ -6,6 +6,7 @@ import com.google.gson.JsonSyntaxException;
 import cafe.kagu.kagu.eventBus.Event.EventPosition;
 import cafe.kagu.kagu.eventBus.impl.Event3DRender;
 import cafe.kagu.kagu.eventBus.impl.EventEntitiesRender;
+import cafe.kagu.kagu.mods.ModuleManager;
 import cafe.kagu.kagu.ui.gui.GuiCompactMainMenu;
 import cafe.kagu.kagu.utils.SpoofUtils;
 
@@ -382,8 +383,8 @@ public class EntityRenderer implements IResourceManagerReloadListener
         this.updateTorchFlicker();
         this.fogColor2 = this.fogColor1;
         this.thirdPersonDistanceTemp = this.thirdPersonDistance;
-
-        if (this.mc.gameSettings.smoothCamera)
+        
+        if (this.mc.gameSettings.smoothCamera && ModuleManager.modNormalZoomCam.isDisabled())
         {
             float f = this.mc.gameSettings.mouseSensitivity * 0.6F + 0.2F;
             float f1 = f * f * f * 8.0F;
@@ -1290,7 +1291,7 @@ public class EntityRenderer implements IResourceManagerReloadListener
                 b0 = -1;
             }
 
-            if (this.mc.gameSettings.smoothCamera)
+            if (this.mc.gameSettings.smoothCamera && ModuleManager.modNormalZoomCam.isDisabled())
             {
                 this.smoothCamYaw += f2;
                 this.smoothCamPitch += f3;

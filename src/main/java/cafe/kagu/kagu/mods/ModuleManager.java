@@ -10,10 +10,12 @@ import cafe.kagu.kagu.eventBus.EventBus;
 import cafe.kagu.kagu.mods.impl.misc.ModTest;
 import cafe.kagu.kagu.mods.impl.move.ModMoonJump;
 import cafe.kagu.kagu.mods.impl.move.ModSprint;
+import cafe.kagu.kagu.mods.impl.player.ModAntiAim;
 import cafe.kagu.kagu.mods.impl.player.ModNoFall;
 import cafe.kagu.kagu.mods.impl.visual.ModAnimations;
 import cafe.kagu.kagu.mods.impl.visual.ModChestEsp;
 import cafe.kagu.kagu.mods.impl.visual.ModEsp;
+import cafe.kagu.kagu.mods.impl.visual.ModNormalZoomCam;
 
 /**
  * @author lavaflowglow
@@ -34,11 +36,13 @@ public class ModuleManager {
 	
 	// Player
 	public static ModNoFall modNoFall = new ModNoFall();
+	public static ModAntiAim modAntiAim = new ModAntiAim();
 	
 	// Visual
 	public static ModAnimations modAnimations = new ModAnimations();
 	public static ModChestEsp modChestEsp = new ModChestEsp();
 	public static ModEsp modEsp = new ModEsp();
+	public static ModNormalZoomCam modNormalZoomCam = new ModNormalZoomCam();
 	
 	// An array of all the modules in the client
 	private static final Module[] MODULES = new Module[] {
@@ -50,13 +54,15 @@ public class ModuleManager {
 			modAnimations,
 			modChestEsp,
 			modEsp,
+			modNormalZoomCam,
 			
 			// Movement
 			modMoonJump,
 			modSprint,
 			
 			// Player
-			modNoFall
+			modNoFall,
+			modAntiAim
 			
 	};
 
