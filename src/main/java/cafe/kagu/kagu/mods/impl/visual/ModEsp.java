@@ -18,6 +18,7 @@ import cafe.kagu.kagu.eventBus.impl.Event2DRender;
 import cafe.kagu.kagu.eventBus.impl.Event3DRender;
 import cafe.kagu.kagu.eventBus.impl.EventEntitiesRender;
 import cafe.kagu.kagu.eventBus.impl.EventEntityRender;
+import cafe.kagu.kagu.eventBus.impl.EventTick;
 import cafe.kagu.kagu.font.FontRenderer;
 import cafe.kagu.kagu.font.FontUtils;
 import cafe.kagu.kagu.mods.Module;
@@ -46,53 +47,14 @@ public class ModEsp extends Module {
 	
 	public ModEsp() {
 		super("ESP", Category.VISUAL);
-		try {
-			Shader shader = new Shader(ShaderType.FRAGMENT, "#version 330\r\n"
-					+ "\r\n"
-					+ "out vec4 fragColor;\r\n"
-					+ "\r\n"
-					+ "void main() {\r\n"
-					+ "    fragColor = vec4(1.0, 1.0, 1.0, 1.0);\r\n"
-					+ "}");
-			shader.create();
-			shader.link();
-			this.shader = shader;
-		} catch (Exception e) {
-			
-		}
-		setSettings(mode);
+		setSettings(mode, chams);
 	}
 	
 	// ESP modes
 	public ModeSetting mode = new ModeSetting("Mode", "Kagu 2D", "Kagu 2D", "Simple white", "Test");
 	
-	private Shader shader;
-	
-	private boolean secondPass = false;
-	
-	/**
-	 * @return the chamsPass
-	 */
-	public boolean isSecondPass() {
-		return secondPass;
-	}
-	
-	/**
-	 * @return the shader
-	 */
-	public Shader getShader() {
-		return shader;
-	}
-
-	@Override
-	public void onEnable() {
-		secondPass = false;
-	}
-	
-	@Override
-	public void onDisable() {
-		secondPass = false;
-	}
+	// Chams
+	public BooleanSetting chams = new BooleanSetting("Chams", true);
 	
 	private ArrayList<EspEntity> draw2dEntities = new ArrayList();
 	
@@ -114,6 +76,8 @@ public class ModEsp extends Module {
 			
 			case "Kagu 2D":{
 				
+				FontRenderer nametagFr = FontUtils.STRATUM2_MEDIUM_18;
+				
 				GlStateManager.pushMatrix();
 				GlStateManager.pushAttrib();
 				
@@ -124,7 +88,8 @@ public class ModEsp extends Module {
 						int lerpedHealthColor = UiUtils.getColorFromVector(UiUtils.lerpColor(new Vector4d(1, 0, 0, 1), new Vector4d(0, 1, 0, 1), 
 								1 - (healthPercent)));
 						double lineWidth = 2;
-						double infoBarGap = lineWidth * 2;
+						double infoBarGap = lineWidth * 3;
+						double nametagGap = lineWidth;
 						int white = 0xffffffff;
 						int black = 0xff000000;
 						int blue = 0xff0000ff;
@@ -172,11 +137,24 @@ public class ModEsp extends Module {
 						
 						// Health bar
 						Gui.drawRect(ent.getLeft() - lineWidth - infoBarGap,
-								ent.getTop(),
-								ent.getLeft() - (lineWidth * 2) - infoBarGap, ent.getBottom(), black);
+								ent.getTop() - lineWidth,
+								ent.getLeft() - (lineWidth * 2) - infoBarGap, ent.getBottom() + (lineWidth / 2), black);
 						Gui.drawRect(ent.getLeft() - lineWidth - infoBarGap,
-								ent.getBottom() + (ent.getTop() - ent.getBottom()) * healthPercent,
-								ent.getLeft() - (lineWidth * 2) - infoBarGap, ent.getBottom(), healthPercent >= 1 ? blue : lerpedHealthColor);
+								(ent.getBottom() + (lineWidth / 2)) + ((ent.getTop() - lineWidth) - (ent.getBottom() + (lineWidth / 2))) * healthPercent,
+								ent.getLeft() - (lineWidth * 2) - infoBarGap, ent.getBottom() + (lineWidth / 2), healthPercent >= 1 ? blue : lerpedHealthColor);
+						
+						// Nametags
+						double nametagScaling = ((ent.getRight() - ent.getLeft()) * (ent.getEntityLivingBase() instanceof EntityPlayer ? 2 : 0.7)) / nametagFr.getStringWidth(ent.getEntityLivingBase().getName());
+						GlStateManager.pushMatrix();
+						if (nametagScaling < 1) {
+							GlStateManager.translate((ent.getLeft() + ent.getRight()) * 0.5, ent.getTop() - nametagGap - (nametagFr.getFontHeight() * nametagScaling), 0);
+							GlStateManager.scale(nametagScaling, nametagScaling, nametagScaling);
+							GlStateManager.translate(-((ent.getLeft() + ent.getRight()) * 0.5), -(ent.getTop() - nametagGap - (nametagFr.getFontHeight() * nametagScaling)), 0);
+						}
+						
+						nametagFr.drawCenteredString(ent.getEntityLivingBase().getName(), (ent.getLeft() + ent.getRight()) * 0.5, ent.getTop() - nametagGap - (nametagFr.getFontHeight() * (nametagScaling >= 1 ? 1 : nametagScaling)), 0xffffffff, true);
+						
+						GlStateManager.popMatrix();
 						
 					}catch(Exception e1) {}
 					
@@ -194,61 +172,93 @@ public class ModEsp extends Module {
 	@EventHandler
 	private Handler<Event3DRender> onRender3D = e -> {
 		
-		if (mode.is("Kagu 2D") || mode.is("Simple white")) {
-			
-			ArrayList<EspEntity> draw2dEntities = new ArrayList<EspEntity>();
-			for (Entity ent : mc.theWorld.loadedEntityList) {
-				
-				// Only get living entities
-				if (!(ent instanceof EntityLivingBase)) {
-					continue;
-				}
-				
-				EntityLivingBase entityLivingBase = (EntityLivingBase)ent;
-				
-				// Ignore the player if in first person
-				if (entityLivingBase == mc.thePlayer && mc.gameSettings.thirdPersonView == 0)
-					continue;
-				
-				double left = Integer.MAX_VALUE, top = Integer.MAX_VALUE, right = Integer.MIN_VALUE, bottom = Integer.MIN_VALUE;
-				
-				AxisAlignedBB boundingBox = entityLivingBase.getEntityBoundingBox();
-				
-				// All the corners for the bounding box -> screen coords for each position
-				Vector3d offsets = entityLivingBase == mc.thePlayer ? DrawUtils3D.get3dPlayerOffsets() : DrawUtils3D.get3dWorldOffsets();
-				Vector3f backBl = DrawUtils3D.project2D((float)boundingBox.minX, (float)boundingBox.minY, (float)boundingBox.minZ, offsets);
-				Vector3f backBr = DrawUtils3D.project2D((float)boundingBox.maxX, (float)boundingBox.minY, (float)boundingBox.minZ, offsets);
-				Vector3f backTl = DrawUtils3D.project2D((float)boundingBox.minX, (float)boundingBox.maxY, (float)boundingBox.minZ, offsets);
-				Vector3f backTr = DrawUtils3D.project2D((float)boundingBox.maxX, (float)boundingBox.maxY, (float)boundingBox.minZ, offsets);
-				Vector3f frontBl = DrawUtils3D.project2D((float)boundingBox.minX, (float)boundingBox.minY, (float)boundingBox.maxZ, offsets);
-				Vector3f frontBr = DrawUtils3D.project2D((float)boundingBox.maxX, (float)boundingBox.minY, (float)boundingBox.maxZ, offsets);
-				Vector3f frontTl = DrawUtils3D.project2D((float)boundingBox.minX, (float)boundingBox.maxY, (float)boundingBox.maxZ, offsets);
-				Vector3f frontTr = DrawUtils3D.project2D((float)boundingBox.maxX, (float)boundingBox.maxY, (float)boundingBox.maxZ, offsets);
-				Vector3f[] corners = new Vector3f[] {backBl, backBr, backTl, backTr, 
-													 frontBl, frontBr, frontTl, frontTr};
-				
-				// Calculate the best box coords
-				for (Vector3f corner : corners) {
-					if (corner == null || corner.getZ() < 0 || corner.getZ() >= 1)
+		switch(mode.getMode()) {
+			case "Kagu 2D":
+			case "Simple white":{
+				ArrayList<EspEntity> draw2dEntities = new ArrayList<EspEntity>();
+				for (Entity ent : mc.theWorld.loadedEntityList) {
+					
+					// Only get living entities
+					if (!(ent instanceof EntityLivingBase)) {
+						continue;
+					}
+					
+					EntityLivingBase entityLivingBase = (EntityLivingBase)ent;
+					
+					// Ignore the player if in first person
+					if (entityLivingBase == mc.thePlayer && mc.gameSettings.thirdPersonView == 0)
 						continue;
 					
-					left = Math.min(left, corner.getX());
-					top = Math.min(top, corner.getY());
-					right = Math.max(right, corner.getX());
-					bottom = Math.max(bottom, corner.getY());
+					double left = Integer.MAX_VALUE, top = Integer.MAX_VALUE, right = Integer.MIN_VALUE, bottom = Integer.MIN_VALUE;
+					
+					// Get bounding box
+					AxisAlignedBB boundingBox = entityLivingBase.getEntityBoundingBox();
+					// Correct bounding box coords to be smooth with the entity's interpolation
+					if (entityLivingBase != mc.thePlayer) {
+						Vector3d entityRenderCoords = DrawUtils3D.get3dEntityOffsets(entityLivingBase);
+						boundingBox = new AxisAlignedBB(entityRenderCoords.getX(), entityRenderCoords.getY(), entityRenderCoords.getZ(), entityRenderCoords.getX() + (boundingBox.maxX - boundingBox.minX), entityRenderCoords.getY() + (boundingBox.maxY - boundingBox.minY), entityRenderCoords.getZ() + (boundingBox.maxZ - boundingBox.minZ));
+					}
+					
+					// All the corners for the bounding box -> screen coords for each position
+					Vector3d offsets = entityLivingBase == mc.thePlayer ? DrawUtils3D.get3dPlayerOffsets() : DrawUtils3D.get3dWorldOffsets();
+					Vector3f backBl = DrawUtils3D.project2D((float)boundingBox.minX, (float)boundingBox.minY, (float)boundingBox.minZ, offsets);
+					Vector3f backBr = DrawUtils3D.project2D((float)boundingBox.maxX, (float)boundingBox.minY, (float)boundingBox.minZ, offsets);
+					Vector3f backTl = DrawUtils3D.project2D((float)boundingBox.minX, (float)boundingBox.maxY, (float)boundingBox.minZ, offsets);
+					Vector3f backTr = DrawUtils3D.project2D((float)boundingBox.maxX, (float)boundingBox.maxY, (float)boundingBox.minZ, offsets);
+					Vector3f frontBl = DrawUtils3D.project2D((float)boundingBox.minX, (float)boundingBox.minY, (float)boundingBox.maxZ, offsets);
+					Vector3f frontBr = DrawUtils3D.project2D((float)boundingBox.maxX, (float)boundingBox.minY, (float)boundingBox.maxZ, offsets);
+					Vector3f frontTl = DrawUtils3D.project2D((float)boundingBox.minX, (float)boundingBox.maxY, (float)boundingBox.maxZ, offsets);
+					Vector3f frontTr = DrawUtils3D.project2D((float)boundingBox.maxX, (float)boundingBox.maxY, (float)boundingBox.maxZ, offsets);
+					Vector3f[] corners = new Vector3f[] {backBl, backBr, backTl, backTr, 
+														 frontBl, frontBr, frontTl, frontTr};
+					
+					// Calculate the best box coords
+					for (Vector3f corner : corners) {
+						if (corner == null || corner.getZ() < 0 || corner.getZ() >= 1)
+							continue;
+						
+						left = Math.min(left, corner.getX());
+						top = Math.min(top, corner.getY());
+						right = Math.max(right, corner.getX());
+						bottom = Math.max(bottom, corner.getY());
+					}
+					
+					// Remove ones where we couldn't get all the render coords
+					if (left == Integer.MAX_VALUE || top == Integer.MAX_VALUE || right == Integer.MIN_VALUE || bottom == Integer.MIN_VALUE) {
+						continue;
+					}
+					
+					draw2dEntities.add(new EspEntity(entityLivingBase, left, top, right, bottom));
+					
 				}
 				
-				// Remove ones where we couldn't get all the render coords
-				if (left == Integer.MAX_VALUE || top == Integer.MAX_VALUE || right == Integer.MIN_VALUE || bottom == Integer.MIN_VALUE) {
-					continue;
-				}
-				
-				draw2dEntities.add(new EspEntity(entityLivingBase, left, top, right, bottom));
-				
+				this.draw2dEntities = draw2dEntities;
+			}break;
+		}
+		
+	};
+	
+	@EventHandler
+	private Handler<EventTick> onTick = e -> {
+		if (e.isPost())
+			return;
+		setInfo(mode.getMode());
+	};
+	
+	@EventHandler
+	private Handler<EventEntityRender> onEntityRender = e -> {
+		
+		// Chams
+		if (chams.isEnabled()) {
+			if (!(e.getEntity() instanceof EntityLivingBase))
+				return;
+			if (e.isPre()) {
+				GL11.glEnable(GL11.GL_POLYGON_OFFSET_FILL);
+				GL11.glPolygonOffset(1.0f, -1099998.0f);
+			}else {
+				GL11.glPolygonOffset(1.0f, 1099998.0f);
+				GL11.glDisable(GL11.GL_POLYGON_OFFSET_FILL);
 			}
-			
-			this.draw2dEntities = draw2dEntities;
-			
 		}
 		
 	};

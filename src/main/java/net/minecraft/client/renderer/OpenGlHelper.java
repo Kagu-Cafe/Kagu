@@ -22,6 +22,9 @@ import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.opengl.GLContext;
+
+import cafe.kagu.kagu.utils.DrawUtils3D;
+import cafe.kagu.kagu.utils.UiUtils;
 import oshi.SystemInfo;
 import oshi.hardware.Processor;
 
@@ -889,15 +892,23 @@ public class OpenGlHelper
      */
     public static void setLightmapTextureCoords(int target, float p_77475_1_, float p_77475_2_)
     {
-        if (arbMultitexture)
-        {
-            ARBMultitexture.glMultiTexCoord2fARB(target, p_77475_1_, p_77475_2_);
-        }
-        else
-        {
-            GL13.glMultiTexCoord2f(target, p_77475_1_, p_77475_2_);
-        }
-
+    	
+    	if (DrawUtils3D.isFullBright()) {
+//    		p_77475_2_ = 240;
+    	}else {
+    		
+    		// Some code to do lighting
+            if (arbMultitexture)
+            {
+                ARBMultitexture.glMultiTexCoord2fARB(target, p_77475_1_, p_77475_2_);
+            }
+            else
+            {
+                GL13.glMultiTexCoord2f(target, p_77475_1_, p_77475_2_);
+            }
+    		
+    	}
+    	
         if (target == lightmapTexUnit)
         {
             lastBrightnessX = p_77475_1_;

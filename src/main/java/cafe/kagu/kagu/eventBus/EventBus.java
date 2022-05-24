@@ -9,7 +9,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import cafe.kagu.kagu.eventBus.impl.EventPlayerUpdate;
+import cafe.kagu.kagu.eventBus.impl.EventTick;
 import cafe.kagu.kagu.mods.Module;
+import cafe.kagu.kagu.utils.DrawUtils3D;
 import net.minecraft.client.Minecraft;
 
 /**
@@ -39,6 +41,11 @@ public class EventBus {
 		Minecraft mc = Minecraft.getMinecraft();
 		if (mc.theWorld == null || mc.thePlayer == null) {
 			return;
+		}
+		
+		// Special handling
+		if (e instanceof EventTick && e.isPre()) {
+			DrawUtils3D.setFullBright(false);
 		}
 		
 		// Send the event

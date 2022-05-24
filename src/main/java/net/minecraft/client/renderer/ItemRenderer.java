@@ -69,11 +69,6 @@ public class ItemRenderer
 
     public void renderItem(EntityLivingBase entityIn, ItemStack heldStack, ItemCameraTransforms.TransformType transform)
     {
-    	
-    	if (ModuleManager.modEsp.isEnabled() && ModuleManager.modEsp.mode.is("Weird") && ModuleManager.modEsp.isSecondPass()) {
-    		ModuleManager.modEsp.getShader().unbind();
-    	}
-    	
         if (heldStack != null)
         {
             Item item = heldStack.getItem();

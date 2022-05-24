@@ -1,6 +1,9 @@
 package net.minecraft.client.renderer.entity;
 
 import com.google.common.collect.Lists;
+
+import cafe.kagu.kagu.mods.ModuleManager;
+
 import java.nio.FloatBuffer;
 import java.util.List;
 import net.minecraft.client.Minecraft;
@@ -537,6 +540,11 @@ public abstract class RendererLivingEntity<T extends EntityLivingBase> extends R
         {
             if (this.canRenderName(entity))
             {
+            	
+            	if (ModuleManager.modEsp.isEnabled() && ModuleManager.modEsp.mode.is("Kagu 2D")) {
+            		return;
+            	}
+            	
                 double d0 = entity.getDistanceSqToEntity(this.renderManager.livingPlayer);
                 float f = entity.isSneaking() ? NAME_TAG_RANGE_SNEAK : NAME_TAG_RANGE;
 

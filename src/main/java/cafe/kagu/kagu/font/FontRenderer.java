@@ -64,6 +64,19 @@ public class FontRenderer {
 	}
 	
 	/**
+	 * Draws a string that's centered on the x position
+	 * @param string The string to render
+	 * @param x The x pos of the string
+	 * @param y The y pos of the string
+	 * @param color The color to draw the string with
+	 * @param shadow Whether or not the string should have a shadow
+	 * @return The width of the string
+	 */
+	public double drawCenteredString(String string, double x, double y, int color, boolean shadow) {
+		return drawString(string, x - (getStringWidth(string) / 2), y, color, shadow);
+	}
+	
+	/**
 	 * Draws a string
 	 * @param string The string to render
 	 * @param x The x pos of the string

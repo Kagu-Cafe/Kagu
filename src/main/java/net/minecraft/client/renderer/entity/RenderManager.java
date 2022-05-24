@@ -7,6 +7,7 @@ import cafe.kagu.kagu.eventBus.impl.EventEntityRender;
 import cafe.kagu.kagu.mods.Module;
 import cafe.kagu.kagu.mods.ModuleManager;
 import cafe.kagu.kagu.mods.impl.visual.ModEsp;
+import cafe.kagu.kagu.utils.DrawUtils3D;
 
 import java.util.Collections;
 import java.util.Map;
@@ -359,7 +360,12 @@ public class RenderManager
         int j = i % 65536;
         int k = i / 65536;
         
-        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float)j / 1.0F, (float)k / 1.0F);
+        if (ModuleManager.modEsp.isDisabled() || !ModuleManager.modEsp.mode.is("Kagu 2D")) {
+        	OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float)j / 1.0F, (float)k / 1.0F);
+        }
+        else {
+        	OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 1, 240);
+        }
         
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         
