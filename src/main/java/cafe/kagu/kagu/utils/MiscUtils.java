@@ -9,6 +9,7 @@ import cafe.kagu.kagu.settings.impl.DecimalSetting;
 import cafe.kagu.kagu.settings.impl.IntegerSetting;
 import cafe.kagu.kagu.settings.impl.LongSetting;
 import cafe.kagu.kagu.settings.impl.ModeSetting;
+import net.minecraft.util.ChatComponentText;
 
 /**
  * @author lavaflowglow
@@ -38,6 +39,27 @@ public class MiscUtils {
 			return "mode";
 		}
 		return "";
+	}
+	
+	/**
+	 * Removes mc color formatting codes from a string
+	 * @param input The input to remove codes from
+	 * @return The input with all formatting codes removed
+	 */
+	public static String removeFormatting(String input) {
+		String output = "";
+		boolean removeNext = false;
+		for (char c : input.toCharArray()) {
+			if (c == '§') {
+				removeNext = true;
+			}
+			else if (!removeNext) {
+				output += c;
+			}else {
+				removeNext = false;
+			}
+		}
+		return output;
 	}
 	
 }

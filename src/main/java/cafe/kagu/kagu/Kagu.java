@@ -13,7 +13,7 @@ import cafe.kagu.kagu.managers.KeybindManager;
 import cafe.kagu.kagu.mods.ModuleManager;
 import cafe.kagu.kagu.ui.Hud;
 import cafe.kagu.kagu.ui.clickgui.GuiCsgoClickgui;
-import cafe.kagu.kagu.ui.gui.GuiCompactMainMenu;
+import cafe.kagu.kagu.ui.gui.GuiDefaultMainMenu;
 import cafe.kagu.kagu.utils.SpoofUtils;
 import cafe.kagu.kagu.utils.StencilUtil;
 
@@ -135,7 +135,7 @@ public class Kagu {
 		
 		// Load the main menu
 		logger.info("Loading the main menu...");
-		GuiCompactMainMenu.start();
+		GuiDefaultMainMenu.start();
 		logger.info("Loaded the main menu");
 		
 		// Hook the hud

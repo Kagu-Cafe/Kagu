@@ -13,21 +13,12 @@ import cafe.kagu.kagu.settings.Setting;
 public class BooleanSetting extends Setting {
 
 	/**
-	 * @param dependsOn The setting that this one depends on, can be null
-	 * @param name      The name of the module
-	 * @param enabled   Whether the setting is enabled by default or not
-	 */
-	public BooleanSetting(Setting dependsOn, String name, boolean enabled) {
-		super(dependsOn, name);
-		this.enabled = enabled;
-	}
-	
-	/**
 	 * @param name      The name of the module
 	 * @param enabled   Whether the setting is enabled by default or not
 	 */
 	public BooleanSetting(String name, boolean enabled) {
-		this(null, name, enabled);
+		super(name);
+		this.enabled = enabled;
 	}
 	
 	private boolean enabled;

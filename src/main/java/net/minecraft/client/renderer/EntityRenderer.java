@@ -7,7 +7,7 @@ import cafe.kagu.kagu.eventBus.Event.EventPosition;
 import cafe.kagu.kagu.eventBus.impl.Event3DRender;
 import cafe.kagu.kagu.eventBus.impl.EventEntitiesRender;
 import cafe.kagu.kagu.mods.ModuleManager;
-import cafe.kagu.kagu.ui.gui.GuiCompactMainMenu;
+import cafe.kagu.kagu.ui.gui.GuiDefaultMainMenu;
 import cafe.kagu.kagu.utils.SpoofUtils;
 
 import java.io.IOException;
@@ -2741,9 +2741,9 @@ public class EntityRenderer implements IResourceManagerReloadListener
             }
         }
 
-        if (this.mc.currentScreen instanceof GuiCompactMainMenu)
+        if (this.mc.currentScreen instanceof GuiDefaultMainMenu)
         {
-            this.updateMainMenu((GuiCompactMainMenu)this.mc.currentScreen);
+            this.updateMainMenu((GuiDefaultMainMenu)this.mc.currentScreen);
         }
 
         if (this.updatedWorld != world)
@@ -2782,7 +2782,7 @@ public class EntityRenderer implements IResourceManagerReloadListener
         }
     }
 
-    private void updateMainMenu(GuiCompactMainMenu p_updateMainMenu_1_)
+    private void updateMainMenu(GuiDefaultMainMenu p_updateMainMenu_1_)
     {
         try
         {
@@ -2807,7 +2807,7 @@ public class EntityRenderer implements IResourceManagerReloadListener
                 return;
             }
 
-            Field[] afield = GuiCompactMainMenu.class.getDeclaredFields();
+            Field[] afield = GuiDefaultMainMenu.class.getDeclaredFields();
 
             for (int k = 0; k < afield.length; ++k)
             {

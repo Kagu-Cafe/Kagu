@@ -13,22 +13,6 @@ import cafe.kagu.kagu.settings.Setting;
 public class IntegerSetting extends Setting {
 
 	/**
-	 * @param dependsOn The setting that this setting depends on, can be null
-	 * @param name      The name of the setting
-	 * @param value     The initial value of the setting
-	 * @param min       The min value of the setting
-	 * @param max       The max value of the setting
-	 * @param increment How much this setting should increment by
-	 */
-	public IntegerSetting(Setting dependsOn, String name, int value, int min, int max, int increment) {
-		super(dependsOn, name);
-		this.value = value;
-		this.min = min;
-		this.max = max;
-		this.increment = increment;
-	}
-	
-	/**
 	 * @param name      The name of the setting
 	 * @param value     The initial value of the setting
 	 * @param min       The min value of the setting
@@ -36,7 +20,11 @@ public class IntegerSetting extends Setting {
 	 * @param increment How much this setting should increment by
 	 */
 	public IntegerSetting(String name, int value, int min, int max, int increment) {
-		this(null, name, value, min, max, increment);
+		super(name);
+		this.value = value;
+		this.min = min;
+		this.max = max;
+		this.increment = increment;
 	}
 	
 	private int value, min, max, increment;

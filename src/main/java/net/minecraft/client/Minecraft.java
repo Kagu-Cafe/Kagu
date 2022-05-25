@@ -18,7 +18,7 @@ import cafe.kagu.kagu.Kagu;
 import cafe.kagu.kagu.eventBus.Event.EventPosition;
 import cafe.kagu.kagu.eventBus.impl.EventKeyUpdate;
 import cafe.kagu.kagu.eventBus.impl.EventTick;
-import cafe.kagu.kagu.ui.gui.GuiCompactMainMenu;
+import cafe.kagu.kagu.ui.gui.GuiDefaultMainMenu;
 import cafe.kagu.kagu.ui.gui.MainMenuHandler;
 
 import java.awt.image.BufferedImage;
@@ -988,7 +988,7 @@ public class Minecraft implements IThreadListener, IPlayerUsage
             guiScreenIn = new GuiGameOver();
         }
 
-        if (guiScreenIn instanceof GuiCompactMainMenu)
+        if (guiScreenIn instanceof GuiDefaultMainMenu)
         {
             this.gameSettings.showDebugInfo = false;
             this.ingameGUI.getChatGUI().clearChatMessages();

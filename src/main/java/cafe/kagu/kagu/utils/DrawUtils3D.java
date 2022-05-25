@@ -132,7 +132,7 @@ public class DrawUtils3D {
         final double x = entity.lastTickPosX + (entity.posX - entity.lastTickPosX) * timer;
         final double y = entity.lastTickPosY + (entity.posY - entity.lastTickPosY) * timer;
         final double z = entity.lastTickPosZ + (entity.posZ - entity.lastTickPosZ) * timer;
-        return new Vector3d(x - 0.25, y, z - 0.25);
+        return new Vector3d(x - 0.5, y, z - 0.5);
     }
 	
     private static final FloatBuffer windowPosition = BufferUtils.createFloatBuffer(4);

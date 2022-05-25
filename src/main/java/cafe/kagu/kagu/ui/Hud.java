@@ -66,11 +66,11 @@ public class Hud {
 		
 		// Vars
 		String separator = " - ";
-		FontRenderer moduleFr = FontUtils.ROBOTO_REGULAR_10;
-		FontRenderer infoFr = FontUtils.ROBOTO_LIGHT_10;
+		FontRenderer moduleFr = FontUtils.OPEN_SANS_REGULAR_10_AA;
+		FontRenderer infoFr = FontUtils.OPEN_SANS_THIN_10_AA;
 		List<Module> mods = new ArrayList<Module>(Arrays.asList(ModuleManager.getModules()));
 		double rightPad = 2;
-		double topPad = 1;
+		double topPad = 0.5;
 		int index = 0;
 		
 		// Sort mods
@@ -89,10 +89,10 @@ public class Hud {
 			double infoLength = infoFr.getStringWidth(info);
 			
 			// Module name
-			moduleFr.drawString(module.getName(), sr.getScaledWidth() - moduleFr.getStringWidth(module.getName()) - infoLength, index * moduleFr.getFontHeight(), -1);
+			moduleFr.drawString(module.getName(), sr.getScaledWidth() - moduleFr.getStringWidth(module.getName()) - infoLength, index * moduleFr.getFontHeight(), -1, true);
 			
 			// Module info
-			infoFr.drawString(info, sr.getScaledWidth() - infoLength, index * moduleFr.getFontHeight(), -1);
+			infoFr.drawString(info, sr.getScaledWidth() - infoLength, index * moduleFr.getFontHeight(), -1, true);
 			
 			// Used to calculate y
 			index++;

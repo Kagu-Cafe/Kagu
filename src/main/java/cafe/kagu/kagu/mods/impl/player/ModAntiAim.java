@@ -11,6 +11,7 @@ import cafe.kagu.kagu.eventBus.impl.EventPlayerUpdate;
 import cafe.kagu.kagu.mods.Module;
 import cafe.kagu.kagu.settings.impl.ModeSetting;
 import cafe.kagu.kagu.utils.SpoofUtils;
+import net.minecraft.item.ItemBow;
 
 /**
  * @author lavaflowglow
@@ -29,6 +30,9 @@ public class ModAntiAim extends Module {
 	@EventHandler
 	private Handler<EventPlayerUpdate> onPlayerUpdate = e -> {
 		if (e.isPost())
+			return;
+		
+		if (mc.thePlayer.isUsingItem() && mc.thePlayer.inventory.getCurrentItem().getItem() instanceof ItemBow)
 			return;
 		
 		// Yaw setting

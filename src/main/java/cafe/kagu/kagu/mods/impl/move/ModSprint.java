@@ -12,7 +12,7 @@ import cafe.kagu.kagu.settings.impl.BooleanSetting;
 import cafe.kagu.kagu.utils.ChatUtils;
 
 /**
- * @author Waterbongo
+ * @author lavaflowglow
  *
  */
 public class ModSprint extends Module {

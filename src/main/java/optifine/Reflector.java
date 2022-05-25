@@ -2,7 +2,7 @@ package optifine;
 
 import com.google.common.base.Optional;
 
-import cafe.kagu.kagu.ui.gui.GuiCompactMainMenu;
+import cafe.kagu.kagu.ui.gui.GuiDefaultMainMenu;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -269,7 +269,7 @@ public class Reflector
     private static boolean logVanilla = logEntry("*** Reflector Vanilla ***");
     public static ReflectorClass ChunkProviderClient = new ReflectorClass(ChunkProviderClient.class);
     public static ReflectorField ChunkProviderClient_chunkMapping = new ReflectorField(ChunkProviderClient, LongHashMap.class);
-    public static ReflectorClass GuiMainMenu = new ReflectorClass(GuiCompactMainMenu.class);
+    public static ReflectorClass GuiMainMenu = new ReflectorClass(GuiDefaultMainMenu.class);
     public static ReflectorField GuiMainMenu_splashText = new ReflectorField(GuiMainMenu, String.class);
     public static ReflectorClass Minecraft = new ReflectorClass(Minecraft.class);
     public static ReflectorField Minecraft_defaultResourcePack = new ReflectorField(Minecraft, DefaultResourcePack.class);

@@ -18,20 +18,27 @@ public class MainMenuHandler {
 		
 	}
 	
-	public static MainMenu mainMenu;
+	private static MainMenu mainMenu;
 	public static GuiScreen getMainMenu() {
 		
 		// If the main menu is null then return the main menu selection screen, not used at the moment
 		if (mainMenu == null) {
-			mainMenu = MainMenu.COMPACT;
+			mainMenu = MainMenu.DEFAULT;
 		}
 		
 		return mainMenu.getMenu();
 	}
 	
+	/**
+	 * @param mainMenu the mainMenu to set
+	 */
+	public static void setMainMenu(MainMenu mainMenu) {
+		MainMenuHandler.mainMenu = mainMenu;
+	}
+	
 	private enum MainMenu{
 		
-		COMPACT(new GuiCompactMainMenu());
+		DEFAULT(new GuiDefaultMainMenu());
 		
 		private final GuiScreen menu;
 		

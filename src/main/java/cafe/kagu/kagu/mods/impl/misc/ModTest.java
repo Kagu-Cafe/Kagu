@@ -3,10 +3,13 @@
  */
 package cafe.kagu.kagu.mods.impl.misc;
 
+import javax.vecmath.Vector3d;
+
 import org.apache.commons.lang3.RandomUtils;
 
 import cafe.kagu.kagu.eventBus.Handler;
 import cafe.kagu.kagu.eventBus.EventHandler;
+import cafe.kagu.kagu.eventBus.impl.EventPlayerUpdate;
 import cafe.kagu.kagu.eventBus.impl.EventTick;
 import cafe.kagu.kagu.mods.Module;
 import cafe.kagu.kagu.settings.impl.BooleanSetting;
@@ -14,7 +17,10 @@ import cafe.kagu.kagu.settings.impl.DecimalSetting;
 import cafe.kagu.kagu.settings.impl.IntegerSetting;
 import cafe.kagu.kagu.settings.impl.LongSetting;
 import cafe.kagu.kagu.settings.impl.ModeSetting;
+import cafe.kagu.kagu.utils.MathUtils;
+import cafe.kagu.kagu.utils.MiscUtils;
 import cafe.kagu.kagu.utils.SpoofUtils;
+import cafe.kagu.kagu.utils.UiUtils;
 import net.minecraft.client.Minecraft;
 
 /**

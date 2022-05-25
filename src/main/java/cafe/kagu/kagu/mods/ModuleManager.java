@@ -11,7 +11,6 @@ import cafe.kagu.kagu.mods.impl.misc.ModTest;
 import cafe.kagu.kagu.mods.impl.move.ModMoonJump;
 import cafe.kagu.kagu.mods.impl.move.ModSprint;
 import cafe.kagu.kagu.mods.impl.player.ModAntiAim;
-import cafe.kagu.kagu.mods.impl.player.ModNoFall;
 import cafe.kagu.kagu.mods.impl.visual.ModAnimations;
 import cafe.kagu.kagu.mods.impl.visual.ModChestEsp;
 import cafe.kagu.kagu.mods.impl.visual.ModEsp;
@@ -35,7 +34,6 @@ public class ModuleManager {
 	public static ModSprint modSprint = new ModSprint();
 	
 	// Player
-	public static ModNoFall modNoFall = new ModNoFall();
 	public static ModAntiAim modAntiAim = new ModAntiAim();
 	
 	// Visual
@@ -61,7 +59,6 @@ public class ModuleManager {
 			modSprint,
 			
 			// Player
-			modNoFall,
 			modAntiAim
 			
 	};

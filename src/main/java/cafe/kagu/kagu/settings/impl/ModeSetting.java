@@ -17,25 +17,15 @@ import cafe.kagu.kagu.settings.Setting;
 public class ModeSetting extends Setting {
 	
 	/**
-	 * @param dependsOn
-	 * @param name
-	 * @param defaultMode The default mode
-	 * @param modes The modes, must include the default mode
-	 */
-	public ModeSetting(Setting dependsOn, String name, String defaultMode, String... modes) {
-		super(dependsOn, name);
-		this.modes.addAll(Arrays.asList(modes));
-	}
-	
-	/**
 	 * @param name
 	 * @param defaultMode The default mode
 	 * @param modes The modes, must include the default mode
 	 */
 	public ModeSetting(String name, String defaultMode, String... modes) {
-		this(null, name, defaultMode, modes);
+		super(name);
+		this.modes.addAll(Arrays.asList(modes));
 	}
-
+	
 	private List<String> modes = new ArrayList<>();
 	private int modeIndex;
 	private double clickguiToggleStatus = 0;
