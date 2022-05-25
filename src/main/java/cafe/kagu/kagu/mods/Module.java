@@ -247,15 +247,15 @@ public abstract class Module {
 	 * Used to sort modules in the clickgui
 	 */
 	public static enum Category {
+		VISUAL("Visual", 0xff3dc2d9), 
+		PLAYER("Player", 0xffd9883d), 
+		YIFF("Test", 0xffff4af6),
+		MISC("Miscellaneous", 0xfffff34a), 
 		COMBAT("Combat", 0xffe63e3e), 
-		MOVEMENT("Movement", 0xff3dd979), 
-		VISUAL("Visual", 0xff3dc2d9),
-		PLAYER("Player", 0xffd9883d),
-		YIFF("Test", 0xffff4af6), 
-		MISC("Miscellaneous", 0xfffff34a);
+		MOVEMENT("Movement", 0xff3dd979);
 
 		private String name;
-		private int arraylistColor = -1;
+		private int arraylistColor;
 
 		/**
 		 * @param name           The display name of the category

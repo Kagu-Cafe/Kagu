@@ -10,7 +10,7 @@ import cafe.kagu.kagu.eventBus.impl.EventRenderItem;
 import cafe.kagu.kagu.eventBus.impl.EventTick;
 import cafe.kagu.kagu.mods.Module;
 import cafe.kagu.kagu.settings.impl.BooleanSetting;
-import cafe.kagu.kagu.settings.impl.DecimalSetting;
+import cafe.kagu.kagu.settings.impl.DoubleSetting;
 import cafe.kagu.kagu.settings.impl.ModeSetting;
 import cafe.kagu.kagu.utils.ChatUtils;
 import cafe.kagu.kagu.utils.SpoofUtils;
@@ -36,14 +36,14 @@ public class ModAnimations extends Module {
 	public BooleanSetting playerArms = new BooleanSetting("Render arms", false);
 	
 	// Item scale
-	public DecimalSetting itemScaleX = new DecimalSetting("Item scale x", 1, -2, 2, 0.05);
-	public DecimalSetting itemScaleY = new DecimalSetting("Item scale y", 1, -2, 2, 0.05);
-	public DecimalSetting itemScaleZ = new DecimalSetting("Item scale z", 1, -2, 2, 0.05);
+	public DoubleSetting itemScaleX = new DoubleSetting("Item scale x", 1, -2, 2, 0.05);
+	public DoubleSetting itemScaleY = new DoubleSetting("Item scale y", 1, -2, 2, 0.05);
+	public DoubleSetting itemScaleZ = new DoubleSetting("Item scale z", 1, -2, 2, 0.05);
 	
 	// Item translate
-	public DecimalSetting itemTranslateX = new DecimalSetting("Item translate x", 0, -2, 2, 0.001);
-	public DecimalSetting itemTranslateY = new DecimalSetting("Item translate y", 0, -2, 2, 0.001);
-	public DecimalSetting itemTranslateZ = new DecimalSetting("Item translate z", 0, -2, 2, 0.001);
+	public DoubleSetting itemTranslateX = new DoubleSetting("Item translate x", 0, -2, 2, 0.001);
+	public DoubleSetting itemTranslateY = new DoubleSetting("Item translate y", 0, -2, 2, 0.001);
+	public DoubleSetting itemTranslateZ = new DoubleSetting("Item translate z", 0, -2, 2, 0.001);
 	
 	@EventHandler
 	private Handler<EventRenderItem> renderItem = e -> {

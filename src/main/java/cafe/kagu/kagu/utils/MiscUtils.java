@@ -5,7 +5,7 @@ package cafe.kagu.kagu.utils;
 
 import cafe.kagu.kagu.settings.Setting;
 import cafe.kagu.kagu.settings.impl.BooleanSetting;
-import cafe.kagu.kagu.settings.impl.DecimalSetting;
+import cafe.kagu.kagu.settings.impl.DoubleSetting;
 import cafe.kagu.kagu.settings.impl.IntegerSetting;
 import cafe.kagu.kagu.settings.impl.LongSetting;
 import cafe.kagu.kagu.settings.impl.ModeSetting;
@@ -26,7 +26,7 @@ public class MiscUtils {
 		if (setting instanceof BooleanSetting) {
 			return "bool";
 		}
-		else if (setting instanceof DecimalSetting) {
+		else if (setting instanceof DoubleSetting) {
 			return "dec";
 		}
 		else if (setting instanceof IntegerSetting) {

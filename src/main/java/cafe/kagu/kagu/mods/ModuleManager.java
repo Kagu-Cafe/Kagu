@@ -7,6 +7,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import cafe.kagu.kagu.eventBus.EventBus;
+import cafe.kagu.kagu.mods.impl.combat.ModKillAura;
 import cafe.kagu.kagu.mods.impl.misc.ModTest;
 import cafe.kagu.kagu.mods.impl.move.ModMoonJump;
 import cafe.kagu.kagu.mods.impl.move.ModSprint;
@@ -26,6 +27,9 @@ public class ModuleManager {
 	
 	// All the modules in the client
 	
+	// Combat
+	public static ModKillAura modKillAura = new ModKillAura();
+	
 	// Misc
 	public static ModTest modTest = new ModTest();
 	
@@ -44,6 +48,9 @@ public class ModuleManager {
 	
 	// An array of all the modules in the client
 	private static final Module[] MODULES = new Module[] {
+			
+			// Combat
+			modKillAura,
 			
 			// Misc
 			modTest,

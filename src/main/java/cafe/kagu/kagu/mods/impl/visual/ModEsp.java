@@ -3,7 +3,6 @@
  */
 package cafe.kagu.kagu.mods.impl.visual;
 
-import java.nio.FloatBuffer;
 import java.util.ArrayList;
 
 import javax.vecmath.Vector3d;
@@ -16,27 +15,25 @@ import cafe.kagu.kagu.eventBus.EventHandler;
 import cafe.kagu.kagu.eventBus.Handler;
 import cafe.kagu.kagu.eventBus.impl.Event2DRender;
 import cafe.kagu.kagu.eventBus.impl.Event3DRender;
-import cafe.kagu.kagu.eventBus.impl.EventEntitiesRender;
 import cafe.kagu.kagu.eventBus.impl.EventEntityRender;
 import cafe.kagu.kagu.eventBus.impl.EventTick;
 import cafe.kagu.kagu.font.FontRenderer;
 import cafe.kagu.kagu.font.FontUtils;
 import cafe.kagu.kagu.mods.Module;
+import cafe.kagu.kagu.settings.SettingDependency;
 import cafe.kagu.kagu.settings.impl.BooleanSetting;
 import cafe.kagu.kagu.settings.impl.ModeSetting;
 import cafe.kagu.kagu.utils.DrawUtils3D;
-import cafe.kagu.kagu.utils.Shader;
-import cafe.kagu.kagu.utils.StencilUtil;
 import cafe.kagu.kagu.utils.UiUtils;
-import cafe.kagu.kagu.utils.Shader.ShaderType;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.monster.EntityMob;
+import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.passive.EntityAnimal;
+import net.minecraft.entity.passive.EntityWaterMob;
+import net.minecraft.entity.passive.IAnimals;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.AxisAlignedBB;
 
@@ -48,16 +45,22 @@ public class ModEsp extends Module {
 	
 	public ModEsp() {
 		super("ESP", Category.VISUAL);
-		setSettings(mode, chams);
+		setSettings(mode, chams, targetAll, targetPlayers, targetAnimals, targetMobs);
 	}
 	
 	// ESP modes
-	public ModeSetting mode = new ModeSetting("Mode", "Kagu 2D", "Kagu 2D", "Simple white", "Test");
+	public ModeSetting mode = new ModeSetting("Mode", "Kagu 2D", "Kagu 2D", "Simple White", "Test");
 	
 	// Chams
 	public BooleanSetting chams = new BooleanSetting("Chams", true);
 	
-	private ArrayList<EspEntity> draw2dEntities = new ArrayList();
+	// Render targets
+	private BooleanSetting targetAll = new BooleanSetting("Everything ESP", true);
+	private BooleanSetting targetPlayers = (BooleanSetting) new BooleanSetting("Player ESP", true).setDependency((SettingDependency)() -> {return targetAll.isDisabled();});
+	private BooleanSetting targetAnimals = (BooleanSetting) new BooleanSetting("Animal ESP", false).setDependency((SettingDependency)() -> {return targetAll.isDisabled();});
+	private BooleanSetting targetMobs = (BooleanSetting) new BooleanSetting("Mob ESP", false).setDependency((SettingDependency)() -> {return targetAll.isDisabled();});
+	
+	private ArrayList<EspEntity> draw2dEntities = new ArrayList<EspEntity>();
 	
 	@EventHandler
 	private Handler<Event2DRender> onRender2D = e -> {
@@ -67,7 +70,7 @@ public class ModEsp extends Module {
 		
 		switch (mode.getMode()) {
 			
-			case "Simple white": {
+			case "Simple White": {
 				GL11.glLineWidth(1);
 				UiUtils.enableWireframe();
 				for (EspEntity ent : draw2dEntities) {
@@ -176,13 +179,21 @@ public class ModEsp extends Module {
 		
 		switch(mode.getMode()) {
 			case "Kagu 2D":
-			case "Simple white":{
+			case "Simple White":{
 				ArrayList<EspEntity> draw2dEntities = new ArrayList<EspEntity>();
 				for (Entity ent : mc.theWorld.loadedEntityList) {
 					
 					// Only get living entities
 					if (!(ent instanceof EntityLivingBase)) {
 						continue;
+					}
+					
+					// Render targeting
+					if (targetAll.isDisabled()) {
+						if (targetPlayers.isEnabled() && ent instanceof EntityPlayer);
+						else if (targetAnimals.isEnabled() && (ent instanceof EntityAnimal || ent instanceof EntityWaterMob));
+						else if (targetMobs.isEnabled() && ent instanceof EntityMob);
+						else continue;
 					}
 					
 					EntityLivingBase entityLivingBase = (EntityLivingBase)ent;

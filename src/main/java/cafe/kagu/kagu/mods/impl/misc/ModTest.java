@@ -13,7 +13,7 @@ import cafe.kagu.kagu.eventBus.impl.EventPlayerUpdate;
 import cafe.kagu.kagu.eventBus.impl.EventTick;
 import cafe.kagu.kagu.mods.Module;
 import cafe.kagu.kagu.settings.impl.BooleanSetting;
-import cafe.kagu.kagu.settings.impl.DecimalSetting;
+import cafe.kagu.kagu.settings.impl.DoubleSetting;
 import cafe.kagu.kagu.settings.impl.IntegerSetting;
 import cafe.kagu.kagu.settings.impl.LongSetting;
 import cafe.kagu.kagu.settings.impl.ModeSetting;
@@ -40,9 +40,9 @@ public class ModTest extends Module {
 	}
 	
 	public static BooleanSetting booleanSetting = new BooleanSetting("Boolean setting", false);
-	public static DecimalSetting decimalSetting1 = new DecimalSetting("Decimal setting 1", 1, 0, 10, 0.25), 
-								 decimalSetting2 = new DecimalSetting("Decimal setting 2", 1, -10, 10, 0.25), 
-								 decimalSetting3 = new DecimalSetting("Decimal setting 3", 10, 10, 20, 0.25);
+	public static DoubleSetting decimalSetting1 = new DoubleSetting("Decimal setting 1", 1, 0, 10, 0.25), 
+								 decimalSetting2 = new DoubleSetting("Decimal setting 2", 1, -10, 10, 0.25), 
+								 decimalSetting3 = new DoubleSetting("Decimal setting 3", 10, 10, 20, 0.25);
 	public static IntegerSetting integerSetting1 = new IntegerSetting("Integer setting 1", 1, 0, 10, 1), 
 								 integerSetting2 = new IntegerSetting("Integer setting 2", 1, -10, 10, 1), 
 								 integerSetting3 = new IntegerSetting("Integer setting 3", 10, 10, 20, 1);

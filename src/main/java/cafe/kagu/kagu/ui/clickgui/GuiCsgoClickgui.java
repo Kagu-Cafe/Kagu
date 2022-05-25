@@ -35,7 +35,7 @@ import cafe.kagu.kagu.mods.ModuleManager;
 import cafe.kagu.kagu.mods.Module.Category;
 import cafe.kagu.kagu.settings.Setting;
 import cafe.kagu.kagu.settings.impl.BooleanSetting;
-import cafe.kagu.kagu.settings.impl.DecimalSetting;
+import cafe.kagu.kagu.settings.impl.DoubleSetting;
 import cafe.kagu.kagu.settings.impl.IntegerSetting;
 import cafe.kagu.kagu.settings.impl.LongSetting;
 import cafe.kagu.kagu.settings.impl.ModeSetting;
@@ -368,8 +368,8 @@ public class GuiCsgoClickgui extends GuiScreen {
 							}
 							
 							// Draw decimal setting
-							else if (setting instanceof DecimalSetting) {
-								DecimalSetting decimalSetting = (DecimalSetting)setting;
+							else if (setting instanceof DoubleSetting) {
+								DoubleSetting decimalSetting = (DoubleSetting)setting;
 								double value = decimalSetting.getValue();
 								double range = decimalSetting.getMax() - decimalSetting.getMin();
 								double sliderValue = value - decimalSetting.getMin();
@@ -910,7 +910,7 @@ public class GuiCsgoClickgui extends GuiScreen {
 				}
 				
 				// Decimal setting animation
-				else if (setting instanceof DecimalSetting) {
+				else if (setting instanceof DoubleSetting) {
 					
 				}
 				

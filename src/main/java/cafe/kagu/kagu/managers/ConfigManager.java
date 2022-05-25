@@ -11,7 +11,7 @@ import cafe.kagu.kagu.mods.ModuleManager;
 import cafe.kagu.kagu.mods.Module.Category;
 import cafe.kagu.kagu.settings.Setting;
 import cafe.kagu.kagu.settings.impl.BooleanSetting;
-import cafe.kagu.kagu.settings.impl.DecimalSetting;
+import cafe.kagu.kagu.settings.impl.DoubleSetting;
 import cafe.kagu.kagu.settings.impl.IntegerSetting;
 import cafe.kagu.kagu.settings.impl.LongSetting;
 import cafe.kagu.kagu.settings.impl.ModeSetting;
@@ -45,8 +45,8 @@ public class ConfigManager {
 				if (setting instanceof BooleanSetting) {
 					settingValue = ((BooleanSetting)setting).isEnabled() + "";
 				}
-				else if (setting instanceof DecimalSetting) {
-					settingValue = ((DecimalSetting)setting).getValue() + "";
+				else if (setting instanceof DoubleSetting) {
+					settingValue = ((DoubleSetting)setting).getValue() + "";
 				}
 				else if (setting instanceof IntegerSetting) {
 					settingValue = ((IntegerSetting)setting).getValue() + "";
@@ -127,7 +127,7 @@ public class ConfigManager {
 						}break;
 						
 						case "dec":{
-							((DecimalSetting)setting).setValue(Double.parseDouble(settingValue));
+							((DoubleSetting)setting).setValue(Double.parseDouble(settingValue));
 						}break;
 						
 						case "int":{
