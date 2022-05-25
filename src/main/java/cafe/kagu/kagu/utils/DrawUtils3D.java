@@ -128,11 +128,11 @@ public class DrawUtils3D {
 	 * @return The render position of the entity
 	 */
     public static Vector3d get3dEntityOffsets(EntityLivingBase entity) {
-        final float timer = Minecraft.getMinecraft().getTimer().renderPartialTicks;
-        final double x = entity.lastTickPosX + (entity.posX - entity.lastTickPosX) * timer;
-        final double y = entity.lastTickPosY + (entity.posY - entity.lastTickPosY) * timer;
-        final double z = entity.lastTickPosZ + (entity.posZ - entity.lastTickPosZ) * timer;
-        return new Vector3d(x - 0.5, y, z - 0.5);
+        float partialTicks = Minecraft.getMinecraft().getTimer().renderPartialTicks;
+        double x = entity.lastTickPosX + (entity.posX - entity.lastTickPosX) * partialTicks;
+        double y = entity.lastTickPosY + (entity.posY - entity.lastTickPosY) * partialTicks;
+        double z = entity.lastTickPosZ + (entity.posZ - entity.lastTickPosZ) * partialTicks;
+        return new Vector3d(x, y, z);
     }
 	
     private static final FloatBuffer windowPosition = BufferUtils.createFloatBuffer(4);

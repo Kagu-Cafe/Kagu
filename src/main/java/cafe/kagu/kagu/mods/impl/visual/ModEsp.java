@@ -29,6 +29,7 @@ import cafe.kagu.kagu.utils.Shader;
 import cafe.kagu.kagu.utils.StencilUtil;
 import cafe.kagu.kagu.utils.UiUtils;
 import cafe.kagu.kagu.utils.Shader.ShaderType;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
@@ -196,8 +197,16 @@ public class ModEsp extends Module {
 					AxisAlignedBB boundingBox = entityLivingBase.getEntityBoundingBox();
 					// Correct bounding box coords to be smooth with the entity's interpolation
 					if (entityLivingBase != mc.thePlayer) {
+						
 						Vector3d entityRenderCoords = DrawUtils3D.get3dEntityOffsets(entityLivingBase);
+						
+						// Center the offsets interpolated coords to the entity
+						entityRenderCoords.setX(entityRenderCoords.getX() - ((boundingBox.maxX - boundingBox.minX) / 2));
+						entityRenderCoords.setZ(entityRenderCoords.getZ() - ((boundingBox.maxZ - boundingBox.minZ) / 2));
+						
+						// Recreate the bounding box with the interpolated coords
 						boundingBox = new AxisAlignedBB(entityRenderCoords.getX(), entityRenderCoords.getY(), entityRenderCoords.getZ(), entityRenderCoords.getX() + (boundingBox.maxX - boundingBox.minX), entityRenderCoords.getY() + (boundingBox.maxY - boundingBox.minY), entityRenderCoords.getZ() + (boundingBox.maxZ - boundingBox.minZ));
+						
 					}
 					
 					// All the corners for the bounding box -> screen coords for each position
