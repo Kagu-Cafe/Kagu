@@ -273,6 +273,12 @@ public class ModEsp extends Module {
 		if (chams.isEnabled()) {
 			if (!(e.getEntity() instanceof EntityLivingBase))
 				return;
+			
+			if (targetPlayers.isEnabled() && e.getEntity() instanceof EntityPlayer);
+			else if (targetAnimals.isEnabled() && (e.getEntity() instanceof EntityAnimal || e.getEntity() instanceof EntityWaterMob));
+			else if (targetMobs.isEnabled() && e.getEntity() instanceof EntityMob);
+			else return;
+			
 			if (e.isPre()) {
 				GL11.glEnable(GL11.GL_POLYGON_OFFSET_FILL);
 				GL11.glPolygonOffset(1.0f, -1099998.0f);
