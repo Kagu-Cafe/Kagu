@@ -18,9 +18,11 @@ import cafe.kagu.kagu.mods.Module;
 import cafe.kagu.kagu.settings.SettingDependency;
 import cafe.kagu.kagu.settings.impl.BooleanSetting;
 import cafe.kagu.kagu.settings.impl.DoubleSetting;
+import cafe.kagu.kagu.settings.impl.IntegerSetting;
 import cafe.kagu.kagu.settings.impl.ModeSetting;
 import cafe.kagu.kagu.utils.SpoofUtils;
 import cafe.kagu.kagu.utils.TimerUtil;
+import cafe.kagu.kagu.utils.PlayerUtils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.monster.EntityMob;
@@ -39,10 +41,9 @@ public class ModKillAura extends Module {
 
 	public ModKillAura() {
 		super("KillAura", Category.COMBAT);
-		setSettings(rotationMode, blockMode, preferredTargetMetrics, targetSelectionMode, swingMode, hitRange,
-				blockRange, minAps, maxAps, targetAll, targetPlayers, targetAnimals, targetMobs);
+		setSettings(rotationMode, blockMode, preferredTargetMetrics, targetSelectionMode, swingMode, positioningMode,
+				hitRange, blockRange, hitChance, minAps, maxAps, targetAll, targetPlayers, targetAnimals, targetMobs);
 		EventBus.setSubscriber(new ApsMinMaxFixer(this), true);
-		
 	}
 	
 	// Modes
@@ -51,10 +52,14 @@ public class ModKillAura extends Module {
 	private ModeSetting preferredTargetMetrics = new ModeSetting("Preferred Target Metrics", "Distance", "Distance");
 	private ModeSetting targetSelectionMode = new ModeSetting("Target Selection", "Instant", "Instant");
 	private ModeSetting swingMode = new ModeSetting("Swing Mode", "Swing", "Swing", "Server Side", "No Swing");
+	private ModeSetting positioningMode = new ModeSetting("Positioning", "Vanilla+", "Vanilla+", "Target Render Pos", "Player Render Pos", "Target & Player Render Pos");
 	
 	// Ranges
 	private DoubleSetting hitRange = new DoubleSetting("Hit Range", 3, 1, 7, 0.1);
 	private DoubleSetting blockRange = (DoubleSetting) new DoubleSetting("Block Range", 3, 1, 7, 0.1).setDependency((SettingDependency)() -> !blockMode.is("None"));
+	
+	// Hit chance
+	private IntegerSetting hitChance = new IntegerSetting("Hit Chance", 100, 0, 100, 1);
 	
 	// APS settings
 	private DoubleSetting minAps = new DoubleSetting("Min APS", 10, 0, 20, 0.1);
@@ -89,11 +94,13 @@ public class ModKillAura extends Module {
 			return;
 		}
 		
+		double distanceFromPlayer = getDistanceFromPlayerEyes(target);
+		
 		// Check if the target is within the block distance
 		if (!blockMode.is("None")) {
 			
 			// Block or unblock
-			if (target.getDistanceToEntity(mc.thePlayer) <= blockRange.getValue())
+			if (distanceFromPlayer <= blockRange.getValue())
 				startBlocking();
 			else
 				stopBlocking();
@@ -113,7 +120,7 @@ public class ModKillAura extends Module {
 		
 		// Check if we're able to hit
 		boolean canHit = canHit(rotations);
-		if (canHit && target.getDistanceToEntity(mc.thePlayer) <= hitRange.getValue() && apsTimer.hasTimeElapsed((long) (1000 / aps), true)) {
+		if (canHit && distanceFromPlayer <= hitRange.getValue() && apsTimer.hasTimeElapsed((long) (1000 / aps), true)) {
 			
 			// Swing
 			switch (swingMode.getMode()) {
@@ -126,7 +133,10 @@ public class ModKillAura extends Module {
 				case "No Swing":break;
 			}
 			
-			mc.getNetHandler().getNetworkManager().sendPacket(new C02PacketUseEntity(target, Action.ATTACK));
+			// Hit chance, bypasses percent checks
+			if (hitChance.getValue() != 0 && RandomUtils.nextInt(0, 101) <= hitChance.getValue())
+				mc.getNetHandler().getNetworkManager().sendPacket(new C02PacketUseEntity(target, Action.ATTACK));
+			
 			setAps();
 			
 		}
@@ -140,6 +150,13 @@ public class ModKillAura extends Module {
 	 * @return A float array containing yaw and pitch, may also contain separate data
 	 */
 	private float[] getRotations(EntityLivingBase target, EventPlayerUpdate eventPlayerUpdate) {
+		
+		switch (rotationMode.getMode()) {
+			case "Lock":{
+				
+			}break;
+		}
+		
 		return new float[] {0, 0};
 	}
 	
@@ -167,7 +184,7 @@ public class ModKillAura extends Module {
 				.stream()
 				.filter(ent -> 
 						ent instanceof EntityLivingBase && 
-						ent.getDistanceToEntity(mc.thePlayer) <= Math.max(hitRange.getValue(), blockRange.getValue()) && 
+						getDistanceFromPlayerEyes((EntityLivingBase)ent) <= Math.max(hitRange.getValue(), blockRange.getValue()) && 
 						ent != mc.thePlayer && 
 						(((EntityLivingBase)ent).getMaxHealth() <= 0 || ((EntityLivingBase)ent).getHealth() > 0))
 				.collect(Collectors.toList());
@@ -190,7 +207,7 @@ public class ModKillAura extends Module {
 		// Sort them based on the config that the user has
 		switch (preferredTargetMetrics.getMode()) {
 			case "Distance":{
-				potentialTargets.sort(Comparator.comparingDouble(ent -> ent.getDistanceToEntity(mc.thePlayer)));
+				potentialTargets.sort(Comparator.comparingDouble(ent -> getDistanceFromPlayerEyes((EntityLivingBase)ent)));
 			}break;
 		}
 		
@@ -231,6 +248,15 @@ public class ModKillAura extends Module {
 	 */
 	private void setAps() {
 		aps = RandomUtils.nextDouble(minAps.getValue(), maxAps.getValue());
+	}
+	
+	/**
+	 * Gets the distance to the player's eyes
+	 * @param entityLivingBase The entity to check the distance for
+	 * @return
+	 */
+	private double getDistanceFromPlayerEyes(EntityLivingBase entityLivingBase) {
+		return PlayerUtils.getDistanceToPlayerEyes(entityLivingBase, positioningMode.is("Target Render Pos") || positioningMode.is("Target & Player Render Pos"), positioningMode.is("Player Render Pos") || positioningMode.is("Target & Player Render Pos"));
 	}
 	
 	private static class ApsMinMaxFixer{

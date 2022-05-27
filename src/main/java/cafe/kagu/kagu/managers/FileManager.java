@@ -60,7 +60,7 @@ public class FileManager {
 	 * @return The string stored in the file
 	 */
 	public static String readStringFromFile(File file) {
-		return new String(readBytesFromFile(file));
+		return new String(readBytesFromFile(file), StandardCharsets.UTF_16);
 	}
 	
 	/**
