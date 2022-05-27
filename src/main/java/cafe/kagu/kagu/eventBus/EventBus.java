@@ -65,7 +65,6 @@ public class EventBus {
 	
 	/**
 	 * Finds all event subscribers in an object
-	 * 
 	 * @param obj The object to check
 	 * @param subscribed True if the subscribers that the object contains should be added to the event bus, false if they should be unsubscribed
 	 */
