@@ -50,40 +50,7 @@ public class PlayerUtils {
 		}
 		
 		// Get the closest point in the bounding box
-		Vector3d closestPointInBoundingBox = new Vector3d(0, 0, 0);
-		
-		// X
-		if (playerEyeCoords.getX() <= boundingBox.minX) {
-			closestPointInBoundingBox.setX(boundingBox.minX);
-		}
-		else if (playerEyeCoords.getX() >= boundingBox.maxX) {
-			closestPointInBoundingBox.setX(boundingBox.maxX);
-		}
-		else {
-			closestPointInBoundingBox.setX(playerEyeCoords.getX());
-		}
-		
-		// Y
-		if (playerEyeCoords.getY() <= boundingBox.minY) {
-			closestPointInBoundingBox.setY(boundingBox.minY);
-		}
-		else if (playerEyeCoords.getY() >= boundingBox.maxY) {
-			closestPointInBoundingBox.setY(boundingBox.maxY);
-		}
-		else {
-			closestPointInBoundingBox.setY(playerEyeCoords.getY());
-		}
-		
-		// Z
-		if (playerEyeCoords.getZ() <= boundingBox.minZ) {
-			closestPointInBoundingBox.setZ(boundingBox.minZ);
-		}
-		else if (playerEyeCoords.getZ() >= boundingBox.maxZ) {
-			closestPointInBoundingBox.setZ(boundingBox.maxZ);
-		}
-		else {
-			closestPointInBoundingBox.setZ(playerEyeCoords.getX());
-		}
+		Vector3d closestPointInBoundingBox = getClosestPointInBoundingBox(playerEyeCoords, boundingBox);
 		
 		// Calculate distance and return
 		double distX = playerEyeCoords.getX() - closestPointInBoundingBox.getX();
@@ -105,6 +72,46 @@ public class PlayerUtils {
 		}
 		return playerEyeCoords;
 		
+	}
+	
+	/**
+	 * Calculates the closest point in a bounding box and returns it
+	 * @param pos The point where the return pos should be closest to
+	 * @param boundingBox The bounding box to use for the calculations
+	 * @return The point closest in the bounding box
+	 */
+	public static Vector3d getClosestPointInBoundingBox(Vector3d pos, AxisAlignedBB boundingBox) {
+		// Get the closest point in the bounding box
+		Vector3d closestPointInBoundingBox = new Vector3d(0, 0, 0);
+
+		// X
+		if (pos.getX() <= boundingBox.minX) {
+			closestPointInBoundingBox.setX(boundingBox.minX);
+		} else if (pos.getX() >= boundingBox.maxX) {
+			closestPointInBoundingBox.setX(boundingBox.maxX);
+		} else {
+			closestPointInBoundingBox.setX(pos.getX());
+		}
+
+		// Y
+		if (pos.getY() <= boundingBox.minY) {
+			closestPointInBoundingBox.setY(boundingBox.minY);
+		} else if (pos.getY() >= boundingBox.maxY) {
+			closestPointInBoundingBox.setY(boundingBox.maxY);
+		} else {
+			closestPointInBoundingBox.setY(pos.getY());
+		}
+
+		// Z
+		if (pos.getZ() <= boundingBox.minZ) {
+			closestPointInBoundingBox.setZ(boundingBox.minZ);
+		} else if (pos.getZ() >= boundingBox.maxZ) {
+			closestPointInBoundingBox.setZ(boundingBox.maxZ);
+		} else {
+			closestPointInBoundingBox.setZ(pos.getZ());
+		}
+		
+		return closestPointInBoundingBox;
 	}
 	
 }

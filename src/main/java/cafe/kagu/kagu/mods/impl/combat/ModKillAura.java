@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.stream.Collectors;
 
+import javax.vecmath.Vector3d;
+
 import org.apache.commons.lang3.RandomUtils;
 
 import cafe.kagu.kagu.eventBus.EventBus;
@@ -22,7 +24,10 @@ import cafe.kagu.kagu.settings.impl.IntegerSetting;
 import cafe.kagu.kagu.settings.impl.ModeSetting;
 import cafe.kagu.kagu.utils.SpoofUtils;
 import cafe.kagu.kagu.utils.TimerUtil;
+import cafe.kagu.kagu.utils.ChatUtils;
+import cafe.kagu.kagu.utils.DrawUtils3D;
 import cafe.kagu.kagu.utils.PlayerUtils;
+import cafe.kagu.kagu.utils.RotationUtils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.monster.EntityMob;
@@ -47,7 +52,7 @@ public class ModKillAura extends Module {
 	}
 	
 	// Modes
-	private ModeSetting rotationMode = new ModeSetting("Rotation Mode", "Lock", "Lock");
+	private ModeSetting rotationMode = new ModeSetting("Rotation Mode", "Lock", "Lock", "Lock+");
 	private ModeSetting blockMode = new ModeSetting("Block Mode", "None", "None", "Vanilla 1");
 	private ModeSetting preferredTargetMetrics = new ModeSetting("Preferred Target Metrics", "Distance", "Distance");
 	private ModeSetting targetSelectionMode = new ModeSetting("Target Selection", "Instant", "Instant");
@@ -80,6 +85,8 @@ public class ModKillAura extends Module {
 	private Handler<EventPlayerUpdate> onPlayerUpdate = e -> {
 		if (e.isPost())
 			return;
+		
+		setInfo(aps + " APS", rotationMode.getMode());
 		
 		EntityLivingBase[] targets = getTargets();
 		if (targets.length == 0) {
@@ -151,10 +158,16 @@ public class ModKillAura extends Module {
 	 */
 	private float[] getRotations(EntityLivingBase target, EventPlayerUpdate eventPlayerUpdate) {
 		
+		Vector3d playerPos = shouldUseRenderPosPlayer() ? DrawUtils3D.get3dEntityOffsets(mc.thePlayer) : new Vector3d(mc.thePlayer.posX + 0.5, mc.thePlayer.posY + mc.thePlayer.getEyeHeight(), mc.thePlayer.posZ + 0.5);
+		Vector3d targetPos = shouldUseRenderPosTarget() ? DrawUtils3D.get3dEntityOffsets(target) : new Vector3d(target.posX + 0.5, target.posY + target.getEyeHeight(),target.posZ + 0.5);
+		
 		switch (rotationMode.getMode()) {
 			case "Lock":{
-				
-			}break;
+				return RotationUtils.getRotations(playerPos, targetPos);
+			}
+			case "Lock+":{
+				return RotationUtils.getRotations(playerPos, PlayerUtils.getClosestPointInBoundingBox(playerPos, target.getEntityBoundingBox()));
+			}
 		}
 		
 		return new float[] {0, 0};
@@ -256,7 +269,21 @@ public class ModKillAura extends Module {
 	 * @return
 	 */
 	private double getDistanceFromPlayerEyes(EntityLivingBase entityLivingBase) {
-		return PlayerUtils.getDistanceToPlayerEyes(entityLivingBase, positioningMode.is("Target Render Pos") || positioningMode.is("Target & Player Render Pos"), positioningMode.is("Player Render Pos") || positioningMode.is("Target & Player Render Pos"));
+		return PlayerUtils.getDistanceToPlayerEyes(entityLivingBase, shouldUseRenderPosTarget(), shouldUseRenderPosPlayer());
+	}
+	
+	/**
+	 * @return Whether or not to use the player's render pos instead of their actual pos
+	 */
+	private boolean shouldUseRenderPosPlayer() {
+		return positioningMode.is("Player Render Pos") || positioningMode.is("Target & Player Render Pos");
+	}
+	
+	/**
+	 * @return Whether or not to use the target's render pos instead of their actual pos
+	 */
+	private boolean shouldUseRenderPosTarget() {
+		return positioningMode.is("Target Render Pos") || positioningMode.is("Target & Player Render Pos");
 	}
 	
 	private static class ApsMinMaxFixer{

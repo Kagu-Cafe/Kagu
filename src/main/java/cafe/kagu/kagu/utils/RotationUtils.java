@@ -31,12 +31,12 @@ public class RotationUtils {
 	 * @return A float array where the first index is the yaw and the second is the pitch
 	 */
 	public static float[] getRotations(Vector3d pos1, Vector3d pos2) {
-		double distX = pos2.getX() - pos1.getX();
-		double distY = pos2.getY() - pos1.getY();
-		double distZ = pos2.getZ() - pos1.getZ();
+		double distX = pos1.getX() - pos2.getX();
+		double distY = pos1.getY() - pos2.getY();
+		double distZ = pos1.getZ() - pos2.getZ();
 		double dist = Math.sqrt((distX * distX) + (distZ * distZ));
 		double yaw = Math.toDegrees(Math.atan2(distZ, distX)) + 90;
-		double pitch = -Math.toDegrees(Math.atan2(distY, dist));
+		double pitch = Math.toDegrees(Math.atan2(distY, dist));
 		return new float[] {(float)yaw, (float)pitch};
 	}
 	
