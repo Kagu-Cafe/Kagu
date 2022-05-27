@@ -3,6 +3,7 @@
  */
 package cafe.kagu.kagu.mods.impl.combat;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.stream.Collectors;
@@ -57,7 +58,7 @@ public class ModKillAura extends Module {
 	private ModeSetting preferredTargetMetrics = new ModeSetting("Preferred Target Metrics", "Distance", "Distance");
 	private ModeSetting targetSelectionMode = new ModeSetting("Target Selection", "Instant", "Instant");
 	private ModeSetting swingMode = new ModeSetting("Swing Mode", "Swing", "Swing", "Server Side", "No Swing");
-	private ModeSetting positioningMode = new ModeSetting("Positioning", "Vanilla+", "Vanilla+", "Target Render Pos", "Player Render Pos", "Target & Player Render Pos");
+	private ModeSetting positioningMode = new ModeSetting("Positioning", "Vanilla", "Vanilla", "Vanilla+", "Target Render Pos", "Player Render Pos", "Target & Player Render Pos");
 	
 	// Ranges
 	private DoubleSetting hitRange = new DoubleSetting("Hit Range", 3, 1, 7, 0.1);
@@ -86,7 +87,7 @@ public class ModKillAura extends Module {
 		if (e.isPost())
 			return;
 		
-		setInfo(aps + " APS", rotationMode.getMode());
+		setInfo(new DecimalFormat("0.00").format(aps) + " APS", rotationMode.getMode());
 		
 		EntityLivingBase[] targets = getTargets();
 		if (targets.length == 0) {
@@ -269,6 +270,9 @@ public class ModKillAura extends Module {
 	 * @return
 	 */
 	private double getDistanceFromPlayerEyes(EntityLivingBase entityLivingBase) {
+		if (positioningMode.is("Vanilla")) {
+			return entityLivingBase.getDistanceToEntity(mc.thePlayer);
+		}
 		return PlayerUtils.getDistanceToPlayerEyes(entityLivingBase, shouldUseRenderPosTarget(), shouldUseRenderPosPlayer());
 	}
 	
