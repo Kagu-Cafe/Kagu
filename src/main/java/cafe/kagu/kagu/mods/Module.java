@@ -249,7 +249,7 @@ public abstract class Module {
 	public static enum Category {
 		VISUAL("Visual", 0xff3dc2d9), 
 		PLAYER("Player", 0xffd9883d), 
-		YIFF("Test", 0xffff4af6),
+		DEVELOPMENT("Development", 0xffff4af6),
 		MISC("Miscellaneous", 0xfffff34a), 
 		COMBAT("Combat", 0xffe63e3e), 
 		MOVEMENT("Movement", 0xff3dd979);

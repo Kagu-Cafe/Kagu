@@ -16,6 +16,7 @@ import cafe.kagu.kagu.mods.impl.visual.ModAnimations;
 import cafe.kagu.kagu.mods.impl.visual.ModChestEsp;
 import cafe.kagu.kagu.mods.impl.visual.ModEsp;
 import cafe.kagu.kagu.mods.impl.visual.ModNormalZoomCam;
+import cafe.kagu.kagu.mods.impl.yiff.ModDebugBoundingBoxes;
 
 /**
  * @author lavaflowglow
@@ -46,6 +47,9 @@ public class ModuleManager {
 	public static ModEsp modEsp = new ModEsp();
 	public static ModNormalZoomCam modNormalZoomCam = new ModNormalZoomCam();
 	
+	// Development
+	public static ModDebugBoundingBoxes modDebugBoundingBoxes = new ModDebugBoundingBoxes();
+	
 	// An array of all the modules in the client
 	private static final Module[] MODULES = new Module[] {
 			
@@ -66,7 +70,10 @@ public class ModuleManager {
 			modSprint,
 			
 			// Player
-			modAntiAim
+			modAntiAim,
+			
+			// Development
+			modDebugBoundingBoxes
 			
 	};
 

@@ -448,7 +448,7 @@ public class RenderManager
                     throw new ReportedException(CrashReport.makeCrashReport(throwable1, "Post-rendering entity in world"));
                 }
 
-                if (this.debugBoundingBox && !entity.isInvisible() && !p_147939_10_)
+                if ((this.debugBoundingBox || ModuleManager.modDebugBoundingBoxes.isEnabled()) && !entity.isInvisible() && !p_147939_10_)
                 {
                     try
                     {

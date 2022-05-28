@@ -30,7 +30,7 @@ import net.minecraft.client.Minecraft;
 public class ModTest extends Module {
 	
 	public ModTest() {
-		super("Test", Category.YIFF);
+		super("Test", Category.DEVELOPMENT);
 		setSettings(booleanSetting, decimalSetting1, decimalSetting2, decimalSetting3, modeSetting1, modeSetting2, modeSetting3, integerSetting1, integerSetting2, integerSetting3, longSetting1, longSetting2, longSetting3);
 	}
 	

@@ -159,8 +159,11 @@ public class ModKillAura extends Module {
 	 */
 	private float[] getRotations(EntityLivingBase target, EventPlayerUpdate eventPlayerUpdate) {
 		
-		Vector3d playerPos = shouldUseRenderPosPlayer() ? DrawUtils3D.get3dEntityOffsets(mc.thePlayer) : new Vector3d(mc.thePlayer.posX + 0.5, mc.thePlayer.posY + mc.thePlayer.getEyeHeight(), mc.thePlayer.posZ + 0.5);
-		Vector3d targetPos = shouldUseRenderPosTarget() ? DrawUtils3D.get3dEntityOffsets(target) : new Vector3d(target.posX + 0.5, target.posY + target.getEyeHeight(),target.posZ + 0.5);
+		Vector3d playerPos = shouldUseRenderPosPlayer() ? DrawUtils3D.get3dPlayerOffsets() : new Vector3d(mc.thePlayer.posX, mc.thePlayer.posY + mc.thePlayer.getEyeHeight(), mc.thePlayer.posZ);
+		Vector3d targetPos = shouldUseRenderPosTarget() ? DrawUtils3D.get3dEntityOffsets(target) : new Vector3d(target.posX, target.posY + target.getEyeHeight(),target.posZ);
+		
+		if (shouldUseRenderPosPlayer())
+			playerPos.setY(playerPos.getY() + mc.thePlayer.getEyeHeight());
 		
 		switch (rotationMode.getMode()) {
 			case "Lock":{
