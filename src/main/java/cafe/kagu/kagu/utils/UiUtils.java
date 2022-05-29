@@ -99,7 +99,24 @@ public class UiUtils {
         GlStateManager.popMatrix();
 		
 	}
-
+	
+	/**
+	 * Draws a rounded rect
+	 * 
+	 * @param left       The left of the rect
+	 * @param top        The top of the rect
+	 * @param right      The right of the rect
+	 * @param bottom     The bottom of the rect
+	 * @param topLeftColor     The top left color of the rect
+	 * @param topRightColor    The top right color of the rect
+	 * @param bottomLeftColor  The bottom left color of the rect
+	 * @param bottomRightColor The bottom right color of the rect
+	 * @param cornerSize How big the rounded corners should be
+	 */
+	public static void drawRoundedRect(double left, double top, double right, double bottom, int topLeftColor, int topRightColor, int bottomLeftColor, int bottomRightColor, double cornerSize) {
+		drawRoundedRect(left, top, right, bottom, topLeftColor, topRightColor, bottomLeftColor, bottomRightColor, cornerSize, cornerSize, cornerSize, cornerSize);
+	}
+	
 	/**
 	 * Draws a rounded rect
 	 * 

@@ -23,7 +23,7 @@ public abstract class Module {
 	private Setting[] settings = new Setting[0]; // Any settings that the module may have
 	private Category category; // The category of the module
 	private boolean enabled = false, isClickguiExtended = false;
-	private double clickguiExtension = 0, clickguiToggle = 0;
+	private double clickguiExtension = 0, clickguiToggle = 0, arraylistAnimation = 0;
 	
 	private static Logger logger = LogManager.getLogger();
 	
@@ -144,14 +144,28 @@ public abstract class Module {
 	public double getClickguiToggle() {
 		return clickguiToggle;
 	}
-
+	
 	/**
 	 * @param clickguiToggle the clickguiToggle to set
 	 */
 	public void setClickguiToggle(double clickguiToggle) {
 		this.clickguiToggle = clickguiToggle;
 	}
-
+	
+	/**
+	 * @return the arraylistAnimation
+	 */
+	public double getArraylistAnimation() {
+		return arraylistAnimation;
+	}
+	
+	/**
+	 * @param arraylistAnimation the arraylistAnimation to set
+	 */
+	public void setArraylistAnimation(double arraylistAnimation) {
+		this.arraylistAnimation = arraylistAnimation;
+	}
+	
 	/**
 	 * @return the isClickguiExtended
 	 */
@@ -165,7 +179,7 @@ public abstract class Module {
 	public void setClickguiExtended(boolean isClickguiExtended) {
 		this.isClickguiExtended = isClickguiExtended;
 	}
-
+	
 	/**
 	 * Toggles the module
 	 */

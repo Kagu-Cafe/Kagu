@@ -138,8 +138,8 @@ public class GuiCsgoClickgui extends GuiScreen {
 	@Override
 	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
 		
-		FontRenderer boxTitleFr = FontUtils.STRATUM2_MEDIUM_18;
-		FontRenderer moduleAndSettingsFr = FontUtils.STRATUM2_MEDIUM_13;
+		FontRenderer boxTitleFr = FontUtils.STRATUM2_MEDIUM_18_AA;
+		FontRenderer moduleAndSettingsFr = FontUtils.STRATUM2_MEDIUM_13_AA;
 		
 		GlStateManager.pushMatrix();
 		GlStateManager.pushAttrib();
@@ -163,7 +163,7 @@ public class GuiCsgoClickgui extends GuiScreen {
 			drawSlice(category, mouseX, mouseY, angles, circleOutlineColor, circleOutlineColor, true);
 			
 			// Draw the category name
-			FontRenderer categoryFr = FontUtils.STRATUM2_MEDIUM_13;
+			FontRenderer categoryFr = FontUtils.STRATUM2_MEDIUM_13_AA;
 			{
 				double rot = (angles.getX() + angles.getY()) * 0.5;
 				double textSpacing = 0.65;

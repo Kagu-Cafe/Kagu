@@ -15,6 +15,7 @@ import cafe.kagu.kagu.mods.impl.player.ModAntiAim;
 import cafe.kagu.kagu.mods.impl.visual.ModAnimations;
 import cafe.kagu.kagu.mods.impl.visual.ModChestEsp;
 import cafe.kagu.kagu.mods.impl.visual.ModEsp;
+import cafe.kagu.kagu.mods.impl.visual.ModHud;
 import cafe.kagu.kagu.mods.impl.visual.ModNormalZoomCam;
 import cafe.kagu.kagu.mods.impl.yiff.ModDebugBoundingBoxes;
 
@@ -42,6 +43,7 @@ public class ModuleManager {
 	public static ModAntiAim modAntiAim = new ModAntiAim();
 	
 	// Visual
+	public static ModHud modHud = new ModHud();
 	public static ModAnimations modAnimations = new ModAnimations();
 	public static ModChestEsp modChestEsp = new ModChestEsp();
 	public static ModEsp modEsp = new ModEsp();
@@ -60,6 +62,7 @@ public class ModuleManager {
 			modTest,
 			
 			// Visual
+			modHud,
 			modAnimations,
 			modChestEsp,
 			modEsp,

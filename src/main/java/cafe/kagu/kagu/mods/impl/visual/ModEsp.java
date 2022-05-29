@@ -81,7 +81,7 @@ public class ModEsp extends Module {
 			
 			case "Kagu 2D":{
 				
-				FontRenderer nametagFr = FontUtils.STRATUM2_MEDIUM_18;
+				FontRenderer nametagFr = FontUtils.STRATUM2_MEDIUM_18_AA;
 				
 				GlStateManager.pushMatrix();
 				GlStateManager.pushAttrib();
@@ -274,10 +274,12 @@ public class ModEsp extends Module {
 			if (!(e.getEntity() instanceof EntityLivingBase))
 				return;
 			
-			if (targetPlayers.isEnabled() && e.getEntity() instanceof EntityPlayer);
-			else if (targetAnimals.isEnabled() && (e.getEntity() instanceof EntityAnimal || e.getEntity() instanceof EntityWaterMob));
-			else if (targetMobs.isEnabled() && e.getEntity() instanceof EntityMob);
-			else return;
+			if (targetAll.isDisabled()) {
+				if (targetPlayers.isEnabled() && e.getEntity() instanceof EntityPlayer);
+				else if (targetAnimals.isEnabled() && (e.getEntity() instanceof EntityAnimal || e.getEntity() instanceof EntityWaterMob));
+				else if (targetMobs.isEnabled() && e.getEntity() instanceof EntityMob);
+				else return;
+			}
 			
 			if (e.isPre()) {
 				GL11.glEnable(GL11.GL_POLYGON_OFFSET_FILL);

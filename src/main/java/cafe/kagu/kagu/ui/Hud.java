@@ -16,6 +16,7 @@ import cafe.kagu.kagu.Kagu;
 import cafe.kagu.kagu.eventBus.Handler;
 import cafe.kagu.kagu.eventBus.EventHandler;
 import cafe.kagu.kagu.eventBus.impl.Event2DRender;
+import cafe.kagu.kagu.eventBus.impl.EventCheatTick;
 import cafe.kagu.kagu.font.FontRenderer;
 import cafe.kagu.kagu.font.FontUtils;
 import cafe.kagu.kagu.mods.Module;
@@ -34,7 +35,7 @@ import net.minecraft.client.renderer.GlStateManager;
 public class Hud {
 	
 	@EventHandler
-	public Handler<Event2DRender> renderHud = e -> {
+	private Handler<Event2DRender> renderHud = e -> {
 		
 		// We only want to render on the post event
 		if (e.isPre()) {
@@ -46,11 +47,11 @@ public class Hud {
 		ScaledResolution sr = new ScaledResolution(mc);
 		
 		// The fonts used
-		FontRenderer mainFr = FontUtils.STRATUM2_MEDIUM_13;
+		FontRenderer mainFr = FontUtils.STRATUM2_MEDIUM_13_AA;
 		
 		// Render hud
-		mainFr.drawString(Kagu.getName() + " v" + Kagu.getVersion(), 3, 4, 0x80000000);
-		mainFr.drawString(Kagu.getName() + " v" + Kagu.getVersion(), 2, 3, -1);
+		mainFr.drawString(Kagu.getName() + " v" + Kagu.getVersion(), 2, 1, 0x80000000);
+		mainFr.drawString(Kagu.getName() + " v" + Kagu.getVersion(), 1, 0, -1);
 		
 		// Arraylist
 		drawArraylist(mc, sr);
@@ -66,15 +67,15 @@ public class Hud {
 		
 		// Vars
 		String separator = " - ";
-		FontRenderer moduleFr = FontUtils.OPEN_SANS_REGULAR_10_AA;
-		FontRenderer infoFr = FontUtils.OPEN_SANS_THIN_10_AA;
+		FontRenderer moduleFr = FontUtils.SAN_FRANCISCO_REGULAR_10_AA;
+		FontRenderer infoFr = FontUtils.SAN_FRANCISCO_THIN_10_AA;
 		List<Module> mods = new ArrayList<Module>(Arrays.asList(ModuleManager.getModules()));
 		double rightPad = 2;
 		double topPad = 0.5;
-		int index = 0;
+		double index = 0;
 		
 		// Sort mods
-		mods = mods.stream().filter(mod -> mod.isEnabled()).collect(Collectors.toList());
+		mods = mods.stream().filter(mod -> mod.getArraylistAnimation() > 0.01).collect(Collectors.toList());
 		mods.sort(Comparator.comparingDouble(module -> moduleFr.getStringWidth(module.getName()) + infoFr.getStringWidth(module.getInfoAsString(separator))));
 		Collections.reverse(mods);
 		
@@ -82,24 +83,67 @@ public class Hud {
 		GlStateManager.pushMatrix();
 		GlStateManager.pushAttrib();
 		GlStateManager.translate(-rightPad, topPad, 0);
-		for (Module module : mods) {
+		for (Module mod : mods) {
 			
 			// Module info string
-			String info = module.getInfoAsString(separator);
+			String info = mod.getInfoAsString(separator);
 			double infoLength = infoFr.getStringWidth(info);
 			
+			// For animations
+			double indexIncrement = 1;
+			
+			// Animation
+			GlStateManager.pushMatrix();
+			
+			switch(ModuleManager.modHud.arraylistAnimation.getMode()) {
+				case "Slide":{
+					indexIncrement = mod.getArraylistAnimation();
+					GlStateManager.translate((moduleFr.getStringWidth(mod.getName()) + infoLength + 4) * (1 - mod.getArraylistAnimation()), 0, 0);
+				}break;
+				case "Squeeze":{
+					indexIncrement = mod.getArraylistAnimation();
+					GlStateManager.translate(0, index * moduleFr.getFontHeight(), 0);
+					GlStateManager.scale(1, indexIncrement, 1);
+					GlStateManager.translate(0, -(index * moduleFr.getFontHeight()), 0);
+				}break;
+			}
+			
 			// Module name
-			moduleFr.drawString(module.getName(), sr.getScaledWidth() - moduleFr.getStringWidth(module.getName()) - infoLength, index * moduleFr.getFontHeight(), -1, true);
+			moduleFr.drawString(mod.getName(), sr.getScaledWidth() - moduleFr.getStringWidth(mod.getName()) - infoLength, index * moduleFr.getFontHeight(), -1, true);
 			
 			// Module info
 			infoFr.drawString(info, sr.getScaledWidth() - infoLength, index * moduleFr.getFontHeight(), -1, true);
 			
+			GlStateManager.popMatrix();
+			
 			// Used to calculate y
-			index++;
+			index += indexIncrement;
 		}
 		GlStateManager.popAttrib();
 		GlStateManager.popMatrix();
 		
 	}
+	
+	/**
+	 * Handles animations
+	 */
+	@EventHandler
+	private Handler<EventCheatTick> onCheatTick = e -> {
+		if (e.isPost())
+			return;
+		
+		double animationSpeed = 0.15;
+		for (Module mod : ModuleManager.getModules()) {
+			
+			// Arraylist animation
+			if (mod.isEnabled()) {
+				mod.setArraylistAnimation(mod.getArraylistAnimation() + ((1 - mod.getArraylistAnimation()) * animationSpeed));
+			}else {
+				mod.setArraylistAnimation(mod.getArraylistAnimation() - (mod.getArraylistAnimation() * animationSpeed));
+			}
+			
+		}
+		
+	};
 	
 }

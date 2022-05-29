@@ -10,6 +10,8 @@ import cafe.kagu.kagu.font.FontUtils;
 import cafe.kagu.kagu.utils.MiscUtils;
 import cafe.kagu.kagu.utils.UiUtils;
 import net.minecraft.client.gui.GuiLanguage;
+import net.minecraft.client.gui.GuiMultiplayer;
+import net.minecraft.client.gui.GuiOptions;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiSelectWorld;
 import net.minecraft.client.renderer.GlStateManager;
@@ -27,9 +29,10 @@ public class GuiDefaultMainMenu extends GuiScreen {
 		
 	}
 	
-	private static Vector4d backgroundColor = new Vector4d(0.0784313725, 0.0784313725, 0.0784313725, 1), 
-							buttonPanelBackgroundColor = new Vector4d(0.168627451, 0.168627451, 0.168627451, 1), 
-							buttonColor = new Vector4d(0.239215686, 0.239215686, 0.239215686, 1);
+	private static Vector4d backgroundColor = new Vector4d(0.168627451, 0.168627451, 0.168627451, 1), 
+							buttonPanelBackgroundColor = new Vector4d(0.0784313725, 0.0784313725, 0.0784313725, 1), 
+							buttonDefaultColor = new Vector4d(0.211764706, 0.211764706, 0.211764706, 1),
+							buttomHoverColor = new Vector4d(0.149019608, 0.149019608, 0.149019608, 1);
 	private boolean leftMouseClicked = false;
 	
 	@Override
@@ -40,8 +43,9 @@ public class GuiDefaultMainMenu extends GuiScreen {
 	@Override
 	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
 		
-		FontRenderer titleFr = FontUtils.STRATUM2_MEDIUM_40;
-		FontRenderer buttonFr = FontUtils.STRATUM2_MEDIUM_18;
+		FontRenderer titleFr = FontUtils.STRATUM2_MEDIUM_18_AA;
+		FontRenderer versionFr = FontUtils.STRATUM2_REGULAR_8_AA;
+		FontRenderer buttonFr = FontUtils.STRATUM2_REGULAR_10_AA;
 		
 		GlStateManager.pushMatrix();
 		GlStateManager.pushAttrib();
@@ -50,37 +54,94 @@ public class GuiDefaultMainMenu extends GuiScreen {
 		drawRect(0, 0, width, height, UiUtils.getColorFromVector(backgroundColor));
 		
 		// Draw menu background
-		UiUtils.drawRoundedRect(width * 0.3, height * 0.1, width * 0.7, height * 0.9, UiUtils.getColorFromVector(buttonPanelBackgroundColor), 10);
+		UiUtils.drawRoundedRect(width * 0.4, height * 0.325, width * 0.6, height * 0.675, UiUtils.getColorFromVector(buttonPanelBackgroundColor), 10);
 		
-		// Title
-		titleFr.drawCenteredString(Kagu.getName(), width / 2, height * 0.105, -1, true);
+		// Draw the title and version
+		titleFr.drawCenteredString(Kagu.getName(), width / 2 - versionFr.getStringWidth("v" + Kagu.getVersion()) / 2, height * 0.33 + 2, -1);
+		versionFr.drawCenteredString("v" + Kagu.getVersion(), width / 2 + titleFr.getStringWidth(Kagu.getName()) / 2, height * 0.33 + 2 + titleFr.getFontHeight() - versionFr.getFontHeight(), -1);
 		
-		// Draw bootins
-		double maxButtonSpace = (height * 0.9) - ((height * 0.105) + titleFr.getFontHeight());
-		int buttonCount = 6;
-		maxButtonSpace -= maxButtonSpace * (0.25 / buttonCount);
-		double buttonSize = maxButtonSpace * (0.75 / buttonCount); // They get 90% of the space, and there are 6 buttons
-		double buttonPadding = maxButtonSpace * (0.25 / buttonCount); // The padding will make up 20% of the space, and there are six buttons
+		// Draw buttons
+		int buttonColor = UiUtils.getColorFromVector(buttonDefaultColor);
+		int buttonCount = 7;
+		double buttonSpacingSize = height * 0.1;
+		double buttonSize = (height * 0.67 - height * 0.33 - buttonSpacingSize) / buttonCount;
+		buttonSpacingSize /= buttonCount;
 		
 		// Singleplayer
-		UiUtils.drawRoundedRect(width * 0.35, ((height * 0.105) + titleFr.getFontHeight()) + buttonPadding,
-				width * 0.65, ((height * 0.105) + titleFr.getFontHeight()) + buttonPadding + buttonSize, UiUtils.getColorFromVector(buttonColor), 5);
-		buttonFr.drawCenteredString(MiscUtils.removeFormatting(I18n.format("menu.singleplayer")), width / 2, ((height * 0.105) + titleFr.getFontHeight()) - (buttonFr.getFontHeight() / 2) + buttonPadding + (buttonSize / 2), -1);
+		if (UiUtils.isMouseInsideRoundedRect(mouseX, mouseY, width * 0.41, height * 0.33 + titleFr.getFontHeight() + buttonSpacingSize, width * 0.59, height * 0.33 + titleFr.getFontHeight() + buttonSpacingSize + buttonSize, 3)) {
+			buttonColor = UiUtils.getColorFromVector(buttomHoverColor);
+			if (leftMouseClicked) {
+				mc.displayGuiScreen(new GuiSelectWorld(this));
+				leftMouseClicked = false;
+			}
+		}else {
+			buttonColor = UiUtils.getColorFromVector(buttonDefaultColor);
+		}
+		UiUtils.drawRoundedRect(width * 0.41, height * 0.33 + titleFr.getFontHeight() + buttonSpacingSize, width * 0.59, height * 0.33 + titleFr.getFontHeight() + buttonSpacingSize + buttonSize, buttonColor, 3);
+		buttonFr.drawCenteredString("Singleplayer", width / 2, height * 0.33 + titleFr.getFontHeight() + buttonSpacingSize + buttonSize / 2 - buttonFr.getFontHeight() / 2, -1);
 		
-		UiUtils.drawRoundedRect(width * 0.35, ((height * 0.105) + titleFr.getFontHeight()) + (buttonPadding * 2) + buttonSize,
-				width * 0.65, ((height * 0.105) + titleFr.getFontHeight()) + (buttonPadding * 2) + (buttonSize * 2), UiUtils.getColorFromVector(buttonColor), 5);
+		// Multiplayer
+		if (UiUtils.isMouseInsideRoundedRect(mouseX, mouseY, width * 0.41, height * 0.33 + titleFr.getFontHeight() + buttonSpacingSize * 2 + buttonSize, width * 0.59, height * 0.33 + titleFr.getFontHeight() + buttonSpacingSize * 2 + buttonSize * 2, 3)) {
+			buttonColor = UiUtils.getColorFromVector(buttomHoverColor);
+			if (leftMouseClicked) {
+				mc.displayGuiScreen(new GuiMultiplayer(this));
+				leftMouseClicked = false;
+			}
+		}else {
+			buttonColor = UiUtils.getColorFromVector(buttonDefaultColor);
+		}
+		UiUtils.drawRoundedRect(width * 0.41, height * 0.33 + titleFr.getFontHeight() + buttonSpacingSize * 2 + buttonSize, width * 0.59, height * 0.33 + titleFr.getFontHeight() + buttonSpacingSize * 2 + buttonSize * 2, buttonColor, 3);
+		buttonFr.drawCenteredString("Multiplayer", width / 2, height * 0.33 + titleFr.getFontHeight() + buttonSpacingSize * 2 + buttonSize + buttonSize / 2 - buttonFr.getFontHeight() / 2, -1);
 		
-		UiUtils.drawRoundedRect(width * 0.35, ((height * 0.105) + titleFr.getFontHeight()) + (buttonPadding * 3) + (buttonSize * 2),
-				width * 0.65, ((height * 0.105) + titleFr.getFontHeight()) + (buttonPadding * 3) + (buttonSize * 3), UiUtils.getColorFromVector(buttonColor), 5);
+		// Alt manager
+		if (UiUtils.isMouseInsideRoundedRect(mouseX, mouseY, width * 0.41, height * 0.33 + titleFr.getFontHeight() + buttonSpacingSize * 3 + buttonSize * 2, width * 0.59, height * 0.33 + titleFr.getFontHeight() + buttonSpacingSize * 3 + buttonSize * 3, 3)) {
+			buttonColor = UiUtils.getColorFromVector(buttomHoverColor);
+			if (leftMouseClicked) {
+				leftMouseClicked = false;
+			}
+		}else {
+			buttonColor = UiUtils.getColorFromVector(buttonDefaultColor);
+		}
+		UiUtils.drawRoundedRect(width * 0.41, height * 0.33 + titleFr.getFontHeight() + buttonSpacingSize * 3 + buttonSize * 2, width * 0.59, height * 0.33 + titleFr.getFontHeight() + buttonSpacingSize * 3 + buttonSize * 3, buttonColor, 3);
+		buttonFr.drawCenteredString("Alt Manager", width / 2, height * 0.33 + titleFr.getFontHeight() + buttonSpacingSize * 3 + buttonSize * 2 + buttonSize / 2 - buttonFr.getFontHeight() / 2, -1);
 		
-		UiUtils.drawRoundedRect(width * 0.35, ((height * 0.105) + titleFr.getFontHeight()) + (buttonPadding * 4) + (buttonSize * 3),
-				width * 0.65, ((height * 0.105) + titleFr.getFontHeight()) + (buttonPadding * 4) + (buttonSize * 4), UiUtils.getColorFromVector(buttonColor), 5);
+		// Settings
+		if (UiUtils.isMouseInsideRoundedRect(mouseX, mouseY, width * 0.41, height * 0.33 + titleFr.getFontHeight() + buttonSpacingSize * 4 + buttonSize * 3, width * 0.59, height * 0.33 + titleFr.getFontHeight() + buttonSpacingSize * 4 + buttonSize * 4, 3)) {
+			buttonColor = UiUtils.getColorFromVector(buttomHoverColor);
+			if (leftMouseClicked) {
+				mc.displayGuiScreen(new GuiOptions(this, mc.gameSettings));
+				leftMouseClicked = false;
+			}
+		}else {
+			buttonColor = UiUtils.getColorFromVector(buttonDefaultColor);
+		}
+		UiUtils.drawRoundedRect(width * 0.41, height * 0.33 + titleFr.getFontHeight() + buttonSpacingSize * 4 + buttonSize * 3, width * 0.59, height * 0.33 + titleFr.getFontHeight() + buttonSpacingSize * 4 + buttonSize * 4, buttonColor, 3);
+		buttonFr.drawCenteredString("Settings", width / 2, height * 0.33 + titleFr.getFontHeight() + buttonSpacingSize * 4 + buttonSize * 3 + buttonSize / 2 - buttonFr.getFontHeight() / 2, -1);
 		
-		UiUtils.drawRoundedRect(width * 0.35, ((height * 0.105) + titleFr.getFontHeight()) + (buttonPadding * 5) + (buttonSize * 4),
-				width * 0.65, ((height * 0.105) + titleFr.getFontHeight()) + (buttonPadding * 5) + (buttonSize * 5), UiUtils.getColorFromVector(buttonColor), 5);
+		// Language
+		if (UiUtils.isMouseInsideRoundedRect(mouseX, mouseY, width * 0.41, height * 0.33 + titleFr.getFontHeight() + buttonSpacingSize * 5 + buttonSize * 4, width * 0.59, height * 0.33 + titleFr.getFontHeight() + buttonSpacingSize * 5 + buttonSize * 5, 3)) {
+			buttonColor = UiUtils.getColorFromVector(buttomHoverColor);
+			if (leftMouseClicked) {
+				mc.displayGuiScreen(new GuiLanguage(this, this.mc.gameSettings, this.mc.getLanguageManager()));
+				leftMouseClicked = false;
+			}
+		}else {
+			buttonColor = UiUtils.getColorFromVector(buttonDefaultColor);
+		}
+		UiUtils.drawRoundedRect(width * 0.41, height * 0.33 + titleFr.getFontHeight() + buttonSpacingSize * 5 + buttonSize * 4, width * 0.59, height * 0.33 + titleFr.getFontHeight() + buttonSpacingSize * 5 + buttonSize * 5, buttonColor, 3);
+		buttonFr.drawCenteredString("Language", width / 2, height * 0.33 + titleFr.getFontHeight() + buttonSpacingSize * 5 + buttonSize * 4 + buttonSize / 2 - buttonFr.getFontHeight() / 2, -1);
 		
-		UiUtils.drawRoundedRect(width * 0.35, ((height * 0.105) + titleFr.getFontHeight()) + (buttonPadding * 6) + (buttonSize * 5),
-				width * 0.65, ((height * 0.105) + titleFr.getFontHeight()) + (buttonPadding * 6) + (buttonSize * 6), UiUtils.getColorFromVector(buttonColor), 5);
+		// Themes
+		if (UiUtils.isMouseInsideRoundedRect(mouseX, mouseY, width * 0.41, height * 0.33 + titleFr.getFontHeight() + buttonSpacingSize * 6 + buttonSize * 5, width * 0.59, height * 0.33 + titleFr.getFontHeight() + buttonSpacingSize * 6 + buttonSize * 6, 3)) {
+			buttonColor = UiUtils.getColorFromVector(buttomHoverColor);
+			if (leftMouseClicked) {
+				leftMouseClicked = false;
+			}
+		}else {
+			buttonColor = UiUtils.getColorFromVector(buttonDefaultColor);
+		}
+		UiUtils.drawRoundedRect(width * 0.41, height * 0.33 + titleFr.getFontHeight() + buttonSpacingSize * 6 + buttonSize * 5, width * 0.59, height * 0.33 + titleFr.getFontHeight() + buttonSpacingSize * 6 + buttonSize * 6, buttonColor, 3);
+		buttonFr.drawCenteredString("Themes", width / 2, height * 0.33 + titleFr.getFontHeight() + buttonSpacingSize * 6 + buttonSize * 5 + buttonSize / 2 - buttonFr.getFontHeight() / 2, -1);
 		
 		GlStateManager.popAttrib();
 		GlStateManager.popMatrix();
@@ -93,8 +154,8 @@ public class GuiDefaultMainMenu extends GuiScreen {
 	
 	@Override
 	protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
-//		leftMouseClicked = true;
-		mc.displayGuiScreen(new GuiSelectWorld(this));
+		leftMouseClicked = true;
+//		mc.displayGuiScreen(new GuiSelectWorld(this));
 //		mc.displayGuiScreen(new GuiLanguage(this, this.mc.gameSettings, this.mc.getLanguageManager()));
 	}
 	

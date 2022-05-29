@@ -26,13 +26,14 @@ public class FontUtils {
 	public static final FontRenderer ROBOTO_REGULAR_10 = new FontRenderer(getFontFromInputStream(FontUtils.class.getResourceAsStream("Roboto-Regular.ttf"), 20, Font.PLAIN), 0.5);
 	
 	// The CS:GO font
-	public static final FontRenderer STRATUM2_MEDIUM_13 = new FontRenderer(getFontFromInputStream(FontUtils.class.getResourceAsStream("stratum2-medium.ttf"), 26, Font.PLAIN), 0.5);
-	public static final FontRenderer STRATUM2_MEDIUM_18 = new FontRenderer(getFontFromInputStream(FontUtils.class.getResourceAsStream("stratum2-medium.ttf"), 36, Font.PLAIN), 0.5);
-	public static final FontRenderer STRATUM2_MEDIUM_40 = new FontRenderer(getFontFromInputStream(FontUtils.class.getResourceAsStream("stratum2-medium.ttf"), 80, Font.PLAIN), 0.5);
+	public static final FontRenderer STRATUM2_REGULAR_8_AA = new FontRenderer(getFontFromInputStream(FontUtils.class.getResourceAsStream("stratum2_regular.ttf"), 15, Font.PLAIN), 0.5, true);
+	public static final FontRenderer STRATUM2_REGULAR_10_AA = new FontRenderer(getFontFromInputStream(FontUtils.class.getResourceAsStream("stratum2_regular.ttf"), 20, Font.PLAIN), 0.5, true);
+	public static final FontRenderer STRATUM2_MEDIUM_13_AA = new FontRenderer(getFontFromInputStream(FontUtils.class.getResourceAsStream("stratum2-medium.ttf"), 26, Font.PLAIN), 0.5, true);
+	public static final FontRenderer STRATUM2_MEDIUM_18_AA = new FontRenderer(getFontFromInputStream(FontUtils.class.getResourceAsStream("stratum2-medium.ttf"), 36, Font.PLAIN), 0.5, true);
 	
-	// Open sans
-	public static final FontRenderer OPEN_SANS_REGULAR_10_AA = new FontRenderer(getFontFromInputStream(FontUtils.class.getResourceAsStream("OpenSans-Regular.ttf"), 20, Font.PLAIN), 0.5, true);
-	public static final FontRenderer OPEN_SANS_THIN_10_AA = new FontRenderer(getFontFromInputStream(FontUtils.class.getResourceAsStream("OpenSans-Light.ttf"), 20, Font.PLAIN), 0.5, true);
+	// San francisco
+	public static final FontRenderer SAN_FRANCISCO_REGULAR_10_AA = new FontRenderer(getFontFromInputStream(FontUtils.class.getResourceAsStream("SFUIDisplay-Regular.ttf"), 20, Font.PLAIN), 0.5, true);
+	public static final FontRenderer SAN_FRANCISCO_THIN_10_AA = new FontRenderer(getFontFromInputStream(FontUtils.class.getResourceAsStream("SFUIDisplay-Light.ttf"), 20, Font.PLAIN), 0.5, true);
 	
 	/**
 	 * Gets a font from an inputstream
@@ -43,7 +44,9 @@ public class FontUtils {
 	 */
 	public static Font getFontFromInputStream(InputStream in, float size, int style) {
 		try {
-			return Font.createFont(Font.TRUETYPE_FONT, in).deriveFont(style, size); // Load font
+			Font font = Font.createFont(Font.TRUETYPE_FONT, in).deriveFont(style, size); // Load font
+			in.close(); // Close stream
+			return font; // Return
 		} catch (FontFormatException | IOException e) {
 			return null; // Could not load font
 		}

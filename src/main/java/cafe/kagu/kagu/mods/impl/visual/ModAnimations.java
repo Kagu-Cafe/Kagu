@@ -27,13 +27,11 @@ public class ModAnimations extends Module {
 
 	public ModAnimations() {
 		super("Animations", Category.VISUAL);
-		setSettings(blockAnimations, playerArms, itemScaleX, itemScaleY, itemScaleZ, itemTranslateX, itemTranslateY, itemTranslateZ);
+		setSettings(blockAnimations, itemScaleX, itemScaleY, itemScaleZ, itemTranslateX, itemTranslateY, itemTranslateZ);
 	}
 	
 	// Block animations
-	public ModeSetting blockAnimations = new ModeSetting("Animation", "1.7", "1.7", "Orbit", "Spin", "Lollipop", "Slash", "Tap", "Wiggle", "Swipe", "Bump", "None", "Test");
-	
-	public BooleanSetting playerArms = new BooleanSetting("Render arms", false);
+	public ModeSetting blockAnimations = new ModeSetting("Animation", "1.7", "1.7", "Orbit", "Spin", "Lollipop", "Slash", "Tap", "Wiggle", "Swipe", "Bump", "Float", "None", "Test");
 	
 	// Item scale
 	public DoubleSetting itemScaleX = new DoubleSetting("Item scale x", 1, -2, 2, 0.05);
@@ -112,6 +110,21 @@ public class ModAnimations extends Module {
 				ir.transformFirstPersonBlock();
 			}break;
 			
+			case "Float":{
+		        GlStateManager.translate(0.56F, -0.52F, -0.71999997F);
+		        GlStateManager.translate(0.0F, e.getEquipProgress() * -0.6F, 0.0F);
+		        GlStateManager.rotate(45.0F, 0.0F, 1.0F, 0.0F);
+		        float f = MathHelper.sin(e.getSwingProgress() * e.getSwingProgress() * (float)Math.PI);
+		        float f1 = MathHelper.sin(MathHelper.sqrt_float(e.getSwingProgress()) * (float)Math.PI);
+		        f = -0.2f * f;
+		        f1 = -0.2f * f1;
+		        GlStateManager.rotate(f * -20.0F, 0.0F, 1.0F, 0.0F);
+		        GlStateManager.rotate(f1 * -20.0F, 0.0F, 0.0F, 1.0F);
+		        GlStateManager.rotate(f1 * -80.0F, 1.0F, 0.0F, 0.0F);
+		        GlStateManager.scale(0.4F, 0.4F, 0.4F);
+		        ir.transformFirstPersonBlock();
+			}break;
+			
 			case "Test":{
 				ir.transformFirstPersonItem(e.getEquipProgress(), e.getSwingProgress());
 				ir.transformFirstPersonBlock();
@@ -121,9 +134,6 @@ public class ModAnimations extends Module {
 			}
 			
 		}
-		
-		if (playerArms.isEnabled())
-			ir.renderPlayerArms(mc.thePlayer);
 		
 	};
 	

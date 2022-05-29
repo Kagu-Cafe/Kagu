@@ -54,7 +54,7 @@ public class ModKillAura extends Module {
 	
 	// Modes
 	private ModeSetting rotationMode = new ModeSetting("Rotation Mode", "Lock", "Lock", "Lock+");
-	private ModeSetting blockMode = new ModeSetting("Block Mode", "None", "None", "Vanilla 1");
+	private ModeSetting blockMode = new ModeSetting("Block Mode", "None", "None", "Fake");
 	private ModeSetting preferredTargetMetrics = new ModeSetting("Preferred Target Metrics", "Distance", "Distance");
 	private ModeSetting targetSelectionMode = new ModeSetting("Target Selection", "Instant", "Instant");
 	private ModeSetting swingMode = new ModeSetting("Swing Mode", "Swing", "Swing", "Server Side", "No Swing");

@@ -55,11 +55,8 @@ public class ModTest extends Module {
 	
 	@EventHandler
 	public Handler<EventTick> onTick = e -> {
-		if (e.isPost()) {
+		if (e.isPost())
 			return;
-		}
-		if (Minecraft.getMinecraft().thePlayer.ticksExisted % 10 == 0)
-			setInfo(new String(RandomUtils.nextBytes(RandomUtils.nextInt(18, 22))));
 	};
 	
 }
