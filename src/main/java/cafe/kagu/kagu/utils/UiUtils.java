@@ -288,7 +288,7 @@ public class UiUtils {
 	 * @return The color as an int
 	 */
 	public static int getColorFromVector(Vector4d vectorColor) {
-		return new Color((float)vectorColor.x, (float)vectorColor.y, (float)vectorColor.z, (float)vectorColor.w).getRGB();
+		return new Color((float)vectorColor.getX(), (float)vectorColor.getY(), (float)vectorColor.getZ(), (float)vectorColor.getW()).getRGB();
 	}
 	
 	/**

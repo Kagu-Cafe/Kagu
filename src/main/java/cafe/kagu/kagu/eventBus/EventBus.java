@@ -8,6 +8,7 @@ import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import cafe.kagu.kagu.eventBus.impl.EventCheatTick;
 import cafe.kagu.kagu.eventBus.impl.EventPlayerUpdate;
 import cafe.kagu.kagu.eventBus.impl.EventTick;
 import cafe.kagu.kagu.mods.Module;
@@ -39,26 +40,29 @@ public class EventBus {
 	public static void distribute(Event e) {
 		// Don't send events if the world or player is null
 		Minecraft mc = Minecraft.getMinecraft();
-		if (mc.theWorld == null || mc.thePlayer == null) {
+		if ((mc.theWorld == null || mc.thePlayer == null) && !(e instanceof EventCheatTick)) {
 			return;
 		}
 		
 		// Send the event
 		for (Handler<? extends Event> subscriber : subscribers.keySet()) {
-			if (e.getClass().isAssignableFrom(subscribers.get(subscriber))) {
-				
-				// If subscriber is linked to module AND the module is disabled then cancel
-				if (moduleSubscribers.containsKey(subscriber) && moduleSubscribers.get(subscriber).isDisabled()) {
-					continue;
-				}
-				
-				// Send event
-				try {
-					subscriber.onEventNoGeneric(e);
-				} catch (Exception e2) {
-					logger.error("Had an issue dispatching an event", e2);
-				}
+			
+			if (!e.getClass().isAssignableFrom(subscribers.get(subscriber))) {
+				continue;
 			}
+			
+			// If subscriber is linked to module AND the module is disabled then cancel
+			if (moduleSubscribers.containsKey(subscriber) && moduleSubscribers.get(subscriber).isDisabled()) {
+				continue;
+			}
+			
+			// Send event
+			try {
+				subscriber.onEventNoGeneric(e);
+			} catch (Exception e2) {
+				logger.error("Had an issue dispatching an event", e2);
+			}
+			
 		}
 		
 	}

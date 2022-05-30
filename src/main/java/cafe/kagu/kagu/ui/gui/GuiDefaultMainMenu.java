@@ -4,19 +4,26 @@ import java.io.IOException;
 
 import javax.vecmath.Vector4d;
 
+import org.lwjgl.opengl.GL20;
+
 import cafe.kagu.kagu.Kagu;
+import cafe.kagu.kagu.eventBus.EventBus;
+import cafe.kagu.kagu.eventBus.EventHandler;
+import cafe.kagu.kagu.eventBus.Handler;
+import cafe.kagu.kagu.eventBus.impl.EventCheatTick;
 import cafe.kagu.kagu.font.FontRenderer;
 import cafe.kagu.kagu.font.FontUtils;
-import cafe.kagu.kagu.utils.MiscUtils;
+import cafe.kagu.kagu.managers.FileManager;
+import cafe.kagu.kagu.utils.Shader;
 import cafe.kagu.kagu.utils.UiUtils;
+import cafe.kagu.kagu.utils.Shader.ShaderType;
 import net.minecraft.client.gui.GuiLanguage;
 import net.minecraft.client.gui.GuiMultiplayer;
 import net.minecraft.client.gui.GuiOptions;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiSelectWorld;
+import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.util.ResourceLocation;
 
 public class GuiDefaultMainMenu extends GuiScreen {
 	
@@ -27,21 +34,46 @@ public class GuiDefaultMainMenu extends GuiScreen {
 	 */
 	public static void start() {
 		
+		// Hook the event handlers
+		EventBus.setSubscriber(new GuiDefaultMainMenu(), true);
+		
+		// Background shader
+		try {
+			backgroundShader = new Shader(ShaderType.FRAGMENT, FileManager.readStringFromFile(FileManager.BACKGROUND_SHADER));
+			backgroundShader.create();
+			backgroundShader.link();
+			backgroundShader.createUniform("time");
+			backgroundShader.createUniform("resolution");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 	}
 	
-	private static Vector4d backgroundColor = new Vector4d(0.168627451, 0.168627451, 0.168627451, 1), 
-							buttonPanelBackgroundColor = new Vector4d(0.0784313725, 0.0784313725, 0.0784313725, 1), 
+	private static Vector4d buttonPanelBackgroundColor = new Vector4d(0.0784313725, 0.0784313725, 0.0784313725, 1), 
 							buttonDefaultColor = new Vector4d(0.211764706, 0.211764706, 0.211764706, 1),
 							buttomHoverColor = new Vector4d(0.149019608, 0.149019608, 0.149019608, 1);
-	private boolean leftMouseClicked = false;
+	private static boolean leftMouseClicked = false;
+	private static Shader backgroundShader;
+	private static float backgroundAnimation = 0;
 	
 	@Override
 	public void initGui() {
 		leftMouseClicked = false;
+		try {
+			backgroundShader = new Shader(ShaderType.FRAGMENT, FileManager.readStringFromFile(FileManager.BACKGROUND_SHADER));
+			backgroundShader.create();
+			backgroundShader.link();
+			backgroundShader.createUniform("time");
+			backgroundShader.createUniform("resolution");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	@Override
 	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+		backgroundAnimation += 0.005f;
 		
 		FontRenderer titleFr = FontUtils.STRATUM2_MEDIUM_18_AA;
 		FontRenderer versionFr = FontUtils.STRATUM2_REGULAR_8_AA;
@@ -51,9 +83,15 @@ public class GuiDefaultMainMenu extends GuiScreen {
 		GlStateManager.pushAttrib();
 		
 		// Draw the background
-		drawRect(0, 0, width, height, UiUtils.getColorFromVector(backgroundColor));
+		backgroundShader.bind();
+		ScaledResolution sr = new ScaledResolution(mc);
+		GL20.glUniform2f(backgroundShader.getUniform("resolution"), width * sr.getScaleFactor(), height * sr.getScaleFactor());
+		GL20.glUniform1f(backgroundShader.getUniform("time"), backgroundAnimation);
+		drawRect(0, 0, width, height, -1);
+		backgroundShader.unbind();
 		
 		// Draw menu background
+//		UiUtils.drawRoundedRect(width * 0.4 - 1, height * 0.325 - 1, width * 0.6 + 1, height * 0.675 + 1, -1, 10);
 		UiUtils.drawRoundedRect(width * 0.4, height * 0.325, width * 0.6, height * 0.675, UiUtils.getColorFromVector(buttonPanelBackgroundColor), 10);
 		
 		// Draw the title and version
@@ -155,9 +193,6 @@ public class GuiDefaultMainMenu extends GuiScreen {
 	@Override
 	protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
 		leftMouseClicked = true;
-//		mc.displayGuiScreen(new GuiSelectWorld(this));
-//		mc.displayGuiScreen(new GuiLanguage(this, this.mc.gameSettings, this.mc.getLanguageManager()));
 	}
-	
 	
 }

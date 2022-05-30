@@ -36,7 +36,7 @@ public class MainMenuHandler {
 		MainMenuHandler.mainMenu = mainMenu;
 	}
 	
-	private enum MainMenu{
+	public enum MainMenu{
 		
 		DEFAULT(new GuiDefaultMainMenu());
 		

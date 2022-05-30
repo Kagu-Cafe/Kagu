@@ -16,17 +16,21 @@ public class FileManager {
 	
 	// Directories
 	public static final File 
-						KAGU_DIR = new File("Kagu"), 
-						DEFAULTS_DIR = new File(KAGU_DIR, "defaults"), 
+						KAGU_DIR = new File("Kagu"),
+						DEFAULTS_DIR = new File(KAGU_DIR, "defaults"),
+						ASSETS_DIR = new File(KAGU_DIR, "assets"),
 						KEYBINDS_DIR = new File(KAGU_DIR, "keybinds"),
 						CONFIGS_DIR = new File(KAGU_DIR, "configs");
 	
 	// Files
 	public static final File
-						
+	
 						// Defaults
 						DEFAULT_KEYBINDS = new File(DEFAULTS_DIR, "keybinds.kagu"),
-						DEFAULT_CONFIG = new File(DEFAULTS_DIR, "config.kagu");
+						DEFAULT_CONFIG = new File(DEFAULTS_DIR, "config.kagu"),
+						
+						// Assets
+						BACKGROUND_SHADER = new File(ASSETS_DIR, "background.frag");
 	
 	/**
 	 * Called when the client starts
@@ -60,7 +64,7 @@ public class FileManager {
 	 * @return The string stored in the file
 	 */
 	public static String readStringFromFile(File file) {
-		return new String(readBytesFromFile(file), StandardCharsets.UTF_16);
+		return new String(readBytesFromFile(file), StandardCharsets.UTF_8);
 	}
 	
 	/**
@@ -93,7 +97,7 @@ public class FileManager {
 	 * @param str The string to write
 	 */
 	public static void writeStringToFile(File file, String str) {
-		writeBytesToFile(file, str.getBytes(StandardCharsets.UTF_16));
+		writeBytesToFile(file, str.getBytes(StandardCharsets.UTF_8));
 	}
 	
 	/**

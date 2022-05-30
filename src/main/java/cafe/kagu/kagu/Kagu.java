@@ -14,6 +14,7 @@ import cafe.kagu.kagu.mods.ModuleManager;
 import cafe.kagu.kagu.ui.Hud;
 import cafe.kagu.kagu.ui.clickgui.GuiCsgoClickgui;
 import cafe.kagu.kagu.ui.gui.GuiDefaultMainMenu;
+import cafe.kagu.kagu.ui.gui.MainMenuHandler;
 import cafe.kagu.kagu.utils.SpoofUtils;
 import cafe.kagu.kagu.utils.StencilUtil;
 
@@ -134,9 +135,14 @@ public class Kagu {
 		logger.info("Loaded fonts");
 		
 		// Load the main menu
-		logger.info("Loading the main menu...");
+		logger.info("Loading the main menu handler...");
+		MainMenuHandler.getMainMenu();
+		logger.info("Loaded the main menu handler");
+		
+		// Load the main menu
+		logger.info("Loading the main menus...");
 		GuiDefaultMainMenu.start();
-		logger.info("Loaded the main menu");
+		logger.info("Loaded the main menus");
 		
 		// Hook the hud
 		logger.info("Hooking the hud...");
