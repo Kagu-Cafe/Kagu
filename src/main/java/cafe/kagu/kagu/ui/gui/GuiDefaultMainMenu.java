@@ -60,15 +60,6 @@ public class GuiDefaultMainMenu extends GuiScreen {
 	@Override
 	public void initGui() {
 		leftMouseClicked = false;
-		try {
-			backgroundShader = new Shader(ShaderType.FRAGMENT, FileManager.readStringFromFile(FileManager.BACKGROUND_SHADER));
-			backgroundShader.create();
-			backgroundShader.link();
-			backgroundShader.createUniform("time");
-			backgroundShader.createUniform("resolution");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 	}
 	
 	@Override
