@@ -1082,5 +1082,20 @@ public final class ItemStack
             this.canPlaceOnCacheResult = false;
             return false;
         }
-    }
+	}
+
+	/**
+	 * @return the stackSize
+	 */
+	public int getStackSize() {
+		return stackSize;
+	}
+
+	/**
+	 * @param stackSize the stackSize to set
+	 */
+	public void setStackSize(int stackSize) {
+		this.stackSize = stackSize;
+	}
+
 }

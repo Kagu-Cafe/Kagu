@@ -2,6 +2,9 @@ package net.minecraft.network;
 
 import com.google.common.collect.Queues;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
+
+import cafe.kagu.kagu.eventBus.Event.EventPosition;
+import cafe.kagu.kagu.eventBus.impl.EventPacketSend;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelException;
@@ -244,8 +247,18 @@ public class NetworkManager extends SimpleChannelInboundHandler<Packet>
      * Will commit the packet to the channel. If the current thread 'owns' the channel it will write and flush the
      * packet, otherwise it will add a task for the channel eventloop thread to do that.
      */
-    private void dispatchPacket(final Packet inPacket, final GenericFutureListener <? extends Future <? super Void >> [] futureListeners)
+    private void dispatchPacket(Packet inPacket, final GenericFutureListener <? extends Future <? super Void >> [] futureListeners)
     {
+    	
+    	// Kagu hook
+    	{
+    		EventPacketSend eventPacketSend = new EventPacketSend(EventPosition.PRE, inPacket);
+    		eventPacketSend.post();
+    		if (eventPacketSend.isCanceled())
+    			return;
+    		inPacket = eventPacketSend.getPacket();
+    	}
+    	
         final EnumConnectionState enumconnectionstate = EnumConnectionState.getFromPacket(inPacket);
         final EnumConnectionState enumconnectionstate1 = (EnumConnectionState)this.channel.attr(attrKeyConnectionState).get();
 
@@ -273,6 +286,7 @@ public class NetworkManager extends SimpleChannelInboundHandler<Packet>
         }
         else
         {
+        	final Packet inPacketFinal = inPacket;
             this.channel.eventLoop().execute(new Runnable()
             {
                 public void run()
@@ -281,8 +295,8 @@ public class NetworkManager extends SimpleChannelInboundHandler<Packet>
                     {
                         NetworkManager.this.setConnectionState(enumconnectionstate);
                     }
-
-                    ChannelFuture channelfuture1 = NetworkManager.this.channel.writeAndFlush(inPacket);
+                    
+                    ChannelFuture channelfuture1 = NetworkManager.this.channel.writeAndFlush(inPacketFinal);
 
                     if (futureListeners != null)
                     {
@@ -293,6 +307,13 @@ public class NetworkManager extends SimpleChannelInboundHandler<Packet>
                 }
             });
         }
+        
+        // Kagu hook
+        {
+        	EventPacketSend eventPacketSend = new EventPacketSend(EventPosition.POST, inPacket);
+        	eventPacketSend.post();
+        }
+        
     }
 
     /**

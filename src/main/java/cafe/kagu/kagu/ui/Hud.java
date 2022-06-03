@@ -108,11 +108,14 @@ public class Hud {
 				}break;
 			}
 			
+			// Color for the text
+			int textColor = ModuleManager.modHud.arraylistColors.is("White") ? -1 : mod.getCategory().getArraylistColor();
+			
 			// Module name
-			moduleFr.drawString(mod.getName(), sr.getScaledWidth() - moduleFr.getStringWidth(mod.getName()) - infoLength, index * moduleFr.getFontHeight(), -1, true);
+			moduleFr.drawString(mod.getName(), sr.getScaledWidth() - moduleFr.getStringWidth(mod.getName()) - infoLength, index * moduleFr.getFontHeight(), textColor, true);
 			
 			// Module info
-			infoFr.drawString(info, sr.getScaledWidth() - infoLength, index * moduleFr.getFontHeight(), -1, true);
+			infoFr.drawString(info, sr.getScaledWidth() - infoLength, index * moduleFr.getFontHeight(), textColor, true);
 			
 			GlStateManager.popMatrix();
 			

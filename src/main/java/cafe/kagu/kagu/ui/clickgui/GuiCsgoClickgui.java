@@ -550,6 +550,9 @@ public class GuiCsgoClickgui extends GuiScreen {
 								}
 								
 							}
+							else {
+								moduleAndSettingsFr.drawString(setting.getName(), left + toggleSwitchLength, top + yOffset + (padding / 2) + settingOffsetY, UiUtils.getColorFromVector(textColor));
+							}
 							
 						}
 						yOffset += sizeOfSettings * mod.getClickguiExtension();

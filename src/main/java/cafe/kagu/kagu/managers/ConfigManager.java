@@ -57,6 +57,9 @@ public class ConfigManager {
 				else if (setting instanceof ModeSetting) {
 					settingValue = ((ModeSetting)setting).getMode() + "";
 				}
+				else {
+					settingValue = "error";
+				}
 				
 				config += Kagu.GROUP_SEPARATOR + setting.getName()
 						+ Kagu.RECORD_SEPARATOR + setting.isHidden()

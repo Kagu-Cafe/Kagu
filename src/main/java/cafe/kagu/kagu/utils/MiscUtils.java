@@ -38,7 +38,7 @@ public class MiscUtils {
 		else if (setting instanceof ModeSetting) {
 			return "mode";
 		}
-		return "";
+		return "error";
 	}
 	
 	/**

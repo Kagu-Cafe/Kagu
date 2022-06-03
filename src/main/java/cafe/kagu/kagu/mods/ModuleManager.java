@@ -8,16 +8,18 @@ import org.apache.logging.log4j.Logger;
 
 import cafe.kagu.kagu.eventBus.EventBus;
 import cafe.kagu.kagu.mods.impl.combat.ModKillAura;
-import cafe.kagu.kagu.mods.impl.misc.ModTest;
+import cafe.kagu.kagu.mods.impl.exploit.ModCreative64Stack;
 import cafe.kagu.kagu.mods.impl.move.ModMoonJump;
 import cafe.kagu.kagu.mods.impl.move.ModSprint;
 import cafe.kagu.kagu.mods.impl.player.ModAntiAim;
+import cafe.kagu.kagu.mods.impl.player.ModDisabler;
 import cafe.kagu.kagu.mods.impl.visual.ModAnimations;
 import cafe.kagu.kagu.mods.impl.visual.ModChestEsp;
 import cafe.kagu.kagu.mods.impl.visual.ModEsp;
 import cafe.kagu.kagu.mods.impl.visual.ModHud;
 import cafe.kagu.kagu.mods.impl.visual.ModNormalZoomCam;
 import cafe.kagu.kagu.mods.impl.yiff.ModDebugBoundingBoxes;
+import cafe.kagu.kagu.mods.impl.yiff.ModTest;
 
 /**
  * @author lavaflowglow
@@ -32,15 +34,13 @@ public class ModuleManager {
 	// Combat
 	public static ModKillAura modKillAura = new ModKillAura();
 	
-	// Misc
-	public static ModTest modTest = new ModTest();
-	
 	// Movement
 	public static ModMoonJump modMoonJump = new ModMoonJump();
 	public static ModSprint modSprint = new ModSprint();
 	
 	// Player
 	public static ModAntiAim modAntiAim = new ModAntiAim();
+	public static ModDisabler modDisabler = new ModDisabler();
 	
 	// Visual
 	public static ModHud modHud = new ModHud();
@@ -49,34 +49,28 @@ public class ModuleManager {
 	public static ModEsp modEsp = new ModEsp();
 	public static ModNormalZoomCam modNormalZoomCam = new ModNormalZoomCam();
 	
+	// Exploit
+	public static ModCreative64Stack modCreative64Stack = new ModCreative64Stack();
+	
 	// Development
+	public static ModTest modTest = new ModTest();
 	public static ModDebugBoundingBoxes modDebugBoundingBoxes = new ModDebugBoundingBoxes();
 	
 	// An array of all the modules in the client
 	private static final Module[] MODULES = new Module[] {
-			
-			// Combat
 			modKillAura,
-			
-			// Misc
-			modTest,
-			
-			// Visual
 			modHud,
 			modAnimations,
 			modChestEsp,
 			modEsp,
 			modNormalZoomCam,
-			
-			// Movement
 			modMoonJump,
 			modSprint,
-			
-			// Player
 			modAntiAim,
-			
-			// Development
-			modDebugBoundingBoxes
+			modDisabler,
+			modCreative64Stack,
+			modDebugBoundingBoxes,
+			modTest
 			
 	};
 

@@ -14,10 +14,12 @@ public class ModHud extends Module {
 	
 	public ModHud() {
 		super("Hud", Category.VISUAL);
-		setSettings(arraylistAnimation);
+		setSettings(arraylistAnimation, arraylistColors);
 	}
 	
-	public ModeSetting arraylistAnimation = new ModeSetting("Arraylist Animation", "Squeeze", "Squeeze", "Slide");
+	// ArrayList options
+	public ModeSetting arraylistAnimation = new ModeSetting("ArrayList Animation", "Squeeze", "Squeeze", "Slide");
+	public ModeSetting arraylistColors = new ModeSetting("ArrayList Colors", "White", "White", "Category Colors");
 	
 	@Override
 	public boolean isEnabled() {

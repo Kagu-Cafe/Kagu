@@ -1,6 +1,8 @@
 package net.minecraft.network.status.client;
 
 import java.io.IOException;
+
+import cafe.kagu.kagu.mods.ModuleManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.status.INetHandlerStatusServer;
@@ -31,7 +33,7 @@ public class C01PacketPing implements Packet<INetHandlerStatusServer>
      */
     public void writePacketData(PacketBuffer buf) throws IOException
     {
-        buf.writeLong(this.clientTime);
+    	buf.writeLong(this.clientTime);
     }
 
     /**
