@@ -39,7 +39,6 @@ public class GuiDefaultMainMenu extends GuiScreen {
 		
 		// Background shader
 		try {
-			// TODO: Make the file manager download the shader and give the user the option to run without a shader
 			backgroundShader = new Shader(ShaderType.FRAGMENT, FileManager.readStringFromFile(FileManager.BACKGROUND_SHADER));
 			backgroundShader.create();
 			backgroundShader.link();
