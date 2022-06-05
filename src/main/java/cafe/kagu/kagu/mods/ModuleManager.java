@@ -18,6 +18,7 @@ import cafe.kagu.kagu.mods.impl.visual.ModChestEsp;
 import cafe.kagu.kagu.mods.impl.visual.ModEsp;
 import cafe.kagu.kagu.mods.impl.visual.ModHud;
 import cafe.kagu.kagu.mods.impl.visual.ModNormalZoomCam;
+import cafe.kagu.kagu.mods.impl.visual.ModThirdPersonPlus;
 import cafe.kagu.kagu.mods.impl.yiff.ModDebugBoundingBoxes;
 import cafe.kagu.kagu.mods.impl.yiff.ModTest;
 
@@ -48,6 +49,7 @@ public class ModuleManager {
 	public static ModChestEsp modChestEsp = new ModChestEsp();
 	public static ModEsp modEsp = new ModEsp();
 	public static ModNormalZoomCam modNormalZoomCam = new ModNormalZoomCam();
+	public static ModThirdPersonPlus modThirdPersonPlus = new ModThirdPersonPlus();
 	
 	// Exploit
 	public static ModCreative64Stack modCreative64Stack = new ModCreative64Stack();
@@ -70,8 +72,8 @@ public class ModuleManager {
 			modDisabler,
 			modCreative64Stack,
 			modDebugBoundingBoxes,
-			modTest
-			
+			modTest,
+			modThirdPersonPlus
 	};
 
 	/**

@@ -37,6 +37,7 @@ import cafe.kagu.kagu.settings.Setting;
 import cafe.kagu.kagu.settings.impl.BooleanSetting;
 import cafe.kagu.kagu.settings.impl.DoubleSetting;
 import cafe.kagu.kagu.settings.impl.IntegerSetting;
+import cafe.kagu.kagu.settings.impl.KeybindSetting;
 import cafe.kagu.kagu.settings.impl.LongSetting;
 import cafe.kagu.kagu.settings.impl.ModeSetting;
 import cafe.kagu.kagu.ui.Colors;
@@ -912,21 +913,6 @@ public class GuiCsgoClickgui extends GuiScreen {
 					}
 				}
 				
-				// Decimal setting animation
-				else if (setting instanceof DoubleSetting) {
-					
-				}
-				
-				// Integer setting animation
-				else if (setting instanceof IntegerSetting) {
-					
-				}
-				
-				// Long setting animation
-				else if (setting instanceof LongSetting) {
-					
-				}
-				
 				// Mode setting animation
 				else if (setting instanceof ModeSetting) {
 					ModeSetting modeSetting = (ModeSetting)setting;
@@ -934,6 +920,16 @@ public class GuiCsgoClickgui extends GuiScreen {
 						modeSetting.setClickguiToggleStatus(modeSetting.getClickguiToggleStatus() + ((1 - modeSetting.getClickguiToggleStatus()) * animationSpeed));
 					}else {
 						modeSetting.setClickguiToggleStatus(modeSetting.getClickguiToggleStatus() - (modeSetting.getClickguiToggleStatus() * animationSpeed));
+					}
+				}
+				
+				// Keybind setting animation
+				else if (setting instanceof KeybindSetting) {
+					KeybindSetting keybindSetting = (KeybindSetting)setting;
+					if (keybindSetting == selectedSetting) {
+						keybindSetting.setClickguiAnimation(keybindSetting.getClickguiAnimation() + ((1 - keybindSetting.getClickguiAnimation()) * animationSpeed));
+					}else {
+						keybindSetting.setClickguiAnimation(keybindSetting.getClickguiAnimation() - (keybindSetting.getClickguiAnimation() * animationSpeed));
 					}
 				}
 				

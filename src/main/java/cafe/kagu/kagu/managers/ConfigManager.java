@@ -5,6 +5,9 @@ package cafe.kagu.kagu.managers;
 
 import java.io.File;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import cafe.kagu.kagu.Kagu;
 import cafe.kagu.kagu.mods.Module;
 import cafe.kagu.kagu.mods.ModuleManager;
@@ -13,6 +16,7 @@ import cafe.kagu.kagu.settings.Setting;
 import cafe.kagu.kagu.settings.impl.BooleanSetting;
 import cafe.kagu.kagu.settings.impl.DoubleSetting;
 import cafe.kagu.kagu.settings.impl.IntegerSetting;
+import cafe.kagu.kagu.settings.impl.KeybindSetting;
 import cafe.kagu.kagu.settings.impl.LongSetting;
 import cafe.kagu.kagu.settings.impl.ModeSetting;
 import cafe.kagu.kagu.utils.MiscUtils;
@@ -22,6 +26,8 @@ import cafe.kagu.kagu.utils.MiscUtils;
  *
  */
 public class ConfigManager {
+	
+	private static Logger logger = LogManager.getLogger();
 	
 	/**
 	 * Saves the config to a file
@@ -55,7 +61,10 @@ public class ConfigManager {
 					settingValue = ((LongSetting)setting).getValue() + "";
 				}
 				else if (setting instanceof ModeSetting) {
-					settingValue = ((ModeSetting)setting).getMode() + "";
+					settingValue = ((ModeSetting)setting).getMode();
+				}
+				else if (setting instanceof KeybindSetting) {
+					settingValue = ((KeybindSetting)setting).getKeybind() + "";
 				}
 				else {
 					settingValue = "error";
@@ -117,37 +126,47 @@ public class ConfigManager {
 						if (!(setting.getName().equals(settingName) && MiscUtils.getSettingType(setting).equals(settingType)))
 							continue;
 						
+						try {
+							switch (settingType) {
+								case "bool":{
+									if (settingValue.equals("true")) {
+										((BooleanSetting)setting).enable();
+									}else {
+										((BooleanSetting)setting).enable();
+									}
+								}break;
+								
+								case "dec":{
+									((DoubleSetting)setting).setValue(Double.parseDouble(settingValue));
+								}break;
+								
+								case "int":{
+									((IntegerSetting)setting).setValue(Integer.parseInt(settingValue));
+								}break;
+								
+								case "long":{
+									((LongSetting)setting).setValue(Long.parseLong(settingValue));
+								}break;
+								
+								case "mode":{
+									((ModeSetting)setting).setMode(settingValue);
+								}break;
+								
+								case "bind":{
+									((KeybindSetting)setting).setKeybind(Integer.parseInt(settingValue));
+								}break;
+								
+								default:
+									break;
+								}
+						} catch (ClassCastException e) {
+							logger.error("Setting was not of expected type \"" + settingType + "\"");
+							continue;
+						}
+						
 						// Set hidden
 						setting.setHidden(settingHidden.equals("true"));
 						
-						switch (settingType) {
-						case "bool":{
-							if (settingValue.equals("true")) {
-								((BooleanSetting)setting).enable();
-							}else {
-								((BooleanSetting)setting).enable();
-							}
-						}break;
-						
-						case "dec":{
-							((DoubleSetting)setting).setValue(Double.parseDouble(settingValue));
-						}break;
-						
-						case "int":{
-							((IntegerSetting)setting).setValue(Integer.parseInt(settingValue));
-						}break;
-						
-						case "long":{
-							((LongSetting)setting).setValue(Long.parseLong(settingValue));
-						}break;
-						
-						case "mode":{
-							((ModeSetting)setting).setMode(settingValue);
-						}break;
-
-						default:
-							break;
-						}
 					}
 					
 				}

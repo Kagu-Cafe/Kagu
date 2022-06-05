@@ -3,7 +3,6 @@
  */
 package cafe.kagu.kagu.utils;
 
-import javax.vecmath.Vector2f;
 import javax.vecmath.Vector3d;
 
 import net.minecraft.client.Minecraft;

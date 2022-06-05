@@ -141,12 +141,12 @@ public class ModEsp extends Module {
 								ent.getRight() + (ent.getLeft() - ent.getRight()) * cornerSize + (lineWidth / 2), ent.getTop(), white);
 						
 						// Health bar
-						Gui.drawRect(ent.getLeft() - lineWidth - infoBarGap,
+						Gui.drawRect(ent.getLeft() - Math.min(Math.max((ent.getRight() - ent.getLeft()) * 0.25, 3), infoBarGap),
 								ent.getTop() - lineWidth,
-								ent.getLeft() - (lineWidth * 2) - infoBarGap, ent.getBottom() + (lineWidth / 2), black);
-						Gui.drawRect(ent.getLeft() - lineWidth - infoBarGap,
+								ent.getLeft() - Math.min(Math.max((ent.getRight() - ent.getLeft()) * 0.25, 3), infoBarGap) - lineWidth, ent.getBottom() + (lineWidth / 2), black);
+						Gui.drawRect(ent.getLeft() - Math.min(Math.max((ent.getRight() - ent.getLeft()) * 0.25, 3), infoBarGap),
 								(ent.getBottom() + (lineWidth / 2)) + ((ent.getTop() - lineWidth) - (ent.getBottom() + (lineWidth / 2))) * healthPercent,
-								ent.getLeft() - (lineWidth * 2) - infoBarGap, ent.getBottom() + (lineWidth / 2), healthPercent >= 1 ? blue : lerpedHealthColor);
+								ent.getLeft() - Math.min(Math.max((ent.getRight() - ent.getLeft()) * 0.25, 3), infoBarGap) - lineWidth, ent.getBottom() + (lineWidth / 2), healthPercent >= 1 ? blue : lerpedHealthColor);
 						
 						// Nametags
 						double nametagScaling = ((ent.getRight() - ent.getLeft()) * (ent.getEntityLivingBase() instanceof EntityPlayer ? 2 : 0.7)) / nametagFr.getStringWidth(ent.getEntityLivingBase().getName());

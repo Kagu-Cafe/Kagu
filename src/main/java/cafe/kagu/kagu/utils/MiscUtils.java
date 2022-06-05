@@ -7,9 +7,9 @@ import cafe.kagu.kagu.settings.Setting;
 import cafe.kagu.kagu.settings.impl.BooleanSetting;
 import cafe.kagu.kagu.settings.impl.DoubleSetting;
 import cafe.kagu.kagu.settings.impl.IntegerSetting;
+import cafe.kagu.kagu.settings.impl.KeybindSetting;
 import cafe.kagu.kagu.settings.impl.LongSetting;
 import cafe.kagu.kagu.settings.impl.ModeSetting;
-import net.minecraft.util.ChatComponentText;
 
 /**
  * @author lavaflowglow
@@ -37,6 +37,9 @@ public class MiscUtils {
 		}
 		else if (setting instanceof ModeSetting) {
 			return "mode";
+		}
+		else if (setting instanceof KeybindSetting) {
+			return "bind";
 		}
 		return "error";
 	}

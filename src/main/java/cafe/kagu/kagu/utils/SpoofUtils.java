@@ -7,7 +7,6 @@ import cafe.kagu.kagu.eventBus.EventBus;
 import cafe.kagu.kagu.eventBus.EventHandler;
 import cafe.kagu.kagu.eventBus.Handler;
 import cafe.kagu.kagu.eventBus.impl.EventTick;
-import cafe.kagu.kagu.mods.Module;
 import net.minecraft.client.Minecraft;
 
 /**

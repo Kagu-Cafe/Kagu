@@ -35,6 +35,9 @@ public class FontUtils {
 	public static final FontRenderer SAN_FRANCISCO_REGULAR_10_AA = new FontRenderer(getFontFromInputStream(FontUtils.class.getResourceAsStream("SFUIDisplay-Regular.ttf"), 20, Font.PLAIN), 0.5, true);
 	public static final FontRenderer SAN_FRANCISCO_THIN_10_AA = new FontRenderer(getFontFromInputStream(FontUtils.class.getResourceAsStream("SFUIDisplay-Light.ttf"), 20, Font.PLAIN), 0.5, true);
 	
+	// Small pixel
+	public static final FontRenderer SMALL_PIXEL_4 = new FontRenderer(getFontFromInputStream(FontUtils.class.getResourceAsStream("small_pixel.ttf"), 16, Font.PLAIN), 0.25);
+	
 	/**
 	 * Gets a font from an inputstream
 	 * @param in The inputstream
