@@ -10,6 +10,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.lwjgl.input.Keyboard;
+
 import cafe.kagu.kagu.Kagu;
 import cafe.kagu.kagu.eventBus.EventBus;
 import cafe.kagu.kagu.eventBus.Handler;
@@ -36,9 +38,12 @@ public class KeybindManager {
 	 */
 	public static void start() {
 		
-		// Load the default keybinds if they exist
+		// Load the default keybinds if they exist, otherwise add a single clickgui keybind and save the file to defaults
 		if (FileManager.DEFAULT_KEYBINDS.exists()) {
 			load(FileManager.DEFAULT_KEYBINDS);
+		}else {
+			keybinds.put(ModuleManager.modClickGui.getName().toLowerCase(), new Integer[] {Keyboard.KEY_RSHIFT});
+			save(FileManager.DEFAULT_KEYBINDS);
 		}
 		
 		// Subscribe to the key event so we can use the keybinds
@@ -137,7 +142,7 @@ public class KeybindManager {
 	 */
 	@EventHandler
 	private Handler<EventKeyUpdate> subscriber = e -> {
-		if (e.isPost() || !e.isPressed())
+		if (e.isPost() || !e.isPressed() || e.isCanceled())
 			return;
 		
 		int keyCode = e.getKeyCode();

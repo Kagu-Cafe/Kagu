@@ -17,6 +17,7 @@ import cafe.kagu.kagu.ui.gui.GuiDefaultMainMenu;
 import cafe.kagu.kagu.ui.gui.MainMenuHandler;
 import cafe.kagu.kagu.utils.SpoofUtils;
 import cafe.kagu.kagu.utils.StencilUtil;
+import net.minecraft.client.Minecraft;
 
 /**
  * @author lavaflowglow

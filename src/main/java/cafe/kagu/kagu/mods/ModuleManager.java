@@ -15,6 +15,7 @@ import cafe.kagu.kagu.mods.impl.player.ModAntiAim;
 import cafe.kagu.kagu.mods.impl.player.ModDisabler;
 import cafe.kagu.kagu.mods.impl.visual.ModAnimations;
 import cafe.kagu.kagu.mods.impl.visual.ModChestEsp;
+import cafe.kagu.kagu.mods.impl.visual.ModClickGui;
 import cafe.kagu.kagu.mods.impl.visual.ModEsp;
 import cafe.kagu.kagu.mods.impl.visual.ModHud;
 import cafe.kagu.kagu.mods.impl.visual.ModNormalZoomCam;
@@ -44,6 +45,7 @@ public class ModuleManager {
 	public static ModDisabler modDisabler = new ModDisabler();
 	
 	// Visual
+	public static ModClickGui modClickGui = new ModClickGui();
 	public static ModHud modHud = new ModHud();
 	public static ModAnimations modAnimations = new ModAnimations();
 	public static ModChestEsp modChestEsp = new ModChestEsp();
@@ -60,6 +62,7 @@ public class ModuleManager {
 	
 	// An array of all the modules in the client
 	private static final Module[] MODULES = new Module[] {
+			modClickGui,
 			modKillAura,
 			modHud,
 			modAnimations,

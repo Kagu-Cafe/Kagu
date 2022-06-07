@@ -104,5 +104,34 @@ public class Timer
         }
 
         this.renderPartialTicks = this.elapsedPartialTicks;
-    }
+	}
+
+	/**
+	 * @return the ticksPerSecond
+	 */
+	public float getTicksPerSecond() {
+		return ticksPerSecond;
+	}
+
+	/**
+	 * @param ticksPerSecond the ticksPerSecond to set
+	 */
+	public void setTicksPerSecond(float ticksPerSecond) {
+		this.ticksPerSecond = ticksPerSecond;
+	}
+
+	/**
+	 * @return the timerSpeed
+	 */
+	public float getTimerSpeed() {
+		return timerSpeed;
+	}
+
+	/**
+	 * @param timerSpeed the timerSpeed to set
+	 */
+	public void setTimerSpeed(float timerSpeed) {
+		this.timerSpeed = timerSpeed;
+	}
+
 }

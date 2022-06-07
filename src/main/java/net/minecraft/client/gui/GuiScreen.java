@@ -3,6 +3,10 @@ package net.minecraft.client.gui;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+
+import cafe.kagu.kagu.eventBus.Event.EventPosition;
+import cafe.kagu.kagu.eventBus.impl.EventKeyUpdate;
+
 import java.awt.Toolkit;
 import java.awt.datatransfer.ClipboardOwner;
 import java.awt.datatransfer.DataFlavor;

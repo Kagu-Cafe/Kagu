@@ -3331,5 +3331,12 @@ public class Minecraft implements IThreadListener, IPlayerUsage
 	public Timer getTimer() {
 		return timer;
 	}
-    
+	
+	/**
+	 * @return the currentScreen
+	 */
+	public GuiScreen getCurrentScreen() {
+		return currentScreen;
+	}
+	
 }

@@ -24,6 +24,7 @@ import org.lwjgl.opengl.GL11;
 import cafe.kagu.kagu.Kagu;
 import cafe.kagu.kagu.eventBus.EventBus;
 import cafe.kagu.kagu.eventBus.Handler;
+import cafe.kagu.kagu.eventBus.Event.EventPosition;
 import cafe.kagu.kagu.eventBus.EventHandler;
 import cafe.kagu.kagu.eventBus.impl.EventCheatTick;
 import cafe.kagu.kagu.eventBus.impl.EventKeyUpdate;
@@ -51,6 +52,7 @@ import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.shader.Framebuffer;
+import net.minecraft.network.play.client.C0DPacketCloseWindow;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 
@@ -138,6 +140,7 @@ public class GuiCsgoClickgui extends GuiScreen {
 	
 	@Override
 	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+		allowUserInput = true;
 		
 		FontRenderer boxTitleFr = FontUtils.STRATUM2_MEDIUM_18_AA;
 		FontRenderer moduleAndSettingsFr = FontUtils.STRATUM2_MEDIUM_13_AA;
@@ -595,20 +598,6 @@ public class GuiCsgoClickgui extends GuiScreen {
 		return false;
 	}
 	
-	@EventHandler
-	public Handler<EventKeyUpdate> keyListener = eventKey -> {
-		
-		// We only want to listen for uncanceled, pre, key presses
-		if (eventKey.isCanceled() || !eventKey.isPressed() || eventKey.isPost()) {
-			return;
-		}
-		
-		if (eventKey.getKeyCode() == Keyboard.KEY_RSHIFT) {
-			Minecraft.getMinecraft().displayGuiScreen(Minecraft.getMinecraft().currentScreen == null ? getInstance() : null);	
-		}
-		
-	};
-	
 	private double currentCategoryScale = 1;
 	/**
 	 * Draws a single slice of the circle
@@ -786,6 +775,7 @@ public class GuiCsgoClickgui extends GuiScreen {
 	
 	@Override
 	public void initGui() {
+		antiFuckupShittyMcCodeIsDogShitAndCantDoAnythingWithoutBreakingNinetyPercentOfMyShit = System.currentTimeMillis();
 		if (selectedCategory == null) {
 			ScaledResolution sr = new ScaledResolution(Minecraft.getMinecraft());
 			posX = sr.getScaledWidth_double() / 2;
@@ -938,5 +928,27 @@ public class GuiCsgoClickgui extends GuiScreen {
 		}
 		
 	};
+	
+	private long antiFuckupShittyMcCodeIsDogShitAndCantDoAnythingWithoutBreakingNinetyPercentOfMyShit = System.currentTimeMillis();
+	@Override
+	protected void keyTyped(char typedChar, int keyCode) throws IOException {
+		
+		if (keyCode == Keyboard.KEY_ESCAPE) {
+			mc.displayGuiScreen(null);
+			return;
+		}
+		
+		if (System.currentTimeMillis() - antiFuckupShittyMcCodeIsDogShitAndCantDoAnythingWithoutBreakingNinetyPercentOfMyShit < 100)
+			return;
+		
+        // Kagu hook
+        {
+        	EventKeyUpdate eventKeyUpdate = new EventKeyUpdate(EventPosition.PRE, keyCode, true);
+        	eventKeyUpdate.post();
+        	if (eventKeyUpdate.isCanceled()) {
+        		return;
+        	}
+        }
+	}
 	
 }

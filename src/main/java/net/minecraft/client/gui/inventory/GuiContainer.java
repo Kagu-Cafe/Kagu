@@ -1,6 +1,10 @@
 package net.minecraft.client.gui.inventory;
 
 import com.google.common.collect.Sets;
+
+import cafe.kagu.kagu.eventBus.Event.EventPosition;
+import cafe.kagu.kagu.eventBus.impl.EventKeyUpdate;
+
 import java.io.IOException;
 import java.util.Set;
 import net.minecraft.client.Minecraft;
@@ -14,6 +18,7 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.play.client.C0DPacketCloseWindow;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
@@ -695,7 +700,23 @@ public abstract class GuiContainer extends GuiScreen
         {
             this.mc.thePlayer.closeScreen();
         }
-
+        
+        // So you can toggle modules in containers
+        int thisWindowId = mc.thePlayer.openContainer.windowId;
+        // Kagu hook
+        {
+        	EventKeyUpdate eventKeyUpdate = new EventKeyUpdate(EventPosition.PRE, keyCode, true);
+        	eventKeyUpdate.post();
+        	
+            // Here so if the screen is closed during the event it doesn't flag anticheats
+            if (mc.currentScreen != this)
+            	mc.getNetHandler().getNetworkManager().sendPacket(new C0DPacketCloseWindow(thisWindowId));
+        	
+        	if (eventKeyUpdate.isCanceled()) {
+        		return;
+        	}
+        }
+        
         this.checkHotbarKeys(keyCode);
 
         if (this.theSlot != null && this.theSlot.getHasStack())
