@@ -4,6 +4,7 @@ import com.google.common.collect.Queues;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
 import cafe.kagu.kagu.eventBus.Event.EventPosition;
+import cafe.kagu.kagu.eventBus.impl.EventPacketReceive;
 import cafe.kagu.kagu.eventBus.impl.EventPacketSend;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
@@ -155,6 +156,14 @@ public class NetworkManager extends SimpleChannelInboundHandler<Packet>
     {
         if (this.channel.isOpen())
         {
+        	// Kagu hook
+        	{
+        		EventPacketReceive eventPacketReceive = new EventPacketReceive(EventPosition.PRE, p_channelRead0_2_);
+        		eventPacketReceive.post();
+        		if (eventPacketReceive.isCanceled())
+        			return;
+        		p_channelRead0_2_ = eventPacketReceive.getPacket();
+        	}
             try
             {
                 p_channelRead0_2_.processPacket(this.packetListener);
@@ -163,6 +172,11 @@ public class NetworkManager extends SimpleChannelInboundHandler<Packet>
             {
                 ;
             }
+        	// Kagu hook
+        	{
+        		EventPacketReceive eventPacketReceive = new EventPacketReceive(EventPosition.POST, p_channelRead0_2_);
+        		eventPacketReceive.post();
+        	}
         }
     }
 

@@ -1037,7 +1037,7 @@ public class NetHandlerPlayClient implements INetHandlerPlayClient
             }
             else
             {
-                entity.handleStatusUpdate(packetIn.getOpCode());
+            	entity.handleStatusUpdate(packetIn.getOpCode());
             }
         }
     }
