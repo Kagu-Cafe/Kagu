@@ -8,6 +8,7 @@ import cafe.kagu.kagu.eventBus.EventBus;
 import cafe.kagu.kagu.eventBus.Event.EventPosition;
 import cafe.kagu.kagu.eventBus.impl.EventCheatTick;
 import cafe.kagu.kagu.font.FontUtils;
+import cafe.kagu.kagu.managers.AltManager;
 import cafe.kagu.kagu.managers.FileManager;
 import cafe.kagu.kagu.managers.KeybindManager;
 import cafe.kagu.kagu.mods.ModuleManager;
@@ -94,6 +95,11 @@ public class Kagu {
 		logger.info("Starting the keybind manager...");
 		KeybindManager.start();
 		logger.info("Started the keybind manager");
+		
+		// Start the file manager
+		logger.info("Starting the alt manager...");
+		AltManager.start();
+		logger.info("Started the alt manager");
 		
 		// Start the clickgui
 		logger.info("Starting the clickgui...");
