@@ -4,7 +4,7 @@ import com.google.common.base.Predicates;
 import com.google.gson.JsonSyntaxException;
 
 import cafe.kagu.kagu.eventBus.Event.EventPosition;
-import cafe.kagu.kagu.eventBus.impl.Event3DRender;
+import cafe.kagu.kagu.eventBus.impl.EventRender3D;
 import cafe.kagu.kagu.eventBus.impl.EventEntitiesRender;
 import cafe.kagu.kagu.mods.ModuleManager;
 import cafe.kagu.kagu.ui.gui.GuiDefaultMainMenu;
@@ -1888,7 +1888,7 @@ public class EntityRenderer implements IResourceManagerReloadListener
         
         // Kagu hook
         {
-        	Event3DRender event3dRender = new Event3DRender(EventPosition.PRE, partialTicks);
+        	EventRender3D event3dRender = new EventRender3D(EventPosition.PRE, partialTicks);
         	GlStateManager.pushMatrix();
         	GlStateManager.pushAttrib();
         	GlStateManager.disableAlpha();

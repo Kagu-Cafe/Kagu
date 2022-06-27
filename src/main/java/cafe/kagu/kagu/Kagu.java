@@ -2,6 +2,8 @@ package cafe.kagu.kagu;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL13;
 
 import cafe.kagu.kagu.commands.CommandManager;
 import cafe.kagu.kagu.eventBus.EventBus;
@@ -38,6 +40,8 @@ public class Kagu {
 	public static final String UNIT_SEPARATOR = "﷽";
 	public static final String RECORD_SEPARATOR = "👺";
 	public static final String GROUP_SEPARATOR = "🐀";
+	
+	private static int activeTexture = GL13.GL_TEXTURE0;
 	
 	// Only used if the font texture size is greater than the size limit
 	public static final char[] FONT_RENDERER_SUPPORTED_CHARACTERS = new char[] {
@@ -76,6 +80,11 @@ public class Kagu {
 		SpoofUtils.start();
 		logger.info("Started the spoof utils");
 		
+		// Start the file manager
+		logger.info("Starting the file manager...");
+		FileManager.start();
+		logger.info("Started the file manager");
+		
 		// Start the module manager
 		logger.info("Starting the module manager...");
 		ModuleManager.start();
@@ -85,11 +94,6 @@ public class Kagu {
 		logger.info("Starting the command manager...");
 		CommandManager.start();
 		logger.info("Started the command manager");
-		
-		// Start the file manager
-		logger.info("Starting the file manager...");
-		FileManager.start();
-		logger.info("Started the file manager");
 		
 		// Start the file manager
 		logger.info("Starting the keybind manager...");
@@ -172,6 +176,20 @@ public class Kagu {
 	 */
 	public static double getVersion() {
 		return version;
+	}
+
+	/**
+	 * @return the activeTexture
+	 */
+	public static int getActiveTexture() {
+		return activeTexture;
+	}
+
+	/**
+	 * @param activeTexture the activeTexture to set
+	 */
+	public static void setActiveTexture(int activeTexture) {
+		Kagu.activeTexture = activeTexture;
 	}
 
 }

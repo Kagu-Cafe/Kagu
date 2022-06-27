@@ -55,21 +55,20 @@ public class RenderPlayer extends RendererLivingEntity<AbstractClientPlayer>
      */
     public void doRender(AbstractClientPlayer entity, double x, double y, double z, float entityYaw, float partialTicks)
     {
-        if (!entity.isUser() || this.renderManager.livingPlayer == entity)
+        if (!entity.isUser() || this.renderManager.livingPlayer == entity || true)
         {
-            double d0 = y;
-
+        	
             if (entity.isSneaking() && !(entity instanceof EntityPlayerSP))
             {
-                d0 = y - 0.125D;
+                y -= 0.125D;
             }
 
             this.setModelVisibilities(entity);
-            super.doRender(entity, x, d0, z, entityYaw, partialTicks);
+            super.doRender(entity, x, y, z, entityYaw, partialTicks);
         }
     }
 
-    private void setModelVisibilities(AbstractClientPlayer clientPlayer)
+    public void setModelVisibilities(AbstractClientPlayer clientPlayer)
     {
         ModelPlayer modelplayer = this.getMainModel();
 

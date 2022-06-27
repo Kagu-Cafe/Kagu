@@ -22,13 +22,18 @@ public class ModHud extends Module {
 	public ModeSetting arraylistColors = new ModeSetting("ArrayList Colors", "White", "White", "Category Colors");
 	
 	@Override
+	public double getArraylistAnimation() {
+		return 0;
+	}
+	
+	@Override
 	public boolean isEnabled() {
-		return false;
+		return true;
 	}
 	
 	@Override
 	public boolean isDisabled() {
-		return true;
+		return false;
 	}
 	
 	@Override

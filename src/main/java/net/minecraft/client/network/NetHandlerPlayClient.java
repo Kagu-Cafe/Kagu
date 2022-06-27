@@ -250,7 +250,14 @@ public class NetHandlerPlayClient implements INetHandlerPlayClient
     private final Map<UUID, NetworkPlayerInfo> playerInfoMap = Maps.<UUID, NetworkPlayerInfo>newHashMap();
     public int currentServerMaxPlayers = 20;
     private boolean field_147308_k = false;
-
+    
+    /**
+     * @return The playerInfoMap
+     */
+    public Map<UUID, NetworkPlayerInfo> getPlayerInfoMap_Map(){
+    	return playerInfoMap;
+    }
+    
     /**
      * Just an ordinary random number generator, used to randomize audio pitch of item/orb pickup and randomize both
      * particlespawn offset and velocity

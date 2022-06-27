@@ -84,11 +84,11 @@ public class UiUtils {
         Tessellator tessellator = Tessellator.getInstance();
 		WorldRenderer worldrenderer = tessellator.getWorldRenderer();
 
-		worldrenderer.begin(7, DefaultVertexFormats.POSITION_COLOR);
-		worldrenderer.pos((double) left, (double) bottom, 0.0D).color(blRed, blGreen, blBlue, blAlpha).endVertex();
-		worldrenderer.pos((double) right, (double) bottom, 0.0D).color(brRed, brGreen, brBlue, brAlpha).endVertex();
-		worldrenderer.pos((double) right, (double) top, 0.0D).color(trRed, trGreen, trBlue, trAlpha).endVertex();
-		worldrenderer.pos((double) left, (double) top, 0.0D).color(tlRed, tlGreen, tlBlue, tlAlpha).endVertex();
+		worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
+		worldrenderer.pos(left, bottom, 0.0D).color(blRed, blGreen, blBlue, blAlpha).endVertex();
+		worldrenderer.pos(right, bottom, 0.0D).color(brRed, brGreen, brBlue, brAlpha).endVertex();
+		worldrenderer.pos(right, top, 0.0D).color(trRed, trGreen, trBlue, trAlpha).endVertex();
+		worldrenderer.pos(left, top, 0.0D).color(tlRed, tlGreen, tlBlue, tlAlpha).endVertex();
 		tessellator.draw();
         
         GlStateManager.shadeModel(GL11.GL_FLAT);

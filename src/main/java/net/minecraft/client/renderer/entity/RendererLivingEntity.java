@@ -3,11 +3,13 @@ package net.minecraft.client.renderer.entity;
 import com.google.common.collect.Lists;
 
 import cafe.kagu.kagu.mods.ModuleManager;
+import cafe.kagu.kagu.mods.impl.visual.ModViewModels;
 import cafe.kagu.kagu.utils.SpoofUtils;
 
 import java.nio.FloatBuffer;
 import java.util.List;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.EntityOtherPlayerMP;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.model.ModelBase;
@@ -123,8 +125,14 @@ public abstract class RendererLivingEntity<T extends EntityLivingBase> extends R
                 float f1 = this.interpolateRotation(entity.prevRotationYawHead, entity.rotationYawHead, partialTicks);
                 
                 // Spoofed rotation
-                if (SpoofUtils.isSpoofYaw() && entity == Minecraft.getMinecraft().thePlayer) {
+                if (SpoofUtils.isSpoofYaw() && entity == Minecraft.getMinecraft().thePlayer && ModuleManager.modViewModels.getOverrideF3().isEnabled()) {
                 	f = SpoofUtils.getSpoofedLastYaw() + (SpoofUtils.getSpoofedYaw() - SpoofUtils.getSpoofedLastYaw()) * partialTicks;
+                	f1 = f;
+                }
+                
+                // Desync entity
+                if (entity == ModuleManager.modViewModels.getDesyncModel()) {
+                	f = ModuleManager.modViewModels.getDesyncModel().rotationYaw;
                 	f1 = f;
                 }
                 
@@ -158,8 +166,13 @@ public abstract class RendererLivingEntity<T extends EntityLivingBase> extends R
                 float f8 = entity.prevRotationPitch + (entity.rotationPitch - entity.prevRotationPitch) * partialTicks;
                 
                 // Spoofed rotations
-                if (SpoofUtils.isSpoofPitch() && entity == Minecraft.getMinecraft().thePlayer) {
+                if (SpoofUtils.isSpoofPitch() && entity == Minecraft.getMinecraft().thePlayer && ModuleManager.modViewModels.getOverrideF3().isEnabled()) {
                 	f8 = SpoofUtils.getSpoofedLastPitch() + (SpoofUtils.getSpoofedPitch() - SpoofUtils.getSpoofedLastPitch()) * partialTicks;
+                }
+                
+                // Desync entity
+                if (entity == ModuleManager.modViewModels.getDesyncModel()) {
+                	f8 = ModuleManager.modViewModels.getDesyncModel().rotationPitch;
                 }
                 
                 this.renderLivingAt(entity, x, y, z);
@@ -172,7 +185,14 @@ public abstract class RendererLivingEntity<T extends EntityLivingBase> extends R
                 GlStateManager.translate(0.0F, -1.5078125F, 0.0F);
                 float f5 = entity.prevLimbSwingAmount + (entity.limbSwingAmount - entity.prevLimbSwingAmount) * partialTicks;
                 float f6 = entity.limbSwing - entity.limbSwingAmount * (1.0F - partialTicks);
-
+                
+                // Desync entity
+                if (entity == ModuleManager.modViewModels.getDesyncModel()) {
+                	EntityPlayer p = ModuleManager.modViewModels.getDesyncModel();
+                	f5 = p.prevLimbSwingAmount + (p.limbSwingAmount - p.prevLimbSwingAmount) * partialTicks;
+                	f6 = p.limbSwing - p.limbSwingAmount * (1.0F - partialTicks);
+                }
+                
                 if (entity.isChild())
                 {
                     f6 *= 3.0F;
@@ -289,6 +309,12 @@ public abstract class RendererLivingEntity<T extends EntityLivingBase> extends R
     {
         boolean flag = !entitylivingbaseIn.isInvisible();
         boolean flag1 = !flag && !entitylivingbaseIn.isInvisibleToPlayer(Minecraft.getMinecraft().thePlayer);
+        
+        // Kagu view invisibles
+        if (ModuleManager.modEsp.isEnabled() && ModuleManager.modEsp.getRenderInvisibleModels().isEnabled()) {
+        	flag = true;
+        	flag1 = false;
+        }
 
         if (flag || flag1)
         {
@@ -519,7 +545,7 @@ public abstract class RendererLivingEntity<T extends EntityLivingBase> extends R
         {
             boolean flag = this.setBrightness(entitylivingbaseIn, partialTicks, layerrenderer.shouldCombineTextures());
             layerrenderer.doRenderLayer(entitylivingbaseIn, p_177093_2_, p_177093_3_, partialTicks, p_177093_5_, p_177093_6_, p_177093_7_, p_177093_8_);
-
+            
             if (flag)
             {
                 this.unsetBrightness();

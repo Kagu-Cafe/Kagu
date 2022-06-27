@@ -3,6 +3,9 @@ package net.minecraft.world;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+
+import cafe.kagu.kagu.mods.ModuleManager;
+
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Iterator;

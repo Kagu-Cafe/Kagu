@@ -6,6 +6,7 @@ import java.nio.IntBuffer;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 
+import cafe.kagu.kagu.Kagu;
 import optifine.Config;
 
 public class GlStateManager
@@ -319,6 +320,7 @@ public class GlStateManager
         if (activeTextureUnit != texture - OpenGlHelper.defaultTexUnit)
         {
             activeTextureUnit = texture - OpenGlHelper.defaultTexUnit;
+            Kagu.setActiveTexture(texture);
             OpenGlHelper.setActiveTexture(texture);
         }
     }

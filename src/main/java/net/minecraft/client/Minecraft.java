@@ -900,7 +900,7 @@ public class Minecraft implements IThreadListener, IPlayerUsage
         int i = scaledresolution.getScaleFactor();
         Framebuffer framebuffer = new Framebuffer(scaledresolution.getScaledWidth() * i, scaledresolution.getScaledHeight() * i, true);
         framebuffer.bindFramebuffer(false);
-        GlStateManager.matrixMode(5889);
+        GlStateManager.matrixMode(GL11.GL_PROJECTION);
         GlStateManager.loadIdentity();
         GlStateManager.ortho(0.0D, (double)scaledresolution.getScaledWidth(), (double)scaledresolution.getScaledHeight(), 0.0D, 1000.0D, 3000.0D);
         GlStateManager.matrixMode(5888);
@@ -3337,6 +3337,13 @@ public class Minecraft implements IThreadListener, IPlayerUsage
 	 */
 	public GuiScreen getCurrentScreen() {
 		return currentScreen;
+	}
+	
+	/**
+	 * @return the framebufferMc
+	 */
+	public Framebuffer getFramebufferMc() {
+		return framebufferMc;
 	}
 	
 }

@@ -13,13 +13,14 @@ import org.lwjgl.opengl.GL11;
 
 import cafe.kagu.kagu.eventBus.EventHandler;
 import cafe.kagu.kagu.eventBus.Handler;
-import cafe.kagu.kagu.eventBus.impl.Event2DRender;
-import cafe.kagu.kagu.eventBus.impl.Event3DRender;
+import cafe.kagu.kagu.eventBus.impl.EventRender2D;
+import cafe.kagu.kagu.eventBus.impl.EventRender3D;
 import cafe.kagu.kagu.eventBus.impl.EventEntityRender;
 import cafe.kagu.kagu.eventBus.impl.EventTick;
 import cafe.kagu.kagu.font.FontRenderer;
 import cafe.kagu.kagu.font.FontUtils;
 import cafe.kagu.kagu.mods.Module;
+import cafe.kagu.kagu.mods.ModuleManager;
 import cafe.kagu.kagu.settings.SettingDependency;
 import cafe.kagu.kagu.settings.impl.BooleanSetting;
 import cafe.kagu.kagu.settings.impl.ModeSetting;
@@ -45,7 +46,7 @@ public class ModEsp extends Module {
 	
 	public ModEsp() {
 		super("ESP", Category.VISUAL);
-		setSettings(mode, chams, targetAll, targetPlayers, targetAnimals, targetMobs);
+		setSettings(mode, chams, renderInvisibleModels, targetAll, targetPlayers, targetAnimals, targetMobs);
 	}
 	
 	// ESP modes
@@ -60,10 +61,20 @@ public class ModEsp extends Module {
 	private BooleanSetting targetAnimals = (BooleanSetting) new BooleanSetting("Animal ESP", false).setDependency((SettingDependency)() -> {return targetAll.isDisabled();});
 	private BooleanSetting targetMobs = (BooleanSetting) new BooleanSetting("Mob ESP", false).setDependency((SettingDependency)() -> {return targetAll.isDisabled();});
 	
+	// Invisible
+	private BooleanSetting renderInvisibleModels = new BooleanSetting("Render Invisible Models", true);
+	
+	/**
+	 * @return the renderInvisibleModels
+	 */
+	public BooleanSetting getRenderInvisibleModels() {
+		return renderInvisibleModels;
+	}
+	
 	private ArrayList<EspEntity> draw2dEntities = new ArrayList<EspEntity>();
 	
 	@EventHandler
-	private Handler<Event2DRender> onRender2D = e -> {
+	private Handler<EventRender2D> onRender2D = e -> {
 		
 		if (e.isPost())
 			return;
@@ -175,7 +186,7 @@ public class ModEsp extends Module {
 	};
 	
 	@EventHandler
-	private Handler<Event3DRender> onRender3D = e -> {
+	private Handler<EventRender3D> onRender3D = e -> {
 		
 		switch(mode.getMode()) {
 			case "Kagu 2D":

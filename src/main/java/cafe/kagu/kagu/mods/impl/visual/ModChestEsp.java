@@ -11,7 +11,7 @@ import org.lwjgl.opengl.GL11;
 
 import cafe.kagu.kagu.eventBus.EventHandler;
 import cafe.kagu.kagu.eventBus.Handler;
-import cafe.kagu.kagu.eventBus.impl.Event3DRender;
+import cafe.kagu.kagu.eventBus.impl.EventRender3D;
 import cafe.kagu.kagu.mods.Module;
 import cafe.kagu.kagu.settings.impl.DoubleSetting;
 import cafe.kagu.kagu.settings.impl.IntegerSetting;
@@ -49,7 +49,7 @@ public class ModChestEsp extends Module {
 	private IntegerSetting hiddenAlpha = new IntegerSetting("Hidden A", 70, 0, 255, 1);
 	
 	@EventHandler
-	private Handler<Event3DRender> on3DRender = e -> {
+	private Handler<EventRender3D> on3DRender = e -> {
 		
 		Vector4d visibleChestColor = new Vector4d(visibleRed.getValue() / 255d, visibleGreen.getValue() / 255d, visibleBlue.getValue() / 255d, visibleAlpha.getValue() / 255d);
 		Vector4d hiddenChestColor = new Vector4d(hiddenRed.getValue() / 255d, hiddenGreen.getValue() / 255d, hiddenBlue.getValue() / 255d, hiddenAlpha.getValue() / 255d);

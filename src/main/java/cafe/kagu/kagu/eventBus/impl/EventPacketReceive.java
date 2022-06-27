@@ -16,24 +16,24 @@ public class EventPacketReceive extends Event {
 	 * @param eventPosition The position of the event
 	 * @param packet        The packet being received
 	 */
-	public EventPacketReceive(EventPosition eventPosition, Packet packet) {
+	public EventPacketReceive(EventPosition eventPosition, Packet<?> packet) {
 		super(eventPosition);
 		this.packet = packet;
 	}
 
-	private Packet packet;
+	private Packet<?> packet;
 
 	/**
 	 * @return the packet
 	 */
-	public Packet getPacket() {
+	public Packet<?> getPacket() {
 		return packet;
 	}
 
 	/**
 	 * @param packet the packet to set
 	 */
-	public void setPacket(Packet packet) {
+	public void setPacket(Packet<?> packet) {
 		this.packet = packet;
 	}
 

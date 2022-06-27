@@ -4,13 +4,17 @@ import static org.lwjgl.opengl.GL20.*;
 
 import java.util.HashMap;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.lwjgl.opengl.GL20;
 
 public class Shader {
 
-	public int programId, shaderId = 0, shaderType;
-	public String shaderCode = "";
-	public HashMap<String, Integer> uniforms = new HashMap<>();
+	private int programId, shaderId = 0, shaderType;
+	private String shaderCode = "";
+	private HashMap<String, Integer> uniforms = new HashMap<>();
+	
+	public static Logger logger = LogManager.getLogger();
 
 	public Shader(int programId, ShaderType type, String shaderCode) throws Exception {
 		if (programId == 0) {
@@ -72,7 +76,7 @@ public class Shader {
 		glLinkProgram(programId);
 
 		if (glGetProgrami(programId, GL_LINK_STATUS) == 0) {
-			throw new Exception("Error linking Shader code: " + glGetProgramInfoLog(programId, 1024));
+			throw new Exception("Error linking Shader code (maybe you forgot to create first?): " + glGetProgramInfoLog(programId, 1024));
 		}
 
 		// Detach shader
@@ -84,7 +88,7 @@ public class Shader {
 		// used for debugging
 		glValidateProgram(programId);
 		if (glGetProgrami(programId, GL_VALIDATE_STATUS) == 0) {
-			System.err.println("Warning validating Shader code: " + glGetProgramInfoLog(programId, 1024));
+			logger.error("Error validating Shader code" + glGetProgramInfoLog(programId, 1024));
 		}
 
 	}
@@ -130,6 +134,13 @@ public class Shader {
 		return uniforms.get(uniform);
 	}
 
+	/**
+	 * @return the shaderId
+	 */
+	public int getShaderId() {
+		return shaderId;
+	}
+	
 	public static enum ShaderType {
 		VERTEX(GL_VERTEX_SHADER), FRAGMENT(GL_FRAGMENT_SHADER);
 

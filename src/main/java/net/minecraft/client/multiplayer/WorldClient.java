@@ -1,6 +1,9 @@
 package net.minecraft.client.multiplayer;
 
 import com.google.common.collect.Sets;
+
+import cafe.kagu.kagu.mods.ModuleManager;
+
 import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.Callable;
@@ -50,6 +53,13 @@ public class WorldClient extends World
 
     /** Contains all entities for this client, both spawned and non-spawned. */
     private final Set entityList = Sets.newHashSet();
+    
+    /**
+	 * @return the entityList
+	 */
+	public Set getEntityList() {
+		return entityList;
+	}
 
     /**
      * Contains all entities for this client that were not spawned due to a non-present chunk. The game will attempt to

@@ -15,7 +15,7 @@ import org.lwjgl.opengl.GL11;
 import cafe.kagu.kagu.Kagu;
 import cafe.kagu.kagu.eventBus.Handler;
 import cafe.kagu.kagu.eventBus.EventHandler;
-import cafe.kagu.kagu.eventBus.impl.Event2DRender;
+import cafe.kagu.kagu.eventBus.impl.EventRender2D;
 import cafe.kagu.kagu.eventBus.impl.EventCheatTick;
 import cafe.kagu.kagu.font.FontRenderer;
 import cafe.kagu.kagu.font.FontUtils;
@@ -35,7 +35,7 @@ import net.minecraft.client.renderer.GlStateManager;
 public class Hud {
 	
 	@EventHandler
-	private Handler<Event2DRender> renderHud = e -> {
+	private Handler<EventRender2D> renderHud = e -> {
 		
 		// We only want to render on the post event
 		if (e.isPre()) {

@@ -5,7 +5,7 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
 import cafe.kagu.kagu.eventBus.Event.EventPosition;
-import cafe.kagu.kagu.eventBus.impl.Event2DRender;
+import cafe.kagu.kagu.eventBus.impl.EventRender2D;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -357,7 +357,7 @@ public class GuiIngame extends Gui
         
         // Kagu hook
         {
-        	Event2DRender event2dRender = new Event2DRender(EventPosition.PRE);
+        	EventRender2D event2dRender = new EventRender2D(EventPosition.PRE);
         	event2dRender.post();
         	if (event2dRender.isCanceled())
         		return;
@@ -365,7 +365,7 @@ public class GuiIngame extends Gui
         
         // Kagu hook
         {
-        	Event2DRender event2dRender = new Event2DRender(EventPosition.POST);
+        	EventRender2D event2dRender = new EventRender2D(EventPosition.POST);
         	event2dRender.post();
         }
         

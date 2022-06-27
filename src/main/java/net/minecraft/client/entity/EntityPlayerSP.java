@@ -1,5 +1,9 @@
 package net.minecraft.client.entity;
 
+import java.util.UUID;
+
+import com.mojang.authlib.GameProfile;
+
 import cafe.kagu.kagu.eventBus.Event.EventPosition;
 import cafe.kagu.kagu.eventBus.impl.EventChatSendMessage;
 import cafe.kagu.kagu.eventBus.impl.EventPlayerUpdate;

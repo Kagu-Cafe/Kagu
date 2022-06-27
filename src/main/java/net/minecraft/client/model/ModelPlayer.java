@@ -168,4 +168,117 @@ public class ModelPlayer extends ModelBiped
             this.bipedRightArm.postRender(scale);
         }
     }
+
+	/**
+	 * @return the bipedLeftArmwear
+	 */
+	public ModelRenderer getBipedLeftArmwear() {
+		return bipedLeftArmwear;
+	}
+
+	/**
+	 * @param bipedLeftArmwear the bipedLeftArmwear to set
+	 */
+	public void setBipedLeftArmwear(ModelRenderer bipedLeftArmwear) {
+		this.bipedLeftArmwear = bipedLeftArmwear;
+	}
+
+	/**
+	 * @return the bipedRightArmwear
+	 */
+	public ModelRenderer getBipedRightArmwear() {
+		return bipedRightArmwear;
+	}
+
+	/**
+	 * @param bipedRightArmwear the bipedRightArmwear to set
+	 */
+	public void setBipedRightArmwear(ModelRenderer bipedRightArmwear) {
+		this.bipedRightArmwear = bipedRightArmwear;
+	}
+
+	/**
+	 * @return the bipedLeftLegwear
+	 */
+	public ModelRenderer getBipedLeftLegwear() {
+		return bipedLeftLegwear;
+	}
+
+	/**
+	 * @param bipedLeftLegwear the bipedLeftLegwear to set
+	 */
+	public void setBipedLeftLegwear(ModelRenderer bipedLeftLegwear) {
+		this.bipedLeftLegwear = bipedLeftLegwear;
+	}
+
+	/**
+	 * @return the bipedRightLegwear
+	 */
+	public ModelRenderer getBipedRightLegwear() {
+		return bipedRightLegwear;
+	}
+
+	/**
+	 * @param bipedRightLegwear the bipedRightLegwear to set
+	 */
+	public void setBipedRightLegwear(ModelRenderer bipedRightLegwear) {
+		this.bipedRightLegwear = bipedRightLegwear;
+	}
+
+	/**
+	 * @return the bipedBodyWear
+	 */
+	public ModelRenderer getBipedBodyWear() {
+		return bipedBodyWear;
+	}
+
+	/**
+	 * @param bipedBodyWear the bipedBodyWear to set
+	 */
+	public void setBipedBodyWear(ModelRenderer bipedBodyWear) {
+		this.bipedBodyWear = bipedBodyWear;
+	}
+
+	/**
+	 * @return the bipedCape
+	 */
+	public ModelRenderer getBipedCape() {
+		return bipedCape;
+	}
+
+	/**
+	 * @param bipedCape the bipedCape to set
+	 */
+	public void setBipedCape(ModelRenderer bipedCape) {
+		this.bipedCape = bipedCape;
+	}
+
+	/**
+	 * @return the bipedDeadmau5Head
+	 */
+	public ModelRenderer getBipedDeadmau5Head() {
+		return bipedDeadmau5Head;
+	}
+
+	/**
+	 * @param bipedDeadmau5Head the bipedDeadmau5Head to set
+	 */
+	public void setBipedDeadmau5Head(ModelRenderer bipedDeadmau5Head) {
+		this.bipedDeadmau5Head = bipedDeadmau5Head;
+	}
+
+	/**
+	 * @return the smallArms
+	 */
+	public boolean isSmallArms() {
+		return smallArms;
+	}
+
+	/**
+	 * @param smallArms the smallArms to set
+	 */
+	public void setSmallArms(boolean smallArms) {
+		this.smallArms = smallArms;
+	}
+
 }
