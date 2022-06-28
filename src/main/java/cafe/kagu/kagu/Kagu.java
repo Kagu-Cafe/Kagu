@@ -13,6 +13,7 @@ import cafe.kagu.kagu.font.FontUtils;
 import cafe.kagu.kagu.managers.AltManager;
 import cafe.kagu.kagu.managers.FileManager;
 import cafe.kagu.kagu.managers.KeybindManager;
+import cafe.kagu.kagu.managers.SessionManager;
 import cafe.kagu.kagu.mods.ModuleManager;
 import cafe.kagu.kagu.ui.Hud;
 import cafe.kagu.kagu.ui.clickgui.GuiCsgoClickgui;
@@ -95,15 +96,20 @@ public class Kagu {
 		CommandManager.start();
 		logger.info("Started the command manager");
 		
-		// Start the file manager
+		// Start the keybind manager
 		logger.info("Starting the keybind manager...");
 		KeybindManager.start();
 		logger.info("Started the keybind manager");
 		
-		// Start the file manager
+		// Start the alt manager
 		logger.info("Starting the alt manager...");
 		AltManager.start();
 		logger.info("Started the alt manager");
+		
+		// Start the session manager
+		logger.info("Starting the session manager...");
+		SessionManager.start();
+		logger.info("Started the session manager");
 		
 		// Start the clickgui
 		logger.info("Starting the clickgui...");

@@ -6,7 +6,6 @@ package cafe.kagu.kagu.mods.impl.visual;
 import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 
 import com.mojang.authlib.GameProfile;
@@ -20,10 +19,8 @@ import cafe.kagu.kagu.mods.Module;
 import cafe.kagu.kagu.settings.impl.BooleanSetting;
 import cafe.kagu.kagu.settings.impl.IntegerSetting;
 import cafe.kagu.kagu.utils.Shader;
-import cafe.kagu.kagu.utils.StencilUtil;
 import cafe.kagu.kagu.utils.Shader.ShaderType;
 import net.minecraft.client.entity.EntityOtherPlayerMP;
-import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.client.shader.Framebuffer;
@@ -36,8 +33,7 @@ public class ModViewModels extends Module {
 	
 	public ModViewModels() {
 		super("ViewModel", Category.VISUAL);
-		setSettings(overrideF3, spoofedF3Models, spoofedF3ViewModelRed, spoofedF3ViewModelGreen, spoofedF3ViewModelBlue,
-				spoofedF3ViewModelAlpha, desyncModels, desyncViewModelRed, desyncViewModelGreen, desyncViewModelBlue,
+		setSettings(overrideF3, desyncModels, desyncViewModelRed, desyncViewModelGreen, desyncViewModelBlue,
 				desyncViewModelAlpha);
 		
 		// Load the shaders
@@ -49,29 +45,11 @@ public class ModViewModels extends Module {
 		} catch (Exception e) {
 			logger.error("Failed to load the color shader, this may cause issues", e);
 		}
-		try {
-			Shader tempShader = new Shader(ShaderType.VERTEX, FileManager.readStringFromFile(FileManager.COLOR_TEXTURE_VERT_SHADER));
-			tempShader.create();
-			tempShader.link();
-			desyncItemShader = new Shader(tempShader.getShaderId(), ShaderType.FRAGMENT, FileManager.readStringFromFile(FileManager.COLOR_TEXTURE_FRAG_SHADER));
-			desyncItemShader.create();
-			desyncItemShader.link();
-			desyncModelShader.createUniform("rgba");
-		} catch (Exception e) {
-			logger.error("Failed to load the item color shader, this may cause issues", e);
-		}
 		
 	}
 	
 	private BooleanSetting overrideF3 = new BooleanSetting("Override F3", true);
-	private BooleanSetting spoofedF3Models = new BooleanSetting("Spoofed F3 Models", false);
-	private BooleanSetting desyncModels = new BooleanSetting("Desync Models", true);
-	
-	// Desync model colors
-	private IntegerSetting spoofedF3ViewModelRed = (IntegerSetting) new IntegerSetting("Spoofed F3 Model Red", 200, 0, 255, 1).setDependency(spoofedF3Models::isEnabled);
-	private IntegerSetting spoofedF3ViewModelGreen = (IntegerSetting) new IntegerSetting("Spoofed F3 Model Green", 150, 0, 255, 1).setDependency(spoofedF3Models::isEnabled);
-	private IntegerSetting spoofedF3ViewModelBlue = (IntegerSetting) new IntegerSetting("Spoofed F3 Model Blue", 0, 0, 255, 1).setDependency(spoofedF3Models::isEnabled);
-	private IntegerSetting spoofedF3ViewModelAlpha = (IntegerSetting) new IntegerSetting("Spoofed F3 Model Alpha", 110, 0, 255, 1).setDependency(spoofedF3Models::isEnabled);
+	private BooleanSetting desyncModels = new BooleanSetting("Desync Models", false);
 	
 	// Desync model colors
 	private IntegerSetting desyncViewModelRed = (IntegerSetting) new IntegerSetting("Desync Red", 0, 0, 255, 1).setDependency(desyncModels::isEnabled);
@@ -81,7 +59,6 @@ public class ModViewModels extends Module {
 	
 	private EntityOtherPlayerMP desyncModel = null;
 	private Shader desyncModelShader;
-	private Shader desyncItemShader;
 	
 	private static Logger logger = LogManager.getLogger();
 	
