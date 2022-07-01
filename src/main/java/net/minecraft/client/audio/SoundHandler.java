@@ -63,6 +63,7 @@ public class SoundHandler implements IResourceManagerReloadListener, ITickable
 
         for (String s : resourceManager.getResourceDomains())
         {
+        	System.out.println(s);
             try
             {
                 for (IResource iresource : resourceManager.getAllResources(new ResourceLocation(s, "sounds.json")))

@@ -32,6 +32,18 @@ public class SimpleReloadableResourceManager implements IReloadableResourceManag
 
     public void reloadResourcePack(IResourcePack resourcePack)
     {
+    	if (!resourcePack.getResourceDomains().contains("kagusounds")) {
+    		this.setResourceDomains.add("kagusounds");
+            FallbackResourceManager fallbackresourcemanager = (FallbackResourceManager)this.domainResourceManagers.get("kagusounds");
+
+            if (fallbackresourcemanager == null)
+            {
+                fallbackresourcemanager = new FallbackResourceManager(this.rmMetadataSerializer);
+                this.domainResourceManagers.put("kagusounds", fallbackresourcemanager);
+            }
+
+            fallbackresourcemanager.addResourcePack(resourcePack);
+    	}
         for (String s : resourcePack.getResourceDomains())
         {
             this.setResourceDomains.add(s);
@@ -49,6 +61,9 @@ public class SimpleReloadableResourceManager implements IReloadableResourceManag
 
     public Set<String> getResourceDomains()
     {
+    	if (!setResourceDomains.contains("kagusounds")) {
+    		setResourceDomains.add("kagusounds");
+    	}
         return this.setResourceDomains;
     }
 

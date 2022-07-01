@@ -8,15 +8,15 @@ import org.lwjgl.opengl.GL20;
 
 import cafe.kagu.kagu.Kagu;
 import cafe.kagu.kagu.eventBus.EventBus;
-import cafe.kagu.kagu.eventBus.EventHandler;
-import cafe.kagu.kagu.eventBus.Handler;
-import cafe.kagu.kagu.eventBus.impl.EventCheatTick;
 import cafe.kagu.kagu.font.FontRenderer;
 import cafe.kagu.kagu.font.FontUtils;
 import cafe.kagu.kagu.managers.FileManager;
 import cafe.kagu.kagu.utils.Shader;
 import cafe.kagu.kagu.utils.UiUtils;
 import cafe.kagu.kagu.utils.Shader.ShaderType;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.ISound;
+import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.GuiLanguage;
 import net.minecraft.client.gui.GuiMultiplayer;
 import net.minecraft.client.gui.GuiOptions;
@@ -24,6 +24,7 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiSelectWorld;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.util.ResourceLocation;
 
 public class GuiDefaultMainMenu extends GuiScreen {
 	
@@ -33,9 +34,6 @@ public class GuiDefaultMainMenu extends GuiScreen {
 	 * Called when the client starts
 	 */
 	public static void start() {
-		
-		// Hook the event handlers
-		EventBus.setSubscriber(new GuiDefaultMainMenu(), true);
 		
 		// Background shader
 		try {
@@ -57,14 +55,24 @@ public class GuiDefaultMainMenu extends GuiScreen {
 	private static boolean leftMouseClicked = false;
 	private static Shader backgroundShader;
 	private static long backgroundAnimation = 0;
+	private ISound backgroundSound = new PositionedSoundRecord(new ResourceLocation("kagusounds:brown"), 0.025f, 1, true, 1, ISound.AttenuationType.LINEAR, 0, 0, 0);
 	
 	@Override
 	public void initGui() {
 		leftMouseClicked = false;
+		if (!Minecraft.getMinecraft().getSoundHandler().isSoundPlaying(backgroundSound) && Minecraft.getMinecraft().currentScreen instanceof GuiDefaultMainMenu)
+			Minecraft.getMinecraft().getSoundHandler().playSound(backgroundSound);
+	}
+	
+	@Override
+	public void onGuiClosed() {
+		if (Minecraft.getMinecraft().getSoundHandler().isSoundPlaying(backgroundSound))
+			Minecraft.getMinecraft().getSoundHandler().stopSound(backgroundSound);
 	}
 	
 	@Override
 	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+		
 //		backgroundAnimation += 0.005f;
 		
 		FontRenderer titleFr = FontUtils.STRATUM2_MEDIUM_18_AA;
