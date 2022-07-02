@@ -91,5 +91,5 @@ public class DoubleSetting extends Setting {
 	public void setIncrement(double increment) {
 		this.increment = increment;
 	}
-
+	
 }

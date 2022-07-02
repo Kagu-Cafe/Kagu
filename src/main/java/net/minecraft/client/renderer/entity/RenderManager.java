@@ -9,8 +9,14 @@ import cafe.kagu.kagu.mods.ModuleManager;
 import cafe.kagu.kagu.mods.impl.visual.ModEsp;
 import cafe.kagu.kagu.utils.DrawUtils3D;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
+
+import javax.vecmath.Vector3d;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockBed;
 import net.minecraft.block.state.IBlockState;
@@ -453,7 +459,26 @@ public class RenderManager
                 {
                     try
                     {
-                        this.renderDebugBoundingBox(entity, x, y, z, entityYaw, partialTicks);
+                    	
+                    	// Backtrack positions
+                    	Vector3d[] backtrackPositions = null;
+                    	
+                        // Sets up the backtrack positions
+                        if (ModuleManager.modBacktrack.isEnabled() && ModuleManager.modBacktrack.getBacktracks().containsKey(entity)) {
+                        	List<Vector3d> positions = new ArrayList<>(Arrays.asList(ModuleManager.modBacktrack.getBacktracks().get(entity)));
+                        	positions.add(0, new Vector3d(entity.posX, entity.posZ, entity.posZ));
+                        	backtrackPositions = positions.toArray(new Vector3d[0]);
+                        }else {
+                        	backtrackPositions = new Vector3d[] {new Vector3d(entity.posX, entity.posZ, entity.posZ)};
+                        }
+                        
+                        // Render hitboxes and backtracks
+                        for (Vector3d pos : backtrackPositions) {
+                        	if (pos == null)
+                        		break;
+                        	this.renderDebugBoundingBox(entity, x + (pos.x - entity.posX), y + (pos.y - entity.posY), z + (pos.z - entity.posZ), entityYaw, partialTicks);
+                        }
+                        
                     }
                     catch (Throwable throwable)
                     {

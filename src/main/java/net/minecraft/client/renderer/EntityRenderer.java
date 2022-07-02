@@ -8,16 +8,24 @@ import cafe.kagu.kagu.eventBus.impl.EventRender3D;
 import cafe.kagu.kagu.eventBus.impl.EventEntitiesRender;
 import cafe.kagu.kagu.mods.ModuleManager;
 import cafe.kagu.kagu.ui.gui.GuiDefaultMainMenu;
+import cafe.kagu.kagu.utils.ChatUtils;
 import cafe.kagu.kagu.utils.SpoofUtils;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.nio.FloatBuffer;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.Callable;
+
+import javax.vecmath.Vector3d;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockBed;
 import net.minecraft.block.material.Material;
@@ -499,52 +507,78 @@ public class EntityRenderer implements IResourceManagerReloadListener
             float f = 1.0F;
             List list = this.mc.theWorld.getEntitiesInAABBexcluding(entity, entity.getEntityBoundingBox().addCoord(vec31.xCoord * d0, vec31.yCoord * d0, vec31.zCoord * d0).expand((double)f, (double)f, (double)f), Predicates.and(EntitySelectors.NOT_SPECTATING, new EntityRenderer1(this)));
             double d2 = d1;
-
+            
+            // Backtracks
+            Map<EntityLivingBase, Vector3d[]> backtracks = ModuleManager.modBacktrack.isEnabled() ? ModuleManager.modBacktrack.getBacktracks() : new HashMap<>();
+            list.addAll(backtracks.keySet());
+            
             for (int i = 0; i < list.size(); ++i)
             {
                 Entity entity1 = (Entity)list.get(i);
                 float f1 = entity1.getCollisionBorderSize();
                 AxisAlignedBB axisalignedbb = entity1.getEntityBoundingBox().expand((double)f1, (double)f1, (double)f1);
-                MovingObjectPosition movingobjectposition = axisalignedbb.calculateIntercept(vec3, vec32);
-
-                if (axisalignedbb.isVecInside(vec3))
-                {
-                    if (d2 >= 0.0D)
-                    {
-                        this.pointedEntity = entity1;
-                        vec33 = movingobjectposition == null ? vec3 : movingobjectposition.hitVec;
-                        d2 = 0.0D;
-                    }
+                
+                // Backtracks
+                Vector3d[] backtrackPositions = null;
+                
+                // Sets up the backtrack positions
+                if (ModuleManager.modBacktrack.isEnabled() && backtracks.containsKey(entity1)) {
+                	List<Vector3d> positions = new ArrayList<>(Arrays.asList(backtracks.get(entity1)));
+                	positions.add(0, new Vector3d(entity1.posX, entity1.posZ, entity1.posZ));
+                	backtrackPositions = positions.toArray(new Vector3d[0]);
+                }else {
+                	backtrackPositions = new Vector3d[] {new Vector3d(entity1.posX, entity1.posZ, entity1.posZ)};
                 }
-                else if (movingobjectposition != null)
-                {
-                    double d3 = vec3.distanceTo(movingobjectposition.hitVec);
-
-                    if (d3 < d2 || d2 == 0.0D)
-                    {
-                        boolean flag2 = false;
-
-                        if (Reflector.ForgeEntity_canRiderInteract.exists())
+                
+                // Do backtrack
+                AxisAlignedBB oldBox = axisalignedbb;
+                for (Vector3d back : backtrackPositions) {
+                	if (back == null) {
+                		break;
+                	}
+                	axisalignedbb = oldBox.offset(back.x - entity1.posX, back.y - entity1.posY, back.z - entity1.posZ);
+                	
+                	MovingObjectPosition movingobjectposition = axisalignedbb.calculateIntercept(vec3, vec32);
+                	if (axisalignedbb.isVecInside(vec3))
+                    {;
+                        if (d2 >= 0.0D)
                         {
-                            flag2 = Reflector.callBoolean(entity1, Reflector.ForgeEntity_canRiderInteract, new Object[0]);
+                            this.pointedEntity = entity1;
+                            vec33 = movingobjectposition == null ? vec3 : movingobjectposition.hitVec;
+                            d2 = 0.0D;
                         }
+                    }
+                	else if (movingobjectposition != null)
+                    {
+                        double d3 = vec3.distanceTo(movingobjectposition.hitVec);
 
-                        if (entity1 == entity.ridingEntity && !flag2)
+                        if (d3 < d2 || d2 == 0.0D)
                         {
-                            if (d2 == 0.0D)
+                            boolean flag2 = false;
+
+                            if (Reflector.ForgeEntity_canRiderInteract.exists())
+                            {
+                                flag2 = Reflector.callBoolean(entity1, Reflector.ForgeEntity_canRiderInteract, new Object[0]);
+                            }
+
+                            if (entity1 == entity.ridingEntity && !flag2)
+                            {
+                                if (d2 == 0.0D)
+                                {
+                                    this.pointedEntity = entity1;
+                                    vec33 = movingobjectposition.hitVec;
+                                }
+                            }
+                            else
                             {
                                 this.pointedEntity = entity1;
                                 vec33 = movingobjectposition.hitVec;
+                                d2 = d3;
                             }
-                        }
-                        else
-                        {
-                            this.pointedEntity = entity1;
-                            vec33 = movingobjectposition.hitVec;
-                            d2 = d3;
                         }
                     }
                 }
+                
             }
 
             if (this.pointedEntity != null && flag && vec3.distanceTo(vec33) > 3.0D)

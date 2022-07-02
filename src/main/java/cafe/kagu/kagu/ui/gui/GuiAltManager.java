@@ -30,7 +30,12 @@ public class GuiAltManager extends GuiScreen {
 	@Override
 	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
 		
+		double buttonWidth = width * 0.3234375, buttonHeight = height * 0.0925925926;
+		double buttonMargin = 7;
+		
 		drawRect(0, 0, width, height, backgroundColor);
+		
+		UiUtils.drawRoundedRect(width - buttonWidth - buttonMargin, height - buttonHeight - buttonMargin, width - buttonMargin, height - buttonMargin, buttonDefaultColor, 5);
 		
 		if (leftMouseClicked)
 			leftMouseClicked = false;
