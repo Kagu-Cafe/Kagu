@@ -195,8 +195,25 @@ public class NetworkManager extends SimpleChannelInboundHandler<Packet>
     {
         if (this.isChannelOpen())
         {
+        	
+        	// Kagu hook
+        	{
+        		EventPacketSend eventPacketSend = new EventPacketSend(EventPosition.PRE, packetIn);
+        		eventPacketSend.post();
+        		if (eventPacketSend.isCanceled())
+        			return;
+        		packetIn = eventPacketSend.getPacket();
+        	}
+        	
             this.flushOutboundQueue();
             this.dispatchPacket(packetIn, (GenericFutureListener <? extends Future <? super Void >> [])null);
+            
+            // Kagu hook
+            {
+            	EventPacketSend eventPacketSend = new EventPacketSend(EventPosition.POST, packetIn);
+            	eventPacketSend.post();
+            }
+            
         }
         else
         {
@@ -239,8 +256,25 @@ public class NetworkManager extends SimpleChannelInboundHandler<Packet>
     {
         if (this.isChannelOpen())
         {
+        	
+        	// Kagu hook
+        	{
+        		EventPacketSend eventPacketSend = new EventPacketSend(EventPosition.PRE, packetIn);
+        		eventPacketSend.post();
+        		if (eventPacketSend.isCanceled())
+        			return;
+        		packetIn = eventPacketSend.getPacket();
+        	}
+        	
             this.flushOutboundQueue();
             this.dispatchPacket(packetIn, (GenericFutureListener[])ArrayUtils.add(listeners, 0, listener));
+            
+            // Kagu hook
+            {
+            	EventPacketSend eventPacketSend = new EventPacketSend(EventPosition.POST, packetIn);
+            	eventPacketSend.post();
+            }
+            
         }
         else
         {
@@ -263,16 +297,6 @@ public class NetworkManager extends SimpleChannelInboundHandler<Packet>
      */
     private void dispatchPacket(Packet inPacket, final GenericFutureListener <? extends Future <? super Void >> [] futureListeners)
     {
-    	
-    	// Kagu hook
-    	{
-    		EventPacketSend eventPacketSend = new EventPacketSend(EventPosition.PRE, inPacket);
-    		eventPacketSend.post();
-    		if (eventPacketSend.isCanceled())
-    			return;
-    		inPacket = eventPacketSend.getPacket();
-    	}
-    	
         final EnumConnectionState enumconnectionstate = EnumConnectionState.getFromPacket(inPacket);
         final EnumConnectionState enumconnectionstate1 = (EnumConnectionState)this.channel.attr(attrKeyConnectionState).get();
 
@@ -320,12 +344,6 @@ public class NetworkManager extends SimpleChannelInboundHandler<Packet>
                     channelfuture1.addListener(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE);
                 }
             });
-        }
-        
-        // Kagu hook
-        {
-        	EventPacketSend eventPacketSend = new EventPacketSend(EventPosition.POST, inPacket);
-        	eventPacketSend.post();
         }
         
     }
@@ -574,4 +592,12 @@ public class NetworkManager extends SimpleChannelInboundHandler<Packet>
             this.futureListeners = inFutureListeners;
         }
     }
+    
+    /**
+	 * @return the packetListener
+	 */
+	public INetHandler getPacketListener() {
+		return packetListener;
+	}
+	
 }

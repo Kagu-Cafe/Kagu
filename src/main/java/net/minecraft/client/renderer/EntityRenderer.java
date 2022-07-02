@@ -81,6 +81,7 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.ReportedException;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Vec3;
+import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.WorldSettings;
@@ -532,13 +533,22 @@ public class EntityRenderer implements IResourceManagerReloadListener
                 
                 // Do backtrack
                 AxisAlignedBB oldBox = axisalignedbb;
+                int k = 0;
                 for (Vector3d back : backtrackPositions) {
                 	if (back == null) {
                 		break;
                 	}
+                	k++;
                 	axisalignedbb = oldBox.offset(back.x - entity1.posX, back.y - entity1.posY, back.z - entity1.posZ);
                 	
                 	MovingObjectPosition movingobjectposition = axisalignedbb.calculateIntercept(vec3, vec32);
+                	
+                	if (movingobjectposition != null) {
+                		if (ModuleManager.modBlink.isEnabled() && ModuleManager.modBlink.getBacktrackCompatibility().isEnabled()) {
+                			ModuleManager.modBacktrack.setBacktrackBlinkTickOverride(k);
+                		}
+                	}
+                	
                 	if (axisalignedbb.isVecInside(vec3))
                     {;
                         if (d2 >= 0.0D)

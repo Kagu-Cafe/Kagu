@@ -132,7 +132,7 @@ public class ConfigManager {
 									if (settingValue.equals("true")) {
 										((BooleanSetting)setting).enable();
 									}else {
-										((BooleanSetting)setting).enable();
+										((BooleanSetting)setting).disable();
 									}
 								}break;
 								

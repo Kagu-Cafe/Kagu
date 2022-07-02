@@ -5,6 +5,8 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -56,7 +58,8 @@ public class EventBus {
 		}
 		
 		// Send the event
-		for (Handler<? extends Event> subscriber : subscribers.keySet()) {
+		Set<Handler<? extends Event>> handlers = subscribers.keySet();
+		for (Handler<? extends Event> subscriber : handlers) {
 			
 			if (!e.getClass().isAssignableFrom(subscribers.get(subscriber))) {
 				continue;

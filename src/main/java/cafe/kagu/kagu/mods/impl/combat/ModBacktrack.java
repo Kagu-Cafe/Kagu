@@ -35,6 +35,8 @@ public class ModBacktrack extends Module {
 	private IntegerSetting backtrackTicks = new IntegerSetting("Backtrack Ticks", 4, 1, 40, 1);
 	private DoubleSetting backtrackEnableDistance = new DoubleSetting("Backtrack Enable Distance", 15, 10, 100, 1);
 	
+	private int backtrackBlinkTickOverride = backtrackTicks.getValue();
+	
 	@EventHandler
 	private Handler<EventTick> onTick = e -> {
 		if (e.isPost())
@@ -85,6 +87,7 @@ public class ModBacktrack extends Module {
 		if (e.getSetting() != backtrackTicks)
 			return;
 		backtracks.clear();
+		backtrackBlinkTickOverride = backtrackTicks.getValue();
 	};
 	
 	/**
@@ -92,6 +95,27 @@ public class ModBacktrack extends Module {
 	 */
 	public Map<EntityLivingBase, Vector3d[]> getBacktracks() {
 		return backtracks;
+	}
+	
+	/**
+	 * @return the backtrackTicks
+	 */
+	public IntegerSetting getBacktrackTicks() {
+		return backtrackTicks;
+	}
+	
+	/**
+	 * @return the backtrackBlinkTickOverride
+	 */
+	public int getBacktrackBlinkTickOverride() {
+		return backtrackBlinkTickOverride;
+	}
+	
+	/**
+	 * @param backtrackBlinkTickOverride the backtrackBlinkTickOverride to set
+	 */
+	public void setBacktrackBlinkTickOverride(int backtrackBlinkTickOverride) {
+		this.backtrackBlinkTickOverride = backtrackBlinkTickOverride;
 	}
 	
 }
