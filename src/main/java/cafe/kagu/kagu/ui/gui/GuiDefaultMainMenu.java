@@ -12,6 +12,7 @@ import cafe.kagu.kagu.font.FontRenderer;
 import cafe.kagu.kagu.font.FontUtils;
 import cafe.kagu.kagu.managers.FileManager;
 import cafe.kagu.kagu.utils.Shader;
+import cafe.kagu.kagu.utils.SoundUtils;
 import cafe.kagu.kagu.utils.UiUtils;
 import cafe.kagu.kagu.utils.Shader.ShaderType;
 import net.minecraft.client.Minecraft;
@@ -55,7 +56,7 @@ public class GuiDefaultMainMenu extends GuiScreen {
 	private static boolean leftMouseClicked = false;
 	private static Shader backgroundShader;
 	private static long backgroundAnimation = 0;
-	private ISound backgroundSound = new PositionedSoundRecord(new ResourceLocation("kagusounds:brown"), 0.025f, 1, true, 1, ISound.AttenuationType.LINEAR, 0, 0, 0);
+	private ISound backgroundSound = new PositionedSoundRecord(new ResourceLocation("kagusounds:kagu.brown"), 0.2f, 1, true, 1, ISound.AttenuationType.LINEAR, 0, 0, 0);
 	
 	@Override
 	public void initGui() {
@@ -111,6 +112,7 @@ public class GuiDefaultMainMenu extends GuiScreen {
 			if (leftMouseClicked) {
 				mc.displayGuiScreen(new GuiSelectWorld(this));
 				leftMouseClicked = false;
+				mc.getSoundHandler().playSound(SoundUtils.getClickSound());
 			}
 		}else {
 			buttonColor = buttonDefaultColor;
@@ -124,6 +126,7 @@ public class GuiDefaultMainMenu extends GuiScreen {
 			if (leftMouseClicked) {
 				mc.displayGuiScreen(new GuiMultiplayer(this));
 				leftMouseClicked = false;
+				mc.getSoundHandler().playSound(SoundUtils.getClickSound());
 			}
 		}else {
 			buttonColor = buttonDefaultColor;
@@ -137,6 +140,7 @@ public class GuiDefaultMainMenu extends GuiScreen {
 			if (leftMouseClicked) {
 				mc.displayGuiScreen(GuiAltManager.getInstance());
 				leftMouseClicked = false;
+				mc.getSoundHandler().playSound(SoundUtils.getClickSound());
 			}
 		}else {
 			buttonColor = buttonDefaultColor;
@@ -150,6 +154,7 @@ public class GuiDefaultMainMenu extends GuiScreen {
 			if (leftMouseClicked) {
 				mc.displayGuiScreen(new GuiOptions(this, mc.gameSettings));
 				leftMouseClicked = false;
+				mc.getSoundHandler().playSound(SoundUtils.getClickSound());
 			}
 		}else {
 			buttonColor = buttonDefaultColor;
@@ -163,6 +168,7 @@ public class GuiDefaultMainMenu extends GuiScreen {
 			if (leftMouseClicked) {
 				mc.displayGuiScreen(new GuiLanguage(this, this.mc.gameSettings, this.mc.getLanguageManager()));
 				leftMouseClicked = false;
+				mc.getSoundHandler().playSound(SoundUtils.getClickSound());
 			}
 		}else {
 			buttonColor = buttonDefaultColor;
@@ -175,6 +181,7 @@ public class GuiDefaultMainMenu extends GuiScreen {
 			buttonColor = buttomHoverColor;
 			if (leftMouseClicked) {
 				leftMouseClicked = false;
+				mc.getSoundHandler().playSound(SoundUtils.getClickSound());
 			}
 		}else {
 			buttonColor = buttonDefaultColor;

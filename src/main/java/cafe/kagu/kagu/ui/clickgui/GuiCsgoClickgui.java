@@ -42,6 +42,7 @@ import cafe.kagu.kagu.settings.impl.KeybindSetting;
 import cafe.kagu.kagu.settings.impl.LongSetting;
 import cafe.kagu.kagu.settings.impl.ModeSetting;
 import cafe.kagu.kagu.ui.Colors;
+import cafe.kagu.kagu.utils.SoundUtils;
 import cafe.kagu.kagu.utils.UiUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
@@ -390,7 +391,8 @@ public class GuiCsgoClickgui extends GuiScreen {
 									double pixelRange = right - (left + toggleSwitchLength);
 									double fixedMouseX = mouseX - (left + toggleSwitchLength);
 									double newValuePercent = MathHelper.clamp_double(fixedMouseX / pixelRange, 0, 1);
-									decimalSetting.setValue(decimalSetting.getMin() + (range * newValuePercent));
+									double newValue = decimalSetting.getMin() + (range * newValuePercent);
+									decimalSetting.setValue(newValue);
 									sliderPercent = newValuePercent;
 								}
 								
@@ -439,9 +441,9 @@ public class GuiCsgoClickgui extends GuiScreen {
 									double newValuePercent = MathHelper.clamp_double(fixedMouseX / pixelRange, 0, 1);
 									long endResult = (long)(min + (range * newValuePercent));
 									if (setting instanceof IntegerSetting) {
-										((IntegerSetting)setting).setValue(Double.valueOf(endResult).intValue());
+										((IntegerSetting)setting).setValue(Long.valueOf(endResult).intValue());
 									}else {
-										((LongSetting)setting).setValue(Double.valueOf(endResult).longValue());
+										((LongSetting)setting).setValue(Long.valueOf(endResult).longValue());
 									}
 									sliderPercent = newValuePercent;
 								}

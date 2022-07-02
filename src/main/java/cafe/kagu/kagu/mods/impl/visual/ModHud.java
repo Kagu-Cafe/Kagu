@@ -4,6 +4,7 @@
 package cafe.kagu.kagu.mods.impl.visual;
 
 import cafe.kagu.kagu.mods.Module;
+import cafe.kagu.kagu.settings.impl.BooleanSetting;
 import cafe.kagu.kagu.settings.impl.ModeSetting;
 
 /**

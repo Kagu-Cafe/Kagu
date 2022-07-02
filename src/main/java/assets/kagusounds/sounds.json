@@ -1,3 +1,4 @@
 {
-	"brown": {"sounds": ["BrownNoise"]}
+	"kagu.brown": {"sounds": ["BrownNoise"]}, 
+	"kagu.click": {"sounds": ["click"]}
 }

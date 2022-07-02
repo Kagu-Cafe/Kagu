@@ -68,6 +68,10 @@ public class FileManager {
 			CONFIGS_DIR.mkdirs();
 		}
 		
+		if (!ASSETS_DIR.exists()) {
+			ASSETS_DIR.mkdirs();
+		}
+		
 		// Create any missing files
 		if (!BACKGROUND_SHADER.exists())
 			try {
