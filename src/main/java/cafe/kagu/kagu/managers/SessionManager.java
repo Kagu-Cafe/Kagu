@@ -8,6 +8,7 @@ import com.mojang.authlib.AuthenticationService;
 import com.mojang.authlib.UserAuthentication;
 import com.mojang.authlib.exceptions.AuthenticationException;
 import com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService;
+import com.mojang.util.UUIDTypeAdapter;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.Session;
@@ -47,6 +48,7 @@ public class SessionManager {
 			userAuthentication.setUsername(email);
 			userAuthentication.setPassword(password);
 			userAuthentication.logIn();
+			Minecraft.getMinecraft().setSession(new Session(userAuthentication.getSelectedProfile().getName(), UUIDTypeAdapter.fromUUID(userAuthentication.getSelectedProfile().getId()), userAuthentication.getAuthenticatedToken(), userAuthentication.getUserType().getName()));
 			return true;
 		} catch (AuthenticationException e) {
 			return false;

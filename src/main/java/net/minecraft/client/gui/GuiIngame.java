@@ -357,16 +357,24 @@ public class GuiIngame extends Gui
         
         // Kagu hook
         {
+        	GlStateManager.pushMatrix();
+        	GlStateManager.pushAttrib();
         	EventRender2D event2dRender = new EventRender2D(EventPosition.PRE);
         	event2dRender.post();
+        	GlStateManager.popAttrib();
+        	GlStateManager.popMatrix();
         	if (event2dRender.isCanceled())
         		return;
         }
         
         // Kagu hook
         {
+        	GlStateManager.pushMatrix();
+        	GlStateManager.pushAttrib();
         	EventRender2D event2dRender = new EventRender2D(EventPosition.POST);
         	event2dRender.post();
+        	GlStateManager.popAttrib();
+        	GlStateManager.popMatrix();
         }
         
     }
@@ -614,15 +622,15 @@ public class GuiIngame extends Gui
             int l = k1 - k * this.getFontRenderer().FONT_HEIGHT;
             int i1 = p_180475_2_.getScaledWidth() - b0 + 2;
             drawRect(j - 2, l, i1, l + this.getFontRenderer().FONT_HEIGHT, 1342177280);
-            this.getFontRenderer().drawString(s1, j, l, 553648127);
-            this.getFontRenderer().drawString(s2, i1 - this.getFontRenderer().getStringWidth(s2), l, 553648127);
+            this.getFontRenderer().drawString(s1, j, l, -1);
+            this.getFontRenderer().drawString(s2, i1 - this.getFontRenderer().getStringWidth(s2), l, -1);
 
             if (k == arraylist1.size())
             {
                 String s3 = p_180475_1_.getDisplayName();
                 drawRect(j - 2, l - this.getFontRenderer().FONT_HEIGHT - 1, i1, l - 1, 1610612736);
                 drawRect(j - 2, l - 1, i1, l, 1342177280);
-                this.getFontRenderer().drawString(s3, j + i / 2 - this.getFontRenderer().getStringWidth(s3) / 2, l - this.getFontRenderer().FONT_HEIGHT, 553648127);
+                this.getFontRenderer().drawString(s3, j + i / 2 - this.getFontRenderer().getStringWidth(s3) / 2, l - this.getFontRenderer().FONT_HEIGHT, -1);
             }
         }
     }

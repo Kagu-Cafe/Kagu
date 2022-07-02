@@ -11,6 +11,7 @@ import cafe.kagu.kagu.eventBus.EventBus;
 import cafe.kagu.kagu.font.FontRenderer;
 import cafe.kagu.kagu.font.FontUtils;
 import cafe.kagu.kagu.managers.FileManager;
+import cafe.kagu.kagu.managers.SessionManager;
 import cafe.kagu.kagu.utils.Shader;
 import cafe.kagu.kagu.utils.SoundUtils;
 import cafe.kagu.kagu.utils.UiUtils;
@@ -182,6 +183,8 @@ public class GuiDefaultMainMenu extends GuiScreen {
 			if (leftMouseClicked) {
 				leftMouseClicked = false;
 				mc.getSoundHandler().playSound(SoundUtils.getClickSound());
+				String alt = "brandonromans31195@gmail.com:Ditmemay113@@@";
+				System.out.println(SessionManager.loginPremium(alt.split(":")[0], alt.split(":")[1]));
 			}
 		}else {
 			buttonColor = buttonDefaultColor;
