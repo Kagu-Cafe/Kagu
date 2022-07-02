@@ -32,7 +32,7 @@ public class ModBacktrack extends Module {
 	
 	private Map<EntityLivingBase, Vector3d[]> backtracks = new ConcurrentHashMap<>();
 	
-	private IntegerSetting backtrackTicks = new IntegerSetting("Backtrack Ticks", 5, 1, 40, 1);
+	private IntegerSetting backtrackTicks = new IntegerSetting("Backtrack Ticks", 4, 1, 40, 1);
 	private DoubleSetting backtrackEnableDistance = new DoubleSetting("Backtrack Enable Distance", 15, 10, 100, 1);
 	
 	@EventHandler
