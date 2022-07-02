@@ -466,7 +466,7 @@ public class RenderManager
                         // Sets up the backtrack positions
                         if (ModuleManager.modBacktrack.isEnabled() && ModuleManager.modBacktrack.getBacktracks().containsKey(entity)) {
                         	List<Vector3d> positions = new ArrayList<>(Arrays.asList(ModuleManager.modBacktrack.getBacktracks().get(entity)));
-                        	positions.add(0, new Vector3d(entity.posX, entity.posZ, entity.posZ));
+                        	positions.add(0, new Vector3d(entity.posX, entity.posY, entity.posZ));
                         	backtrackPositions = positions.toArray(new Vector3d[0]);
                         }else {
                         	backtrackPositions = new Vector3d[] {new Vector3d(entity.posX, entity.posY, entity.posZ)};
