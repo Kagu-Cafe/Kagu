@@ -15,8 +15,11 @@ public class ModHud extends Module {
 	
 	public ModHud() {
 		super("Hud", Category.VISUAL);
-		setSettings(arraylistAnimation, arraylistColors);
+		setSettings(hudEnabled, visual3dEnabled, arraylistAnimation, arraylistColors);
 	}
+	
+	public BooleanSetting hudEnabled = new BooleanSetting("HUD Enabled", true);
+	public BooleanSetting visual3dEnabled = new BooleanSetting("3D Visuals Enabled", true);
 	
 	// ArrayList options
 	public ModeSetting arraylistAnimation = new ModeSetting("ArrayList Animation", "Squeeze", "Squeeze", "Slide");

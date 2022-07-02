@@ -10,8 +10,11 @@ import org.apache.logging.log4j.Logger;
 
 import cafe.kagu.kagu.eventBus.impl.EventCheatTick;
 import cafe.kagu.kagu.eventBus.impl.EventPlayerUpdate;
+import cafe.kagu.kagu.eventBus.impl.EventRender2D;
+import cafe.kagu.kagu.eventBus.impl.EventRender3D;
 import cafe.kagu.kagu.eventBus.impl.EventTick;
 import cafe.kagu.kagu.mods.Module;
+import cafe.kagu.kagu.mods.ModuleManager;
 import cafe.kagu.kagu.utils.DrawUtils3D;
 import net.minecraft.client.Minecraft;
 
@@ -41,6 +44,14 @@ public class EventBus {
 		// Don't send events if the world or player is null
 		Minecraft mc = Minecraft.getMinecraft();
 		if ((mc.theWorld == null || mc.thePlayer == null) && !(e instanceof EventCheatTick)) {
+			return;
+		}
+		
+		// Disable specific visuals if they are disabled in the conifg
+		if (ModuleManager.modHud != null && ModuleManager.modHud.visual3dEnabled.isDisabled() && e instanceof EventRender3D) {
+			return;
+		}
+		if (ModuleManager.modHud != null && ModuleManager.modHud.hudEnabled.isDisabled() && e instanceof EventRender2D) {
 			return;
 		}
 		

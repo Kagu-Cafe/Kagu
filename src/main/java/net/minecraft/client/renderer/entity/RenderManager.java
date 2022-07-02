@@ -469,7 +469,7 @@ public class RenderManager
                         	positions.add(0, new Vector3d(entity.posX, entity.posZ, entity.posZ));
                         	backtrackPositions = positions.toArray(new Vector3d[0]);
                         }else {
-                        	backtrackPositions = new Vector3d[] {new Vector3d(entity.posX, entity.posZ, entity.posZ)};
+                        	backtrackPositions = new Vector3d[] {new Vector3d(entity.posX, entity.posY, entity.posZ)};
                         }
                         
                         // Render hitboxes and backtracks
