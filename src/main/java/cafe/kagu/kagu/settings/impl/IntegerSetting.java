@@ -40,7 +40,7 @@ public class IntegerSetting extends Setting {
 	 * @param value the value to set
 	 */
 	public void setValue(int value) {
-		double precision = 1 / increment;
+		double precision = 1 / (double)increment;
 		this.value = (int)(Math.round(Math.max(min, Math.min(max, value)) * precision) / precision);
 		
 		// Kagu hook

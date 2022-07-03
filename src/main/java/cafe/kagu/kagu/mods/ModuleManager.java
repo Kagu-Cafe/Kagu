@@ -11,6 +11,7 @@ import cafe.kagu.kagu.mods.impl.combat.ModBacktrack;
 import cafe.kagu.kagu.mods.impl.combat.ModKillAura;
 import cafe.kagu.kagu.mods.impl.exploit.ModAntiCrash;
 import cafe.kagu.kagu.mods.impl.exploit.ModBlink;
+import cafe.kagu.kagu.mods.impl.exploit.ModCrasher;
 import cafe.kagu.kagu.mods.impl.exploit.ModCreative64Stack;
 import cafe.kagu.kagu.mods.impl.exploit.ModTimer;
 import cafe.kagu.kagu.mods.impl.move.ModMoonJump;
@@ -63,6 +64,7 @@ public class ModuleManager {
 	public static ModAntiCrash modAntiCrash = new ModAntiCrash();
 	public static ModTimer modTimer = new ModTimer();
 	public static ModBlink modBlink = new ModBlink();
+	public static ModCrasher modCrasher = new ModCrasher();
 	
 	// Development
 	public static ModTest modTest = new ModTest();
@@ -88,6 +90,7 @@ public class ModuleManager {
 			modViewModels,
 			modBacktrack,
 			modTimer,
+			modCrasher,
 			
 			modBlink
 	};

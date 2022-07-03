@@ -96,6 +96,8 @@ public class ModEsp extends Module {
 				
 				GlStateManager.pushMatrix();
 				GlStateManager.pushAttrib();
+				GlStateManager.enableBlend();
+				GlStateManager.enableAlpha();
 				
 				for (EspEntity ent : draw2dEntities) {
 					

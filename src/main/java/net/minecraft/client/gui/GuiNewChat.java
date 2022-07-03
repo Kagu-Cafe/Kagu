@@ -47,6 +47,7 @@ public class GuiNewChat extends Gui
                 float f1 = this.getChatScale();
                 int l = MathHelper.ceiling_float_int((float)this.getChatWidth() / f1);
                 GlStateManager.pushMatrix();
+                GlStateManager.pushAttrib();
                 GlStateManager.translate(2.0F, 20.0F, 0.0F);
                 GlStateManager.scale(f1, f1, 1.0F);
 
@@ -107,7 +108,8 @@ public class GuiNewChat extends Gui
                         drawRect(2, -j3, 1, -j3 - k1, 13421772 + (k3 << 24));
                     }
                 }
-
+                
+                GlStateManager.popAttrib();
                 GlStateManager.popMatrix();
             }
         }
