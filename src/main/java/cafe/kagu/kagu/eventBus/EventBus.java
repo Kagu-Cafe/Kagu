@@ -59,24 +59,28 @@ public class EventBus {
 		
 		// Send the event
 		Set<Handler<? extends Event>> handlers = subscribers.keySet();
-		for (Handler<? extends Event> subscriber : handlers) {
-			
-			if (!e.getClass().isAssignableFrom(subscribers.get(subscriber))) {
-				continue;
+		try {
+			for (Handler<? extends Event> subscriber : handlers) {
+				
+				if (!e.getClass().isAssignableFrom(subscribers.get(subscriber))) {
+					continue;
+				}
+				
+				// If subscriber is linked to module AND the module is disabled then cancel
+				if (moduleSubscribers.containsKey(subscriber) && moduleSubscribers.get(subscriber).isDisabled()) {
+					continue;
+				}
+				
+				// Send event
+				try {
+					subscriber.onEventNoGeneric(e);
+				} catch (Exception e2) {
+					logger.error("Had an issue dispatching an event", e2);
+				}
+				
 			}
-			
-			// If subscriber is linked to module AND the module is disabled then cancel
-			if (moduleSubscribers.containsKey(subscriber) && moduleSubscribers.get(subscriber).isDisabled()) {
-				continue;
-			}
-			
-			// Send event
-			try {
-				subscriber.onEventNoGeneric(e);
-			} catch (Exception e2) {
-				logger.error("Had an issue dispatching an event", e2);
-			}
-			
+		} catch (Exception e2) {
+			// TODO: handle exception
 		}
 	}
 	

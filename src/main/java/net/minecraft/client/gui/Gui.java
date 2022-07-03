@@ -252,7 +252,26 @@ public class Gui
         worldrenderer.pos((double)(xCoord + 0), (double)(yCoord + 0), (double)this.zLevel).tex((double)textureSprite.getMinU(), (double)textureSprite.getMinV()).endVertex();
         tessellator.draw();
     }
-
+    
+    /**
+     * Draws a texture to the screen
+     * @param x The x coord of the texture
+     * @param y The y coord of the texture
+     * @param width The width the texture should appear on screen
+     * @param height The height the texture should appear on screen
+     */
+    public static void drawTexture(double x, double y, double width, double height) {
+    	GlStateManager.pushMatrix();
+    	GlStateManager.pushAttrib();
+    	GlStateManager.color(1, 1, 1, 1);
+    	GL11.glEnable(GL11.GL_BLEND);
+    	GlStateManager.enableBlend();
+    	GlStateManager.enableAlpha();
+    	drawModalRectWithCustomSizedTexture(x, y, 0, 0, width, height, width, height);
+    	GlStateManager.popAttrib();
+    	GlStateManager.popMatrix();
+    }
+    
     /**
      * Draws a textured rectangle at z = 0. Args: x, y, u, v, width, height, textureWidth, textureHeight
      */

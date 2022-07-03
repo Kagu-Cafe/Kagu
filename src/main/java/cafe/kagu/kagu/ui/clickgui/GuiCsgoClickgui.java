@@ -284,6 +284,7 @@ public class GuiCsgoClickgui extends GuiScreen {
 						// Switch circle
 						Minecraft.getMinecraft().getTextureManager().bindTexture(toggleCircle);
 						GL11.glDisable(GL11.GL_BLEND);
+						GlStateManager.disableBlend();
 						drawModalRectWithCustomSizedTexture(left + (toggleSwitchLength - (toggleSwitchLength * 0.62)) * (1 - mod.getClickguiToggle()), top + yOffset, 0, 0, lineLength, lineLength, lineLength, lineLength);
 					}
 					
@@ -359,6 +360,7 @@ public class GuiCsgoClickgui extends GuiScreen {
 								// Switch circle
 								Minecraft.getMinecraft().getTextureManager().bindTexture(toggleCircle);
 								GL11.glDisable(GL11.GL_BLEND);
+								GlStateManager.disableBlend();
 								drawModalRectWithCustomSizedTexture(left + (toggleSwitchLength * 0.96) + (toggleSwitchLength - (toggleSwitchLength * 0.62)) * (1 - booleanSetting.getClickguiToggleStatus()), top + yOffset + settingOffsetY, 0, 0, lineLength, lineLength, lineLength, lineLength);
 								GlStateManager.color(1, 1, 1, 1);
 								
@@ -398,6 +400,7 @@ public class GuiCsgoClickgui extends GuiScreen {
 								
 								// Render bar
 								GL11.glEnable(GL11.GL_BLEND);
+								GlStateManager.enableBlend();
 								drawRect(left + toggleSwitchLength, top + yOffset + (padding / 2) + settingOffsetY,
 										left + toggleSwitchLength + ((right - (left + toggleSwitchLength)) * sliderPercent),
 										top + yOffset + (padding / 2) + settingOffsetY
@@ -450,6 +453,7 @@ public class GuiCsgoClickgui extends GuiScreen {
 								
 								// Render bar
 								GL11.glEnable(GL11.GL_BLEND);
+								GlStateManager.enableBlend();
 								drawRect(left + toggleSwitchLength, top + yOffset + (padding / 2) + settingOffsetY,
 										left + toggleSwitchLength + ((right - (left + toggleSwitchLength)) * sliderPercent),
 										top + yOffset + (padding / 2) + settingOffsetY
@@ -644,6 +648,7 @@ public class GuiCsgoClickgui extends GuiScreen {
 		GlStateManager.color(1, 1, 1, 1);
         GlStateManager.disableTexture2D();
         GL11.glEnable(GL11.GL_BLEND);
+        GlStateManager.enableBlend();
         GlStateManager.disableAlpha();
         GlStateManager.tryBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
         GlStateManager.shadeModel(GL11.GL_SMOOTH);

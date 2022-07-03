@@ -511,7 +511,7 @@ public class EntityRenderer implements IResourceManagerReloadListener
             
             // Backtracks
             Map<EntityLivingBase, Vector3d[]> backtracks = ModuleManager.modBacktrack.isEnabled() ? ModuleManager.modBacktrack.getBacktracks() : new HashMap<>();
-            list.addAll(backtracks.keySet());
+//            list.addAll(backtracks.keySet());
             
             for (int i = 0; i < list.size(); ++i)
             {
@@ -525,10 +525,10 @@ public class EntityRenderer implements IResourceManagerReloadListener
                 // Sets up the backtrack positions
                 if (ModuleManager.modBacktrack.isEnabled() && backtracks.containsKey(entity1)) {
                 	List<Vector3d> positions = new ArrayList<>(Arrays.asList(backtracks.get(entity1)));
-                	positions.add(0, new Vector3d(entity1.posX, entity1.posZ, entity1.posZ));
+                	positions.add(0, new Vector3d(entity1.posX, entity1.posY, entity1.posZ));
                 	backtrackPositions = positions.toArray(new Vector3d[0]);
                 }else {
-                	backtrackPositions = new Vector3d[] {new Vector3d(entity1.posX, entity1.posZ, entity1.posZ)};
+                	backtrackPositions = new Vector3d[] {new Vector3d(entity1.posX, entity1.posY, entity1.posZ)};
                 }
                 
                 // Do backtrack

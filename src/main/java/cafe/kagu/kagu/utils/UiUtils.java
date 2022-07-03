@@ -7,6 +7,7 @@ import java.awt.Color;
 
 import javax.vecmath.Vector4d;
 
+import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.Minecraft;
@@ -380,6 +381,9 @@ public class UiUtils {
 	 * @param cornerSize The corner size
 	 */
 	public static boolean isMouseInsideRoundedRect(double mouseX, double mouseY, double left, double top, double right, double bottom, double cornerSize) {
+		
+		if (!Mouse.isInsideWindow())
+			return false;
 		
 		if (top > bottom) {
 			double temp = top;

@@ -19,7 +19,7 @@ public class SoundUtils {
 	 */
 	public static ISound getClickSound() {
 		Minecraft mc = Minecraft.getMinecraft();
-		return new PositionedSoundRecord(new ResourceLocation("kagusounds:kagu.click"), 1, 1, false, 1, ISound.AttenuationType.LINEAR, mc.thePlayer == null ? 0 : (float)mc.thePlayer.posX, mc.thePlayer == null ? 0 : (float)mc.thePlayer.posY, mc.thePlayer == null ? 0 : (float)mc.thePlayer.posZ);
+		return new PositionedSoundRecord(new ResourceLocation("kagusounds:kagu.click"), 1, 1, false, 1, ISound.AttenuationType.NONE, mc.thePlayer == null ? 0 : (float)mc.thePlayer.posX, mc.thePlayer == null ? 0 : (float)mc.thePlayer.posY, mc.thePlayer == null ? 0 : (float)mc.thePlayer.posZ);
 	}
 	
 }

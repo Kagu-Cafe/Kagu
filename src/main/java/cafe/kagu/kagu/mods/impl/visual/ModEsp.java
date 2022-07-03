@@ -181,6 +181,7 @@ public class ModEsp extends Module {
 				GlStateManager.popAttrib();
 				GlStateManager.popMatrix();
 				GL11.glEnable(GL11.GL_BLEND);
+				GlStateManager.enableBlend();
 				
 			}break;
 			

@@ -116,6 +116,26 @@ public class Kagu {
 		GuiCsgoClickgui.getInstance().start();
 		logger.info("Started the clickgui");
 		
+		// Load fonts
+		logger.info("Loading fonts...");
+		FontUtils.start();
+		logger.info("Loaded fonts");
+		
+		// Load the main menu
+		logger.info("Loading the main menu handler...");
+		MainMenuHandler.getMainMenu();
+		logger.info("Loaded the main menu handler");
+		
+		// Load the main menu
+		logger.info("Loading the main menus...");
+		GuiDefaultMainMenu.start();
+		logger.info("Loaded the main menus");
+		
+		// Hook the hud
+		logger.info("Hooking the hud...");
+		EventBus.setSubscriber(new Hud(), true);
+		logger.info("Hooked the hud");
+		
 		// Start a cheat loop thread
 		logger.info("Starting the cheat loop thread...");
 		Thread cheatThread = new Thread(() -> {
@@ -145,26 +165,6 @@ public class Kagu {
 		cheatThread.setDaemon(true);
 		cheatThread.start();
 		logger.info("Started the cheat loop thread");
-		
-		// Load fonts
-		logger.info("Loading fonts...");
-		FontUtils.start();
-		logger.info("Loaded fonts");
-		
-		// Load the main menu
-		logger.info("Loading the main menu handler...");
-		MainMenuHandler.getMainMenu();
-		logger.info("Loaded the main menu handler");
-		
-		// Load the main menu
-		logger.info("Loading the main menus...");
-		GuiDefaultMainMenu.start();
-		logger.info("Loaded the main menus");
-		
-		// Hook the hud
-		logger.info("Hooking the hud...");
-		EventBus.setSubscriber(new Hud(), true);
-		logger.info("Hooked the hud");
 		
 		logger.info(name + " v" + version + " has been started");
 		

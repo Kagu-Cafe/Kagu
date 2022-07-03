@@ -57,19 +57,10 @@ public class GuiDefaultMainMenu extends GuiScreen {
 	private static boolean leftMouseClicked = false;
 	private static Shader backgroundShader;
 	private static long backgroundAnimation = 0;
-	private ISound backgroundSound = new PositionedSoundRecord(new ResourceLocation("kagusounds:kagu.brown"), 0.2f, 1, true, 1, ISound.AttenuationType.LINEAR, 0, 0, 0);
 	
 	@Override
 	public void initGui() {
 		leftMouseClicked = false;
-		if (!Minecraft.getMinecraft().getSoundHandler().isSoundPlaying(backgroundSound) && Minecraft.getMinecraft().currentScreen instanceof GuiDefaultMainMenu)
-			Minecraft.getMinecraft().getSoundHandler().playSound(backgroundSound);
-	}
-	
-	@Override
-	public void onGuiClosed() {
-		if (Minecraft.getMinecraft().getSoundHandler().isSoundPlaying(backgroundSound))
-			Minecraft.getMinecraft().getSoundHandler().stopSound(backgroundSound);
 	}
 	
 	@Override

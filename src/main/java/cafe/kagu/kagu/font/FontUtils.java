@@ -38,6 +38,12 @@ public class FontUtils {
 	// Small pixel
 	public static final FontRenderer SMALL_PIXEL_4 = new FontRenderer(getFontFromInputStream(FontUtils.class.getResourceAsStream("small_pixel.ttf"), 16, Font.PLAIN), 0.25);
 	
+	// Mojang logo font
+	public static final FontRenderer MOJANG_LOGO_20 = new FontRenderer(getFontFromInputStream(FontUtils.class.getResourceAsStream("gyroscope-mojang.ttf"), 40, Font.PLAIN), 0.5);
+	
+	// Microsoft logo font
+	public static final FontRenderer MICROSOFT_LOGO_16 = new FontRenderer(getFontFromInputStream(FontUtils.class.getResourceAsStream("Segoe UI.ttf"), 32, Font.PLAIN), 0.5);
+	
 	/**
 	 * Gets a font from an inputstream
 	 * @param in The inputstream
