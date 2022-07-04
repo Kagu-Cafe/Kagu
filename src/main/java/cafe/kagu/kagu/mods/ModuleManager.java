@@ -8,7 +8,9 @@ import org.apache.logging.log4j.Logger;
 
 import cafe.kagu.kagu.eventBus.EventBus;
 import cafe.kagu.kagu.mods.impl.combat.ModBacktrack;
+import cafe.kagu.kagu.mods.impl.combat.ModHitboxes;
 import cafe.kagu.kagu.mods.impl.combat.ModKillAura;
+import cafe.kagu.kagu.mods.impl.combat.ModReach;
 import cafe.kagu.kagu.mods.impl.exploit.ModAntiCrash;
 import cafe.kagu.kagu.mods.impl.exploit.ModBlink;
 import cafe.kagu.kagu.mods.impl.exploit.ModCrasher;
@@ -41,6 +43,8 @@ public class ModuleManager {
 	// Combat
 	public static ModKillAura modKillAura = new ModKillAura();
 	public static ModBacktrack modBacktrack = new ModBacktrack();
+	public static ModReach modReach = new ModReach();
+	public static ModHitboxes modHitboxes = new ModHitboxes();
 	
 	// Movement
 	public static ModMoonJump modMoonJump = new ModMoonJump();
@@ -91,6 +95,8 @@ public class ModuleManager {
 			modBacktrack,
 			modTimer,
 			modCrasher,
+			modReach,
+			modHitboxes,
 			
 			modBlink
 	};

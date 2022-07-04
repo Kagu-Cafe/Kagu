@@ -490,7 +490,7 @@ public class EntityRenderer implements IResourceManagerReloadListener
             }
             else
             {
-                if (d0 > 3.0D)
+                if (d0 > Math.max((ModuleManager.modReach.isEnabled() ? ModuleManager.modReach.getCombatReach().getValue() : 0), 3.0D))
                 {
                     flag = true;
                 }
@@ -591,7 +591,7 @@ public class EntityRenderer implements IResourceManagerReloadListener
                 
             }
 
-            if (this.pointedEntity != null && flag && vec3.distanceTo(vec33) > 3.0D)
+            if (this.pointedEntity != null && flag && vec3.distanceTo(vec33) > Math.max((ModuleManager.modReach.isEnabled() ? ModuleManager.modReach.getCombatReach().getValue() : 0), 3.0D))
             {
                 this.pointedEntity = null;
                 this.mc.objectMouseOver = new MovingObjectPosition(MovingObjectPosition.MovingObjectType.MISS, vec33, (EnumFacing)null, new BlockPos(vec33));

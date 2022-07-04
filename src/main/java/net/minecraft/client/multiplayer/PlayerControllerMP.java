@@ -1,5 +1,6 @@
 package net.minecraft.client.multiplayer;
 
+import cafe.kagu.kagu.mods.ModuleManager;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -339,7 +340,7 @@ public class PlayerControllerMP
      */
     public float getBlockReachDistance()
     {
-        return this.currentGameType.isCreative() ? 5.0F : 4.5F;
+        return (float) Math.max((ModuleManager.modReach.isEnabled() ? ModuleManager.modReach.getBlockReach().getValue() : 0), (this.currentGameType.isCreative() ? 5.0F : 4.5F));
     }
 
     public void updateController()

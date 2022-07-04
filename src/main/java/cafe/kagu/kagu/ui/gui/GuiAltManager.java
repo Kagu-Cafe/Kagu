@@ -46,6 +46,7 @@ public class GuiAltManager extends GuiScreen {
 		double buttonWidth = width * 0.2334375, buttonHeight = height * 0.0925925926, buttonImageSize = height * 0.0653333333,
 				buttonImageMargin = (buttonHeight - buttonImageSize) / 2;
 		double buttonMargin = 7;
+		double buttonCurve = 5;
 		FontRenderer mojangAltFont = FontUtils.MOJANG_LOGO_20;
 		FontRenderer microsoftAltFont = FontUtils.MICROSOFT_LOGO_16;
 		
@@ -53,14 +54,14 @@ public class GuiAltManager extends GuiScreen {
 		
 		// Add premium alt button
 		int mojangButtonColor = GuiAltManager.mojangButtonColor;
-		if (UiUtils.isMouseInsideRoundedRect(mouseX, mouseY, width - buttonWidth - buttonMargin, height - buttonHeight - buttonMargin, width - buttonMargin, height - buttonMargin, 5)) {
+		if (UiUtils.isMouseInsideRoundedRect(mouseX, mouseY, width - buttonWidth - buttonMargin, height - buttonHeight - buttonMargin, width - buttonMargin, height - buttonMargin, buttonCurve)) {
 			if (leftMouseClicked) {
 				mc.getSoundHandler().playSound(SoundUtils.getClickSound());
 				leftMouseClicked = false;
 			}
 			mojangButtonColor = GuiAltManager.mojangButtonHoverColor;
 		}
-		UiUtils.drawRoundedRect(width - buttonWidth - buttonMargin, height - buttonHeight - buttonMargin, width - buttonMargin, height - buttonMargin, mojangButtonColor, 5);
+		UiUtils.drawRoundedRect(width - buttonWidth - buttonMargin, height - buttonHeight - buttonMargin, width - buttonMargin, height - buttonMargin, mojangButtonColor, buttonCurve);
 		mc.getTextureManager().bindTexture(mojangLogo);
 		Gui.drawTexture(width - buttonWidth - buttonMargin + buttonImageMargin, height - buttonHeight - buttonMargin + buttonImageMargin, buttonImageSize, buttonImageSize);
 		mojangAltFont.drawCenteredString("Add Premium Alt", width - buttonWidth - buttonMargin + buttonImageMargin + buttonImageSize + ((buttonWidth - buttonImageSize - buttonImageMargin * 2) / 2),
@@ -68,14 +69,14 @@ public class GuiAltManager extends GuiScreen {
 		
 		// Add microsoft alt button
 		int microsoftButtonColor = GuiAltManager.microsoftButtonColor;
-		if (UiUtils.isMouseInsideRoundedRect(mouseX, mouseY, width - buttonWidth * 2 - buttonMargin * 2, height - buttonHeight - buttonMargin, width - buttonMargin * 2 - buttonWidth, height - buttonMargin, 5)) {
+		if (UiUtils.isMouseInsideRoundedRect(mouseX, mouseY, width - buttonWidth * 2 - buttonMargin * 2, height - buttonHeight - buttonMargin, width - buttonMargin * 2 - buttonWidth, height - buttonMargin, buttonCurve)) {
 			if (leftMouseClicked) {
 				mc.getSoundHandler().playSound(SoundUtils.getClickSound());
 				leftMouseClicked = false;
 			}
 			microsoftButtonColor = GuiAltManager.microsoftButtonHoverColor;
 		}
-		UiUtils.drawRoundedRect(width - buttonWidth * 2 - buttonMargin * 2, height - buttonHeight - buttonMargin, width - buttonMargin * 2 - buttonWidth, height - buttonMargin, microsoftButtonColor, 5);
+		UiUtils.drawRoundedRect(width - buttonWidth * 2 - buttonMargin * 2, height - buttonHeight - buttonMargin, width - buttonMargin * 2 - buttonWidth, height - buttonMargin, microsoftButtonColor, buttonCurve);
 		mc.getTextureManager().bindTexture(microsoftLogo);
 		Gui.drawTexture(width - buttonWidth * 2 - buttonMargin * 2 + buttonImageMargin, height - buttonHeight - buttonMargin + buttonImageMargin, buttonImageSize, buttonImageSize);
 		microsoftAltFont.drawCenteredString("Add Microsoft Alt", width - buttonWidth * 2 - buttonMargin * 2 + buttonImageMargin + buttonImageSize + ((buttonWidth - buttonImageSize - buttonImageMargin * 2) / 2),

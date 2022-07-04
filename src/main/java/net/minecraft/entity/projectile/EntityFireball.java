@@ -1,6 +1,8 @@
 package net.minecraft.entity.projectile;
 
 import java.util.List;
+
+import cafe.kagu.kagu.mods.ModuleManager;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -296,6 +298,9 @@ public abstract class EntityFireball extends Entity
 
     public float getCollisionBorderSize()
     {
+    	if (ModuleManager.modHitboxes.isEnabled()) {
+    		return (float) (1.0 + ModuleManager.modHitboxes.getExpansion().getValue());
+    	}
         return 1.0F;
     }
 

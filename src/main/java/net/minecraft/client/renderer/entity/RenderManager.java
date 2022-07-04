@@ -517,11 +517,16 @@ public class RenderManager
         GlStateManager.disableLighting();
         GlStateManager.disableCull();
         GlStateManager.disableBlend();
+        
         float f = entityIn.width / 2.0F;
         AxisAlignedBB axisalignedbb = entityIn.getEntityBoundingBox();
         AxisAlignedBB axisalignedbb1 = new AxisAlignedBB(axisalignedbb.minX - entityIn.posX + p_85094_2_, axisalignedbb.minY - entityIn.posY + p_85094_4_, axisalignedbb.minZ - entityIn.posZ + p_85094_6_, axisalignedbb.maxX - entityIn.posX + p_85094_2_, axisalignedbb.maxY - entityIn.posY + p_85094_4_, axisalignedbb.maxZ - entityIn.posZ + p_85094_6_);
         RenderGlobal.func_181563_a(axisalignedbb1, 255, 255, 255, 255);
-
+        
+        double expand = entityIn.getCollisionBorderSize();
+        AxisAlignedBB axisalignedbb2 = axisalignedbb1.expand(expand, expand, expand);
+        RenderGlobal.func_181563_a(axisalignedbb2, 0, 255, 0, 255);
+        
         if (entityIn instanceof EntityLivingBase)
         {
             float f1 = 0.01F;

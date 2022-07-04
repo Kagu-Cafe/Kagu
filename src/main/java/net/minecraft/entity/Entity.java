@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.Callable;
+
+import cafe.kagu.kagu.mods.ModuleManager;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockFence;
 import net.minecraft.block.BlockFenceGate;
@@ -2025,6 +2027,9 @@ public abstract class Entity implements ICommandSender
 
     public float getCollisionBorderSize()
     {
+    	if (this instanceof EntityLivingBase && ModuleManager.modHitboxes.isEnabled()) {
+    		return (float) (0.1 + ModuleManager.modHitboxes.getExpansion().getValue());
+    	}
         return 0.1F;
     }
 
