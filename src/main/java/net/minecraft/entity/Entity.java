@@ -14,6 +14,7 @@ import net.minecraft.block.BlockWall;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.block.state.pattern.BlockPattern;
+import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandResultStats;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.crash.CrashReport;
@@ -807,6 +808,10 @@ public abstract class Entity implements ICommandSender
             this.worldObj.theProfiler.endSection();
             this.worldObj.theProfiler.startSection("rest");
             this.resetPositionToBB();
+            if (ModuleManager.modNoHCollisionSlowdown.isEnabled() && this == Minecraft.getMinecraft().thePlayer && !Minecraft.getMinecraft().theWorld.isAnyLiquid(getEntityBoundingBox())) {
+            	d3 = x;
+            	d5 = z;
+            }
             this.isCollidedHorizontally = d3 != x || d5 != z;
             this.isCollidedVertically = d4 != y;
             this.onGround = this.isCollidedVertically && d4 < 0.0D;

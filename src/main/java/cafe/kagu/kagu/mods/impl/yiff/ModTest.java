@@ -19,6 +19,7 @@ import cafe.kagu.kagu.settings.impl.LongSetting;
 import cafe.kagu.kagu.settings.impl.ModeSetting;
 import cafe.kagu.kagu.utils.MathUtils;
 import cafe.kagu.kagu.utils.MiscUtils;
+import cafe.kagu.kagu.utils.MovementUtils;
 import cafe.kagu.kagu.utils.SpoofUtils;
 import cafe.kagu.kagu.utils.UiUtils;
 import net.minecraft.client.Minecraft;
@@ -61,6 +62,8 @@ public class ModTest extends Module {
 	public Handler<EventTick> onTick = e -> {
 		if (e.isPost())
 			return;
+		if (!mc.thePlayer.onGround && MovementUtils.isTrueOnGround())
+			mc.thePlayer.motionY = 0;
 	};
 	
 }

@@ -22,7 +22,7 @@ public class ModMoonJump extends Module {
 	}
 	
 	@EventHandler
-	public Handler<EventPlayerUpdate> onUpadate = e -> {
+	private Handler<EventPlayerUpdate> onUpadate = e -> {
 		if (e.isPost())
 			return;
 		Minecraft.getMinecraft().thePlayer.motionY += 0.05;

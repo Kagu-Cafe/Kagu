@@ -15,8 +15,10 @@ import cafe.kagu.kagu.mods.impl.exploit.ModAntiCrash;
 import cafe.kagu.kagu.mods.impl.exploit.ModBlink;
 import cafe.kagu.kagu.mods.impl.exploit.ModCrasher;
 import cafe.kagu.kagu.mods.impl.exploit.ModCreative64Stack;
+import cafe.kagu.kagu.mods.impl.exploit.ModNoHCollisionSlowdown;
 import cafe.kagu.kagu.mods.impl.exploit.ModTimer;
 import cafe.kagu.kagu.mods.impl.move.ModMoonJump;
+import cafe.kagu.kagu.mods.impl.move.ModSpeed;
 import cafe.kagu.kagu.mods.impl.move.ModSprint;
 import cafe.kagu.kagu.mods.impl.player.ModAntiAim;
 import cafe.kagu.kagu.mods.impl.player.ModDisabler;
@@ -25,6 +27,7 @@ import cafe.kagu.kagu.mods.impl.visual.ModChestEsp;
 import cafe.kagu.kagu.mods.impl.visual.ModClickGui;
 import cafe.kagu.kagu.mods.impl.visual.ModEsp;
 import cafe.kagu.kagu.mods.impl.visual.ModHud;
+import cafe.kagu.kagu.mods.impl.visual.ModIndicators;
 import cafe.kagu.kagu.mods.impl.visual.ModNormalZoomCam;
 import cafe.kagu.kagu.mods.impl.visual.ModViewModels;
 import cafe.kagu.kagu.mods.impl.yiff.ModDebugBoundingBoxes;
@@ -49,6 +52,7 @@ public class ModuleManager {
 	// Movement
 	public static ModMoonJump modMoonJump = new ModMoonJump();
 	public static ModSprint modSprint = new ModSprint();
+	public static ModSpeed modSpeed = new ModSpeed();
 	
 	// Player
 	public static ModAntiAim modAntiAim = new ModAntiAim();
@@ -62,6 +66,7 @@ public class ModuleManager {
 	public static ModChestEsp modChestEsp = new ModChestEsp();
 	public static ModEsp modEsp = new ModEsp();
 	public static ModNormalZoomCam modNormalZoomCam = new ModNormalZoomCam();
+	public static ModIndicators modIndicators = new ModIndicators();
 	
 	// Exploit
 	public static ModCreative64Stack modCreative64Stack = new ModCreative64Stack();
@@ -69,6 +74,7 @@ public class ModuleManager {
 	public static ModTimer modTimer = new ModTimer();
 	public static ModBlink modBlink = new ModBlink();
 	public static ModCrasher modCrasher = new ModCrasher();
+	public static ModNoHCollisionSlowdown modNoHCollisionSlowdown = new ModNoHCollisionSlowdown();
 	
 	// Development
 	public static ModTest modTest = new ModTest();
@@ -97,6 +103,9 @@ public class ModuleManager {
 			modCrasher,
 			modReach,
 			modHitboxes,
+			modIndicators,
+			modNoHCollisionSlowdown,
+			modSpeed,
 			
 			modBlink
 	};

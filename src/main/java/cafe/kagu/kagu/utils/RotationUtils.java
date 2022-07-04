@@ -6,6 +6,7 @@ package cafe.kagu.kagu.utils;
 import javax.vecmath.Vector3d;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.EntityPlayerSP;
 
 /**
  * @author lavaflowglow
@@ -13,13 +14,23 @@ import net.minecraft.client.Minecraft;
  */
 public class RotationUtils {
 	
+	private static Minecraft mc = Minecraft.getMinecraft();
+	
+	/**
+	 * Called at the start of the client
+	 */
+	public static void start() {
+		
+	}
+	
 	/**
 	 * Calculates the angle from the players eyes needed to look at pos2
 	 * @param targetPos The target position
 	 * @return A float array where the first index is the yaw and the second is the pitch
 	 */
 	public static float[] getRotations(Vector3d targetPos) {
-		return getRotations(new Vector3d(Minecraft.getMinecraft().thePlayer.posX, Minecraft.getMinecraft().thePlayer.posY + Minecraft.getMinecraft().thePlayer.getEyeHeight(), Minecraft.getMinecraft().thePlayer.posZ), 
+		EntityPlayerSP thePlayer = mc.thePlayer;
+		return getRotations(new Vector3d(thePlayer.posX, thePlayer.posY + thePlayer.getEyeHeight(), thePlayer.posZ), 
 				targetPos);
 	}
 	
@@ -38,6 +49,36 @@ public class RotationUtils {
 		double yaw = Math.toDegrees(Math.atan2(distZ, distX));
 		double pitch = Math.toDegrees(Math.atan2(distY, dist));
 		return new float[] {(float)yaw - 90, (float)-pitch};
+	}
+	
+	/**
+	 * @return The strafe yaw of the player, takes the players intended movements and generates a yaw with them
+	 */
+	public static float getStrafeYaw() {
+		float yaw = 0;
+		EntityPlayerSP thePlayer = mc.thePlayer;
+		float moveForward = thePlayer.moveForward;
+		float moveStrafing = thePlayer.moveStrafing;
+		
+		if (moveStrafing > 0) {
+			yaw -= moveForward == 0 ? 90 : 45;
+		}
+		else if (moveStrafing < 0) {
+			yaw += moveForward == 0 ? 90 : 45;
+		}
+		
+		if (moveForward < 0) {
+			yaw += 180;
+			if (moveStrafing > 0) {
+				yaw += 90;
+			}
+			else if (moveStrafing < 0) {
+				yaw -= 90;
+			}
+		}
+		
+		yaw += thePlayer.rotationYaw;
+		return yaw;
 	}
 	
 }

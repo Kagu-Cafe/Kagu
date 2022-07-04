@@ -19,6 +19,8 @@ import cafe.kagu.kagu.ui.Hud;
 import cafe.kagu.kagu.ui.clickgui.GuiCsgoClickgui;
 import cafe.kagu.kagu.ui.gui.GuiDefaultMainMenu;
 import cafe.kagu.kagu.ui.gui.MainMenuHandler;
+import cafe.kagu.kagu.utils.MovementUtils;
+import cafe.kagu.kagu.utils.RotationUtils;
 import cafe.kagu.kagu.utils.SpoofUtils;
 import cafe.kagu.kagu.utils.StencilUtil;
 import net.minecraft.client.Minecraft;
@@ -130,6 +132,16 @@ public class Kagu {
 		logger.info("Loading the main menus...");
 		GuiDefaultMainMenu.start();
 		logger.info("Loaded the main menus");
+		
+		// Load the movement utils
+		logger.info("Loading the movement utils...");
+		MovementUtils.start();
+		logger.info("Loaded the movement utils");
+		
+		// Load the rotation utils
+		logger.info("Loading the rotation utils...");
+		RotationUtils.start();
+		logger.info("Loaded the rotation utils");
 		
 		// Hook the hud
 		logger.info("Hooking the hud...");

@@ -44,6 +44,9 @@ public class FontUtils {
 	// Microsoft logo font
 	public static final FontRenderer MICROSOFT_LOGO_16 = new FontRenderer(getFontFromInputStream(FontUtils.class.getResourceAsStream("Segoe UI.ttf"), 32, Font.PLAIN), 0.5);
 	
+	// Verdana, used in the skeet hud
+	public static final FontRenderer VERDANA_BOLD_10 = new FontRenderer(getFontFromInputStream(FontUtils.class.getResourceAsStream("verdana-bold.ttf"), 20, Font.PLAIN), 0.5);
+	
 	/**
 	 * Gets a font from an inputstream
 	 * @param in The inputstream

@@ -26,4 +26,9 @@ public class ModHitboxes extends Module {
 		return expansion;
 	}
 	
+	@Override
+	public String[] getInfo() {
+		return new String[] {expansion.getValue() + ""};
+	}
+	
 }
