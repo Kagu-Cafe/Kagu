@@ -10,6 +10,7 @@ import org.apache.commons.lang3.RandomUtils;
 import cafe.kagu.kagu.eventBus.Handler;
 import cafe.kagu.kagu.eventBus.EventHandler;
 import cafe.kagu.kagu.eventBus.impl.EventPlayerUpdate;
+import cafe.kagu.kagu.eventBus.impl.EventRender3D;
 import cafe.kagu.kagu.eventBus.impl.EventTick;
 import cafe.kagu.kagu.mods.Module;
 import cafe.kagu.kagu.settings.impl.BooleanSetting;
@@ -23,6 +24,8 @@ import cafe.kagu.kagu.utils.MovementUtils;
 import cafe.kagu.kagu.utils.SpoofUtils;
 import cafe.kagu.kagu.utils.UiUtils;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer.EnumChatVisibility;
 import net.minecraft.network.play.client.C15PacketClientSettings;
 import net.minecraft.network.play.client.C17PacketCustomPayload;
@@ -62,8 +65,26 @@ public class ModTest extends Module {
 	public Handler<EventTick> onTick = e -> {
 		if (e.isPost())
 			return;
-		if (!mc.thePlayer.onGround && MovementUtils.isTrueOnGround())
-			mc.thePlayer.motionY = 0;
+	};
+	
+	@EventHandler
+	public Handler<EventRender3D> on3DRender = e -> {
+		EntityPlayerSP thePlayer = mc.thePlayer;
+		
+		GlStateManager.pushMatrix();
+		GlStateManager.pushAttrib();
+		
+		{
+			
+			if (thePlayer.isSneaking()) {
+				GlStateManager.translate(0.0F, 0.2F, 0.0F);
+			}
+			
+		}
+		
+		GlStateManager.popAttrib();
+		GlStateManager.popMatrix();
+		
 	};
 	
 }

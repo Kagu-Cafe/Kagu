@@ -133,5 +133,12 @@ public class Timer
 	public void setTimerSpeed(float timerSpeed) {
 		this.timerSpeed = timerSpeed;
 	}
-
+	
+	/**
+	 * @return the renderPartialTicks
+	 */
+	public float getRenderPartialTicks() {
+		return renderPartialTicks;
+	}
+	
 }

@@ -110,7 +110,7 @@ public class ModelPlayer extends ModelBiped
         this.bipedDeadmau5Head.rotationPointY = 0.0F;
         this.bipedDeadmau5Head.render(p_178727_1_);
     }
-
+    
     public void renderCape(float p_178728_1_)
     {
         this.bipedCape.render(p_178728_1_);

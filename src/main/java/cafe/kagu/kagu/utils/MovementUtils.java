@@ -39,7 +39,7 @@ public class MovementUtils {
 	 */
 	public static boolean isTrueOnGround(double distance) {
 		EntityPlayerSP thePlayer = mc.thePlayer;
-		return !mc.theWorld.getCollidingBoundingBoxes(thePlayer, thePlayer.getEntityBoundingBox().expand(0, distance, 0)).isEmpty();
+		return !mc.theWorld.getCollidingBoundingBoxes(thePlayer, thePlayer.getEntityBoundingBox().offset(0, -distance, 0)).isEmpty();
 	}
 	
 	/**
