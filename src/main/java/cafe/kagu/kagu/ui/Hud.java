@@ -50,8 +50,9 @@ public class Hud {
 		FontRenderer mainFr = FontUtils.STRATUM2_MEDIUM_13_AA;
 		
 		// Render hud
-		mainFr.drawString(Kagu.getName() + " v" + Kagu.getVersion(), 2, 1, 0x80000000);
-		mainFr.drawString(Kagu.getName() + " v" + Kagu.getVersion(), 1, 0, -1);
+		String watermark = Kagu.getName() + " v" + Kagu.getVersion();
+		mainFr.drawString(watermark, 2, 1, 0x80000000);
+		mainFr.drawString(watermark, 1, 0, -1);
 		
 		// Arraylist
 		drawArraylist(mc, sr);
