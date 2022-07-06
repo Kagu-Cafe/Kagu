@@ -581,7 +581,7 @@ public abstract class RendererLivingEntity<T extends EntityLivingBase> extends R
             if (this.canRenderName(entity))
             {
             	
-            	if (ModuleManager.modEsp.isEnabled() && ModuleManager.modEsp.mode.is("Kagu 2D")) {
+            	if (ModuleManager.modEsp.isEnabled() && ModuleManager.modEsp.getMode().is("Kagu 2D")) {
             		return;
             	}
             	

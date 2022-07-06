@@ -85,7 +85,7 @@ public class ModuleManager {
 	// An array of all the modules in the client
 	private static final Module[] MODULES = new Module[] {
 			modClickGui,
-			modKillAura,
+			modAntiAim,
 			modHud,
 			modAnimations,
 			modChestEsp,
@@ -93,13 +93,13 @@ public class ModuleManager {
 			modNormalZoomCam,
 			modMoonJump,
 			modSprint,
-			modAntiAim,
 			modDisabler,
 			modCreative64Stack,
 			modDebugBoundingBoxes,
 			modTest,
 			modAntiCrash,
 			modViewModels,
+			modKillAura,
 			modBacktrack,
 			modTimer,
 			modCrasher,

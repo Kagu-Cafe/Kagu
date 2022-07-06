@@ -367,7 +367,7 @@ public class RenderManager
         int j = i % 65536;
         int k = i / 65536;
         
-        if (ModuleManager.modEsp.isDisabled() || ModuleManager.modEsp.chams.isDisabled()) {
+        if (ModuleManager.modEsp.isDisabled() || ModuleManager.modEsp.getChams().isDisabled()) {
         	OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float)j / 1.0F, (float)k / 1.0F);
         }
         else {

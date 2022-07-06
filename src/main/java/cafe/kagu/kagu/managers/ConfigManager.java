@@ -71,7 +71,7 @@ public class ConfigManager {
 				}
 				
 				config += Kagu.GROUP_SEPARATOR + setting.getName()
-						+ Kagu.RECORD_SEPARATOR + setting.isHidden()
+						+ Kagu.RECORD_SEPARATOR + "NaN" // Hidden fields was deprecated and removed, we put this NaN value here for backwards compatibility
 						+ Kagu.RECORD_SEPARATOR + settingType
 						+ Kagu.RECORD_SEPARATOR + settingValue;
 				
@@ -117,7 +117,7 @@ public class ConfigManager {
 					
 					// Load the setting info
 					String settingName = settingSplit[0];
-					String settingHidden = settingSplit[1];
+//					String settingHidden = settingSplit[1]; Deprecated and removed
 					String settingType = settingSplit[2];
 					String settingValue = settingSplit[3];
 					
@@ -163,9 +163,6 @@ public class ConfigManager {
 							logger.error("Setting was not of expected type \"" + settingType + "\"");
 							continue;
 						}
-						
-						// Set hidden
-						setting.setHidden(settingHidden.equals("true"));
 						
 					}
 					

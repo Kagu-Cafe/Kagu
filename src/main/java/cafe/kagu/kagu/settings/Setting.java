@@ -8,6 +8,7 @@ import org.apache.logging.log4j.Logger;
 
 import cafe.kagu.kagu.Kagu;
 import cafe.kagu.kagu.settings.impl.ModeSetting;
+import cafe.kagu.kagu.utils.ChatUtils;
 
 /**
  * @author lavaflowglow
@@ -31,7 +32,6 @@ public abstract class Setting {
 	}
 
 	private String name;
-	private boolean hidden = false;
 	private SettingDependency dependency;
 	
 	private static Logger logger = LogManager.getLogger();
@@ -62,16 +62,9 @@ public abstract class Setting {
 	 * @return the hidden
 	 */
 	public boolean isHidden() {
-		return dependency == null ? hidden : (hidden || !dependency.check());
+		return dependency == null ? false : !dependency.check();
 	} 
-
-	/**
-	 * @param hidden the hidden to set
-	 */
-	public void setHidden(boolean hidden) {
-		this.hidden = hidden;
-	}
-
+	
 	/**
 	 * @return the dependency
 	 */

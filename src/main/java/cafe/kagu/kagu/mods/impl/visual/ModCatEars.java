@@ -12,6 +12,7 @@ import cafe.kagu.kagu.eventBus.EventHandler;
 import cafe.kagu.kagu.eventBus.Handler;
 import cafe.kagu.kagu.eventBus.impl.EventRender3D;
 import cafe.kagu.kagu.mods.Module;
+import cafe.kagu.kagu.mods.ModuleManager;
 import cafe.kagu.kagu.utils.DrawUtils3D;
 import cafe.kagu.kagu.utils.SpoofUtils;
 import cafe.kagu.kagu.utils.UiUtils;
@@ -30,7 +31,7 @@ import net.minecraft.util.Vec3;
 public class ModCatEars extends Module {
 
 	public ModCatEars() {
-		super("CatEars", Category.VISUAL);
+		super("DistastefulEars", Category.VISUAL);
 	}
 
 	@EventHandler
@@ -43,6 +44,13 @@ public class ModCatEars extends Module {
 		GlStateManager.pushMatrix();
 		GlStateManager.pushAttrib();
 		GlStateManager.enableDepth();
+		if (ModuleManager.modEsp.isEnabled() && ModuleManager.modEsp.getChams().isEnabled()) {
+			GL11.glEnable(GL11.GL_POLYGON_OFFSET_FILL);
+			GL11.glPolygonOffset(1.0f, -1099998.0f);
+		}
+		{
+			GL11.glLineWidth(2);
+		}
 		
 		if (mc.thePlayer.isSneaking()) {
 			GlStateManager.translate(0, -0.17, 0);

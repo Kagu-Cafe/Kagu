@@ -50,10 +50,10 @@ public class ModEsp extends Module {
 	}
 	
 	// ESP modes
-	public ModeSetting mode = new ModeSetting("Mode", "Kagu 2D", "Kagu 2D", "Simple White", "Test");
+	private ModeSetting mode = new ModeSetting("Mode", "Kagu 2D", "Kagu 2D", "Simple White", "Test");
 	
 	// Chams
-	public BooleanSetting chams = new BooleanSetting("Chams", true);
+	private BooleanSetting chams = new BooleanSetting("Chams", true);
 	
 	// Render targets
 	private BooleanSetting targetAll = new BooleanSetting("Everything ESP", true);
@@ -362,6 +362,20 @@ public class ModEsp extends Module {
 			return bottom;
 		}
 		
+	}
+	
+	/**
+	 * @return the mode
+	 */
+	public ModeSetting getMode() {
+		return mode;
+	}
+	
+	/**
+	 * @return the chams
+	 */
+	public BooleanSetting getChams() {
+		return chams;
 	}
 	
 }
