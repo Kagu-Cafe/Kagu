@@ -23,7 +23,7 @@ import cafe.kagu.kagu.mods.impl.move.ModSprint;
 import cafe.kagu.kagu.mods.impl.player.ModAntiAim;
 import cafe.kagu.kagu.mods.impl.player.ModDisabler;
 import cafe.kagu.kagu.mods.impl.visual.ModAnimations;
-import cafe.kagu.kagu.mods.impl.visual.ModCatEars;
+import cafe.kagu.kagu.mods.impl.visual.ModDistastefulEars;
 import cafe.kagu.kagu.mods.impl.visual.ModChestEsp;
 import cafe.kagu.kagu.mods.impl.visual.ModClickGui;
 import cafe.kagu.kagu.mods.impl.visual.ModEsp;
@@ -68,7 +68,7 @@ public class ModuleManager {
 	public static ModEsp modEsp = new ModEsp();
 	public static ModNormalZoomCam modNormalZoomCam = new ModNormalZoomCam();
 	public static ModIndicators modIndicators = new ModIndicators();
-	public static ModCatEars modCatEars = new ModCatEars();
+	public static ModDistastefulEars modDistastefulEars = new ModDistastefulEars();
 	
 	// Exploit
 	public static ModCreative64Stack modCreative64Stack = new ModCreative64Stack();
@@ -108,7 +108,7 @@ public class ModuleManager {
 			modIndicators,
 			modNoHCollisionSlowdown,
 			modSpeed,
-			modCatEars,
+			modDistastefulEars,
 			
 			modBlink
 	};
