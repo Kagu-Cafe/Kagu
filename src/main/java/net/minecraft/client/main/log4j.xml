@@ -18,7 +18,7 @@
 		</RollingFile>
 	</Appenders>
 	<Loggers>
-		<Root level="DEBUG">
+		<Root level="DEBUG"  additivity="false">
 			<AppenderRef ref="STDOUT" />
 			<AppenderRef ref="logOutput" />
 		</Root>

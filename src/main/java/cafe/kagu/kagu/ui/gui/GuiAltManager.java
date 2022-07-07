@@ -47,8 +47,12 @@ public class GuiAltManager extends GuiScreen {
 				buttonImageMargin = (buttonHeight - buttonImageSize) / 2;
 		double buttonMargin = 7;
 		double buttonCurve = 5;
+		double playerScale = 1;
+		double playerHeight = buttonWidth * playerScale * 1.62025316;
 		FontRenderer mojangAltFont = FontUtils.MOJANG_LOGO_20;
 		FontRenderer microsoftAltFont = FontUtils.MICROSOFT_LOGO_16;
+		FontRenderer altNameFont = FontUtils.SMALL_PIXEL_16;
+		FontRenderer altInfoFont = FontUtils.SMALL_PIXEL_10;
 		
 		drawRect(0, 0, width, height, backgroundColor);
 		
@@ -81,6 +85,14 @@ public class GuiAltManager extends GuiScreen {
 		Gui.drawTexture(width - buttonWidth * 2 - buttonMargin * 2 + buttonImageMargin, height - buttonHeight - buttonMargin + buttonImageMargin, buttonImageSize, buttonImageSize);
 		microsoftAltFont.drawCenteredString("Add Microsoft Alt", width - buttonWidth * 2 - buttonMargin * 2 + buttonImageMargin + buttonImageSize + ((buttonWidth - buttonImageSize - buttonImageMargin * 2) / 2),
 				height - buttonHeight / 2 - buttonMargin - microsoftAltFont.getFontHeight() / 2 - 2, microsoftFontColor);
+		
+		// Alt skin
+		mc.getTextureManager().bindTexture(defaultSteve3D);
+		Gui.drawTexture(width - buttonWidth - buttonMargin * 1.5 - buttonWidth * playerScale / 2, height - buttonHeight - buttonMargin * 2 - playerHeight, buttonWidth * playerScale, playerHeight);
+		
+		// Alt username and other info
+		altNameFont.drawCenteredString(mc.getSession().getUsername(), width - buttonWidth - buttonMargin * 1.5 + buttonWidth * playerScale * 0.025, height - buttonHeight - buttonMargin * 2 - playerHeight - altNameFont.getFontHeight() * 2, 0xffffffff);
+		altInfoFont.drawCenteredString(mc.getSession().getToken().equals("0") ? "Cracked" : "Premium", width - buttonWidth - buttonMargin * 1.5 + buttonWidth * playerScale * 0.025, height - buttonHeight - buttonMargin * 2 - playerHeight - altNameFont.getFontHeight(), mc.getSession().getToken().equals("0") ? 0xffff0000 : 0xff00ff00);
 		
 		if (leftMouseClicked)
 			leftMouseClicked = false;

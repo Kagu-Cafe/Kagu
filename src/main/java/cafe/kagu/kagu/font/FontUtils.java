@@ -37,7 +37,8 @@ public class FontUtils {
 	
 	// Small pixel
 	public static final FontRenderer SMALL_PIXEL_4 = new FontRenderer(getFontFromInputStream(FontUtils.class.getResourceAsStream("small_pixel.ttf"), 16, Font.PLAIN), 0.25);
-	public static final FontRenderer SMALL_PIXEL_6 = new FontRenderer(getFontFromInputStream(FontUtils.class.getResourceAsStream("small_pixel.ttf"), 24, Font.PLAIN), 0.25);
+	public static final FontRenderer SMALL_PIXEL_10 = new FontRenderer(getFontFromInputStream(FontUtils.class.getResourceAsStream("small_pixel.ttf"), 40, Font.PLAIN), 0.25);
+	public static final FontRenderer SMALL_PIXEL_16 = new FontRenderer(getFontFromInputStream(FontUtils.class.getResourceAsStream("small_pixel.ttf"), 64, Font.PLAIN), 0.25);
 	
 	// Mojang logo font
 	public static final FontRenderer MOJANG_LOGO_20 = new FontRenderer(getFontFromInputStream(FontUtils.class.getResourceAsStream("gyroscope-mojang.ttf"), 40, Font.PLAIN), 0.5);
