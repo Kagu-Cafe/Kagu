@@ -1,5 +1,7 @@
 package net.minecraft.world;
 
+import cafe.kagu.kagu.mods.ModuleManager;
+import cafe.kagu.kagu.mods.impl.visual.ModAmbience;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
@@ -109,6 +111,18 @@ public class ChunkCache implements IBlockAccess
 
     private int getLightForExt(EnumSkyBlock p_175629_1_, BlockPos pos)
     {
+    	
+        // Ambience mod
+        ModAmbience modAmbience = ModuleManager.modAmbience;
+        if (modAmbience.isEnabled()) {
+        	switch (modAmbience.getBlockLighting().getMode()) {
+        		case "Unchanged":break;
+        		case "Midnight":return 0;
+        		case "Dusk":return 21;
+        		case "Day":return 12;
+        	}
+        }
+        
         if (p_175629_1_ == EnumSkyBlock.SKY && this.worldObj.provider.getHasNoSky())
         {
             return 0;
@@ -160,6 +174,18 @@ public class ChunkCache implements IBlockAccess
 
     public int getLightFor(EnumSkyBlock p_175628_1_, BlockPos pos)
     {
+    	
+        // Ambience mod
+        ModAmbience modAmbience = ModuleManager.modAmbience;
+        if (modAmbience.isEnabled()) {
+        	switch (modAmbience.getBlockLighting().getMode()) {
+        		case "Unchanged":break;
+        		case "Midnight":return 0;
+        		case "Dusk":return 21;
+        		case "Day":return 12;
+        	}
+        }
+        
         if (pos.getY() >= 0 && pos.getY() < 256)
         {
             int i = (pos.getX() >> 4) - this.chunkX;

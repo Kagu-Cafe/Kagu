@@ -5,6 +5,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 import cafe.kagu.kagu.mods.ModuleManager;
+import cafe.kagu.kagu.mods.impl.visual.ModAmbience;
 
 import java.util.Calendar;
 import java.util.Collection;
@@ -3404,6 +3405,18 @@ public abstract class World implements IBlockAccess
 
     public long getWorldTime()
     {
+    	
+        // Ambience mod
+        ModAmbience modAmbience = ModuleManager.modAmbience;
+        if (modAmbience.isEnabled()) {
+        	switch (modAmbience.getWorldTime().getMode()) {
+        		case "Unchanged":break;
+        		case "Midnight":return 20000;
+        		case "Dusk":return 13920;
+        		case "Day":return 1000;
+        	}
+        }
+    	
         return this.worldInfo.getWorldTime();
     }
 

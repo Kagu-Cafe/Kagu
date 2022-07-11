@@ -37,8 +37,8 @@ public class FileManager {
 						DEFAULT_CONFIG = new File(DEFAULTS_DIR, "config.kagu"),
 						
 						// Assets
-						BACKGROUND_SHADER = new File(ASSETS_DIR, "background.frag"),
-						COLOR_SHADER = new File(ASSETS_DIR, "color.frag"),
+						BACKGROUND_SHADER = new File(ASSETS_DIR, "background.fs"),
+						COLOR_SHADER = new File(ASSETS_DIR, "color.fs"),
 						COLOR_TEXTURE_FRAG_SHADER = new File(ASSETS_DIR, "colorTexture.fs"),
 						COLOR_TEXTURE_VERT_SHADER = new File(ASSETS_DIR, "colorTexture.vs");
 	
@@ -75,13 +75,13 @@ public class FileManager {
 		// Create any missing files
 		if (!BACKGROUND_SHADER.exists())
 			try {
-				downloadFileFromUrl(BACKGROUND_SHADER, "https://raw.githubusercontent.com/Kagu-Cafe/assets-repo/main/background.frag");
+				downloadFileFromUrl(BACKGROUND_SHADER, "https://raw.githubusercontent.com/Kagu-Cafe/assets-repo/main/background.fs");
 			} catch (Exception e) {
 				logger.error("Failed to download the main menu background shader, this may cause issues", e);
 			}
 		if (!COLOR_SHADER.exists())
 			try {
-				downloadFileFromUrl(COLOR_SHADER, "https://raw.githubusercontent.com/Kagu-Cafe/assets-repo/main/color.frag");
+				downloadFileFromUrl(COLOR_SHADER, "https://raw.githubusercontent.com/Kagu-Cafe/assets-repo/main/color.fs");
 			} catch (Exception e) {
 				logger.error("Failed to download the color shader, this may cause issues", e);
 			}

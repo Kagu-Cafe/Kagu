@@ -3,6 +3,10 @@ package net.minecraft.world.chunk;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Queues;
+
+import cafe.kagu.kagu.mods.ModuleManager;
+import cafe.kagu.kagu.mods.impl.visual.ModAmbience;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
