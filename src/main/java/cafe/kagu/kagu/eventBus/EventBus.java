@@ -4,6 +4,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -26,8 +27,8 @@ import net.minecraft.client.Minecraft;
  */
 public class EventBus {
 	
-	private static Map<Handler<? extends Event>, Class<? extends Event>> subscribers = new HashMap<Handler<? extends Event>, Class<? extends Event>>();
-	private static Map<Handler<? extends Event>, Module> moduleSubscribers = new HashMap<Handler<? extends Event>, Module>();
+	private static Map<Handler<? extends Event>, Class<? extends Event>> subscribers = new LinkedHashMap<Handler<? extends Event>, Class<? extends Event>>();
+	private static Map<Handler<? extends Event>, Module> moduleSubscribers = new LinkedHashMap<Handler<? extends Event>, Module>();
 	private static Logger logger = LogManager.getLogger();
 	
 	/**

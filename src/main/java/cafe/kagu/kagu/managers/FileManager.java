@@ -12,6 +12,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
@@ -95,7 +96,7 @@ public class FileManager {
 			}
 		if (!MICROSOFT_CONFIGURATION.exists()) {
 			Yaml yaml = new Yaml();
-			Map<String, String> yamlData = new HashMap<>();
+			Map<String, String> yamlData = new LinkedHashMap<>();
 			yamlData.put("Azure Client Id", "https://docs.microsoft.com/en-us/azure/active-directory/develop/quickstart-register-app");
 			yamlData.put("Azure Secret", "https://docs.microsoft.com/en-us/azure/active-directory/develop/quickstart-register-app");
 			String output = yaml.dumpAs(yamlData, Tag.MAP, FlowStyle.BLOCK);
