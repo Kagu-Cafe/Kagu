@@ -148,4 +148,12 @@ public class EventBus {
 		
 	}
 	
+	/**
+	 * Boots all the event listeners
+	 */
+	public static void bootAll() {
+		subscribers.clear();
+		moduleSubscribers.clear();
+	}
+	
 }

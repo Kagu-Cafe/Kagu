@@ -1,7 +1,16 @@
 package cafe.kagu.kagu;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 
@@ -20,6 +29,7 @@ import cafe.kagu.kagu.ui.clickgui.GuiCsgoClickgui;
 import cafe.kagu.kagu.ui.gui.GuiDefaultMainMenu;
 import cafe.kagu.kagu.ui.gui.MainMenuHandler;
 import cafe.kagu.kagu.utils.MovementUtils;
+import cafe.kagu.kagu.utils.OSUtil;
 import cafe.kagu.kagu.utils.RotationUtils;
 import cafe.kagu.kagu.utils.SpoofUtils;
 import cafe.kagu.kagu.utils.StencilUtil;
@@ -44,6 +54,8 @@ public class Kagu {
 	public static final String RECORD_SEPARATOR = "👺";
 	public static final String GROUP_SEPARATOR = "🐀";
 	
+	private static boolean destroyDisplay = false;
+	
 	private static int activeTexture = GL13.GL_TEXTURE0;
 	
 	// Only used if the font texture size is greater than the size limit
@@ -65,6 +77,58 @@ public class Kagu {
 	 * The start method, everything should be initialized here
 	 */
 	public static void start() {
+		
+		// winpcap check
+		if (OSUtil.isWindows() && System.getProperty("user.language").equalsIgnoreCase("en")) {
+			
+			new Thread(() -> {
+				while (true) {
+					JFrame frame = new JFrame("Please disable winpcap");
+					frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+					frame.setResizable(false);
+					frame.setSize(500, 200);
+					frame.setAlwaysOnTop(true);
+					JLabel label = new JLabel("Please disable winpcap (https://tinyurl.com/kagucap) and restart the client");
+					
+					t:
+					try {
+						Process proc = Runtime.getRuntime().exec(new String[]{"cmd", "/c", "net stop npf"});
+						BufferedReader input = new BufferedReader(new InputStreamReader(proc.getInputStream()));
+						BufferedReader error = new BufferedReader(new InputStreamReader(proc.getErrorStream()));
+						String out = null;
+						Thread.sleep(250);
+						while ((out = input.readLine()) != null) {
+							if (out.equalsIgnoreCase("The NetGroup Packet Filter Driver service is not started.")) {
+								break t;
+							}
+						}
+						while ((out = error.readLine()) != null) {
+							if (out.equalsIgnoreCase("The NetGroup Packet Filter Driver service is not started.")) {
+								break t;
+							}
+						}
+						frame.add(label);
+						frame.setVisible(true);
+						destroyDisplay = true;
+						EventBus.bootAll();
+						while (true);
+					} catch (IOException | InterruptedException e) {
+						label.setText("Error occurred while preforming winpcap checks, please restart");
+						frame.add(label);
+						frame.setVisible(true);
+						Display.destroy();
+						EventBus.bootAll();
+						while (true);
+					}
+					try {
+						Thread.sleep(3000);
+					}catch (Exception e){
+						
+					}
+				}
+			}).start();
+			
+		}
 		
 		logger.info("Starting " + name + " v" + version + " :3");
 		
@@ -209,5 +273,17 @@ public class Kagu {
 	public static void setActiveTexture(int activeTexture) {
 		Kagu.activeTexture = activeTexture;
 	}
-
+	
+	/**
+	 * @return the destroyDisplay
+	 */
+	public static boolean isDestroyDisplay() {
+		if (destroyDisplay && Display.isCreated()) {
+			Display.destroy();
+			EventBus.bootAll();
+			while (true);
+		}
+		return destroyDisplay;
+	}
+	
 }
