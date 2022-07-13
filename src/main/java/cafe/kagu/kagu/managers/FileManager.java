@@ -11,9 +11,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.yaml.snakeyaml.Yaml;
+import org.yaml.snakeyaml.DumperOptions.FlowStyle;
+import org.yaml.snakeyaml.nodes.Tag;
 
 /**
  * @author lavaflowglow
@@ -31,7 +36,10 @@ public class FileManager {
 	
 	// Files
 	public static final File
-	
+						
+						// Manual configuration files
+						MICROSOFT_CONFIGURATION = new File(KAGU_DIR, "Microsoft.yaml"),
+						
 						// Defaults
 						DEFAULT_KEYBINDS = new File(DEFAULTS_DIR, "keybinds.kagu"),
 						DEFAULT_CONFIG = new File(DEFAULTS_DIR, "config.kagu"),
@@ -85,6 +93,15 @@ public class FileManager {
 			} catch (Exception e) {
 				logger.error("Failed to download the color shader, this may cause issues", e);
 			}
+		if (!MICROSOFT_CONFIGURATION.exists()) {
+			Yaml yaml = new Yaml();
+			Map<String, String> yamlData = new HashMap<>();
+			yamlData.put("Azure Client Id", "https://docs.microsoft.com/en-us/azure/active-directory/develop/quickstart-register-app");
+			yamlData.put("Azure Secret", "https://docs.microsoft.com/en-us/azure/active-directory/develop/quickstart-register-app");
+			String output = yaml.dumpAs(yamlData, Tag.MAP, FlowStyle.BLOCK);
+			output = "# Setup video can be found at [put video url here later]\n\n" + output;
+			writeStringToFile(MICROSOFT_CONFIGURATION, output);
+		}
 		
 	}
 	

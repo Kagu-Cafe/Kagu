@@ -68,7 +68,7 @@ public class GuiAltManager extends GuiScreen {
 		UiUtils.drawRoundedRect(width - buttonWidth - buttonMargin, height - buttonHeight - buttonMargin, width - buttonMargin, height - buttonMargin, mojangButtonColor, buttonCurve);
 		mc.getTextureManager().bindTexture(mojangLogo);
 		Gui.drawTexture(width - buttonWidth - buttonMargin + buttonImageMargin, height - buttonHeight - buttonMargin + buttonImageMargin, buttonImageSize, buttonImageSize);
-		mojangAltFont.drawCenteredString("Add Premium Alt", width - buttonWidth - buttonMargin + buttonImageMargin + buttonImageSize + ((buttonWidth - buttonImageSize - buttonImageMargin * 2) / 2),
+		mojangAltFont.drawCenteredString("Add Cracked Alt", width - buttonWidth - buttonMargin + buttonImageMargin + buttonImageSize + ((buttonWidth - buttonImageSize - buttonImageMargin * 2) / 2),
 				height - buttonHeight / 2 - buttonMargin - mojangAltFont.getFontHeight() / 2 + 2, 0xffffffff);
 		
 		// Add microsoft alt button
@@ -85,14 +85,6 @@ public class GuiAltManager extends GuiScreen {
 		Gui.drawTexture(width - buttonWidth * 2 - buttonMargin * 2 + buttonImageMargin, height - buttonHeight - buttonMargin + buttonImageMargin, buttonImageSize, buttonImageSize);
 		microsoftAltFont.drawCenteredString("Add Microsoft Alt", width - buttonWidth * 2 - buttonMargin * 2 + buttonImageMargin + buttonImageSize + ((buttonWidth - buttonImageSize - buttonImageMargin * 2) / 2),
 				height - buttonHeight / 2 - buttonMargin - microsoftAltFont.getFontHeight() / 2 - 2, microsoftFontColor);
-		
-		// Alt skin
-		mc.getTextureManager().bindTexture(defaultSteve3D);
-		Gui.drawTexture(width - buttonWidth - buttonMargin * 1.5 - buttonWidth * playerScale / 2, height - buttonHeight - buttonMargin * 2 - playerHeight, buttonWidth * playerScale, playerHeight);
-		
-		// Alt username and other info
-		altNameFont.drawCenteredString(mc.getSession().getUsername(), width - buttonWidth - buttonMargin * 1.5 + buttonWidth * playerScale * 0.025, height - buttonHeight - buttonMargin * 2 - playerHeight - altNameFont.getFontHeight() * 2, 0xffffffff);
-		altInfoFont.drawCenteredString(mc.getSession().getToken().equals("0") ? "Cracked" : "Premium", width - buttonWidth - buttonMargin * 1.5 + buttonWidth * playerScale * 0.025, height - buttonHeight - buttonMargin * 2 - playerHeight - altNameFont.getFontHeight(), mc.getSession().getToken().equals("0") ? 0xffff0000 : 0xff00ff00);
 		
 		if (leftMouseClicked)
 			leftMouseClicked = false;
