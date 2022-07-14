@@ -71,7 +71,7 @@ public class ConfigManager {
 				}
 				
 				config += Kagu.GROUP_SEPARATOR + setting.getName()
-						+ Kagu.RECORD_SEPARATOR + "NaN" // Hidden fields was deprecated and removed, we put this NaN value here for backwards compatibility
+						+ Kagu.RECORD_SEPARATOR + " " // Hidden fields was deprecated and removed, we put this nothing value here for backwards compatibility
 						+ Kagu.RECORD_SEPARATOR + settingType
 						+ Kagu.RECORD_SEPARATOR + settingValue;
 				

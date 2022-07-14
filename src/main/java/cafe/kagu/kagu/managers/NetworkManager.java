@@ -56,17 +56,11 @@ public class NetworkManager {
 	/**
 	 * Sends a post request
 	 * @param post The post request
-	 * @param args The args to put in the body of the post
 	 * @return The string returned by the web server, if the response isn't a string then it'll be gibberish
 	 * @throws Exception If something goes wrong
 	 */
-	public String sendPost(HttpPost post, BasicNameValuePair... args) throws Exception {
+	public String sendPost(HttpPost post) throws Exception {
 		post.addHeader(HttpHeaders.USER_AGENT, "Mozilla/5.0 (Windows NT 5.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.71 Safari/537.36");
-		List<NameValuePair> urlParameters = new ArrayList<>();
-		for (BasicNameValuePair basicNameValuePair : args) {
-			urlParameters.add(basicNameValuePair);
-		}
-		post.setEntity(new UrlEncodedFormEntity(urlParameters));
 		CloseableHttpResponse response = httpClient.execute(post);
 		String stringResponse = EntityUtils.toString(response.getEntity());
 		response.close();

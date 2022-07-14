@@ -7,6 +7,7 @@ import com.google.common.collect.Sets;
 import cafe.kagu.kagu.eventBus.Event.EventPosition;
 import cafe.kagu.kagu.eventBus.impl.EventKeyUpdate;
 
+import java.awt.Desktop;
 import java.awt.Toolkit;
 import java.awt.datatransfer.ClipboardOwner;
 import java.awt.datatransfer.DataFlavor;
@@ -708,13 +709,11 @@ public abstract class GuiScreen extends Gui implements GuiYesNoCallback
         }
     }
 
-    private void openWebLink(URI p_175282_1_)
+    public static void openWebLink(URI p_175282_1_)
     {
         try
         {
-            Class<?> oclass = Class.forName("java.awt.Desktop");
-            Object object = oclass.getMethod("getDesktop", new Class[0]).invoke((Object)null, new Object[0]);
-            oclass.getMethod("browse", new Class[] {URI.class}).invoke(object, new Object[] {p_175282_1_});
+        	Desktop.getDesktop().browse(p_175282_1_);
         }
         catch (Throwable throwable)
         {
@@ -773,4 +772,12 @@ public abstract class GuiScreen extends Gui implements GuiYesNoCallback
     {
         this.setWorldAndResolution(mcIn, p_175273_2_, p_175273_3_);
     }
+    
+    /**
+	 * @param clickedLinkURI the clickedLinkURI to set
+	 */
+	public void setClickedLinkURI(URI clickedLinkURI) {
+		this.clickedLinkURI = clickedLinkURI;
+	}
+    
 }

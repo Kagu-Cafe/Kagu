@@ -4,11 +4,15 @@
 package cafe.kagu.kagu.ui.gui;
 
 import java.io.IOException;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.vecmath.Vector4d;
 
+import cafe.kagu.kagu.Kagu;
 import cafe.kagu.kagu.font.FontRenderer;
 import cafe.kagu.kagu.font.FontUtils;
+import cafe.kagu.kagu.managers.FileManager;
+import cafe.kagu.kagu.managers.SessionManager;
 import cafe.kagu.kagu.utils.SoundUtils;
 import cafe.kagu.kagu.utils.UiUtils;
 import net.minecraft.client.Minecraft;
@@ -40,6 +44,8 @@ public class GuiAltManager extends GuiScreen {
 									mojangLogo = new ResourceLocation("Kagu/altManager/mojang.png"),
 									microsoftLogo = new ResourceLocation("Kagu/altManager/microsoft.png");
 	
+	private static CopyOnWriteArrayList<Alt> alts = new CopyOnWriteArrayList<>();
+	
 	@Override
 	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
 		
@@ -56,7 +62,7 @@ public class GuiAltManager extends GuiScreen {
 		
 		drawRect(0, 0, width, height, backgroundColor);
 		
-		// Add premium alt button
+		// Add cracked alt button
 		int mojangButtonColor = GuiAltManager.mojangButtonColor;
 		if (UiUtils.isMouseInsideRoundedRect(mouseX, mouseY, width - buttonWidth - buttonMargin, height - buttonHeight - buttonMargin, width - buttonMargin, height - buttonMargin, buttonCurve)) {
 			if (leftMouseClicked) {
@@ -76,6 +82,7 @@ public class GuiAltManager extends GuiScreen {
 		if (UiUtils.isMouseInsideRoundedRect(mouseX, mouseY, width - buttonWidth * 2 - buttonMargin * 2, height - buttonHeight - buttonMargin, width - buttonMargin * 2 - buttonWidth, height - buttonMargin, buttonCurve)) {
 			if (leftMouseClicked) {
 				mc.getSoundHandler().playSound(SoundUtils.getClickSound());
+				SessionManager.startMicrosoftAuth();
 				leftMouseClicked = false;
 			}
 			microsoftButtonColor = GuiAltManager.microsoftButtonHoverColor;
@@ -94,6 +101,134 @@ public class GuiAltManager extends GuiScreen {
 	protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
 		if (mouseButton == 0)
 			leftMouseClicked = true;
+	}
+	
+	/**
+	 * @return the alts
+	 */
+	public static CopyOnWriteArrayList<Alt> getAlts() {
+		return alts;
+	}
+	
+	/**
+	 * Saves alts to a file
+	 */
+	public static void saveAlts() {
+		String output = "";
+		String unitSeparator = Kagu.UNIT_SEPARATOR;
+		String groupSeparator = Kagu.GROUP_SEPARATOR;
+		String recordSeparator = Kagu.RECORD_SEPARATOR;
+		for (Alt alt : alts) {
+			if (!output.isEmpty())
+				output += unitSeparator;
+			output += alt.getType() + recordSeparator + alt.getUsername();
+			if (alt.getType().equalsIgnoreCase("Microsoft")) {
+				MicrosoftAlt microsoftAlt = (MicrosoftAlt)alt;
+				output += groupSeparator + microsoftAlt.getRefreshToken() + recordSeparator + microsoftAlt.getMinecraftAccessToken() + recordSeparator + microsoftAlt.getUuid();
+			}
+		}
+		FileManager.writeStringToFile(FileManager.ALTS, output);
+	}
+	
+	/**
+	 * Loads alts from a file
+	 */
+	public static void loadAlts() {
+		
+	}
+	
+	public static class Alt{
+		
+		protected String username = " ";
+		protected String type = "";
+
+		/**
+		 * @return the username
+		 */
+		public String getUsername() {
+			return username;
+		}
+
+		/**
+		 * @param username the username to set
+		 */
+		public void setUsername(String username) {
+			this.username = username;
+		}
+		
+		/**
+		 * @return the type
+		 */
+		public String getType() {
+			return type;
+		}
+		
+	}
+	
+	public static class CrackedAlt extends Alt {
+		
+		/**
+		 * @param username The username for the cracked account
+		 */
+		public CrackedAlt(String username) {
+			type = "Cracked";
+			this.username = username;
+		}
+		
+	}
+	
+	public static class MicrosoftAlt extends Alt {
+		
+		public MicrosoftAlt() {
+			type = "Microsoft";
+		}
+		
+		private String refreshToken = " ";
+		private String uuid = " ";
+		private String minecraftAccessToken = " ";
+
+		/**
+		 * @return the refreshToken
+		 */
+		public String getRefreshToken() {
+			return refreshToken;
+		}
+
+		/**
+		 * @param refreshToken the refreshToken to set
+		 */
+		public void setRefreshToken(String refreshToken) {
+			this.refreshToken = refreshToken;
+		}
+
+		/**
+		 * @return the uuid
+		 */
+		public String getUuid() {
+			return uuid;
+		}
+
+		/**
+		 * @param uuid the uuid to set
+		 */
+		public void setUuid(String uuid) {
+			this.uuid = uuid;
+		}
+
+		/**
+		 * @return the minecraftAccessToken
+		 */
+		public String getMinecraftAccessToken() {
+			return minecraftAccessToken;
+		}
+
+		/**
+		 * @param minecraftAccessToken the minecraftAccessToken to set
+		 */
+		public void setMinecraftAccessToken(String minecraftAccessToken) {
+			this.minecraftAccessToken = minecraftAccessToken;
+		}
+
 	}
 	
 }

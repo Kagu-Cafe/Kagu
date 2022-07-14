@@ -3411,7 +3411,7 @@ public abstract class World implements IBlockAccess
         if (modAmbience.isEnabled()) {
         	switch (modAmbience.getWorldTime().getMode()) {
         		case "Unchanged":break;
-        		case "Midnight":return 20000;
+        		case "Midnight":return 18000;
         		case "Dusk":return 13920;
         		case "Day":return 1000;
         	}

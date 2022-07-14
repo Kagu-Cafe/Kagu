@@ -43,6 +43,13 @@
 			<artifactId>snakeyaml</artifactId>
 			<version>1.30</version>
 		</dependency>
+
+		<!-- Lightweight webserver used for microsoft auth -->
+		<dependency>
+			<groupId>com.sparkjava</groupId>
+			<artifactId>spark-core</artifactId>
+			<version>2.9.4</version>
+		</dependency>
 		
 	</dependencies>
 

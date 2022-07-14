@@ -41,6 +41,9 @@ public class FileManager {
 						// Manual configuration files
 						MICROSOFT_CONFIGURATION = new File(KAGU_DIR, "Microsoft.yaml"),
 						
+						// Alts save file
+						ALTS = new File(KAGU_DIR, "Alts.kagu"),
+						
 						// Defaults
 						DEFAULT_KEYBINDS = new File(DEFAULTS_DIR, "keybinds.kagu"),
 						DEFAULT_CONFIG = new File(DEFAULTS_DIR, "config.kagu"),
@@ -97,8 +100,8 @@ public class FileManager {
 		if (!MICROSOFT_CONFIGURATION.exists()) {
 			Yaml yaml = new Yaml();
 			Map<String, String> yamlData = new LinkedHashMap<>();
-			yamlData.put("Azure Client Id", "https://docs.microsoft.com/en-us/azure/active-directory/develop/quickstart-register-app");
-			yamlData.put("Azure Secret", "https://docs.microsoft.com/en-us/azure/active-directory/develop/quickstart-register-app");
+			yamlData.put("Azure Client Id", "https://portal.azure.com/#view/Microsoft_AAD_RegisteredApps/ApplicationsListBlade");
+			yamlData.put("Azure Secret", "https://portal.azure.com/#view/Microsoft_AAD_RegisteredApps/ApplicationsListBlade");
 			String output = yaml.dumpAs(yamlData, Tag.MAP, FlowStyle.BLOCK);
 			output = "# Setup video can be found at [put video url here later]\n\n" + output;
 			writeStringToFile(MICROSOFT_CONFIGURATION, output);

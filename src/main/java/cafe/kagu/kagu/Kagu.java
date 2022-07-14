@@ -51,8 +51,8 @@ public class Kagu {
 //	public static final char GROUP_SEPARATOR = (char)29;
 	
 	public static final String UNIT_SEPARATOR = "﷽";
-	public static final String RECORD_SEPARATOR = "👺";
 	public static final String GROUP_SEPARATOR = "🐀";
+	public static final String RECORD_SEPARATOR = "👺";
 	
 	private static boolean destroyDisplay = false;
 	
