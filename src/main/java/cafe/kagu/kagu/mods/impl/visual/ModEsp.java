@@ -46,7 +46,7 @@ public class ModEsp extends Module {
 	
 	public ModEsp() {
 		super("ESP", Category.VISUAL);
-		setSettings(mode, chams, renderInvisibleModels, targetAll, targetPlayers, targetAnimals, targetMobs);
+		setSettings(mode, chams, renderInvisibleModels, targetAll, targetPlayers, targetAnimals, targetMobs, targetSelf);
 	}
 	
 	// ESP modes
@@ -57,10 +57,11 @@ public class ModEsp extends Module {
 	
 	// Render targets
 	private BooleanSetting targetAll = new BooleanSetting("Everything ESP", true);
-	private BooleanSetting targetPlayers = (BooleanSetting) new BooleanSetting("Player ESP", true).setDependency((SettingDependency)() -> {return targetAll.isDisabled();});
-	private BooleanSetting targetAnimals = (BooleanSetting) new BooleanSetting("Animal ESP", false).setDependency((SettingDependency)() -> {return targetAll.isDisabled();});
-	private BooleanSetting targetMobs = (BooleanSetting) new BooleanSetting("Mob ESP", false).setDependency((SettingDependency)() -> {return targetAll.isDisabled();});
-	
+	private BooleanSetting targetPlayers = (BooleanSetting) new BooleanSetting("Player ESP", true).setDependency(targetAll::isDisabled);
+	private BooleanSetting targetAnimals = (BooleanSetting) new BooleanSetting("Animal ESP", false).setDependency(targetAll::isDisabled);
+	private BooleanSetting targetMobs = (BooleanSetting) new BooleanSetting("Mob ESP", false).setDependency(targetAll::isDisabled);
+	private BooleanSetting targetSelf = (BooleanSetting) new BooleanSetting("Self ESP", false).setDependency(() -> {return targetAll.isEnabled() || targetPlayers.isEnabled();});
+			
 	// Invisible
 	private BooleanSetting renderInvisibleModels = new BooleanSetting("Render Invisible Models", true);
 	
@@ -213,7 +214,7 @@ public class ModEsp extends Module {
 					EntityLivingBase entityLivingBase = (EntityLivingBase)ent;
 					
 					// Ignore the player if in first person
-					if (entityLivingBase == mc.thePlayer && mc.gameSettings.thirdPersonView == 0)
+					if (entityLivingBase == mc.thePlayer && (mc.gameSettings.thirdPersonView == 0 || targetSelf.isDisabled()))
 						continue;
 					
 					double left = Integer.MAX_VALUE, top = Integer.MAX_VALUE, right = Integer.MIN_VALUE, bottom = Integer.MIN_VALUE;

@@ -39,7 +39,7 @@ import cafe.kagu.kagu.utils.StencilUtil;
 public class Kagu {
 	
 	private static String name = "Kagu";
-	private static double version = 0;
+	private static double version = 0.3621;
 	
 	private static Logger logger = LogManager.getLogger();
 	

@@ -18,6 +18,7 @@ import cafe.kagu.kagu.eventBus.impl.EventRender3D;
 import cafe.kagu.kagu.eventBus.impl.EventTick;
 import cafe.kagu.kagu.managers.FileManager;
 import cafe.kagu.kagu.mods.Module;
+import cafe.kagu.kagu.mods.ModuleManager;
 import cafe.kagu.kagu.settings.impl.BooleanSetting;
 import cafe.kagu.kagu.settings.impl.IntegerSetting;
 import cafe.kagu.kagu.utils.Shader;
@@ -93,8 +94,10 @@ public class ModViewModels extends Module {
 			GL11.glEnable(GL11.GL_BLEND);
 			GlStateManager.tryBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
 			GlStateManager.disableDepth();
-			GL11.glEnable(GL11.GL_POLYGON_OFFSET_FILL);
-			GL11.glPolygonOffset(1.0f, -1099998.0f);
+			if (ModuleManager.modEsp.isEnabled() && ModuleManager.modEsp.getChams().isEnabled()) {
+				GL11.glEnable(GL11.GL_POLYGON_OFFSET_FILL);
+				GL11.glPolygonOffset(1.0f, -1099998.0f);
+			}
 			RenderPlayer renderDesync = new RenderPlayer(mc.getRenderManager());
 			renderingDesync = true;
 			
