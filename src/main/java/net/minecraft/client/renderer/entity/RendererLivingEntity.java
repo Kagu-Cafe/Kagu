@@ -131,8 +131,8 @@ public abstract class RendererLivingEntity<T extends EntityLivingBase> extends R
                 }
                 
                 // Desync entity
-                if (entity == ModuleManager.modViewModels.getDesyncModel()) {
-                	f = ModuleManager.modViewModels.getDesyncModel().rotationYaw;
+                if (ModuleManager.modViewModels.isRenderingDesync() && SpoofUtils.isSpoofYaw() && entity == Minecraft.getMinecraft().thePlayer) {
+                	f = SpoofUtils.getSpoofedLastYaw() + (SpoofUtils.getSpoofedYaw() - SpoofUtils.getSpoofedLastYaw()) * partialTicks;
                 	f1 = f;
                 }
                 
@@ -171,8 +171,8 @@ public abstract class RendererLivingEntity<T extends EntityLivingBase> extends R
                 }
                 
                 // Desync entity
-                if (entity == ModuleManager.modViewModels.getDesyncModel()) {
-                	f8 = ModuleManager.modViewModels.getDesyncModel().rotationPitch;
+                if (ModuleManager.modViewModels.isRenderingDesync() && SpoofUtils.isSpoofPitch() && entity == Minecraft.getMinecraft().thePlayer) {
+                	f8 = SpoofUtils.getSpoofedLastPitch() + (SpoofUtils.getSpoofedPitch() - SpoofUtils.getSpoofedLastPitch()) * partialTicks;
                 }
                 
                 this.renderLivingAt(entity, x, y, z);
@@ -185,13 +185,6 @@ public abstract class RendererLivingEntity<T extends EntityLivingBase> extends R
                 GlStateManager.translate(0.0F, -1.5078125F, 0.0F);
                 float f5 = entity.prevLimbSwingAmount + (entity.limbSwingAmount - entity.prevLimbSwingAmount) * partialTicks;
                 float f6 = entity.limbSwing - entity.limbSwingAmount * (1.0F - partialTicks);
-                
-                // Desync entity
-                if (entity == ModuleManager.modViewModels.getDesyncModel()) {
-                	EntityPlayer p = ModuleManager.modViewModels.getDesyncModel();
-                	f5 = p.prevLimbSwingAmount + (p.limbSwingAmount - p.prevLimbSwingAmount) * partialTicks;
-                	f6 = p.limbSwing - p.limbSwingAmount * (1.0F - partialTicks);
-                }
                 
                 if (entity.isChild())
                 {
@@ -231,7 +224,9 @@ public abstract class RendererLivingEntity<T extends EntityLivingBase> extends R
 
                     if (!(entity instanceof EntityPlayer) || !((EntityPlayer)entity).isSpectator())
                     {
-                        this.renderLayers(entity, f6, f5, partialTicks, f7, f2, f8, 0.0625F);
+                    	if (!ModuleManager.modViewModels.isRenderingDesync()) {
+                    		this.renderLayers(entity, f6, f5, partialTicks, f7, f2, f8, 0.0625F);
+                    	}
                     }
                 }
 

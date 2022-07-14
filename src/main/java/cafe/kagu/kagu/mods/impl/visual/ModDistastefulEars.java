@@ -49,14 +49,14 @@ public class ModDistastefulEars extends Module {
 		double yaw = mc.thePlayer.prevRotationYawHead
 				+ (mc.thePlayer.rotationYawHead - mc.thePlayer.prevRotationYawHead) * timer;
 		
-		if (SpoofUtils.isSpoofYaw()) {
+		if (SpoofUtils.isSpoofYaw() && ModuleManager.modViewModels.getOverrideF3().isEnabled()) {
 			yaw = SpoofUtils.getSpoofedYaw();
 		}
 
 		GlStateManager.rotate((float) -yaw, 0, 1, 0);
 		GlStateManager.rotate(90, 1, 0, 0);
 		GlStateManager.translate(0, 0, -(mc.thePlayer.getEyeHeight() - pitchFixer));
-		GlStateManager.rotate(SpoofUtils.isSpoofPitch() ? SpoofUtils.getSpoofedPitch() : mc.thePlayer.rotationPitch, 1,
+		GlStateManager.rotate(SpoofUtils.isSpoofPitch() && ModuleManager.modViewModels.getOverrideF3().isEnabled() ? SpoofUtils.getSpoofedPitch() : mc.thePlayer.rotationPitch, 1,
 				0, 0);
 		GlStateManager.translate(0, 0, -(0.27 + pitchFixer));
 		
