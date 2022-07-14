@@ -172,6 +172,7 @@ public abstract class Render<T extends Entity>
      */
     private void renderShadow(Entity entityIn, double x, double y, double z, float shadowAlpha, float partialTicks)
     {
+    	if (ModuleManager.modViewModels.isRenderingDesync())return;
         if (!Config.isShaders() || !Shaders.shouldSkipDefaultShadow)
         {
             GlStateManager.enableBlend();

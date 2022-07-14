@@ -69,7 +69,7 @@ public class SessionManager {
 			MicrosoftAlt alt = new MicrosoftAlt();
 			alt.setUsername("Unknown account");
 			alt.setRefreshToken(jsonResponse.getString("refresh_token"));
-			GuiAltManager.getAlts().add(alt);
+			GuiAltManager.getAlts().add(0, alt);
 			GuiAltManager.saveAlts();
 			
 			return "Added microsoft account to the alt manager, you may close this tab";

@@ -93,6 +93,11 @@ public class GuiAltManager extends GuiScreen {
 		microsoftAltFont.drawCenteredString("Add Microsoft Alt", width - buttonWidth * 2 - buttonMargin * 2 + buttonImageMargin + buttonImageSize + ((buttonWidth - buttonImageSize - buttonImageMargin * 2) / 2),
 				height - buttonHeight / 2 - buttonMargin - microsoftAltFont.getFontHeight() / 2 - 2, microsoftFontColor);
 		
+		// Draw all the alts
+		for (Alt alt : alts) {
+			
+		}
+		
 		if (leftMouseClicked)
 			leftMouseClicked = false;
 	}

@@ -78,7 +78,7 @@ public class ModViewModels extends Module {
 	@EventHandler
 	private Handler<EventEntityRender> onRenderEntity = e -> {
 		
-		if (e.getEntity() != mc.thePlayer)
+		if (e.isPost() || e.getEntity() != mc.thePlayer)
 			return;
 		
 		if (desyncModels.isEnabled() && !renderingDesync) {
@@ -107,6 +107,12 @@ public class ModViewModels extends Module {
 			desyncModelShader.unbind();
 			
 			renderingDesync = false;
+			{
+				GlStateManager.disableBlend();
+				GL11.glDisable(GL11.GL_BLEND);
+				GlStateManager.disableAlpha();
+				GlStateManager.enableDepth();
+			}
 			GlStateManager.popAttrib();
 			GlStateManager.popMatrix();
 		}
