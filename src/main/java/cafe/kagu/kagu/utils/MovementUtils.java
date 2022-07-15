@@ -10,6 +10,7 @@ import cafe.kagu.kagu.mods.Module;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.BlockPos;
 
 /**
  * @author lavaflowglow

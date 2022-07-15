@@ -19,6 +19,7 @@ import cafe.kagu.kagu.mods.impl.exploit.ModNoHCollisionSlowdown;
 import cafe.kagu.kagu.mods.impl.exploit.ModTimer;
 import cafe.kagu.kagu.mods.impl.move.ModFly;
 import cafe.kagu.kagu.mods.impl.move.ModMoonJump;
+import cafe.kagu.kagu.mods.impl.move.ModScaffold;
 import cafe.kagu.kagu.mods.impl.move.ModSpeed;
 import cafe.kagu.kagu.mods.impl.move.ModSprint;
 import cafe.kagu.kagu.mods.impl.player.ModAntiAim;
@@ -57,6 +58,7 @@ public class ModuleManager {
 	public static ModSprint modSprint = new ModSprint();
 	public static ModSpeed modSpeed = new ModSpeed();
 	public static ModFly modFly = new ModFly();
+	public static ModScaffold modScaffold = new ModScaffold();
 	
 	// Player
 	public static ModAntiAim modAntiAim = new ModAntiAim();
@@ -115,6 +117,7 @@ public class ModuleManager {
 			modDistastefulEars,
 			modAmbience,
 			modFly,
+			modScaffold,
 			
 			modBlink
 	};

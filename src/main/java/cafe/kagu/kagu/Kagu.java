@@ -31,6 +31,7 @@ import cafe.kagu.kagu.utils.OSUtil;
 import cafe.kagu.kagu.utils.RotationUtils;
 import cafe.kagu.kagu.utils.SpoofUtils;
 import cafe.kagu.kagu.utils.StencilUtil;
+import cafe.kagu.kagu.utils.WorldUtils;
 
 /**
  * @author lavaflowglow
@@ -203,6 +204,11 @@ public class Kagu {
 		logger.info("Loading the rotation utils...");
 		RotationUtils.start();
 		logger.info("Loaded the rotation utils");
+		
+		// Load the world utils
+		logger.info("Loading the world utils...");
+		WorldUtils.start();
+		logger.info("Loaded the world utils");
 		
 		// Hook the hud
 		logger.info("Hooking the hud...");
