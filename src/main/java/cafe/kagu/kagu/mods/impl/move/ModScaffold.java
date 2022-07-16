@@ -17,8 +17,10 @@ import cafe.kagu.kagu.settings.impl.ModeSetting;
 import cafe.kagu.kagu.utils.DrawUtils3D;
 import cafe.kagu.kagu.utils.MovementUtils;
 import cafe.kagu.kagu.utils.WorldUtils;
+import cafe.kagu.kagu.utils.WorldUtils.PlaceOnBlock;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 
 /**
  * @author lavaflowglow
@@ -38,7 +40,7 @@ public class ModScaffold extends Module {
 	private BooleanSetting keepY = new BooleanSetting("Keep Y", false);
 	private BooleanSetting visuals = new BooleanSetting("Visuals", true);
 	
-	private IntegerSetting maxBlockReach = new IntegerSetting("Max Block Reach", 3, 1, 4, 1);
+	private DoubleSetting maxBlockReach = new DoubleSetting("Max Block Reach", 3, 1, 4, 0.5);
 	
 	// Extend
 	private BooleanSetting extend = new BooleanSetting("Extend", false);
@@ -49,11 +51,13 @@ public class ModScaffold extends Module {
 	private ModeSetting towerMode = (ModeSetting) new ModeSetting("Tower Mode", "NCP", "NCP").setDependency(tower::isEnabled);
 	
 	private BlockPos placePos = null;
+	private PlaceOnBlock placeOnInfo = null;
 	private int keepYPosition = Integer.MAX_VALUE;
 	
 	@Override
 	public void onEnable() {
 		placePos = null;
+		placeOnInfo = null;
 		keepYPosition = (int)(mc.thePlayer.posY - 1);
 	}
 	
@@ -91,6 +95,12 @@ public class ModScaffold extends Module {
 			}
 		}
 		
+		// If the block we want to place is already solid then return, no point in doing further calculations
+		if (WorldUtils.isBlockSolid(placePos))
+			return;
+		
+		// Find what block and placing we should place on, this method uses basic pathfinding to efficiently find which block to place on
+		placeOnInfo = WorldUtils.getPlaceOn(placePos, maxBlockReach.getValue());
 	};
 	
 	/**
@@ -105,6 +115,10 @@ public class ModScaffold extends Module {
 		
 		if (placePos != null)
 			DrawUtils3D.drawColored3DWorldBox(placePos.getX(), placePos.getY(), placePos.getZ(), placePos.getX() + 1, placePos.getY() + 1, placePos.getZ() + 1, 0xffffffff);
+		
+		if (placeOnInfo != null) {
+			DrawUtils3D.drawColored3DWorldBox(placeOnInfo.getPlaceOn().getX(), placeOnInfo.getPlaceOn().getY(), placeOnInfo.getPlaceOn().getZ(), placeOnInfo.getPlaceOn().getX() + 1, placeOnInfo.getPlaceOn().getY() + 1, placeOnInfo.getPlaceOn().getZ() + 1, 0xff0000ff);
+		}
 		
 	};
 	
