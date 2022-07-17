@@ -192,7 +192,12 @@ public class BlockLever extends Block
                 this.setBlockBounds(0.5F - f, 0.4F, 0.5F - f, 0.5F + f, 1.0F, 0.5F + f);
         }
     }
-
+    
+    @Override
+    public boolean doesBlockActivate() {
+    	return true;
+    }
+    
     public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumFacing side, float hitX, float hitY, float hitZ)
     {
         if (worldIn.isRemote)

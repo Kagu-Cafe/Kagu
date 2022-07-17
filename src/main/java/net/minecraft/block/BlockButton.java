@@ -163,7 +163,12 @@ public abstract class BlockButton extends Block
                 this.setBlockBounds(0.3125F, 1.0F - f2, 0.375F, 0.6875F, 1.0F, 0.625F);
         }
     }
-
+    
+    @Override
+    public boolean doesBlockActivate() {
+    	return true;
+    }
+    
     public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumFacing side, float hitX, float hitY, float hitZ)
     {
         if (((Boolean)state.getValue(POWERED)).booleanValue())

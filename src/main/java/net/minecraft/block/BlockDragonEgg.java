@@ -66,7 +66,12 @@ public class BlockDragonEgg extends Block
             }
         }
     }
-
+    
+    @Override
+    public boolean doesBlockActivate() {
+    	return true;
+    }
+    
     public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumFacing side, float hitX, float hitY, float hitZ)
     {
         this.teleport(worldIn, pos);

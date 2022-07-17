@@ -168,7 +168,7 @@ public class BlockFence extends Block
     {
         return true;
     }
-
+    
     public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumFacing side, float hitX, float hitY, float hitZ)
     {
         return worldIn.isRemote ? true : ItemLead.attachToFence(playerIn, worldIn, pos);

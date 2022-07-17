@@ -18,9 +18,15 @@ import cafe.kagu.kagu.utils.MovementUtils;
 import cafe.kagu.kagu.utils.SpoofUtils;
 import cafe.kagu.kagu.utils.WorldUtils;
 import cafe.kagu.kagu.utils.WorldUtils.PlaceOnBlock;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.multiplayer.WorldClient;
+import net.minecraft.network.play.client.C08PacketPlayerBlockPlacement;
 import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.Vec3;
+import net.minecraft.world.WorldSettings.GameType;
 
 /**
  * @author lavaflowglow
@@ -30,7 +36,7 @@ public class ModScaffold extends Module {
 	
 	public ModScaffold() {
 		super("Scaffold", Category.MOVEMENT);
-		setSettings(rotationMode, c08Position, itemMode, maxBlockReach, keepY, visuals, safewalk, accountForMovement, extend, extendDistance, tower, towerMode);
+		setSettings(rotationMode, c08Position, itemMode, maxBlockReach, keepY, visuals, safewalk, accountForMovement, ignoreWorldBorder, extend, extendDistance, tower, towerMode);
 	}
 	
 	private ModeSetting rotationMode = new ModeSetting("Rotation Mode", "None", "None");
@@ -41,6 +47,7 @@ public class ModScaffold extends Module {
 	private BooleanSetting visuals = new BooleanSetting("Visuals", true);
 	private BooleanSetting safewalk = new BooleanSetting("Safewalk", true);
 	private BooleanSetting accountForMovement = new BooleanSetting("Account For Movement", false);
+	private BooleanSetting ignoreWorldBorder = new BooleanSetting("Ignore World Border", false);
 	
 	private DoubleSetting maxBlockReach = new DoubleSetting("Max Block Reach", 3, 1, 4, 0.5);
 	
@@ -76,6 +83,13 @@ public class ModScaffold extends Module {
 		boolean shouldKeepY = keepY.isEnabled() && thePlayer.posY > keepYPosition;
 		double keepYPosition = this.keepYPosition;
 		double[] playerPos = new double[] {thePlayer.posX, thePlayer.posY, thePlayer.posZ};
+		
+		// Return if the player is in spectator or adventure mode
+		if (mc.playerController.getCurrentGameType() == GameType.SPECTATOR || mc.playerController.getCurrentGameType() == GameType.ADVENTURE) {
+			placePos = null;
+			placeOnInfo = null;
+			return;
+		}
 		
 		// Same y recalculation if on ground
 		if (MovementUtils.isTrueOnGround()) {
@@ -114,8 +128,11 @@ public class ModScaffold extends Module {
 		}
 		
 		// If the block we want to place is already solid then return, no point in doing further calculations
-		if (WorldUtils.isBlockSolid(placePos))
+		if (WorldUtils.isBlockSolid(placePos)) {
+			placePos = null;
+			placeOnInfo = null;
 			return;
+		}
 		
 		// Find what block and placing we should place on, this method uses basic pathfinding to efficiently find which block to place on
 		placeOnInfo = WorldUtils.getPlaceOn(placePos, maxBlockReach.getValue());
@@ -157,9 +174,37 @@ public class ModScaffold extends Module {
 		if (c08Position.is("PRE") ? e.isPost() : e.isPre())
 			return;
 		
-		// Will be raplces later, this was just for a test
-		mc.playerController.onPlayerRightClick(mc.thePlayer, mc.theWorld, mc.thePlayer.inventory.getCurrentItem(), placeOnInfo.getPlaceOn(), placeOnInfo.getPlaceFacing(), new Vec3(0, 0, 0));
+		// Only attempt place if bother place pos and place on info is set
+		if (placePos == null || placeOnInfo == null)
+			return;
 		
+		// Vars
+		EntityPlayerSP thePlayer = mc.thePlayer;
+		WorldClient theWorld = mc.theWorld;
+		BlockPos placeOn = placeOnInfo.getPlaceOn();
+		EnumFacing placeOnFacing = placeOnInfo.getPlaceFacing();
+		IBlockState placeOnState = theWorld.getBlockState(placeOn);
+		
+		// The vec3 used in the c08
+		float vecX = 0;
+		float vecY = 0;
+		float vecZ = 0;
+		
+		// World border check, modified from normal mc because I want to give the user the option to bypass this check
+		if (!theWorld.getWorldBorder().contains(placeOn) && ignoreWorldBorder.isDisabled()){
+			return;
+        }
+		
+		// This is if you click blocks that show guis or do stuff, the scaffold targeting should avoid blocks like this but in the case it doesn't this should catch it
+        if (placeOnState.getBlock().doesBlockActivate()) {
+        	return;
+        }
+        
+        // If the block for some reason activates then do nothing, otherwise place the block
+        if (!((!thePlayer.isSneaking() || thePlayer.getHeldItem() == null) && placeOnState.getBlock().onBlockActivated(theWorld, placeOn, placeOnState, thePlayer, placeOnFacing, vecX, vecY, vecZ))){
+        	mc.getNetHandler().getNetworkManager().sendPacket(new C08PacketPlayerBlockPlacement(placeOn, placeOnFacing.getIndex(), thePlayer.inventory.getCurrentItem(), vecX, vecY, vecZ));
+        }
+        
 	};
 	
 }

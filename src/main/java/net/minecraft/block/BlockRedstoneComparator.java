@@ -160,7 +160,12 @@ public class BlockRedstoneComparator extends BlockRedstoneDiode implements ITile
         });
         return list.size() == 1 ? (EntityItemFrame)list.get(0) : null;
     }
-
+    
+    @Override
+    public boolean doesBlockActivate() {
+    	return true;
+    }
+    
     public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumFacing side, float hitX, float hitY, float hitZ)
     {
         if (!playerIn.capabilities.allowEdit)

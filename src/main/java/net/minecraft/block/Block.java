@@ -845,7 +845,14 @@ public class Block
     {
         return worldIn.getBlockState(pos).getBlock().blockMaterial.isReplaceable();
     }
-
+    
+    /**
+     * @return true if the block has an activation action, otherwise false
+     */
+    public boolean doesBlockActivate() {
+    	return false;
+    }
+    
     public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumFacing side, float hitX, float hitY, float hitZ)
     {
         return false;

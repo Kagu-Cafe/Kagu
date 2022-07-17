@@ -91,7 +91,12 @@ public class BlockFlowerPot extends BlockContainer
 
         return 16777215;
     }
-
+    
+    @Override
+    public boolean doesBlockActivate() {
+    	return true;
+    }
+    
     public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumFacing side, float hitX, float hitY, float hitZ)
     {
         ItemStack itemstack = playerIn.inventory.getCurrentItem();

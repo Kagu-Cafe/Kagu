@@ -640,7 +640,7 @@ public class BlockStairs extends Block
     {
         this.modelBlock.updateTick(worldIn, pos, state, rand);
     }
-
+    
     public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumFacing side, float hitX, float hitY, float hitZ)
     {
         return this.modelBlock.onBlockActivated(worldIn, pos, this.modelState, playerIn, EnumFacing.DOWN, 0.0F, 0.0F, 0.0F);

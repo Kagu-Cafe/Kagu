@@ -8,8 +8,14 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import net.minecraft.block.BlockDirt;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.client.multiplayer.WorldClient;
+import net.minecraft.init.Blocks;
+import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MathHelper;
@@ -75,11 +81,20 @@ public class WorldUtils {
 	 */
 	public static PlaceOnBlock getPlaceOn(BlockPos placePos, double maxDistance) {
 		
+		// Vars
+		EntityPlayerSP thePlayer = mc.thePlayer;
+		WorldClient theWorld = mc.theWorld;
+		boolean singleplayer = mc.isSingleplayer();
+		ItemBlock dummyBlock = new ItemBlock(Blocks.dirt);
+		ItemStack dummyStack = new ItemStack(Blocks.dirt);
+		
 		// First do a simple check, if this comes back with a placeon position then advanced calculation isn't needed and won't be done
 		EnumFacing[] checkOrder = new EnumFacing[] {EnumFacing.DOWN, EnumFacing.NORTH, EnumFacing.SOUTH, EnumFacing.WEST, EnumFacing.EAST, EnumFacing.UP};
 		for (EnumFacing facing : checkOrder) {
 			BlockPos result = placePos.offset(facing);
-			if (isBlockSolid(result)) {
+			// The block is valid if it's solid, nothing happened when you right click it, and that specific side can be place on
+			if (isBlockSolid(result) && !theWorld.getBlockState(result).getBlock().doesBlockActivate() 
+					&& dummyBlock.canPlaceBlockOnSide(theWorld, result, getFacingForTargetBlock(result, placePos), thePlayer, dummyStack)) {
 				return new PlaceOnBlock(result, facing.getOpposite());
 			}
 		}
@@ -93,8 +108,12 @@ public class WorldUtils {
 					if (x == 0 && y == 0 && z == 0)
 						continue;
 					BlockPos pos = placePos.add(x, y, z);
-					if (isBlockSolid(pos))
+					
+					// The block is valid if it's solid, nothing happened when you right click it, and that specific side can be place on
+					if (isBlockSolid(pos) && !theWorld.getBlockState(pos).getBlock().doesBlockActivate() 
+							&& dummyBlock.canPlaceBlockOnSide(theWorld, pos, getFacingForTargetBlock(pos, placePos), thePlayer, dummyStack)) {
 						validBlockPositions.add(pos);
+					}
 				}
 			}
 		}
@@ -113,45 +132,53 @@ public class WorldUtils {
 		if (getDistance(placePos, placeOn) > maxDistance)
 			return null;
 		
-		double xDist = Math.abs(placeOn.getX() - placePos.getX());
-		double yDist = Math.abs(placeOn.getY() - placePos.getY());
-		double zDist = Math.abs(placeOn.getZ() - placePos.getZ());
-		
-		EnumFacing placeOnFacing = null;
-		
-		if (xDist >= yDist && xDist >= zDist) {
-			double realDist = placeOn.getX() - placePos.getX();
-			if (realDist > 0) {
-				placeOnFacing = EnumFacing.WEST;
-			}
-			else if (realDist < 0) {
-				placeOnFacing = EnumFacing.EAST;
-			}
-		}
-		else if (zDist >= xDist && zDist >= yDist) {
-			double realDist = placeOn.getZ() - placePos.getZ();
-			if (realDist > 0) {
-				placeOnFacing = EnumFacing.NORTH;
-			}
-			else if (realDist < 0) {
-				placeOnFacing = EnumFacing.SOUTH;
-			}
-		}
-		else if (yDist >= xDist && yDist >= zDist) {
-			double realDist = placeOn.getY() - placePos.getY();
-			if (realDist > 0) {
-				placeOnFacing = EnumFacing.DOWN;
-			}
-			else if (realDist < 0) {
-				placeOnFacing = EnumFacing.UP;
-			}
-		}
+		EnumFacing placeOnFacing = getFacingForTargetBlock(placeOn, placePos);
 		
 		if (placeOnFacing == null)
 			return null;
 		
 		return new PlaceOnBlock(placeOn, placeOnFacing);
 		
+	}
+	
+	/**
+	 * @param placeOn The block placed on
+	 * @param target The block you want to reach
+	 * @return The best facing to achieve this
+	 */
+	public static EnumFacing getFacingForTargetBlock(BlockPos placeOn, BlockPos target) {
+		double xDist = Math.abs(placeOn.getX() - target.getX());
+		double yDist = Math.abs(placeOn.getY() - target.getY());
+		double zDist = Math.abs(placeOn.getZ() - target.getZ());
+		
+		if (xDist >= yDist && xDist >= zDist) {
+			double realDist = placeOn.getX() - target.getX();
+			if (realDist > 0) {
+				return EnumFacing.WEST;
+			}
+			else if (realDist < 0) {
+				return EnumFacing.EAST;
+			}
+		}
+		else if (zDist >= xDist && zDist >= yDist) {
+			double realDist = placeOn.getZ() - target.getZ();
+			if (realDist > 0) {
+				return EnumFacing.NORTH;
+			}
+			else if (realDist < 0) {
+				return EnumFacing.SOUTH;
+			}
+		}
+		else if (yDist >= xDist && yDist >= zDist) {
+			double realDist = placeOn.getY() - target.getY();
+			if (realDist > 0) {
+				return EnumFacing.DOWN;
+			}
+			else if (realDist < 0) {
+				return EnumFacing.UP;
+			}
+		}
+		return null;
 	}
 	
 	public static class PlaceOnBlock {
