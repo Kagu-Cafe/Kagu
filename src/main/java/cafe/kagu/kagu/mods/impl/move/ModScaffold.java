@@ -12,15 +12,15 @@ import cafe.kagu.kagu.eventBus.impl.EventTick;
 import cafe.kagu.kagu.mods.Module;
 import cafe.kagu.kagu.settings.impl.BooleanSetting;
 import cafe.kagu.kagu.settings.impl.DoubleSetting;
-import cafe.kagu.kagu.settings.impl.IntegerSetting;
 import cafe.kagu.kagu.settings.impl.ModeSetting;
 import cafe.kagu.kagu.utils.DrawUtils3D;
 import cafe.kagu.kagu.utils.MovementUtils;
+import cafe.kagu.kagu.utils.SpoofUtils;
 import cafe.kagu.kagu.utils.WorldUtils;
 import cafe.kagu.kagu.utils.WorldUtils.PlaceOnBlock;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.util.BlockPos;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Vec3;
 
 /**
  * @author lavaflowglow
@@ -30,7 +30,7 @@ public class ModScaffold extends Module {
 	
 	public ModScaffold() {
 		super("Scaffold", Category.MOVEMENT);
-		setSettings(rotationMode, c08Position, itemMode, keepY, visuals, maxBlockReach, extend, extendDistance, tower, towerMode);
+		setSettings(rotationMode, c08Position, itemMode, maxBlockReach, keepY, visuals, safewalk, accountForMovement, extend, extendDistance, tower, towerMode);
 	}
 	
 	private ModeSetting rotationMode = new ModeSetting("Rotation Mode", "None", "None");
@@ -39,6 +39,8 @@ public class ModScaffold extends Module {
 	
 	private BooleanSetting keepY = new BooleanSetting("Keep Y", false);
 	private BooleanSetting visuals = new BooleanSetting("Visuals", true);
+	private BooleanSetting safewalk = new BooleanSetting("Safewalk", true);
+	private BooleanSetting accountForMovement = new BooleanSetting("Account For Movement", false);
 	
 	private DoubleSetting maxBlockReach = new DoubleSetting("Max Block Reach", 3, 1, 4, 0.5);
 	
@@ -62,7 +64,7 @@ public class ModScaffold extends Module {
 	}
 	
 	/**
-	 * Used for block selection
+	 * Used for block selection & safewalk
 	 */
 	@EventHandler
 	private Handler<EventTick> onTick = e -> {
@@ -74,6 +76,22 @@ public class ModScaffold extends Module {
 		boolean shouldKeepY = keepY.isEnabled() && thePlayer.posY > keepYPosition;
 		double keepYPosition = this.keepYPosition;
 		double[] playerPos = new double[] {thePlayer.posX, thePlayer.posY, thePlayer.posZ};
+		
+		// Same y recalculation if on ground
+		if (MovementUtils.isTrueOnGround()) {
+			keepYPosition = (int)(mc.thePlayer.posY - 1);
+		}
+		
+		// Account for movement
+		if (accountForMovement.isEnabled()) {
+			playerPos[0] += thePlayer.motionX;
+			playerPos[1] += thePlayer.motionY + 0.0784000015258789;
+			playerPos[2] += thePlayer.motionZ;
+		}
+		
+		// Safewalk
+		if (safewalk.isEnabled())
+			SpoofUtils.setSpoofSneakMovement(true);
 		
 		// Default place pos
 		placePos = new BlockPos(playerPos[0], shouldKeepY ? keepYPosition : (playerPos[1] - 1), playerPos[2]);
@@ -138,6 +156,10 @@ public class ModScaffold extends Module {
 	private Handler<EventPlayerUpdate> c08PlayerUpdate = e -> {
 		if (c08Position.is("PRE") ? e.isPost() : e.isPre())
 			return;
+		
+		// Will be raplces later, this was just for a test
+		mc.playerController.onPlayerRightClick(mc.thePlayer, mc.theWorld, mc.thePlayer.inventory.getCurrentItem(), placeOnInfo.getPlaceOn(), placeOnInfo.getPlaceFacing(), new Vec3(0, 0, 0));
+		
 	};
 	
 }

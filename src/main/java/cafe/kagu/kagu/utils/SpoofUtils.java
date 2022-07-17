@@ -17,6 +17,7 @@ public class SpoofUtils {
 	
 	private static float spoofedYaw = 0, spoofedPitch = 0, spoofedLastYaw = 0, spoofedLastPitch = 0;
 	private static boolean spoofYaw = false, spoofPitch = false;
+	private static boolean spoofSneakMovement = false;
 	
 	/**
 	 * Called at the start of the client
@@ -31,6 +32,7 @@ public class SpoofUtils {
 			spoofYaw = false;
 			spoofPitch = false;
 			spoofBlocking = false;
+			spoofSneakMovement = false;
 		}else {
 			
 			if (!spoofYaw) {
@@ -134,6 +136,20 @@ public class SpoofUtils {
 	 */
 	public static void setSpoofBlocking(boolean spoofBlocking) {
 		SpoofUtils.spoofBlocking = spoofBlocking;
+	}
+
+	/**
+	 * @return the spoofSneakMovement
+	 */
+	public static boolean isSpoofSneakMovement() {
+		return spoofSneakMovement;
+	}
+
+	/**
+	 * @param spoofSneakMovement the spoofSneakMovement to set
+	 */
+	public static void setSpoofSneakMovement(boolean spoofSneakMovement) {
+		SpoofUtils.spoofSneakMovement = spoofSneakMovement;
 	}
 
 }

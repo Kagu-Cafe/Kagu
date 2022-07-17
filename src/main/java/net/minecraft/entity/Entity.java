@@ -6,6 +6,8 @@ import java.util.UUID;
 import java.util.concurrent.Callable;
 
 import cafe.kagu.kagu.mods.ModuleManager;
+import cafe.kagu.kagu.utils.MovementUtils;
+import cafe.kagu.kagu.utils.SpoofUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockFence;
 import net.minecraft.block.BlockFenceGate;
@@ -617,8 +619,8 @@ public abstract class Entity implements ICommandSender
             double d4 = y;
             double d5 = z;
             boolean flag = this.onGround && this.isSneaking() && this instanceof EntityPlayer;
-
-            if (flag)
+            
+            if (flag || (this == Minecraft.getMinecraft().thePlayer && SpoofUtils.isSpoofSneakMovement() && MovementUtils.isTrueOnGround()))
             {
                 double d6;
 

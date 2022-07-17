@@ -113,7 +113,44 @@ public class WorldUtils {
 		if (getDistance(placePos, placeOn) > maxDistance)
 			return null;
 		
-		return new PlaceOnBlock(placeOn, null);
+		double xDist = Math.abs(placeOn.getX() - placePos.getX());
+		double yDist = Math.abs(placeOn.getY() - placePos.getY());
+		double zDist = Math.abs(placeOn.getZ() - placePos.getZ());
+		
+		EnumFacing placeOnFacing = null;
+		
+		if (xDist >= yDist && xDist >= zDist) {
+			double realDist = placeOn.getX() - placePos.getX();
+			if (realDist > 0) {
+				placeOnFacing = EnumFacing.WEST;
+			}
+			else if (realDist < 0) {
+				placeOnFacing = EnumFacing.EAST;
+			}
+		}
+		else if (zDist >= xDist && zDist >= yDist) {
+			double realDist = placeOn.getZ() - placePos.getZ();
+			if (realDist > 0) {
+				placeOnFacing = EnumFacing.NORTH;
+			}
+			else if (realDist < 0) {
+				placeOnFacing = EnumFacing.SOUTH;
+			}
+		}
+		else if (yDist >= xDist && yDist >= zDist) {
+			double realDist = placeOn.getY() - placePos.getY();
+			if (realDist > 0) {
+				placeOnFacing = EnumFacing.DOWN;
+			}
+			else if (realDist < 0) {
+				placeOnFacing = EnumFacing.UP;
+			}
+		}
+		
+		if (placeOnFacing == null)
+			return null;
+		
+		return new PlaceOnBlock(placeOn, placeOnFacing);
 		
 	}
 	
@@ -124,7 +161,6 @@ public class WorldUtils {
 		 * @param placeFacing
 		 */
 		public PlaceOnBlock(BlockPos placeOn, EnumFacing placeFacing) {
-			super();
 			this.placeOn = placeOn;
 			this.placeFacing = placeFacing;
 		}
