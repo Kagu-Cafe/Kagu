@@ -149,7 +149,7 @@ public class ModScaffold extends Module {
 		if (largestBlocks == -1 || currentSlot == -1 || currentItemSlot == currentSlot) {
 			return;
 		}
-		// "Server", "Synced", "Spoof"
+		
 		switch(itemMode.getMode()) {
 			case "Server":{
 				mc.getNetHandler().getNetworkManager().sendPacketNoEvent(new C09PacketHeldItemChange(currentSlot));
