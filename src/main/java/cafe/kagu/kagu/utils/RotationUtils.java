@@ -7,6 +7,8 @@ import javax.vecmath.Vector3d;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.util.MathHelper;
+import net.minecraft.util.Vec3;
 
 /**
  * @author lavaflowglow
@@ -79,6 +81,30 @@ public class RotationUtils {
 		
 		yaw += thePlayer.rotationYaw;
 		return yaw;
+	}
+	
+	/**
+	 * @param yaw The yaw to use for the calculations
+	 * @param pitch The pitch to use for the calculations
+	 * @param lastYaw The last yaw to use for the calculations
+	 * @param lastPitch The last pitch to use for the calculations
+	 * @return The look vec, calculated by modified mc code
+	 */
+	public static Vec3 getLook(float yaw, float pitch, float lastYaw, float lastPitch) {
+		float partialTicks = mc.getTimer().getRenderPartialTicks();
+		
+		// If the partial ticks are not equal to 1 than we need to account for head interpolation
+		if (partialTicks != 1.0F) {
+			pitch = lastPitch + (pitch - lastPitch) * partialTicks;
+			yaw = lastYaw + (yaw - lastYaw) * partialTicks;
+		}
+		
+		// Calculate vec3
+        float f = MathHelper.cos(-yaw * 0.017453292F - (float)Math.PI);
+        float f1 = MathHelper.sin(-yaw * 0.017453292F - (float)Math.PI);
+        float f2 = -MathHelper.cos(-pitch * 0.017453292F);
+        float f3 = MathHelper.sin(-pitch * 0.017453292F);
+        return new Vec3((double)(f1 * f2), (double)f3, (double)(f * f2));
 	}
 	
 }

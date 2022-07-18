@@ -8,7 +8,10 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockBush;
 import net.minecraft.block.BlockDirt;
+import net.minecraft.block.IGrowable;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -84,7 +87,6 @@ public class WorldUtils {
 		// Vars
 		EntityPlayerSP thePlayer = mc.thePlayer;
 		WorldClient theWorld = mc.theWorld;
-		boolean singleplayer = mc.isSingleplayer();
 		ItemBlock dummyBlock = new ItemBlock(Blocks.dirt);
 		ItemStack dummyStack = new ItemStack(Blocks.dirt);
 		
@@ -92,9 +94,11 @@ public class WorldUtils {
 		EnumFacing[] checkOrder = new EnumFacing[] {EnumFacing.DOWN, EnumFacing.NORTH, EnumFacing.SOUTH, EnumFacing.WEST, EnumFacing.EAST, EnumFacing.UP};
 		for (EnumFacing facing : checkOrder) {
 			BlockPos result = placePos.offset(facing);
+			Block block = theWorld.getBlockState(result).getBlock();
 			// The block is valid if it's solid, nothing happened when you right click it, and that specific side can be place on
-			if (isBlockSolid(result) && !theWorld.getBlockState(result).getBlock().doesBlockActivate() 
-					&& dummyBlock.canPlaceBlockOnSide(theWorld, result, getFacingForTargetBlock(result, placePos), thePlayer, dummyStack)) {
+			if (isBlockSolid(result) && !theWorld.getBlockState(result).getBlock().doesBlockActivate()
+					&& dummyBlock.canPlaceBlockOnSide(theWorld, result, getFacingForTargetBlock(result, placePos), thePlayer, dummyStack)
+					&& additionalPlaceOnBlockCheck(block)) {
 				return new PlaceOnBlock(result, facing.getOpposite());
 			}
 		}
@@ -108,10 +112,12 @@ public class WorldUtils {
 					if (x == 0 && y == 0 && z == 0)
 						continue;
 					BlockPos pos = placePos.add(x, y, z);
+					Block block = theWorld.getBlockState(pos).getBlock();
 					
 					// The block is valid if it's solid, nothing happened when you right click it, and that specific side can be place on
-					if (isBlockSolid(pos) && !theWorld.getBlockState(pos).getBlock().doesBlockActivate() 
-							&& dummyBlock.canPlaceBlockOnSide(theWorld, pos, getFacingForTargetBlock(pos, placePos), thePlayer, dummyStack)) {
+					if (isBlockSolid(pos) && !theWorld.getBlockState(pos).getBlock().doesBlockActivate()
+							&& dummyBlock.canPlaceBlockOnSide(theWorld, pos, getFacingForTargetBlock(pos, placePos), thePlayer, dummyStack)
+							&& additionalPlaceOnBlockCheck(block)) {
 						validBlockPositions.add(pos);
 					}
 				}
@@ -151,7 +157,16 @@ public class WorldUtils {
 		double yDist = Math.abs(placeOn.getY() - target.getY());
 		double zDist = Math.abs(placeOn.getZ() - target.getZ());
 		
-		if (xDist >= yDist && xDist >= zDist) {
+		if (yDist >= xDist && yDist >= zDist) {
+			double realDist = placeOn.getY() - target.getY();
+			if (realDist > 0) {
+				return EnumFacing.DOWN;
+			}
+			else if (realDist < 0) {
+				return EnumFacing.UP;
+			}
+		}
+		else if (xDist >= yDist && xDist >= zDist) {
 			double realDist = placeOn.getX() - target.getX();
 			if (realDist > 0) {
 				return EnumFacing.WEST;
@@ -169,16 +184,16 @@ public class WorldUtils {
 				return EnumFacing.SOUTH;
 			}
 		}
-		else if (yDist >= xDist && yDist >= zDist) {
-			double realDist = placeOn.getY() - target.getY();
-			if (realDist > 0) {
-				return EnumFacing.DOWN;
-			}
-			else if (realDist < 0) {
-				return EnumFacing.UP;
-			}
-		}
 		return null;
+	}
+	
+	/**
+	 * An additional block check meant to fix bugs in the placeOn method
+	 * @param block The block to check
+	 * @return true if it's valid, otherwise false
+	 */
+	private static boolean additionalPlaceOnBlockCheck(Block block) {
+		return !(block instanceof BlockBush);
 	}
 	
 	public static class PlaceOnBlock {

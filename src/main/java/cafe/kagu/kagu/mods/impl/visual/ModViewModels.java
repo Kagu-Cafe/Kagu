@@ -22,6 +22,7 @@ import cafe.kagu.kagu.mods.ModuleManager;
 import cafe.kagu.kagu.settings.impl.BooleanSetting;
 import cafe.kagu.kagu.settings.impl.IntegerSetting;
 import cafe.kagu.kagu.utils.Shader;
+import cafe.kagu.kagu.utils.SpoofUtils;
 import cafe.kagu.kagu.utils.Shader.ShaderType;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.entity.EntityOtherPlayerMP;
@@ -83,7 +84,7 @@ public class ModViewModels extends Module {
 		
 		if (desyncModels.isEnabled() && !renderingDesync) {
 			
-			if (mc.gameSettings.thirdPersonView == 0) {
+			if (mc.gameSettings.thirdPersonView == 0 || (!SpoofUtils.isSpoofYaw() && !SpoofUtils.isSpoofPitch())) {
 				return;
 			}
 			
