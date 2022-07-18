@@ -192,7 +192,7 @@ public class WorldUtils {
 	 * @param block The block to check
 	 * @return true if it's valid, otherwise false
 	 */
-	private static boolean additionalPlaceOnBlockCheck(Block block) {
+	public static boolean additionalPlaceOnBlockCheck(Block block) {
 		return !(block instanceof BlockBush);
 	}
 	

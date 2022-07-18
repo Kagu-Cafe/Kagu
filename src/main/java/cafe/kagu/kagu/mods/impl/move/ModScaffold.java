@@ -5,9 +5,10 @@ package cafe.kagu.kagu.mods.impl.move;
 
 import org.apache.commons.lang3.RandomUtils;
 
-import cafe.kagu.kagu.eventBus.Event;
 import cafe.kagu.kagu.eventBus.EventHandler;
 import cafe.kagu.kagu.eventBus.Handler;
+import cafe.kagu.kagu.eventBus.impl.EventPacketReceive;
+import cafe.kagu.kagu.eventBus.impl.EventPacketSend;
 import cafe.kagu.kagu.eventBus.impl.EventPlayerUpdate;
 import cafe.kagu.kagu.eventBus.impl.EventRender3D;
 import cafe.kagu.kagu.eventBus.impl.EventTick;
@@ -22,11 +23,17 @@ import cafe.kagu.kagu.utils.RotationUtils;
 import cafe.kagu.kagu.utils.SpoofUtils;
 import cafe.kagu.kagu.utils.WorldUtils;
 import cafe.kagu.kagu.utils.WorldUtils.PlaceOnBlock;
+import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.entity.EntityPlayerSP;
-import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.multiplayer.WorldClient;
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.client.C08PacketPlayerBlockPlacement;
+import net.minecraft.network.play.client.C09PacketHeldItemChange;
+import net.minecraft.network.play.client.C0APacketAnimation;
+import net.minecraft.network.play.server.S09PacketHeldItemChange;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
@@ -43,14 +50,15 @@ public class ModScaffold extends Module {
 	
 	public ModScaffold() {
 		super("Scaffold", Category.MOVEMENT);
-		setSettings(rotationMode, c08Position, itemMode, vec3Mode, rayTraceMissMode, maxBlockReach, keepY, visuals, safewalk, accountForMovement, ignoreWorldBorder, extend, extendDistance, tower, towerMode);
+		setSettings(rotationMode, c08Position, itemMode, swingMode, vec3Mode, rayTraceMissMode, maxBlockReach, keepY, visuals, safewalk, accountForMovement, ignoreWorldBorder, extend, extendDistance, tower, towerMode);
 	}
 	
 	private ModeSetting rotationMode = new ModeSetting("Rotation Mode", "None", "None");
 	private ModeSetting c08Position = new ModeSetting("C08 Position", "PRE", "PRE", "POST"); // PRE sends before the c03, this is default mc behaviour. POST sends after the c03, this isn't default behaviour but may bypass other anticheats
-	private ModeSetting itemMode = new ModeSetting("Item Selection", "Server", "Server", "Client", "Synced", "None");
-	private ModeSetting vec3Mode = new ModeSetting("Vec3 Calculation", "Origin", "Origin", "Rand >=0 <=1", "Rand >=0.2 <=0.8", "Raytrace");
-	private ModeSetting rayTraceMissMode = (ModeSetting) new ModeSetting("Vec3 Raytrace Miss Backup", "Origin", "Origin", "Rand >=0 <=1", "Rand >=0.2 <=0.8").setDependency(() -> vec3Mode.is("Raytrace"));
+	private ModeSetting itemMode = new ModeSetting("Item Selection", "Server", "Server", "Synced", "Spoof");
+	private ModeSetting swingMode = new ModeSetting("Swing Mode", "Server", "Server", "Synced", "No Swing");
+	private ModeSetting vec3Mode = new ModeSetting("Vec3 Calculation", "Origin", "Origin", "Center", "Rand >=0 <=1", "Rand >=0.2 <=0.8", "Raytrace");
+	private ModeSetting rayTraceMissMode = (ModeSetting) new ModeSetting("Vec3 Raytrace Miss Backup", "Origin", "Origin", "Center", "Rand >=0 <=1", "Rand >=0.2 <=0.8").setDependency(() -> vec3Mode.is("Raytrace"));
 	
 	private BooleanSetting keepY = new BooleanSetting("Keep Y", false);
 	private BooleanSetting visuals = new BooleanSetting("Visuals", true);
@@ -75,18 +83,93 @@ public class ModScaffold extends Module {
 	private float[] rotations = new float[] {0, 0};
 	private float[] lastRotations = new float[] {0, 0};
 	
+	// So rotations can control when to place
+	private boolean canPlace = false;
+	
+	// Used for item selection
+	private int currentItemSlot = 0;
+	
 	@Override
 	public void onEnable() {
 		placePos = null;
 		placeOnInfo = null;
 		keepYPosition = (int)(mc.thePlayer.posY - 1);
+		canPlace = false;
+		currentItemSlot = mc.thePlayer.inventory.currentItem;
 	}
+	
+	/**
+	 * Used for item selection
+	 */
+	@EventHandler
+	private Handler<EventPacketSend> onSendPacket = e -> {
+		if (e.isPost() || !(e.getPacket() instanceof C09PacketHeldItemChange))
+			return;
+		
+		// Cancel the packet because the scaffold module controls the held item server side
+		e.cancel();
+	};
+	
+	/**
+	 * Used for item selection
+	 */
+	@EventHandler
+	private Handler<EventPacketReceive> onReceivePacket = e -> {
+		if (e.isPost() || !(e.getPacket() instanceof S09PacketHeldItemChange))
+			return;
+		currentItemSlot = ((S09PacketHeldItemChange)e.getPacket()).getHeldItemHotbarIndex();
+	};
+	
+	/**
+	 * Used for item selection
+	 */
+	@EventHandler
+	private Handler<EventTick> onTickItem = e -> {
+		if (e.isPost())
+			return;
+		
+		int largestBlocks = -1;
+		int currentSlot = -1;
+		InventoryPlayer inventory = mc.thePlayer.inventory;
+		for (int i = 0; i < 9; i++) {
+			ItemStack item = inventory.getStackInSlot(i);
+			if (!(item.getItem() instanceof ItemBlock))
+				continue;
+			ItemBlock itemBlock = (ItemBlock)item.getItem();
+			Block block = itemBlock.getBlock();
+			if (!(block.canCollideCheck(block.getDefaultState(), false) && !block.doesBlockActivate()
+					&& WorldUtils.additionalPlaceOnBlockCheck(block)))
+				continue;
+			if (item.getStackSize() <= largestBlocks)
+				continue;
+			currentSlot = i;
+			largestBlocks = item.getStackSize();
+		}
+		
+		if (largestBlocks == -1 || currentSlot == -1 || currentItemSlot == currentSlot) {
+			return;
+		}
+		// "Server", "Synced", "Spoof"
+		switch(itemMode.getMode()) {
+			case "Server":{
+				mc.getNetHandler().getNetworkManager().sendPacketNoEvent(new C09PacketHeldItemChange(currentSlot));
+			}break;
+			case "Synced":{
+				mc.getNetHandler().getNetworkManager().sendPacketNoEvent(new C09PacketHeldItemChange(currentSlot));
+				inventory.currentItem = currentSlot;
+			}break;
+			case "Spoof":{
+				
+			}break;
+		}
+		
+	};
 	
 	/**
 	 * Used for block selection & safewalk
 	 */
 	@EventHandler
-	private Handler<EventTick> onTick = e -> {
+	private Handler<EventTick> onTickBlock = e -> {
 		if (e.isPost())
 			return;
 		
@@ -183,6 +266,7 @@ public class ModScaffold extends Module {
 				rotations[1] = e.getRotationPitch();
 				lastRotations[0] = e.getRotationYaw();
 				lastRotations[1] = e.getRotationPitch();
+				canPlace = true;
 			}break;
 		}
 		
@@ -196,8 +280,8 @@ public class ModScaffold extends Module {
 		if (c08Position.is("PRE") ? e.isPost() : e.isPre())
 			return;
 		
-		// Only attempt place if bother place pos and place on info is set
-		if (placePos == null || placeOnInfo == null)
+		// Only attempt place if place pos and place on info is set, canPlace is set to true, and there is something the player can place with
+		if (placePos == null || placeOnInfo == null || !canPlace)
 			return;
 		
 		// Vars
@@ -207,6 +291,13 @@ public class ModScaffold extends Module {
 		EnumFacing placeOnFacing = placeOnInfo.getPlaceFacing();
 		IBlockState placeOnState = theWorld.getBlockState(placeOn);
 		float[] vec3 = getVec3(vec3Mode.getMode());
+		
+		// Get the item that the player is using to place the block
+		ItemStack placeItem = thePlayer.inventory.getStackInSlot(currentItemSlot);
+		
+		// If the place item is null or isn't a block then return
+		if (placeItem == null || !(placeItem.getItem() instanceof ItemBlock))
+			return;
 		
 		// World border check, modified from normal mc because I want to give the user the option to bypass this check
 		if (!theWorld.getWorldBorder().contains(placeOn) && ignoreWorldBorder.isDisabled()){
@@ -220,7 +311,32 @@ public class ModScaffold extends Module {
         
         // If the block for some reason activates then do nothing, otherwise place the block
         if (!((!thePlayer.isSneaking() || thePlayer.getHeldItem() == null) && placeOnState.getBlock().onBlockActivated(theWorld, placeOn, placeOnState, thePlayer, placeOnFacing, vec3[0], vec3[1], vec3[2]))){
-        	mc.getNetHandler().getNetworkManager().sendPacket(new C08PacketPlayerBlockPlacement(placeOn, placeOnFacing.getIndex(), thePlayer.inventory.getCurrentItem(), vec3[0], vec3[1], vec3[2]));
+        	// Place block
+        	mc.getNetHandler().getNetworkManager().sendPacket(new C08PacketPlayerBlockPlacement(placeOn, placeOnFacing.getIndex(), placeItem, vec3[0], vec3[1], vec3[2]));
+        	
+        	// Update client side, we don't need to wait for the server to place the block since we just assume it does
+        	if (mc.playerController.getCurrentGameType().isCreative()) {
+				int i = placeItem.getMetadata();
+				int j = placeItem.stackSize;
+				placeItem.onItemUse(thePlayer, theWorld, placeOn, placeOnFacing, vec3[0], vec3[1], vec3[2]);
+				placeItem.setItemDamage(i);
+				placeItem.stackSize = j;
+			} else {
+				placeItem.onItemUse(thePlayer, theWorld, placeOn, placeOnFacing, vec3[0], vec3[1], vec3[2]);
+			}
+        	
+        	// Swing item
+        	switch (swingMode.getMode()) {
+        		case "Server":{
+        			mc.getNetHandler().getNetworkManager().sendPacket(new C0APacketAnimation());
+        		}break;
+        		case "Synced":{
+        			thePlayer.swingItem();
+        		}break;
+        		case "No Swing":{
+        			
+        		}break;
+			}
         }
         
 	};
@@ -233,10 +349,10 @@ public class ModScaffold extends Module {
 		// "Origin", "Rand >=0 <=1", "Rand >=0.2 <=0.8", "Raytrace"
 		switch (vec3Mode) {
 			case "Origin":return new float[] {0, 0, 0};
+			case "Center":return new float[] {0.5f, 0.5f, 0.5f};
 			case "Rand >=0 <=1":return new float[] {RandomUtils.nextFloat(0, 1), RandomUtils.nextFloat(0, 1), RandomUtils.nextFloat(0, 1)};
 			case "Rand >=0.2 <=0.8":return new float[] {RandomUtils.nextFloat(0.2f, 0.8f), RandomUtils.nextFloat(0.2f, 0.8f), RandomUtils.nextFloat(0.2f, 0.8f)};
 			case "Raytrace":{
-				
 				// Taken from mc code, some var names changed to make them easier to understand
 				float partialTicks = mc.getTimer().getRenderPartialTicks();
 				double reach = maxBlockReach.getValue() + 1;
