@@ -3,6 +3,8 @@
  */
 package cafe.kagu.kagu.mods.impl.move;
 
+import javax.vecmath.Vector3d;
+
 import org.apache.commons.lang3.RandomUtils;
 
 import cafe.kagu.kagu.eventBus.EventHandler;
@@ -58,7 +60,7 @@ public class ModScaffold extends Module {
 				towerMode);
 	}
 	
-	private ModeSetting rotationMode = new ModeSetting("Rotation Mode", "None", "None");
+	private ModeSetting rotationMode = new ModeSetting("Rotation Mode", "None", "None", "Lock", "Snap");
 	private ModeSetting c08Position = new ModeSetting("C08 Position", "PRE", "PRE", "POST"); // PRE sends before the c03, this is default mc behaviour. POST sends after the c03, this isn't default behaviour but may bypass other anticheats
 	private ModeSetting itemMode = new ModeSetting("Item Selection", "Server", "Server", "Synced", "Spoof");
 	private ModeSetting swingMode = new ModeSetting("Swing Mode", "Server", "Server", "Synced", "No Swing");
@@ -95,6 +97,9 @@ public class ModScaffold extends Module {
 	// Used for item selection
 	private int currentItemSlot = 0;
 	
+	// Rotation vars
+	private PlaceOnInfo lastPlaceOnInfo = null;
+	
 	@Override
 	public void onEnable() {
 		placePos = null;
@@ -102,6 +107,11 @@ public class ModScaffold extends Module {
 		keepYPosition = (int)(mc.thePlayer.posY - 1);
 		canPlace = false;
 		currentItemSlot = mc.thePlayer.inventory.currentItem;
+		EntityPlayerSP thePlayer = mc.thePlayer;
+		rotations[0] = thePlayer.rotationYaw;
+		rotations[1] = thePlayer.rotationPitch;
+		lastRotations[0] = rotations[0];
+		lastRotations[1] = rotations[1];
 	}
 	
 	@Override
@@ -359,7 +369,37 @@ public class ModScaffold extends Module {
 				lastRotations[1] = e.getRotationPitch();
 				canPlace = true;
 			}break;
+			case "Lock":{
+				if (lastPlaceOnInfo == null && placeOnInfo == null)
+					break;
+				else if (lastPlaceOnInfo == null)
+					lastPlaceOnInfo = placeOnInfo;
+				BlockPos placeOn = lastPlaceOnInfo.getPlaceOn();
+				lastRotations = rotations;
+				rotations = RotationUtils.getRotations(new Vector3d(placeOn.getX() + 0.5, placeOn.getY() + 0.5, placeOn.getZ() + 0.5));
+				canPlace = true;
+			}break;
+			case "Snap":{
+				if (placeOnInfo == null)
+					break;
+				if (placeOnInfo != lastPlaceOnInfo) {
+					BlockPos placeOn = placeOnInfo.getPlaceOn();
+					lastRotations = rotations;
+					rotations = RotationUtils.getRotations(new Vector3d(placeOn.getX() + 0.5, placeOn.getY() + 0.5, placeOn.getZ() + 0.5));
+				}
+				canPlace = true;
+			}break;
 		}
+		
+		if (placeOnInfo != null)
+			lastPlaceOnInfo = placeOnInfo;
+		
+		SpoofUtils.setSpoofedYaw(rotations[0]);
+		SpoofUtils.setSpoofedPitch(rotations[1]);
+		SpoofUtils.setSpoofedLastYaw(lastRotations[0]);
+		SpoofUtils.setSpoofedLastPitch(lastRotations[1]);
+		((EventPlayerUpdate)e).setRotationYaw(rotations[0]);
+		((EventPlayerUpdate)e).setRotationPitch(rotations[1]);
 		
 	};
 	

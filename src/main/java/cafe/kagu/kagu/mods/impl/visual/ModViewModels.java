@@ -79,7 +79,7 @@ public class ModViewModels extends Module {
 	@EventHandler
 	private Handler<EventEntityRender> onRenderEntity = e -> {
 		
-		if (e.isPost() || e.getEntity() != mc.thePlayer)
+		if (e.isPre() || e.getEntity() != mc.thePlayer)
 			return;
 		
 		if (desyncModels.isEnabled() && !renderingDesync) {
