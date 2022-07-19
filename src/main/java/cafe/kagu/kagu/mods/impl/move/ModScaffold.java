@@ -22,7 +22,7 @@ import cafe.kagu.kagu.utils.MovementUtils;
 import cafe.kagu.kagu.utils.RotationUtils;
 import cafe.kagu.kagu.utils.SpoofUtils;
 import cafe.kagu.kagu.utils.WorldUtils;
-import cafe.kagu.kagu.utils.WorldUtils.PlaceOnBlock;
+import cafe.kagu.kagu.utils.WorldUtils.PlaceOnInfo;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -33,6 +33,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.client.C08PacketPlayerBlockPlacement;
 import net.minecraft.network.play.client.C09PacketHeldItemChange;
 import net.minecraft.network.play.client.C0APacketAnimation;
+import net.minecraft.network.play.client.C0BPacketEntityAction;
+import net.minecraft.network.play.client.C0BPacketEntityAction.Action;
+import net.minecraft.network.play.client.C16PacketClientStatus;
 import net.minecraft.network.play.server.S09PacketHeldItemChange;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
@@ -50,7 +53,9 @@ public class ModScaffold extends Module {
 	
 	public ModScaffold() {
 		super("Scaffold", Category.MOVEMENT);
-		setSettings(rotationMode, c08Position, itemMode, swingMode, vec3Mode, rayTraceMissMode, maxBlockReach, keepY, visuals, safewalk, accountForMovement, ignoreWorldBorder, extend, extendDistance, tower, towerMode);
+		setSettings(rotationMode, c08Position, itemMode, swingMode, vec3Mode, rayTraceMissMode, maxBlockReach, keepY,
+				visuals, safewalk, accountForMovement, ignoreWorldBorder, sprint, extend, extendDistance, tower,
+				towerMode);
 	}
 	
 	private ModeSetting rotationMode = new ModeSetting("Rotation Mode", "None", "None");
@@ -65,6 +70,7 @@ public class ModScaffold extends Module {
 	private BooleanSetting safewalk = new BooleanSetting("Safewalk", true);
 	private BooleanSetting accountForMovement = new BooleanSetting("Account For Movement", false);
 	private BooleanSetting ignoreWorldBorder = new BooleanSetting("Ignore World Border", false);
+	private BooleanSetting sprint = new BooleanSetting("Allow Sprint", true);
 	
 	private DoubleSetting maxBlockReach = new DoubleSetting("Max Block Reach", 3, 1, 4, 0.5);
 	
@@ -74,11 +80,11 @@ public class ModScaffold extends Module {
 	
 	// Tower
 	private BooleanSetting tower = new BooleanSetting("Tower", false);
-	private ModeSetting towerMode = (ModeSetting) new ModeSetting("Tower Mode", "NCP", "NCP").setDependency(tower::isEnabled);
+	private ModeSetting towerMode = (ModeSetting) new ModeSetting("Tower Mode", "Vanilla", "Vanilla").setDependency(tower::isEnabled);
 	
 	// Vars used in the scaffold
 	private BlockPos placePos = null;
-	private PlaceOnBlock placeOnInfo = null;
+	private PlaceOnInfo placeOnInfo = null;
 	private int keepYPosition = Integer.MAX_VALUE;
 	private float[] rotations = new float[] {0, 0};
 	private float[] lastRotations = new float[] {0, 0};
@@ -98,12 +104,82 @@ public class ModScaffold extends Module {
 		currentItemSlot = mc.thePlayer.inventory.currentItem;
 	}
 	
+	@Override
+	public void onDisable() {
+		EntityPlayerSP thePlayer = mc.thePlayer;
+		switch (towerMode.getMode()) {
+			
+		}
+	}
+	
+	/**
+	 * Used for the tower
+	 */
+	@EventHandler
+	private Handler<EventPlayerUpdate> onUpdateTower = e -> {
+		if (e.isPost())
+			return;
+		
+		EntityPlayerSP thePlayer = mc.thePlayer;
+		if (!isTowering()) {
+			switch (towerMode.getMode()) {
+				
+			}
+			return;
+		}
+		
+		MovementUtils.setMotion(0);
+		
+		switch (towerMode.getMode()) {
+			case "Vanilla":{
+				if (MovementUtils.isTrueOnGround(1))
+					thePlayer.setPosition(thePlayer.posX, thePlayer.posY + 2, thePlayer.posZ);
+				if (thePlayer.motionY > 0)
+					thePlayer.motionY = 0;
+				thePlayer.fallDistance = 0;
+			}break;
+		}
+	};
+	
+	/**
+	 * Whether or not the player should be towering
+	 * @return true if the player is towering, otherwise false
+	 */
+	public boolean isTowering() {
+		return !MovementUtils.isPlayerMoving() && mc.gameSettings.keyBindJump.isKeyDown() && tower.isEnabled();
+	}
+	
+	/**
+	 * Used for controlling sprint
+	 */
+	@EventHandler
+	private Handler<EventTick> onTickSprint = e -> {
+		if (e.isPost() || sprint.isEnabled())
+			return;
+		EntityPlayerSP thePlayer = mc.thePlayer;
+		if (thePlayer.isSprinting())
+			thePlayer.setSprinting(false);
+	};
+	
+	/**
+	 * Used for controlling sprint
+	 */
+	@EventHandler
+	private Handler<EventPacketSend> onSendPacketSprint = e -> {
+		if (e.isPost() || sprint.isEnabled() || !(e.getPacket() instanceof C0BPacketEntityAction))
+			return;
+		C0BPacketEntityAction c0b = (C0BPacketEntityAction)e.getPacket();
+		if (c0b.getAction() != Action.START_SPRINTING && c0b.getAction() != Action.STOP_SPRINTING)
+			return;
+		e.cancel();
+	};
+	
 	/**
 	 * Used for item selection
 	 */
 	@EventHandler
-	private Handler<EventPacketSend> onSendPacket = e -> {
-		if (e.isPost() || !(e.getPacket() instanceof C09PacketHeldItemChange))
+	private Handler<EventPacketSend> onSendPacketItem = e -> {
+		if (e.isPost() || !(e.getPacket() instanceof C09PacketHeldItemChange) || itemMode.is("Spoof"))
 			return;
 		
 		// Cancel the packet because the scaffold module controls the held item server side
@@ -114,7 +190,7 @@ public class ModScaffold extends Module {
 	 * Used for item selection
 	 */
 	@EventHandler
-	private Handler<EventPacketReceive> onReceivePacket = e -> {
+	private Handler<EventPacketReceive> onReceivePacketItem = e -> {
 		if (e.isPost() || !(e.getPacket() instanceof S09PacketHeldItemChange))
 			return;
 		currentItemSlot = ((S09PacketHeldItemChange)e.getPacket()).getHeldItemHotbarIndex();
@@ -133,7 +209,7 @@ public class ModScaffold extends Module {
 		InventoryPlayer inventory = mc.thePlayer.inventory;
 		for (int i = 0; i < 9; i++) {
 			ItemStack item = inventory.getStackInSlot(i);
-			if (!(item.getItem() instanceof ItemBlock))
+			if (item == null || item.getItem() == null || !(item.getItem() instanceof ItemBlock))
 				continue;
 			ItemBlock itemBlock = (ItemBlock)item.getItem();
 			Block block = itemBlock.getBlock();
@@ -150,6 +226,7 @@ public class ModScaffold extends Module {
 			return;
 		}
 		
+		currentItemSlot = currentSlot;
 		switch(itemMode.getMode()) {
 			case "Server":{
 				mc.getNetHandler().getNetworkManager().sendPacketNoEvent(new C09PacketHeldItemChange(currentSlot));
@@ -229,8 +306,22 @@ public class ModScaffold extends Module {
 			return;
 		}
 		
-		// Find what block and placing we should place on, this method uses basic pathfinding to efficiently find which block to place on
-		placeOnInfo = WorldUtils.getPlaceOn(placePos, maxBlockReach.getValue());
+		// Find what block and placing we should place on
+		PlaceOnInfo tempInfo = WorldUtils.getPlaceOn(placePos, maxBlockReach.getValue());
+		BlockPos tempPos = tempInfo.getPlaceOn();
+		EnumFacing tempFacing = tempInfo.getPlaceFacing();
+		BlockPos currentPos = null;
+		EnumFacing currentFacing = null;
+		if (placeOnInfo != null) {
+			currentPos = placeOnInfo.getPlaceOn();
+			currentFacing = placeOnInfo.getPlaceFacing();
+		}
+		
+		// If the block or facing is different then set the placeOnInfo, otherwise we do nothing because it makes my life easier when I do rotations
+		if (placeOnInfo == null || !(currentFacing == tempFacing && currentPos.getX() == tempPos.getX() && currentPos.getY() == tempPos.getY() && currentPos.getZ() == tempPos.getZ())) {
+			placeOnInfo = tempInfo;
+		}
+		
 	};
 	
 	/**
@@ -296,8 +387,10 @@ public class ModScaffold extends Module {
 		ItemStack placeItem = thePlayer.inventory.getStackInSlot(currentItemSlot);
 		
 		// If the place item is null or isn't a block then return
-		if (placeItem == null || !(placeItem.getItem() instanceof ItemBlock))
+		if (placeItem == null || !(placeItem.getItem() instanceof ItemBlock)) {
+			ChatUtils.addChatMessage(placeItem);
 			return;
+		}
 		
 		// World border check, modified from normal mc because I want to give the user the option to bypass this check
 		if (!theWorld.getWorldBorder().contains(placeOn) && ignoreWorldBorder.isDisabled()){
@@ -311,8 +404,19 @@ public class ModScaffold extends Module {
         
         // If the block for some reason activates then do nothing, otherwise place the block
         if (!((!thePlayer.isSneaking() || thePlayer.getHeldItem() == null) && placeOnState.getBlock().onBlockActivated(theWorld, placeOn, placeOnState, thePlayer, placeOnFacing, vec3[0], vec3[1], vec3[2]))){
+        	
+        	// For the spoof item selection
+        	if (itemMode.is("Spoof")) {
+        		mc.getNetHandler().getNetworkManager().sendPacketNoEvent(new C09PacketHeldItemChange(currentItemSlot));
+        	}
+        	
         	// Place block
         	mc.getNetHandler().getNetworkManager().sendPacket(new C08PacketPlayerBlockPlacement(placeOn, placeOnFacing.getIndex(), placeItem, vec3[0], vec3[1], vec3[2]));
+        	
+        	// For the spoof item selection
+        	if (itemMode.is("Spoof")) {
+        		mc.getNetHandler().getNetworkManager().sendPacketNoEvent(new C09PacketHeldItemChange(thePlayer.inventory.currentItem));
+        	}
         	
         	// Update client side, we don't need to wait for the server to place the block since we just assume it does
         	if (mc.playerController.getCurrentGameType().isCreative()) {

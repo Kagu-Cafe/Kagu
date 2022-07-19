@@ -82,7 +82,7 @@ public class WorldUtils {
 	 * @param maxDistance The max distance the placeon block can be from the target block
 	 * @return null if the place pos cannot be found, otherwise returns a <code>PlaceOnBlock</code> object that contains a blockpos and a enumfacing
 	 */
-	public static PlaceOnBlock getPlaceOn(BlockPos placePos, double maxDistance) {
+	public static PlaceOnInfo getPlaceOn(BlockPos placePos, double maxDistance) {
 		
 		// Vars
 		EntityPlayerSP thePlayer = mc.thePlayer;
@@ -99,7 +99,7 @@ public class WorldUtils {
 			if (isBlockSolid(result) && !theWorld.getBlockState(result).getBlock().doesBlockActivate()
 					&& dummyBlock.canPlaceBlockOnSide(theWorld, result, getFacingForTargetBlock(result, placePos), thePlayer, dummyStack)
 					&& additionalPlaceOnBlockCheck(block)) {
-				return new PlaceOnBlock(result, facing.getOpposite());
+				return new PlaceOnInfo(result, facing.getOpposite());
 			}
 		}
 		
@@ -143,7 +143,7 @@ public class WorldUtils {
 		if (placeOnFacing == null)
 			return null;
 		
-		return new PlaceOnBlock(placeOn, placeOnFacing);
+		return new PlaceOnInfo(placeOn, placeOnFacing);
 		
 	}
 	
@@ -196,13 +196,13 @@ public class WorldUtils {
 		return !(block instanceof BlockBush);
 	}
 	
-	public static class PlaceOnBlock {
+	public static class PlaceOnInfo {
 		
 		/**
 		 * @param placeOn
 		 * @param placeFacing
 		 */
-		public PlaceOnBlock(BlockPos placeOn, EnumFacing placeFacing) {
+		public PlaceOnInfo(BlockPos placeOn, EnumFacing placeFacing) {
 			this.placeOn = placeOn;
 			this.placeFacing = placeFacing;
 		}
