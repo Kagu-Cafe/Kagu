@@ -5,9 +5,11 @@ package cafe.kagu.kagu.mods.impl.visual;
 
 import cafe.kagu.kagu.eventBus.EventHandler;
 import cafe.kagu.kagu.eventBus.Handler;
+import cafe.kagu.kagu.eventBus.impl.EventPacketReceive;
 import cafe.kagu.kagu.eventBus.impl.EventSettingUpdate;
 import cafe.kagu.kagu.mods.Module;
 import cafe.kagu.kagu.settings.impl.ModeSetting;
+import net.minecraft.network.play.server.S03PacketTimeUpdate;
 
 /**
  * @author lavaflowglow
@@ -38,6 +40,13 @@ public class ModAmbience extends Module {
 		if (e.getSetting() == blockLighting) {
 			mc.renderGlobal.loadRenderers();
 		}
+	};
+	
+	@EventHandler
+	private Handler<EventPacketReceive> onPacketReceive = e -> {
+		if (e.isPost() || worldTime.is("Unchanged") || !(e.getPacket() instanceof S03PacketTimeUpdate))
+			return;
+		e.cancel();
 	};
 	
 	/**

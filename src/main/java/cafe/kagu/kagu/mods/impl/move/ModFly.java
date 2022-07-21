@@ -28,7 +28,7 @@ public class ModFly extends Module {
 		setSettings(mode);
 	}
 	
-	private ModeSetting mode = new ModeSetting("Mode", "Verus", "Verus", "AirHop");
+	private ModeSetting mode = new ModeSetting("Mode", "Verus", "Verus");
 	
 	@Override
 	public void onEnable() {

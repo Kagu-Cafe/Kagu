@@ -797,4 +797,12 @@ public abstract class Container
             return MathHelper.floor_float(f * 14.0F) + (i > 0 ? 1 : 0);
         }
     }
+    
+    /**
+	 * @return the inventorySlots
+	 */
+	public List<Slot> getInventorySlots() {
+		return inventorySlots;
+	}
+    
 }

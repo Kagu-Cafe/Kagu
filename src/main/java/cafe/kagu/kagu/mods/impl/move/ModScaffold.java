@@ -6,6 +6,7 @@ package cafe.kagu.kagu.mods.impl.move;
 import javax.vecmath.Vector3d;
 
 import org.apache.commons.lang3.RandomUtils;
+import org.lwjgl.opengl.GL11;
 
 import cafe.kagu.kagu.eventBus.EventHandler;
 import cafe.kagu.kagu.eventBus.Handler;
@@ -23,12 +24,14 @@ import cafe.kagu.kagu.utils.DrawUtils3D;
 import cafe.kagu.kagu.utils.MovementUtils;
 import cafe.kagu.kagu.utils.RotationUtils;
 import cafe.kagu.kagu.utils.SpoofUtils;
+import cafe.kagu.kagu.utils.UiUtils;
 import cafe.kagu.kagu.utils.WorldUtils;
 import cafe.kagu.kagu.utils.WorldUtils.PlaceOnInfo;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.multiplayer.WorldClient;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
@@ -343,13 +346,25 @@ public class ModScaffold extends Module {
 			return;
 		
 		BlockPos placePos = this.placePos;
+		PlaceOnInfo placeOnInfo = this.placeOnInfo;
 		
-		if (placePos != null)
-			DrawUtils3D.drawColored3DWorldBox(placePos.getX(), placePos.getY(), placePos.getZ(), placePos.getX() + 1, placePos.getY() + 1, placePos.getZ() + 1, 0xffffffff);
+		GlStateManager.pushMatrix();
+		GlStateManager.pushAttrib();
+		GL11.glEnable(GL11.GL_POLYGON_OFFSET_FILL);
+		GL11.glPolygonOffset(1.0f, -1099998.0f);
 		
 		if (placeOnInfo != null) {
-			DrawUtils3D.drawColored3DWorldBox(placeOnInfo.getPlaceOn().getX(), placeOnInfo.getPlaceOn().getY(), placeOnInfo.getPlaceOn().getZ(), placeOnInfo.getPlaceOn().getX() + 1, placeOnInfo.getPlaceOn().getY() + 1, placeOnInfo.getPlaceOn().getZ() + 1, 0xff0000ff);
+			DrawUtils3D.drawColored3DWorldBox(placeOnInfo.getPlaceOn().getX(), placeOnInfo.getPlaceOn().getY(),
+					placeOnInfo.getPlaceOn().getZ(), placeOnInfo.getPlaceOn().getX() + 1,
+					placeOnInfo.getPlaceOn().getY() + 1, placeOnInfo.getPlaceOn().getZ() + 1, 0x400000ff);
 		}
+		
+		if (placePos != null) {
+			DrawUtils3D.drawColored3DWorldBox(placePos.getX(), placePos.getY(), placePos.getZ(), placePos.getX() + 1, placePos.getY() + 1, placePos.getZ() + 1, 0x90ffffff);
+		}
+		
+		GlStateManager.popAttrib();
+		GlStateManager.popMatrix();
 		
 	};
 	
@@ -363,12 +378,8 @@ public class ModScaffold extends Module {
 		
 		switch (rotationMode.getMode()) {
 			case "None":{
-				rotations[0] = e.getRotationYaw();
-				rotations[1] = e.getRotationPitch();
-				lastRotations[0] = e.getRotationYaw();
-				lastRotations[1] = e.getRotationPitch();
 				canPlace = true;
-			}break;
+			}return; // Returning cancels rotations
 			case "Lock":{
 				if (lastPlaceOnInfo == null && placeOnInfo == null)
 					break;

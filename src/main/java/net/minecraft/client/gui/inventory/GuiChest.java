@@ -51,4 +51,33 @@ public class GuiChest extends GuiContainer
         this.drawTexturedModalRect(i, j, 0, 0, this.xSize, this.inventoryRows * 18 + 17);
         this.drawTexturedModalRect(i, j + this.inventoryRows * 18 + 17, 0, 126, this.xSize, 96);
     }
+
+	/**
+	 * @return the upperChestInventory
+	 */
+	public IInventory getUpperChestInventory() {
+		return upperChestInventory;
+	}
+
+	/**
+	 * @param upperChestInventory the upperChestInventory to set
+	 */
+	public void setUpperChestInventory(IInventory upperChestInventory) {
+		this.upperChestInventory = upperChestInventory;
+	}
+
+	/**
+	 * @return the lowerChestInventory
+	 */
+	public IInventory getLowerChestInventory() {
+		return lowerChestInventory;
+	}
+
+	/**
+	 * @param lowerChestInventory the lowerChestInventory to set
+	 */
+	public void setLowerChestInventory(IInventory lowerChestInventory) {
+		this.lowerChestInventory = lowerChestInventory;
+	}
+
 }

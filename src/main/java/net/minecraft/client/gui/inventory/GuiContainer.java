@@ -784,4 +784,12 @@ public abstract class GuiContainer extends GuiScreen
             this.mc.thePlayer.closeScreen();
         }
     }
+    
+    /**
+	 * @return the inventorySlots
+	 */
+	public Container getInventorySlots() {
+		return inventorySlots;
+	}
+    
 }
