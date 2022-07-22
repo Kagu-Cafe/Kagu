@@ -123,6 +123,13 @@ public class ModScaffold extends Module {
 		switch (towerMode.getMode()) {
 			
 		}
+		if (currentItemSlot != mc.thePlayer.inventory.currentItem)
+			switch(itemMode.getMode()) {
+				case "Server":
+				case "Synced":{
+					mc.getNetHandler().getNetworkManager().sendPacketNoEvent(new C09PacketHeldItemChange(mc.thePlayer.inventory.currentItem));
+				}break;
+			}
 	}
 	
 	/**
@@ -182,7 +189,7 @@ public class ModScaffold extends Module {
 		if (e.isPost() || sprint.isEnabled() || !(e.getPacket() instanceof C0BPacketEntityAction))
 			return;
 		C0BPacketEntityAction c0b = (C0BPacketEntityAction)e.getPacket();
-		if (c0b.getAction() != Action.START_SPRINTING && c0b.getAction() != Action.STOP_SPRINTING)
+		if (c0b.getAction() != Action.START_SPRINTING)
 			return;
 		e.cancel();
 	};

@@ -65,7 +65,7 @@ public class ModFly extends Module {
 			case "Verus":{
 				mc.thePlayer.setSprinting(true);
 				if (thePlayer.hurtTime > 0 && !verusDamage) {
-					verusFlyTicks = 25;
+					verusFlyTicks = 22;
 					verusMotion = 7.5;
 					thePlayer.setPosition(thePlayer.posX, thePlayer.posY + 3, thePlayer.posZ);
 					verusDamage = true;
@@ -74,12 +74,15 @@ public class ModFly extends Module {
 				if (verusDamage) {
 					if (verusFlyTicks > 0) {
 						if (MovementUtils.isPlayerMoving())
-							MovementUtils.setMotion(verusMotion);
+							MovementUtils.setMotion(verusMotion, thePlayer.rotationYaw);
 						verusMotion *= 0.91;
 						thePlayer.motionY = -0.0784000015258789;
 						thePlayer.onGround = true;
 						verusFlyTicks--;
+						if (thePlayer.isCollidedHorizontally)
+							toggle();
 					}else {
+						MovementUtils.setMotion(0);
 						toggle();
 					}
 					if (MovementUtils.isTrueOnGround()) {

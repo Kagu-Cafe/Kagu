@@ -47,7 +47,7 @@ public class ModKillAura extends Module {
 
 	public ModKillAura() {
 		super("KillAura", Category.COMBAT);
-		setSettings(rotationMode, blockMode, preferredTargetMetrics, targetSelectionMode, swingMode, positioningMode,
+		setSettings(rotationMode, blockMode, preferredTargetMetrics, targetSelectionMode, swingMode,
 				hitRange, blockRange, hitChance, minAps, maxAps, targetAll, targetPlayers, targetAnimals, targetMobs);
 		EventBus.setSubscriber(new ApsMinMaxFixer(this), true);
 	}
@@ -58,7 +58,6 @@ public class ModKillAura extends Module {
 	private ModeSetting preferredTargetMetrics = new ModeSetting("Preferred Target Metrics", "Distance", "Distance");
 	private ModeSetting targetSelectionMode = new ModeSetting("Target Selection", "Instant", "Instant");
 	private ModeSetting swingMode = new ModeSetting("Swing Mode", "Swing", "Swing", "Server Side", "No Swing");
-	private ModeSetting positioningMode = new ModeSetting("Positioning", "Vanilla", "Vanilla", "Target Render Pos", "Player Render Pos", "Target & Player Render Pos");
 	
 	// Ranges
 	private DoubleSetting hitRange = new DoubleSetting("Hit Range", 3, 1, 7, 0.1);
@@ -159,11 +158,8 @@ public class ModKillAura extends Module {
 	 */
 	private float[] getRotations(EntityLivingBase target, EventPlayerUpdate eventPlayerUpdate) {
 		
-		Vector3d playerPos = shouldUseRenderPosPlayer() ? DrawUtils3D.get3dPlayerOffsets() : new Vector3d(mc.thePlayer.posX, mc.thePlayer.posY + mc.thePlayer.getEyeHeight(), mc.thePlayer.posZ);
-		Vector3d targetPos = shouldUseRenderPosTarget() ? DrawUtils3D.get3dEntityOffsets(target) : new Vector3d(target.posX, target.posY + target.getEyeHeight(),target.posZ);
-		
-		if (shouldUseRenderPosPlayer())
-			playerPos.setY(playerPos.getY() + mc.thePlayer.getEyeHeight());
+		Vector3d playerPos = new Vector3d(mc.thePlayer.posX, mc.thePlayer.posY + mc.thePlayer.getEyeHeight(), mc.thePlayer.posZ);
+		Vector3d targetPos = new Vector3d(target.posX, target.posY + target.getEyeHeight(), target.posZ);
 		
 		switch (rotationMode.getMode()) {
 			case "Lock":{
@@ -273,24 +269,7 @@ public class ModKillAura extends Module {
 	 * @return
 	 */
 	private double getDistanceFromPlayerEyes(EntityLivingBase entityLivingBase) {
-		if (positioningMode.is("Vanilla")) {
-			return entityLivingBase.getDistanceToEntity(mc.thePlayer);
-		}
-		return PlayerUtils.getDistanceToPlayerEyes(entityLivingBase, shouldUseRenderPosTarget(), shouldUseRenderPosPlayer());
-	}
-	
-	/**
-	 * @return Whether or not to use the player's render pos instead of their actual pos
-	 */
-	private boolean shouldUseRenderPosPlayer() {
-		return positioningMode.is("Player Render Pos") || positioningMode.is("Target & Player Render Pos");
-	}
-	
-	/**
-	 * @return Whether or not to use the target's render pos instead of their actual pos
-	 */
-	private boolean shouldUseRenderPosTarget() {
-		return positioningMode.is("Target Render Pos") || positioningMode.is("Target & Player Render Pos");
+		return entityLivingBase.getDistanceToEntity(mc.thePlayer);
 	}
 	
 	private static class ApsMinMaxFixer{
