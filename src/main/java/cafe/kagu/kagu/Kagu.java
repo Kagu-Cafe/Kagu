@@ -26,6 +26,7 @@ import cafe.kagu.kagu.ui.Hud;
 import cafe.kagu.kagu.ui.clickgui.GuiCsgoClickgui;
 import cafe.kagu.kagu.ui.gui.GuiDefaultMainMenu;
 import cafe.kagu.kagu.ui.gui.MainMenuHandler;
+import cafe.kagu.kagu.utils.InventoryUtils;
 import cafe.kagu.kagu.utils.MovementUtils;
 import cafe.kagu.kagu.utils.OSUtil;
 import cafe.kagu.kagu.utils.RotationUtils;
@@ -209,6 +210,11 @@ public class Kagu {
 		logger.info("Loading the world utils...");
 		WorldUtils.start();
 		logger.info("Loaded the world utils");
+		
+		// Load the rotation utils
+		logger.info("Loading the inventory utils...");
+		InventoryUtils.start();
+		logger.info("Loaded the inventory utils");
 		
 		// Hook the hud
 		logger.info("Hooking the hud...");

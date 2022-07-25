@@ -53,6 +53,7 @@ public class ModKillAura extends Module {
 	}
 	
 	// Modes
+	private ModeSetting attackPosition = new ModeSetting("Attack Position", "PRE", "PRE", "POST");
 	private ModeSetting rotationMode = new ModeSetting("Rotation Mode", "Lock", "Lock", "Lock+");
 	private ModeSetting blockMode = new ModeSetting("Block Mode", "None", "None", "Fake");
 	private ModeSetting preferredTargetMetrics = new ModeSetting("Preferred Target Metrics", "Distance", "Distance");
@@ -83,47 +84,58 @@ public class ModKillAura extends Module {
 	
 	@EventHandler
 	private Handler<EventPlayerUpdate> onPlayerUpdate = e -> {
-		if (e.isPost())
-			return;
 		
-		setInfo(new DecimalFormat("0.00").format(aps) + " APS", rotationMode.getMode());
+		EntityLivingBase target = null;
+		double distanceFromPlayer = 3621;
+		float[] rotations = null;
 		
-		EntityLivingBase[] targets = getTargets();
-		if (targets.length == 0) {
-			stopBlocking();
-			return;
-		}
-		
-		EntityLivingBase target = targets[0];
-		
-		if (target == null) {
-			stopBlocking();
-			return;
-		}
-		
-		double distanceFromPlayer = getDistanceFromPlayerEyes(target);
-		
-		// Check if the target is within the block distance
-		if (!blockMode.is("None")) {
+		// Rotations, target selection, blocking
+		if (e.isPre()) {
+			setInfo(new DecimalFormat("0.00").format(aps) + " APS", rotationMode.getMode());
 			
-			// Block or unblock
-			if (distanceFromPlayer <= blockRange.getValue())
-				startBlocking();
-			else
+			EntityLivingBase[] targets = getTargets();
+			if (targets.length == 0) {
 				stopBlocking();
+				return;
+			}
 			
-			// Block animations
-			if (blocking)
-				SpoofUtils.setSpoofBlocking(true);
+			target = targets[0];
 			
+			if (target == null) {
+				stopBlocking();
+				return;
+			}
+			
+			distanceFromPlayer = getDistanceFromPlayerEyes(target);
+			
+			// Check if the target is within the block distance
+			if (!blockMode.is("None")) {
+				
+				// Block or unblock
+				if (distanceFromPlayer <= blockRange.getValue())
+					startBlocking();
+				else
+					stopBlocking();
+				
+				// Block animations
+				if (blocking)
+					SpoofUtils.setSpoofBlocking(true);
+				
+			}
+			
+			// Get and set the rotations
+			rotations = getRotations(target, e);
+			e.setRotationYaw(rotations[0]);
+			e.setRotationPitch(rotations[1]);
+			SpoofUtils.setSpoofedYaw(rotations[0]);
+			SpoofUtils.setSpoofedPitch(rotations[1]);
 		}
 		
-		// Get and set the rotations
-		float[] rotations = getRotations(target, e);
-		e.setRotationYaw(rotations[0]);
-		e.setRotationPitch(rotations[1]);
-		SpoofUtils.setSpoofedYaw(rotations[0]);
-		SpoofUtils.setSpoofedPitch(rotations[1]);
+		// Attacking
+		if (target == null || rotations == null)
+			return;
+		if (attackPosition.is("PRE") ? e.isPost() : e.isPre())
+			return;
 		
 		// Check if we're able to hit
 		boolean canHit = canHit(rotations);

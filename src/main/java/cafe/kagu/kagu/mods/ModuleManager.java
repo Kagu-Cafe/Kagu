@@ -15,7 +15,9 @@ import cafe.kagu.kagu.mods.impl.exploit.ModAntiCrash;
 import cafe.kagu.kagu.mods.impl.exploit.ModBlink;
 import cafe.kagu.kagu.mods.impl.exploit.ModCrasher;
 import cafe.kagu.kagu.mods.impl.exploit.ModCreative64Stack;
+import cafe.kagu.kagu.mods.impl.exploit.ModGroundClip;
 import cafe.kagu.kagu.mods.impl.exploit.ModNoHCollisionSlowdown;
+import cafe.kagu.kagu.mods.impl.exploit.ModSpecialSlime;
 import cafe.kagu.kagu.mods.impl.exploit.ModTimer;
 import cafe.kagu.kagu.mods.impl.move.ModFly;
 import cafe.kagu.kagu.mods.impl.move.ModMoonJump;
@@ -23,6 +25,7 @@ import cafe.kagu.kagu.mods.impl.move.ModScaffold;
 import cafe.kagu.kagu.mods.impl.move.ModSpeed;
 import cafe.kagu.kagu.mods.impl.move.ModSprint;
 import cafe.kagu.kagu.mods.impl.player.ModAntiAim;
+import cafe.kagu.kagu.mods.impl.player.ModChestStealer;
 import cafe.kagu.kagu.mods.impl.player.ModDisabler;
 import cafe.kagu.kagu.mods.impl.visual.ModAmbience;
 import cafe.kagu.kagu.mods.impl.visual.ModAnimations;
@@ -63,6 +66,7 @@ public class ModuleManager {
 	// Player
 	public static ModAntiAim modAntiAim = new ModAntiAim();
 	public static ModDisabler modDisabler = new ModDisabler();
+	public static ModChestStealer modChestStealer = new ModChestStealer();
 	
 	// Visual
 	public static ModClickGui modClickGui = new ModClickGui();
@@ -83,6 +87,8 @@ public class ModuleManager {
 	public static ModBlink modBlink = new ModBlink();
 	public static ModCrasher modCrasher = new ModCrasher();
 	public static ModNoHCollisionSlowdown modNoHCollisionSlowdown = new ModNoHCollisionSlowdown();
+	public static ModGroundClip modGroundClip = new ModGroundClip();
+	public static ModSpecialSlime modSpecialSlime = new ModSpecialSlime();
 	
 	// Development
 	public static ModTest modTest = new ModTest();
@@ -118,6 +124,9 @@ public class ModuleManager {
 			modAmbience,
 			modFly,
 			modScaffold,
+			modChestStealer,
+			modGroundClip,
+			modSpecialSlime,
 			
 			modBlink
 	};

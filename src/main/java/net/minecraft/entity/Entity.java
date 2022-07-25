@@ -6,6 +6,7 @@ import java.util.UUID;
 import java.util.concurrent.Callable;
 
 import cafe.kagu.kagu.mods.ModuleManager;
+import cafe.kagu.kagu.utils.ChatUtils;
 import cafe.kagu.kagu.utils.MovementUtils;
 import cafe.kagu.kagu.utils.SpoofUtils;
 import net.minecraft.block.Block;
@@ -690,9 +691,12 @@ public abstract class Entity implements ICommandSender
 
             List<AxisAlignedBB> list1 = this.worldObj.getCollidingBoundingBoxes(this, this.getEntityBoundingBox().addCoord(x, y, z));
             AxisAlignedBB axisalignedbb = this.getEntityBoundingBox();
-
+            
+            // For y block collision
             for (AxisAlignedBB axisalignedbb1 : list1)
             {
+            	if (this == Minecraft.getMinecraft().thePlayer && ModuleManager.modGroundClip.isEnabled())
+            		break;
                 y = axisalignedbb1.calculateYOffset(this.getEntityBoundingBox(), y);
             }
 

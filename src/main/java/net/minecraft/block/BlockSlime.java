@@ -1,7 +1,10 @@
 package net.minecraft.block;
 
+import cafe.kagu.kagu.mods.ModuleManager;
+import cafe.kagu.kagu.mods.impl.exploit.ModSpecialSlime;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.Minecraft;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.BlockPos;
@@ -43,6 +46,17 @@ public class BlockSlime extends BlockBreakable
      */
     public void onLanded(World worldIn, Entity entityIn)
     {
+    	
+    	if (ModuleManager.modSpecialSlime.isEnabled() && entityIn == Minecraft.getMinecraft().thePlayer) {
+    		ModSpecialSlime modSpecialSlime = ModuleManager.modSpecialSlime;
+    		if (modSpecialSlime.getNoBounce().isDisabled()) {
+    			entityIn.motionY = -entityIn.motionY * modSpecialSlime.getBounceBoost().getValue();
+    		}else {
+    			super.onLanded(worldIn, entityIn);
+    		}
+    		return;
+    	}
+    	
         if (entityIn.isSneaking())
         {
             super.onLanded(worldIn, entityIn);
