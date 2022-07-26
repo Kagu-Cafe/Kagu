@@ -14,7 +14,7 @@ import cafe.kagu.kagu.settings.Setting;
  * @author lavaflowglow
  *
  */
-public class ModeSetting extends Setting {
+public class ModeSetting extends Setting<ModeSetting> {
 	
 	/**
 	 * @param name

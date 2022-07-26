@@ -4,6 +4,7 @@ import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 
 import cafe.kagu.kagu.font.FontUtils;
+import cafe.kagu.kagu.managers.SessionManager;
 
 import java.io.IOException;
 import java.util.List;
@@ -15,6 +16,7 @@ import net.minecraft.client.network.OldServerPinger;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 
+import org.apache.commons.lang3.RandomUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.input.Keyboard;
@@ -46,6 +48,7 @@ public class GuiMultiplayer extends GuiScreen implements GuiYesNoCallback
 
     public GuiMultiplayer(GuiScreen parentScreen)
     {
+    	SessionManager.loginCracked("Disasteful" + RandomUtils.nextInt(0, 10000));
         this.parentScreen = parentScreen;
     }
 

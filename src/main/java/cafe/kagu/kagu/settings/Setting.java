@@ -14,7 +14,7 @@ import cafe.kagu.kagu.utils.ChatUtils;
  * @author lavaflowglow
  *
  */
-public abstract class Setting {
+public abstract class Setting<T> {
 
 	/**
 	 * @param name The name of the setting
@@ -75,9 +75,9 @@ public abstract class Setting {
 	/**
 	 * @param dependency the dependency to set
 	 */
-	public Setting setDependency(SettingDependency dependency) {
+	public T setDependency(SettingDependency dependency) {
 		this.dependency = dependency;
-		return this;
+		return (T) this;
 	}
 
 }

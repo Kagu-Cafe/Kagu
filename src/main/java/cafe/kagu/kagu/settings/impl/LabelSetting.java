@@ -9,7 +9,7 @@ import cafe.kagu.kagu.settings.Setting;
  * @author lavaflowglow
  *
  */
-public class LabelSetting extends Setting {
+public class LabelSetting extends Setting<LabelSetting> {
 
 	/**
 	 * @param name The text to put on the label

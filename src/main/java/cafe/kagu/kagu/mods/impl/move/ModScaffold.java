@@ -446,7 +446,6 @@ public class ModScaffold extends Module {
 		
 		// If the place item is null or isn't a block then return
 		if (placeItem == null || !(placeItem.getItem() instanceof ItemBlock)) {
-			ChatUtils.addChatMessage(placeItem);
 			return;
 		}
 		

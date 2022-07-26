@@ -46,7 +46,7 @@ public class BlockSlime extends BlockBreakable
      */
     public void onLanded(World worldIn, Entity entityIn)
     {
-    	
+    	// Special slime
     	if (ModuleManager.modSpecialSlime.isEnabled() && entityIn == Minecraft.getMinecraft().thePlayer) {
     		ModSpecialSlime modSpecialSlime = ModuleManager.modSpecialSlime;
     		if (modSpecialSlime.getNoBounce().isDisabled()) {

@@ -9,7 +9,7 @@ import cafe.kagu.kagu.settings.Setting;
  * @author lavaflowglow
  *
  */
-public class KeybindSetting extends Setting {
+public class KeybindSetting extends Setting<KeybindSetting> {
 
 	/**
 	 * @param name The name of the module

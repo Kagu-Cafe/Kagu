@@ -10,7 +10,7 @@ import cafe.kagu.kagu.settings.Setting;
  * @author lavaflowglow
  *
  */
-public class BooleanSetting extends Setting {
+public class BooleanSetting extends Setting<BooleanSetting> {
 
 	/**
 	 * @param name      The name of the module

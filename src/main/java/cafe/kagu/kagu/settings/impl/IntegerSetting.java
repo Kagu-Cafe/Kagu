@@ -10,7 +10,7 @@ import cafe.kagu.kagu.settings.Setting;
  * @author lavaflowglow
  *
  */
-public class IntegerSetting extends Setting {
+public class IntegerSetting extends Setting<IntegerSetting> {
 
 	/**
 	 * @param name      The name of the setting

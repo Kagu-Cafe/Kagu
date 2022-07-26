@@ -10,7 +10,7 @@ import cafe.kagu.kagu.settings.Setting;
  * @author lavaflowglow
  *
  */
-public class DoubleSetting extends Setting {
+public class DoubleSetting extends Setting<DoubleSetting> {
 
 	/**
 	 * @param name      The name of the setting
