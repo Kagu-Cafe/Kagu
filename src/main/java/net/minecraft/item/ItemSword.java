@@ -141,4 +141,12 @@ public class ItemSword extends Item
         multimap.put(SharedMonsterAttributes.attackDamage.getAttributeUnlocalizedName(), new AttributeModifier(itemModifierUUID, "Weapon modifier", (double)this.attackDamage, 0));
         return multimap;
     }
+    
+    /**
+	 * @return the attackDamage
+	 */
+	public float getAttackDamage() {
+		return attackDamage;
+	}
+    
 }

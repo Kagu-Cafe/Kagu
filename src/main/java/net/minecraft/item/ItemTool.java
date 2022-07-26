@@ -103,4 +103,12 @@ public class ItemTool extends Item
         multimap.put(SharedMonsterAttributes.attackDamage.getAttributeUnlocalizedName(), new AttributeModifier(itemModifierUUID, "Tool modifier", (double)this.damageVsEntity, 0));
         return multimap;
     }
+    
+    /**
+	 * @return the damageVsEntity
+	 */
+	public float getDamageVsEntity() {
+		return damageVsEntity;
+	}
+    
 }

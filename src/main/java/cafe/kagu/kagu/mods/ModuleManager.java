@@ -28,6 +28,7 @@ import cafe.kagu.kagu.mods.impl.move.ModVelocity;
 import cafe.kagu.kagu.mods.impl.player.ModAntiAim;
 import cafe.kagu.kagu.mods.impl.player.ModChestStealer;
 import cafe.kagu.kagu.mods.impl.player.ModDisabler;
+import cafe.kagu.kagu.mods.impl.player.ModInventoryManager;
 import cafe.kagu.kagu.mods.impl.visual.ModAmbience;
 import cafe.kagu.kagu.mods.impl.visual.ModAnimations;
 import cafe.kagu.kagu.mods.impl.visual.ModDistastefulEars;
@@ -69,6 +70,7 @@ public class ModuleManager {
 	public static ModAntiAim modAntiAim = new ModAntiAim();
 	public static ModDisabler modDisabler = new ModDisabler();
 	public static ModChestStealer modChestStealer = new ModChestStealer();
+	public static ModInventoryManager modInventoryManager = new ModInventoryManager();
 	
 	// Visual
 	public static ModClickGui modClickGui = new ModClickGui();
@@ -130,6 +132,7 @@ public class ModuleManager {
 			modGroundClip,
 			modSpecialSlime,
 			modVelocity,
+			modInventoryManager,
 			
 			modBlink
 	};

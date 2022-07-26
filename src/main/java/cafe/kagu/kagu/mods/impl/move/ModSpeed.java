@@ -57,7 +57,7 @@ public class ModSpeed extends Module {
 					MovementUtils.setMotion(0);
 					return;
 				}
-				if (MovementUtils.isTrueOnGround())
+				if (MovementUtils.isTrueOnGround() && !mc.gameSettings.keyBindJump.isKeyDown())
 					thePlayer.jump();
 				MovementUtils.setMotion(MovementUtils.getMotion());
 			}break;

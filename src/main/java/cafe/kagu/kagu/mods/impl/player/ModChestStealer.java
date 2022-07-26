@@ -42,8 +42,8 @@ public class ModChestStealer extends Module {
 	private BooleanSetting shuffleOrder = new BooleanSetting("Shuffle Order", false);
 	private BooleanSetting autoClose = new BooleanSetting("Auto close chest", true);
 	private BooleanSetting instant = new BooleanSetting("Instant", false);
-	private BooleanSetting firstItemDelay = (BooleanSetting) new BooleanSetting("First Item Delay", true).setDependency(instant::isDisabled);
-	private IntegerSetting delay = (IntegerSetting) new IntegerSetting("Millis Delay", 0, 0, 2500, 50).setDependency(instant::isDisabled);
+	private BooleanSetting firstItemDelay = new BooleanSetting("First Item Delay", true).setDependency(instant::isDisabled);
+	private IntegerSetting delay = new IntegerSetting("Millis Delay", 0, 0, 2500, 50).setDependency(instant::isDisabled);
 	
 	private TimerUtil delayTimer = new TimerUtil();
 	
@@ -70,10 +70,10 @@ public class ModChestStealer extends Module {
 		
 		// Name check
 		if (chestNameCheck.isEnabled()
-				&& !guiChest.getUpperChestInventory().getDisplayName().getUnformattedText()
-						.equalsIgnoreCase(I18n.format("tile.chest.name"))
-				&& !guiChest.getUpperChestInventory().getDisplayName().getUnformattedText()
-						.equalsIgnoreCase(I18n.format("tile.chestTrap.name"))) {
+				&& !guiChest.getLowerChestInventory().getDisplayName().getFormattedText()
+						.equalsIgnoreCase(I18n.format("container.chest") + "§r")
+				&& !guiChest.getLowerChestInventory().getDisplayName().getFormattedText()
+						.equalsIgnoreCase(I18n.format("container.chestDouble") + "§r")) {
 			return;
 		}
 		

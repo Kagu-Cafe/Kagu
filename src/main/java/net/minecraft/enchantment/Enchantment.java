@@ -257,4 +257,12 @@ public abstract class Enchantment
 
         enchantmentsBookList = (Enchantment[])list.toArray(new Enchantment[list.size()]);
     }
+    
+    /**
+	 * @return the effectId
+	 */
+	public int getEffectId() {
+		return effectId;
+	}
+    
 }

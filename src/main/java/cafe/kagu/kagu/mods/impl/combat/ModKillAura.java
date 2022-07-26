@@ -37,10 +37,15 @@ import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.passive.EntityWaterMob;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemSword;
 import net.minecraft.network.play.client.C02PacketUseEntity;
 import net.minecraft.network.play.client.C0APacketAnimation;
 import net.minecraft.network.play.client.C02PacketUseEntity.Action;
+import net.minecraft.network.play.client.C07PacketPlayerDigging;
+import net.minecraft.network.play.client.C08PacketPlayerBlockPlacement;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MathHelper;
 
 /**
@@ -62,7 +67,7 @@ public class ModKillAura extends Module {
 	private ModeSetting rotationMode = new ModeSetting("Rotation Mode", "Lock", "Lock", "Lock+", "Linear", "Linear+", "Linear Humanized");
 	private DoubleSetting linearSpeed = new DoubleSetting("Linear Speed", 10, 0.5, 180, 0.5).setDependency(() -> rotationMode.is("Linear") || rotationMode.is("Linear+") || rotationMode.is("Linear Humanized"));
 	
-	private ModeSetting blockMode = new ModeSetting("Block Mode", "None", "None", "Fake");
+	private ModeSetting blockMode = new ModeSetting("Block Mode", "None", "None", "Fake", "Vanilla");
 	private ModeSetting preferredTargetMetrics = new ModeSetting("Preferred Target Metrics", "Distance", "Distance");
 	private ModeSetting targetSelectionMode = new ModeSetting("Target Selection", "Instant", "Instant");
 	private ModeSetting swingMode = new ModeSetting("Swing Mode", "Swing", "Swing", "Server Side", "No Swing");
@@ -203,13 +208,13 @@ public class ModKillAura extends Module {
 			case "Lock":{
 				canHit = true;
 				float[] result = RotationUtils.getRotations(playerEyePos, targetEyePos);
-				RotationUtils.makeRotationsValuesLoopCorrectly(lastRotations, result);
+				RotationUtils.makeRotationValuesLoopCorrectly(lastRotations, result);
 				return lastRotations = result;
 			}
 			case "Lock+":{
 				canHit = true;
 				float[] result = RotationUtils.getRotations(playerEyePos, PlayerUtils.getClosestPointInBoundingBox(playerEyePos, targetHitbox));
-				RotationUtils.makeRotationsValuesLoopCorrectly(lastRotations, result);
+				RotationUtils.makeRotationValuesLoopCorrectly(lastRotations, result);
 				return lastRotations = result;
 			}
 			case "Linear":
@@ -236,14 +241,14 @@ public class ModKillAura extends Module {
 				}
 				
 				float[] targetRotations = RotationUtils.getRotations(playerEyePos,
-						rotationMode.is("Linear+")
+						rotationMode.is("Linear+") || rotationMode.is("Linear Humanized")
 								? PlayerUtils.getClosestPointInBoundingBox(playerEyePos, targetHitbox)
 								: targetEyePos);
 				float[] currentRotations = lastRotations;
 				float[] finalRotations = currentRotations;
 				
 				// Unfuck yaw because it loops back to -180 after it passes 180, without this there's an issue where the character does 360s where the two limits loop back to each other
-				RotationUtils.makeRotationsValuesLoopCorrectly(currentRotations, targetRotations);
+				RotationUtils.makeRotationValuesLoopCorrectly(currentRotations, targetRotations);
 				
 				// Do lerp
 				double move = linearSpeed.getValue();
@@ -345,6 +350,18 @@ public class ModKillAura extends Module {
 	private void startBlocking() {
 		if (blocking)
 			return;
+		EntityPlayerSP thePlayer = mc.thePlayer;
+		if (!(thePlayer.inventory.getCurrentItem() != null && thePlayer.inventory.getCurrentItem().getItem() instanceof ItemSword)) {
+			blocking = true;
+			return;
+		}
+		
+		switch (blockMode.getMode()) {
+			case "Vanilla":{
+				mc.getNetHandler().getNetworkManager().sendPacketNoEvent(
+						new C08PacketPlayerBlockPlacement(BlockPos.ORIGIN, 255, thePlayer.getHeldItem(), 0, 0, 0));
+			}break;
+		}
 		
 		blocking = true;
 	}
@@ -355,6 +372,20 @@ public class ModKillAura extends Module {
 	private void stopBlocking() {
 		if (!blocking)
 			return;
+		EntityPlayerSP thePlayer = mc.thePlayer;
+		if (!(thePlayer.inventory.getCurrentItem() != null && thePlayer.inventory.getCurrentItem().getItem() instanceof ItemSword)) {
+			blocking = false;
+			return;
+		}
+		
+		switch (blockMode.getMode()) {
+			case "Vanilla":{
+				mc.getNetHandler().getNetworkManager()
+						.sendPacketNoEvent(new C07PacketPlayerDigging(
+								net.minecraft.network.play.client.C07PacketPlayerDigging.Action.RELEASE_USE_ITEM,
+								BlockPos.ORIGIN, EnumFacing.DOWN));
+			}break;
+		}
 		
 		blocking = false;
 	}

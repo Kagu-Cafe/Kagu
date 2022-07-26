@@ -112,7 +112,7 @@ public class RotationUtils {
 	 * @param currentRotations The current rotations
 	 * @param targetRotations The target rotations
 	 */
-	public static void makeRotationsValuesLoopCorrectly(float[] currentRotations, float[] targetRotations) {
+	public static void makeRotationValuesLoopCorrectly(float[] currentRotations, float[] targetRotations) {
 		targetRotations[0] += Math.floor(currentRotations[0] / 360) * 360f;
 		float normalYaw = currentRotations[0];
 		float add360Yaw = currentRotations[0] + 360;
