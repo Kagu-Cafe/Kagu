@@ -395,6 +395,7 @@ public class ModScaffold extends Module {
 				BlockPos placeOn = lastPlaceOnInfo.getPlaceOn();
 				lastRotations = rotations;
 				rotations = RotationUtils.getRotations(new Vector3d(placeOn.getX() + 0.5, placeOn.getY() + 0.5, placeOn.getZ() + 0.5));
+				RotationUtils.makeRotationsValuesLoopCorrectly(lastRotations, rotations);
 				canPlace = true;
 			}break;
 			case "Snap":{
@@ -404,6 +405,7 @@ public class ModScaffold extends Module {
 					BlockPos placeOn = placeOnInfo.getPlaceOn();
 					lastRotations = rotations;
 					rotations = RotationUtils.getRotations(new Vector3d(placeOn.getX() + 0.5, placeOn.getY() + 0.5, placeOn.getZ() + 0.5));
+					RotationUtils.makeRotationsValuesLoopCorrectly(lastRotations, rotations);
 				}
 				canPlace = true;
 			}break;

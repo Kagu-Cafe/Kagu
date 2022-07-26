@@ -18,9 +18,12 @@ import cafe.kagu.kagu.settings.impl.DoubleSetting;
 import cafe.kagu.kagu.settings.impl.IntegerSetting;
 import cafe.kagu.kagu.settings.impl.LongSetting;
 import cafe.kagu.kagu.settings.impl.ModeSetting;
+import cafe.kagu.kagu.utils.ChatUtils;
 import cafe.kagu.kagu.utils.MathUtils;
 import cafe.kagu.kagu.utils.MiscUtils;
 import cafe.kagu.kagu.utils.MovementUtils;
+import cafe.kagu.kagu.utils.PlayerUtils;
+import cafe.kagu.kagu.utils.RotationUtils;
 import cafe.kagu.kagu.utils.SpoofUtils;
 import cafe.kagu.kagu.utils.UiUtils;
 import net.minecraft.client.Minecraft;
@@ -30,6 +33,7 @@ import net.minecraft.entity.player.EntityPlayer.EnumChatVisibility;
 import net.minecraft.network.play.client.C15PacketClientSettings;
 import net.minecraft.network.play.client.C17PacketCustomPayload;
 import net.minecraft.network.play.client.C18PacketSpectate;
+import net.minecraft.util.MathHelper;
 
 /**
  * @author lavaflowglow
@@ -40,11 +44,6 @@ public class ModTest extends Module {
 	public ModTest() {
 		super("Test", Category.DEVELOPMENT);
 		setSettings(booleanSetting, decimalSetting1, decimalSetting2, decimalSetting3, modeSetting1, modeSetting2, modeSetting3, integerSetting1, integerSetting2, integerSetting3, longSetting1, longSetting2, longSetting3);
-	}
-	
-	@Override
-	public void onEnable() {
-		setInfo("test");
 	}
 	
 	public static BooleanSetting booleanSetting = new BooleanSetting("Boolean setting", false);
@@ -61,29 +60,21 @@ public class ModTest extends Module {
 							  modeSetting2 = new ModeSetting("Mode setting 2", "Test 1", "Test 1"),
 							  modeSetting3 = new ModeSetting("Mode setting 3", "Test 1");
 	
-	@EventHandler
-	public Handler<EventTick> onTick = e -> {
-		if (e.isPost())
-			return;
-	};
+	private float[] lastRotations = new float[] {0, 0};
+	
+	@Override
+	public void onEnable() {
+		EntityPlayerSP thePlayer = mc.thePlayer;
+		lastRotations[0] = thePlayer.rotationYaw;
+		lastRotations[1] = thePlayer.rotationPitch;
+	}
 	
 	@EventHandler
-	public Handler<EventRender3D> on3DRender = e -> {
-		EntityPlayerSP thePlayer = mc.thePlayer;
+	public Handler<EventPlayerUpdate> onPlayerUpdate = e -> {
+		if (e.isPre())
+			return;
 		
-		GlStateManager.pushMatrix();
-		GlStateManager.pushAttrib();
-		
-		{
-			
-			if (thePlayer.isSneaking()) {
-				GlStateManager.translate(0.0F, 0.2F, 0.0F);
-			}
-			
-		}
-		
-		GlStateManager.popAttrib();
-		GlStateManager.popMatrix();
+		ChatUtils.addChatMessage(((EventPlayerUpdate)e).getRotationYaw(), ((EventPlayerUpdate)e).getRotationPitch());
 		
 	};
 	

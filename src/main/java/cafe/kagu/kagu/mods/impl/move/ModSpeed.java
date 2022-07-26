@@ -25,8 +25,8 @@ public class ModSpeed extends Module {
 		setSettings(mode, speed);
 	}
 	
-	private ModeSetting mode = new ModeSetting("Mode", "Vanilla", "Vanilla");
-	private DoubleSetting speed = new DoubleSetting("Speed", 1, 0.1, 10, 0.1);
+	private ModeSetting mode = new ModeSetting("Mode", "Vanilla", "Vanilla", "Strafe");
+	private DoubleSetting speed = new DoubleSetting("Speed", 1, 0.1, 10, 0.1).setDependency(() -> mode.is("Vanilla"));
 	
 	@EventHandler
 	private Handler<EventTick> onTick = e -> {
@@ -51,6 +51,15 @@ public class ModSpeed extends Module {
 				if (MovementUtils.isTrueOnGround())
 					thePlayer.jump();
 				MovementUtils.setMotion(speed.getValue());
+			}break;
+			case "Strafe":{
+				if (!MovementUtils.isPlayerMoving()) {
+					MovementUtils.setMotion(0);
+					return;
+				}
+				if (MovementUtils.isTrueOnGround())
+					thePlayer.jump();
+				MovementUtils.setMotion(MovementUtils.getMotion());
 			}break;
 		}
 		

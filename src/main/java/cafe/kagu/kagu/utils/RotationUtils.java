@@ -107,4 +107,23 @@ public class RotationUtils {
         return new Vec3((double)(f1 * f2), (double)f3, (double)(f * f2));
 	}
 	
+	/**
+	 * Makes the two float arrays loop correctly so you don't get a weird flick effect
+	 * @param currentRotations The current rotations
+	 * @param targetRotations The target rotations
+	 */
+	public static void makeRotationsValuesLoopCorrectly(float[] currentRotations, float[] targetRotations) {
+		targetRotations[0] += Math.floor(currentRotations[0] / 360) * 360f;
+		float normalYaw = currentRotations[0];
+		float add360Yaw = currentRotations[0] + 360;
+		float add360TargetYaw = targetRotations[0] + 360;
+		float currentTargetYaw = targetRotations[0];
+		if (Math.abs(normalYaw - add360TargetYaw) < Math.abs(normalYaw - currentTargetYaw)) {
+			targetRotations[0] = add360TargetYaw;
+		}
+		else if (Math.abs(targetRotations[0] - add360Yaw) < Math.abs(targetRotations[0] - normalYaw)) {
+			currentRotations[0] = add360Yaw;
+		}
+	}
+	
 }

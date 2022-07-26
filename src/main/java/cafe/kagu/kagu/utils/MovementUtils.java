@@ -74,4 +74,12 @@ public class MovementUtils {
 		thePlayer.motionZ = Math.sin(Math.toRadians(yaw)) * motion;
 	}
 	
+	/**
+	 * @return The speed of the player
+	 */
+	public static double getMotion() {
+		EntityPlayerSP thePlayer = mc.thePlayer;
+		return Math.sqrt(thePlayer.motionX * thePlayer.motionX + thePlayer.motionZ * thePlayer.motionZ);
+	}
+	
 }

@@ -25,10 +25,12 @@ import cafe.kagu.kagu.settings.impl.IntegerSetting;
 import cafe.kagu.kagu.settings.impl.ModeSetting;
 import cafe.kagu.kagu.utils.SpoofUtils;
 import cafe.kagu.kagu.utils.TimerUtil;
+import cafe.kagu.kagu.utils.UiUtils;
 import cafe.kagu.kagu.utils.ChatUtils;
 import cafe.kagu.kagu.utils.DrawUtils3D;
 import cafe.kagu.kagu.utils.PlayerUtils;
 import cafe.kagu.kagu.utils.RotationUtils;
+import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.monster.EntityMob;
@@ -38,6 +40,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.play.client.C02PacketUseEntity;
 import net.minecraft.network.play.client.C0APacketAnimation;
 import net.minecraft.network.play.client.C02PacketUseEntity.Action;
+import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.MathHelper;
 
 /**
  * @author lavaflowglow
@@ -47,14 +51,17 @@ public class ModKillAura extends Module {
 
 	public ModKillAura() {
 		super("KillAura", Category.COMBAT);
-		setSettings(rotationMode, blockMode, preferredTargetMetrics, targetSelectionMode, swingMode,
-				hitRange, blockRange, hitChance, minAps, maxAps, targetAll, targetPlayers, targetAnimals, targetMobs);
+		setSettings(rotationMode, linearSpeed, blockMode, preferredTargetMetrics, targetSelectionMode, swingMode,
+				hitRange, blockRange, hitChance, minAps, maxAps, silentRotations, targetAll, targetPlayers, targetAnimals, targetMobs);
 		EventBus.setSubscriber(new ApsMinMaxFixer(this), true);
 	}
 	
 	// Modes
 	private ModeSetting attackPosition = new ModeSetting("Attack Position", "PRE", "PRE", "POST");
-	private ModeSetting rotationMode = new ModeSetting("Rotation Mode", "Lock", "Lock", "Lock+");
+	
+	private ModeSetting rotationMode = new ModeSetting("Rotation Mode", "Lock", "Lock", "Lock+", "Linear", "Linear+", "Linear Humanized");
+	private DoubleSetting linearSpeed = new DoubleSetting("Linear Speed", 10, 0.5, 180, 0.5).setDependency(() -> rotationMode.is("Linear") || rotationMode.is("Linear+") || rotationMode.is("Linear Humanized"));
+	
 	private ModeSetting blockMode = new ModeSetting("Block Mode", "None", "None", "Fake");
 	private ModeSetting preferredTargetMetrics = new ModeSetting("Preferred Target Metrics", "Distance", "Distance");
 	private ModeSetting targetSelectionMode = new ModeSetting("Target Selection", "Instant", "Instant");
@@ -71,16 +78,29 @@ public class ModKillAura extends Module {
 	private DoubleSetting minAps = new DoubleSetting("Min APS", 10, 0, 20, 0.1);
 	private DoubleSetting maxAps = new DoubleSetting("Max APS", 10, 0.1, 20, 0.1);
 	
+	private BooleanSetting silentRotations = new BooleanSetting("Silent Rotations", true);
+	
 	// Targets
 	private BooleanSetting targetAll = new BooleanSetting("Target Everything", true);
-	private BooleanSetting targetPlayers = (BooleanSetting) new BooleanSetting("Target Players", true).setDependency((SettingDependency)() -> targetAll.isDisabled());
-	private BooleanSetting targetAnimals = (BooleanSetting) new BooleanSetting("Target Animals", false).setDependency((SettingDependency)() -> targetAll.isDisabled());
-	private BooleanSetting targetMobs = (BooleanSetting) new BooleanSetting("Target Mobs", false).setDependency((SettingDependency)() -> targetAll.isDisabled());
+	private BooleanSetting targetPlayers = new BooleanSetting("Target Players", true).setDependency(targetAll::isDisabled);
+	private BooleanSetting targetAnimals = new BooleanSetting("Target Animals", false).setDependency(targetAll::isDisabled);
+	private BooleanSetting targetMobs = new BooleanSetting("Target Mobs", false).setDependency(targetAll::isDisabled);
 	
 	// Vars
 	private double aps = minAps.getValue();
 	private boolean blocking = false;
 	private TimerUtil apsTimer = new TimerUtil();
+	private float[] lastRotations = new float[] {0, 0};
+	private boolean canHit = false;
+	private int spike = 3;
+	
+	@Override
+	public void onEnable() {
+		EntityPlayerSP thePlayer = mc.thePlayer;
+		lastRotations[0] = thePlayer.rotationYaw;
+		lastRotations[1] = thePlayer.rotationPitch;
+		spike = 3;
+	}
 	
 	@EventHandler
 	private Handler<EventPlayerUpdate> onPlayerUpdate = e -> {
@@ -129,6 +149,10 @@ public class ModKillAura extends Module {
 			e.setRotationPitch(rotations[1]);
 			SpoofUtils.setSpoofedYaw(rotations[0]);
 			SpoofUtils.setSpoofedPitch(rotations[1]);
+			if (silentRotations.isDisabled()) {
+				mc.thePlayer.rotationYaw = rotations[0];
+				mc.thePlayer.rotationPitch = rotations[1];
+			}
 		}
 		
 		// Attacking
@@ -138,7 +162,6 @@ public class ModKillAura extends Module {
 			return;
 		
 		// Check if we're able to hit
-		boolean canHit = canHit(rotations);
 		if (canHit && distanceFromPlayer <= hitRange.getValue() && apsTimer.hasTimeElapsed((long) (1000 / aps), true)) {
 			
 			// Swing
@@ -170,28 +193,96 @@ public class ModKillAura extends Module {
 	 */
 	private float[] getRotations(EntityLivingBase target, EventPlayerUpdate eventPlayerUpdate) {
 		
-		Vector3d playerPos = new Vector3d(mc.thePlayer.posX, mc.thePlayer.posY + mc.thePlayer.getEyeHeight(), mc.thePlayer.posZ);
-		Vector3d targetPos = new Vector3d(target.posX, target.posY + target.getEyeHeight(), target.posZ);
+		EntityPlayerSP thePlayer = mc.thePlayer;
+		Vector3d playerEyePos = new Vector3d(thePlayer.posX, thePlayer.posY + thePlayer.getEyeHeight(), thePlayer.posZ);
+		Vector3d targetEyePos = new Vector3d(target.posX, target.posY + target.getEyeHeight(), target.posZ);
+		float hitboxSize = target.getCollisionBorderSize();
+		AxisAlignedBB targetHitbox = target.getEntityBoundingBox().expand(hitboxSize, hitboxSize, hitboxSize);
 		
 		switch (rotationMode.getMode()) {
 			case "Lock":{
-				return RotationUtils.getRotations(playerPos, targetPos);
+				canHit = true;
+				float[] result = RotationUtils.getRotations(playerEyePos, targetEyePos);
+				RotationUtils.makeRotationsValuesLoopCorrectly(lastRotations, result);
+				return lastRotations = result;
 			}
 			case "Lock+":{
-				return RotationUtils.getRotations(playerPos, PlayerUtils.getClosestPointInBoundingBox(playerPos, target.getEntityBoundingBox()));
+				canHit = true;
+				float[] result = RotationUtils.getRotations(playerEyePos, PlayerUtils.getClosestPointInBoundingBox(playerEyePos, targetHitbox));
+				RotationUtils.makeRotationsValuesLoopCorrectly(lastRotations, result);
+				return lastRotations = result;
+			}
+			case "Linear":
+			case "Linear+":
+			case "Linear Humanized":{
+				
+				if (rotationMode.is("Linear Humanized")) {
+					
+					// Funny tracking
+					if (target.ticksExisted > 1) {
+						targetEyePos.setX(target.posX - (target.lastTickPosX - target.posX) * RandomUtils.nextDouble(0.5, 1.5));
+						targetEyePos.setZ(target.posZ - (target.lastTickPosZ - target.posZ) * RandomUtils.nextDouble(0.5, 1.5));
+					}
+					
+					// Funny Y
+					double lookDown = (double)(target.ticksExisted % 40) / 40;
+					if (target.ticksExisted % 80 >= 40) {
+						lookDown = 1 - (double)((target.ticksExisted % 80) - 40) / 40;
+					}
+					if (thePlayer.getDistanceToEntity(target) < 0.6) {
+						lookDown *= 0.25;
+					}
+					targetEyePos.setY(targetEyePos.getY() - target.getEyeHeight() / 2 * lookDown);
+				}
+				
+				float[] targetRotations = RotationUtils.getRotations(playerEyePos,
+						rotationMode.is("Linear+")
+								? PlayerUtils.getClosestPointInBoundingBox(playerEyePos, targetHitbox)
+								: targetEyePos);
+				float[] currentRotations = lastRotations;
+				float[] finalRotations = currentRotations;
+				
+				// Unfuck yaw because it loops back to -180 after it passes 180, without this there's an issue where the character does 360s where the two limits loop back to each other
+				RotationUtils.makeRotationsValuesLoopCorrectly(currentRotations, targetRotations);
+				
+				// Do lerp
+				double move = linearSpeed.getValue();
+				
+				if (rotationMode.is("Linear Humanized")) {
+					int maxSpike = 5;
+					if (spike <= thePlayer.ticksExisted || spike - thePlayer.ticksExisted > maxSpike) {
+						spike = thePlayer.ticksExisted + RandomUtils.nextInt(0, maxSpike + 2) - 2;
+						move *= RandomUtils.nextDouble(1.3, 1.6);
+					}
+				}
+				
+				double amountMoved = move / Math.abs(currentRotations[0] - targetRotations[0]);
+				double pitchMove = Math.abs(currentRotations[1] - targetRotations[1]) * amountMoved;
+				boolean yawOnPoint = false;
+				boolean pitchOnPoint = false;
+				
+				// Yaw
+				if (move < Math.abs(currentRotations[0] - targetRotations[0])) {
+					finalRotations[0] += move * (targetRotations[0] - currentRotations[0] < 0 ? -1 : 1);
+				}else {
+					finalRotations[0] = targetRotations[0];
+					yawOnPoint = true;
+				}
+				
+				// Pitch
+				if (pitchMove < Math.abs(currentRotations[1] - targetRotations[1])) {
+					finalRotations[1] += pitchMove * (targetRotations[1] - currentRotations[1] < 0 ? -1 : 1);
+				}else {
+					finalRotations[1] = targetRotations[1];
+					pitchOnPoint = true;
+				}
+				
+				canHit = yawOnPoint && pitchOnPoint;
+				return lastRotations = finalRotations;
 			}
 		}
 		
 		return new float[] {0, 0};
-	}
-	
-	/**
-	 * Checks if able to hit the target or not
-	 * @param rotations The rotations for the entity
-	 * @return true if able to hit the target, false otherwise
-	 */
-	private boolean canHit(float[] rotations) {
-		return true;
 	}
 	
 	private EntityLivingBase lastTarget = null;
