@@ -180,9 +180,17 @@ public class ModKillAura extends Module {
 				case "No Swing":break;
 			}
 			
+			if (!blockMode.is("None")) {
+				stopBlocking();
+			}
+			
 			// Hit chance, bypasses percent checks
 			if (hitChance.getValue() != 0 && RandomUtils.nextInt(0, 101) <= hitChance.getValue())
 				mc.getNetHandler().getNetworkManager().sendPacket(new C02PacketUseEntity(target, Action.ATTACK));
+			
+			if (!blockMode.is("None")) {
+				startBlocking();
+			}
 			
 			setAps();
 			
