@@ -15,9 +15,11 @@ import cafe.kagu.kagu.settings.impl.IntegerSetting;
 import cafe.kagu.kagu.settings.impl.ModeSetting;
 import cafe.kagu.kagu.utils.ChatUtils;
 import cafe.kagu.kagu.utils.InventoryUtils;
+import cafe.kagu.kagu.utils.MiscUtils;
 import cafe.kagu.kagu.utils.MovementUtils;
 import cafe.kagu.kagu.utils.TimerUtil;
 import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
@@ -93,6 +95,9 @@ public class ModInventoryManager extends Module {
 			return;
 		
 		if (mode.is("Inventory Open") && !(mc.currentScreen instanceof GuiInventory)) {
+			return;
+		}
+		else if (!mode.is("Inventory Open") && mc.currentScreen != null) {
 			return;
 		}
 		
@@ -202,7 +207,7 @@ public class ModInventoryManager extends Module {
 			ItemStack stack = slot.getStack();
 			Item item = stack.getItem();
 			
-			if (item instanceof ItemTool || item instanceof ItemSword || item instanceof ItemBow || (item instanceof ItemBlock && ((ItemBlock)item).getBlock().doesBlockActivate())
+			if (item instanceof ItemTool || item instanceof ItemSword || (item instanceof ItemBow && !MiscUtils.removeFormatting(slot.getStack().getDisplayName()).toLowerCase().contains("kit")) || (item instanceof ItemBlock && ((ItemBlock)item).getBlock().doesBlockActivate())
 					|| item instanceof ItemArmor) {
 				openInventory();
 				InventoryUtils.dropItem(container, slot.getSlotNumber());

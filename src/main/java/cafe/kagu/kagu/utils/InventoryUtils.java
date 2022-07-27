@@ -149,7 +149,7 @@ public class InventoryUtils {
 		}
 		{ // Bow
 			Slot slot = slots.get(firstBowCheck);
-			if (slot.getHasStack() && slot.getStack().getItem() instanceof ItemBow) {
+			if (slot.getHasStack() && slot.getStack().getItem() instanceof ItemBow && !MiscUtils.removeFormatting(slot.getStack().getDisplayName()).toLowerCase().contains("kit")) {
 				bestScores[1] = getBowScore(slot.getStack());
 				bestItems[1] = slot;
 			}
@@ -203,7 +203,7 @@ public class InventoryUtils {
 			}
 		}
 		{ // Armor
-			for (int armor = 0; armor < 3; armor++) {
+			for (int armor = 0; armor < 4; armor++) {
 				Slot slot = slots.get(5 + armor);
 				if (slot.getHasStack() && slot.getStack().getItem() instanceof ItemArmor && ((ItemArmor)slot.getStack().getItem()).getArmorType() == armor) {
 					bestScores[8 + armor] = getArmorScore(slot);
@@ -218,7 +218,7 @@ public class InventoryUtils {
 			ItemStack stack = slot.getStack();
 			
 			// Weapon
-			if (sword ? slot.getStack().getItem() instanceof ItemSword : slot.getStack().getItem() instanceof ItemAxe) {
+			if (sword ? stack.getItem() instanceof ItemSword : stack.getItem() instanceof ItemAxe) {
 				double score = getWeaponScore(stack, sword);
 				if (score > bestScores[0]) {
 					bestScores[0] = score;
@@ -227,7 +227,7 @@ public class InventoryUtils {
 			}
 			
 			// Bow
-			if (slot.getStack().getItem() instanceof ItemBow) {
+			if (stack.getItem() instanceof ItemBow && !MiscUtils.removeFormatting(stack.getDisplayName()).toLowerCase().contains("kit")) {
 				double score = getBowScore(stack);
 				if (score > bestScores[1]) {
 					bestScores[1] = score;
@@ -236,7 +236,7 @@ public class InventoryUtils {
 			}
 			
 			// Pickaxe
-			if (slot.getStack().getItem() instanceof ItemPickaxe) {
+			if (stack.getItem() instanceof ItemPickaxe) {
 				double score = getToolScore(stack, (ItemTool)stack.getItem(), Blocks.stone);
 				if (score > bestScores[2]) {
 					bestScores[2] = score;
@@ -245,7 +245,7 @@ public class InventoryUtils {
 			}
 			
 			// Axe
-			if (slot.getStack().getItem() instanceof ItemAxe) {
+			if (stack.getItem() instanceof ItemAxe) {
 				double score = getToolScore(stack, (ItemTool)stack.getItem(), Blocks.planks);
 				if (score > bestScores[3]) {
 					bestScores[3] = score;
@@ -254,7 +254,7 @@ public class InventoryUtils {
 			}
 			
 			// Spade
-			if (slot.getStack().getItem() instanceof ItemSpade) {
+			if (stack.getItem() instanceof ItemSpade) {
 				double score = getToolScore(stack, (ItemTool)stack.getItem(), Blocks.dirt);
 				if (score > bestScores[4]) {
 					bestScores[4] = score;
@@ -263,7 +263,7 @@ public class InventoryUtils {
 			}
 			
 			// Shears
-			if (slot.getStack().getItem() instanceof ItemShears) {
+			if (stack.getItem() instanceof ItemShears) {
 				double score = getShearsScore(stack, (ItemShears)stack.getItem());
 				if (score > bestScores[5]) {
 					bestScores[5] = score;
@@ -272,7 +272,7 @@ public class InventoryUtils {
 			}
 			
 			// Blocks
-			if (slot.getStack().getItem() instanceof ItemBlock && !((ItemBlock)slot.getStack().getItem()).getBlock().doesBlockActivate()) {
+			if (stack.getItem() instanceof ItemBlock && !((ItemBlock)stack.getItem()).getBlock().doesBlockActivate()) {
 				double score = stack.getStackSize();
 				if (score > bestScores[6]) {
 					bestScores[6] = score;
@@ -281,7 +281,7 @@ public class InventoryUtils {
 			}
 			
 			// Gapples
-			if (slot.getStack().getItem() instanceof ItemAppleGold) {
+			if (stack.getItem() instanceof ItemAppleGold) {
 				double score = stack.getStackSize();
 				if (score > bestScores[7]) {
 					bestScores[7] = score;
@@ -290,8 +290,8 @@ public class InventoryUtils {
 			}
 			
 			// Armor
-			for (int armor = 0; armor < 3; armor++) {
-				if (slot.getHasStack() && slot.getStack().getItem() instanceof ItemArmor && ((ItemArmor)slot.getStack().getItem()).getArmorType() == armor && getArmorScore(slot) > bestScores[8 + armor]) {
+			for (int armor = 0; armor < 4; armor++) {
+				if (slot.getHasStack() && stack.getItem() instanceof ItemArmor && ((ItemArmor)stack.getItem()).getArmorType() == armor && getArmorScore(slot) > bestScores[8 + armor]) {
 					bestScores[8 + armor] = getArmorScore(slot);
 					bestItems[8 + armor] = slot;
 				}

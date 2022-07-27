@@ -3,6 +3,8 @@
  */
 package cafe.kagu.kagu.mods.impl.move;
 
+import java.util.concurrent.ThreadLocalRandom;
+
 import javax.vecmath.Vector3d;
 
 import org.apache.commons.lang3.RandomUtils;
@@ -59,11 +61,11 @@ public class ModScaffold extends Module {
 	public ModScaffold() {
 		super("Scaffold", Category.MOVEMENT);
 		setSettings(rotationMode, c08Position, itemMode, swingMode, vec3Mode, rayTraceMissMode, maxBlockReach, keepY,
-				visuals, safewalk, accountForMovement, ignoreWorldBorder, sprint, extend, extendDistance, tower,
+				visuals, safewalk, accountForMovement, ignoreWorldBorder, sprint, silentRotations, extend, extendDistance, tower,
 				towerMode);
 	}
 	
-	private ModeSetting rotationMode = new ModeSetting("Rotation Mode", "None", "None", "Lock", "Snap");
+	private ModeSetting rotationMode = new ModeSetting("Rotation Mode", "None", "None", "Lock", "Snap", "Hypixel");
 	private ModeSetting c08Position = new ModeSetting("C08 Position", "PRE", "PRE", "POST"); // PRE sends before the c03, this is default mc behaviour. POST sends after the c03, this isn't default behaviour but may bypass other anticheats
 	private ModeSetting itemMode = new ModeSetting("Item Selection", "Server", "Server", "Synced", "Spoof");
 	private ModeSetting swingMode = new ModeSetting("Swing Mode", "Server", "Server", "Synced", "No Swing");
@@ -76,6 +78,7 @@ public class ModScaffold extends Module {
 	private BooleanSetting accountForMovement = new BooleanSetting("Account For Movement", false);
 	private BooleanSetting ignoreWorldBorder = new BooleanSetting("Ignore World Border", false);
 	private BooleanSetting sprint = new BooleanSetting("Allow Sprint", true);
+	private BooleanSetting silentRotations = new BooleanSetting("Silent Rotations", true);
 	
 	private DoubleSetting maxBlockReach = new DoubleSetting("Max Block Reach", 3, 1, 4, 0.5);
 	
@@ -102,11 +105,14 @@ public class ModScaffold extends Module {
 	
 	// Rotation vars
 	private PlaceOnInfo lastPlaceOnInfo = null;
+	private boolean placedBlock = false;
+	private double[] hypixelPositions = new double[] {0, 0};
 	
 	@Override
 	public void onEnable() {
 		placePos = null;
 		placeOnInfo = null;
+		lastPlaceOnInfo = null;
 		keepYPosition = (int)(mc.thePlayer.posY - 1);
 		canPlace = false;
 		currentItemSlot = mc.thePlayer.inventory.currentItem;
@@ -115,6 +121,7 @@ public class ModScaffold extends Module {
 		rotations[1] = thePlayer.rotationPitch;
 		lastRotations[0] = rotations[0];
 		lastRotations[1] = rotations[1];
+		placedBlock = false;
 	}
 	
 	@Override
@@ -409,10 +416,36 @@ public class ModScaffold extends Module {
 				}
 				canPlace = true;
 			}break;
+			case "Hypixel":{
+				if (lastPlaceOnInfo == null && placeOnInfo == null)
+					break;
+				else if (lastPlaceOnInfo == null)
+					lastPlaceOnInfo = placeOnInfo;
+				BlockPos placeOn = lastPlaceOnInfo.getPlaceOn();
+				EnumFacing placeFace = lastPlaceOnInfo.getPlaceFacing();
+				lastRotations = rotations;
+				rotations = RotationUtils
+						.getRotations(new Vector3d(placeOn.getX() + 0.5 + (double) placeFace.getFrontOffsetX() / 2 + (double) placeFace.getFrontOffsetZ() / 2 * hypixelPositions[0],
+								placeOn.getY() + 0.5 + (double) placeFace.getFrontOffsetY() / 2,
+								placeOn.getZ() + 0.5 + (double) placeFace.getFrontOffsetZ() / 2 + (double) placeFace.getFrontOffsetX() / 2 * hypixelPositions[1]));
+				if (!placedBlock) {
+					rotations[1] = lastRotations[1];
+				}
+				else {
+					hypixelPositions[0] = ThreadLocalRandom.current().nextGaussian() / 2;
+					hypixelPositions[1] = ThreadLocalRandom.current().nextGaussian() / 2;
+				}
+//				ChatUtils.addChatMessage(hypixelPositions[0], hypixelPositions[1]);
+				RotationUtils.makeRotationValuesLoopCorrectly(lastRotations, rotations);
+				canPlace = true;
+			}break;
 		}
 		
 		if (placeOnInfo != null)
 			lastPlaceOnInfo = placeOnInfo;
+		
+		if (placedBlock)
+			placedBlock = false;
 		
 		SpoofUtils.setSpoofedYaw(rotations[0]);
 		SpoofUtils.setSpoofedPitch(rotations[1]);
@@ -420,6 +453,10 @@ public class ModScaffold extends Module {
 		SpoofUtils.setSpoofedLastPitch(lastRotations[1]);
 		((EventPlayerUpdate)e).setRotationYaw(rotations[0]);
 		((EventPlayerUpdate)e).setRotationPitch(rotations[1]);
+		if (silentRotations.isDisabled()) {
+			mc.thePlayer.rotationYaw = rotations[0];
+			mc.thePlayer.rotationPitch = rotations[1];
+		}
 		
 	};
 	
@@ -500,6 +537,7 @@ public class ModScaffold extends Module {
         			
         		}break;
 			}
+        	placedBlock = true;
         }
         
 	};

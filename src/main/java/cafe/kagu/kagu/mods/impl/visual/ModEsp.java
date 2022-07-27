@@ -25,6 +25,7 @@ import cafe.kagu.kagu.settings.SettingDependency;
 import cafe.kagu.kagu.settings.impl.BooleanSetting;
 import cafe.kagu.kagu.settings.impl.ModeSetting;
 import cafe.kagu.kagu.utils.DrawUtils3D;
+import cafe.kagu.kagu.utils.MiscUtils;
 import cafe.kagu.kagu.utils.UiUtils;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
@@ -63,7 +64,7 @@ public class ModEsp extends Module {
 	private BooleanSetting targetSelf = (BooleanSetting) new BooleanSetting("Self ESP", false).setDependency(() -> {return targetAll.isEnabled() || targetPlayers.isEnabled();});
 			
 	// Invisible
-	private BooleanSetting renderInvisibleModels = new BooleanSetting("Render Invisible Models", true);
+	private BooleanSetting renderInvisibleModels = new BooleanSetting("Render Invisible Models", false);
 	
 	/**
 	 * @return the renderInvisibleModels
@@ -163,7 +164,8 @@ public class ModEsp extends Module {
 								ent.getLeft() - Math.min(Math.max((ent.getRight() - ent.getLeft()) * 0.25, 3), infoBarGap) - lineWidth, ent.getBottom() + (lineWidth / 2), healthPercent >= 1 ? blue : lerpedHealthColor);
 						
 						// Nametags
-						double nametagScaling = ((ent.getRight() - ent.getLeft()) * (ent.getEntityLivingBase() instanceof EntityPlayer ? 2 : 0.7)) / nametagFr.getStringWidth(ent.getEntityLivingBase().getName());
+						String name = MiscUtils.removeFormatting(ent.getEntityLivingBase().getName());
+						double nametagScaling = ((ent.getRight() - ent.getLeft()) * (ent.getEntityLivingBase() instanceof EntityPlayer ? 2 : 0.7)) / nametagFr.getStringWidth(name);
 						GlStateManager.pushMatrix();
 						if (nametagScaling < 1) {
 							GlStateManager.translate((ent.getLeft() + ent.getRight()) * 0.5, ent.getTop() - nametagGap - (nametagFr.getFontHeight() * nametagScaling), 0);
@@ -171,7 +173,7 @@ public class ModEsp extends Module {
 							GlStateManager.translate(-((ent.getLeft() + ent.getRight()) * 0.5), -(ent.getTop() - nametagGap - (nametagFr.getFontHeight() * nametagScaling)), 0);
 						}
 						
-						nametagFr.drawCenteredString(ent.getEntityLivingBase().getName(), (ent.getLeft() + ent.getRight()) * 0.5, ent.getTop() - nametagGap - (nametagFr.getFontHeight() * (nametagScaling >= 1 ? 1 : nametagScaling)), 0xffffffff, true);
+						nametagFr.drawCenteredString(name, (ent.getLeft() + ent.getRight()) * 0.5, ent.getTop() - nametagGap - (nametagFr.getFontHeight() * (nametagScaling >= 1 ? 1 : nametagScaling)), 0xffffffff, true);
 						
 						GlStateManager.popMatrix();
 						

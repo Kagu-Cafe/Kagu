@@ -48,7 +48,6 @@ public class GuiMultiplayer extends GuiScreen implements GuiYesNoCallback
 
     public GuiMultiplayer(GuiScreen parentScreen)
     {
-    	SessionManager.loginCracked("HankHill" + RandomUtils.nextInt(10000, 99999));
         this.parentScreen = parentScreen;
     }
 

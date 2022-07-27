@@ -67,7 +67,7 @@ public class ModKillAura extends Module {
 	private ModeSetting rotationMode = new ModeSetting("Rotation Mode", "Lock", "Lock", "Lock+", "Linear", "Linear+", "Linear Humanized");
 	private DoubleSetting linearSpeed = new DoubleSetting("Linear Speed", 10, 0.5, 180, 0.5).setDependency(() -> rotationMode.is("Linear") || rotationMode.is("Linear+") || rotationMode.is("Linear Humanized"));
 	
-	private ModeSetting blockMode = new ModeSetting("Block Mode", "None", "None", "Fake", "Vanilla");
+	private ModeSetting blockMode = new ModeSetting("Block Mode", "None", "None", "Fake", "Vanilla", "Test");
 	private ModeSetting preferredTargetMetrics = new ModeSetting("Preferred Target Metrics", "Distance", "Distance");
 	private ModeSetting targetSelectionMode = new ModeSetting("Target Selection", "Instant", "Instant");
 	private ModeSetting swingMode = new ModeSetting("Swing Mode", "Swing", "Swing", "Server Side", "No Swing");
@@ -131,6 +131,7 @@ public class ModKillAura extends Module {
 			}
 			
 			target = targets[0];
+			this.target = target;
 			
 			if (target == null) {
 				stopBlocking();
@@ -141,6 +142,9 @@ public class ModKillAura extends Module {
 			
 			// Check if the target is within the block distance
 			if (!blockMode.is("None")) {
+				
+//				if (blockMode.is("Test") && mc.thePlayer.ticksExisted % 10 == 0)
+//					blocking = false;
 				
 				// Block or unblock
 				if (distanceFromPlayer <= blockRange.getValue())
@@ -184,8 +188,8 @@ public class ModKillAura extends Module {
 				case "No Swing":break;
 			}
 			
-			if (!blockMode.is("None")) {
-//				stopBlocking();
+			if (!blockMode.is("None") && !blockMode.is("Vanilla") && !blockMode.is("Test")) {
+				stopBlocking();
 			}
 			
 			// Hit chance, bypasses percent checks
@@ -202,9 +206,9 @@ public class ModKillAura extends Module {
 //				bot.mouseRelease(mask);
 			}
 			
-//			if (!blockMode.is("None")) {
-//				startBlocking();
-//			}
+			if (!blockMode.is("None") && !blockMode.is("Vanilla") && !blockMode.is("Test")) {
+				startBlocking();
+			}
 			
 			setAps();
 			
@@ -313,6 +317,7 @@ public class ModKillAura extends Module {
 	}
 	
 	private EntityLivingBase lastTarget = null;
+	private EntityLivingBase target = null;
 	
 	/**
 	 * Gets an array of valid targets
@@ -381,7 +386,13 @@ public class ModKillAura extends Module {
 		
 		switch (blockMode.getMode()) {
 			case "Vanilla":{
-				mc.getNetHandler().getNetworkManager().sendPacketNoEvent(
+				mc.getNetHandler().getNetworkManager().sendPacket(
+						new C08PacketPlayerBlockPlacement(BlockPos.ORIGIN, 255, thePlayer.getHeldItem(), 0, 0, 0));
+			}break;
+			case "Test":{
+				mc.getNetHandler().getNetworkManager().sendPacket(new C02PacketUseEntity(target, RotationUtils.getVectorForRotation(lastRotations[0], lastRotations[1])));
+				mc.getNetHandler().getNetworkManager().sendPacket(new C02PacketUseEntity(target, Action.INTERACT));
+				mc.getNetHandler().getNetworkManager().sendPacket(
 						new C08PacketPlayerBlockPlacement(BlockPos.ORIGIN, 255, thePlayer.getHeldItem(), 0, 0, 0));
 			}break;
 		}
@@ -403,6 +414,12 @@ public class ModKillAura extends Module {
 		
 		switch (blockMode.getMode()) {
 			case "Vanilla":{
+				mc.getNetHandler().getNetworkManager()
+						.sendPacketNoEvent(new C07PacketPlayerDigging(
+								net.minecraft.network.play.client.C07PacketPlayerDigging.Action.RELEASE_USE_ITEM,
+								BlockPos.ORIGIN, EnumFacing.DOWN));
+			}break;
+			case "Test":{
 				mc.getNetHandler().getNetworkManager()
 						.sendPacketNoEvent(new C07PacketPlayerDigging(
 								net.minecraft.network.play.client.C07PacketPlayerDigging.Action.RELEASE_USE_ITEM,

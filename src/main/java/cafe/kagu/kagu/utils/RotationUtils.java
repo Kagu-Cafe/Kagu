@@ -125,5 +125,20 @@ public class RotationUtils {
 			currentRotations[0] = add360Yaw;
 		}
 	}
-	
+
+	/**
+	 * Creates a Vec3 using the pitch and yaw of the entities rotation.
+	 * 
+	 * @param yaw   The yaw
+	 * @param pitch The pitch
+	 * @return The vector for the rotation
+	 */
+	public static Vec3 getVectorForRotation(float yaw, float pitch) {
+		float f = MathHelper.cos(-yaw * 0.017453292F - (float) Math.PI);
+		float f1 = MathHelper.sin(-yaw * 0.017453292F - (float) Math.PI);
+		float f2 = -MathHelper.cos(-pitch * 0.017453292F);
+		float f3 = MathHelper.sin(-pitch * 0.017453292F);
+		return new Vec3((double) (f1 * f2), (double) f3, (double) (f * f2));
+	}
+
 }
