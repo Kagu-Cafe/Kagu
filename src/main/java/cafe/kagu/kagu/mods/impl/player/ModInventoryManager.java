@@ -3,6 +3,7 @@
  */
 package cafe.kagu.kagu.mods.impl.player;
 
+import java.util.Arrays;
 import java.util.List;
 
 import cafe.kagu.kagu.eventBus.EventHandler;
@@ -12,6 +13,7 @@ import cafe.kagu.kagu.mods.Module;
 import cafe.kagu.kagu.settings.impl.BooleanSetting;
 import cafe.kagu.kagu.settings.impl.IntegerSetting;
 import cafe.kagu.kagu.settings.impl.ModeSetting;
+import cafe.kagu.kagu.utils.ChatUtils;
 import cafe.kagu.kagu.utils.InventoryUtils;
 import cafe.kagu.kagu.utils.MovementUtils;
 import cafe.kagu.kagu.utils.TimerUtil;
@@ -19,6 +21,13 @@ import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemArmor;
+import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemBow;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemSword;
+import net.minecraft.item.ItemTool;
 import net.minecraft.world.WorldSettings.GameType;
 
 /**
@@ -55,6 +64,10 @@ public class ModInventoryManager extends Module {
 	private final int shearsSlot = 5 + 36;
 	private final int gappleSlot = 6 + 36;
 	private final int blockSlot = 7 + 36;
+	private final int helmetSlot = 5;
+	private final int chestplateSlot = 6;
+	private final int leggingsSlot = 7;
+	private final int bootsSlot = 8;
 	
 	private Slot bestWeapon = null;
 	private Slot bestBow = null;
@@ -62,6 +75,12 @@ public class ModInventoryManager extends Module {
 	private Slot bestAxe = null;
 	private Slot bestSpade = null;
 	private Slot bestShears = null;
+	private Slot mostGapples = null;
+	private Slot mostBlocks = null;
+	private Slot bestHelmet = null;
+	private Slot bestChestplate = null;
+	private Slot bestLeggings = null;
+	private Slot bestBoots = null;
 	
 	@Override
 	public void onEnable() {
@@ -92,13 +111,7 @@ public class ModInventoryManager extends Module {
 		
 		Container container = mc.thePlayer.inventoryContainer;
 		List<Slot> slots = container.getInventorySlots();
-		
-		bestWeapon = InventoryUtils.getBestWeapon(slots, weaponChoice.is("Sword"), weaponSlot);
-		bestBow = InventoryUtils.getBestBow(slots, bowSlot);
-		bestPickaxe = InventoryUtils.getBestPickaxe(slots, pickaxeSlot);
-		bestAxe = InventoryUtils.getBestAxe(slots, axeSlot);
-		bestSpade = InventoryUtils.getBestSpade(slots, spadeSlot);
-		bestShears = InventoryUtils.getBestShears(slots, shearsSlot);
+		setBestGear(slots);
 		
 		if (dropItems.isEnabled() && dropOrSort) {
 			if (drop()) {
@@ -111,6 +124,10 @@ public class ModInventoryManager extends Module {
 			}
 		}
 		
+		if (instant.isEnabled()) {
+			setBestGear(slots);
+		}
+		
 		if (sort()) {
 			if (inventorySpoof.is("Open & Close on Action"))
 				closeInventory();
@@ -118,6 +135,10 @@ public class ModInventoryManager extends Module {
 			delayTimer.reset();
 			if (instant.isDisabled())
 				return;
+		}
+		
+		if (instant.isEnabled()) {
+			setBestGear(slots);
 		}
 		
 		if (dropItems.isEnabled()) {
@@ -158,6 +179,38 @@ public class ModInventoryManager extends Module {
 	 * @return true if it did an action, otherwise false
 	 */
 	private boolean drop() {
+		EntityPlayerSP thePlayer = mc.thePlayer;
+		Container container = thePlayer.inventoryContainer;
+		List<Slot> slots = container.getInventorySlots();
+		
+		Slot bestWeapon = this.bestWeapon;
+		Slot bestBow = this.bestBow;
+		Slot bestPickaxe = this.bestPickaxe;
+		Slot bestAxe = this.bestAxe;
+		Slot bestSpade = this.bestSpade;
+		Slot bestShears = this.bestShears;
+		Slot bestHelmet = this.bestHelmet;
+		Slot bestChestplate = this.bestChestplate;
+		Slot bestLeggings = this.bestLeggings;
+		Slot bestBoots = this.bestBoots;
+		Slot[] ignoreSlots = new Slot[] {bestWeapon, bestBow, bestPickaxe, bestAxe, bestSpade, bestShears, bestHelmet, bestChestplate, bestLeggings, bestBoots};
+		
+		for (int i = 9; i < slots.size(); i++) {
+			Slot slot = slots.get(i);
+			if (!slot.getHasStack() || slot == null || Arrays.stream(ignoreSlots).anyMatch(s -> s == slot))
+				continue;
+			ItemStack stack = slot.getStack();
+			Item item = stack.getItem();
+			
+			if (item instanceof ItemTool || item instanceof ItemSword || item instanceof ItemBow || (item instanceof ItemBlock && ((ItemBlock)item).getBlock().doesBlockActivate())
+					|| item instanceof ItemArmor) {
+				openInventory();
+				InventoryUtils.dropItem(container, slot.getSlotNumber());
+				if (instant.isDisabled())
+					return true;
+			}
+			
+		}
 		
 		return false;
 	}
@@ -170,71 +223,152 @@ public class ModInventoryManager extends Module {
 		EntityPlayerSP thePlayer = mc.thePlayer;
 		Container container = thePlayer.inventoryContainer;
 		
-//		final int weaponSlot = this.weaponSlot;
-//		final int bowSlot = this.bowSlot;
-//		final int pickaxeSlot = this.pickaxeSlot;
-//		final int axeSlot = this.axeSlot;
-//		final int spadeSlot = this.spadeSlot;
-//		final int shearsSlot = this.shearsSlot;
-//		final int gappleSlot = this.gappleSlot;
-//		final int blockSlot = this.blockSlot;
-		
 		Slot bestWeapon = this.bestWeapon;
 		Slot bestBow = this.bestBow;
 		Slot bestPickaxe = this.bestPickaxe;
 		Slot bestAxe = this.bestAxe;
 		Slot bestSpade = this.bestSpade;
 		Slot bestShears = this.bestShears;
+		Slot mostGapples = this.mostGapples;
+		Slot mostBlocks = this.mostBlocks;
+		Slot bestHelmet = this.bestHelmet;
+		Slot bestChestplate = this.bestChestplate;
+		Slot bestLeggings = this.bestLeggings;
+		Slot bestBoots = this.bestBoots;
 		
 		// Weapon
-		if (bestWeapon != null && bestWeapon.slotNumber != weaponSlot) {
+		if (bestWeapon != null && bestWeapon.getSlotNumber() != weaponSlot) {
 			openInventory();
-			InventoryUtils.swapHotbarItems(container, weaponSlot, bestWeapon.slotNumber);
+			InventoryUtils.swapHotbarItems(container, weaponSlot, bestWeapon.getSlotNumber());
 			if (instant.isDisabled())
 				return true;
 		}
 		
 		// Bow
-		if (bestBow != null && bestBow.slotNumber != bowSlot) {
+		if (bestBow != null && bestBow.getSlotNumber() != bowSlot) {
 			openInventory();
-			InventoryUtils.swapHotbarItems(container, bowSlot, bestBow.slotNumber);
+			InventoryUtils.swapHotbarItems(container, bowSlot, bestBow.getSlotNumber());
 			if (instant.isDisabled())
 				return true;
 		}
 		
 		// Pickaxe
-		if (bestPickaxe != null && bestPickaxe.slotNumber != pickaxeSlot) {
+		if (bestPickaxe != null && bestPickaxe.getSlotNumber() != pickaxeSlot) {
 			openInventory();
-			InventoryUtils.swapHotbarItems(container, pickaxeSlot, bestPickaxe.slotNumber);
+			InventoryUtils.swapHotbarItems(container, pickaxeSlot, bestPickaxe.getSlotNumber());
 			if (instant.isDisabled())
 				return true;
 		}
 		
 		// Axe
-		if (bestAxe != null && bestAxe.slotNumber != axeSlot && bestAxe.slotNumber != weaponSlot) {
+		if (bestAxe != null && bestAxe.getSlotNumber() != axeSlot && bestAxe.getSlotNumber() != weaponSlot) {
 			openInventory();
-			InventoryUtils.swapHotbarItems(container, axeSlot, bestAxe.slotNumber);
+			InventoryUtils.swapHotbarItems(container, axeSlot, bestAxe.getSlotNumber());
 			if (instant.isDisabled())
 				return true;
 		}
 		
 		// Spade
-		if (bestSpade != null && bestSpade.slotNumber != spadeSlot) {
+		if (bestSpade != null && bestSpade.getSlotNumber() != spadeSlot) {
 			openInventory();
-			InventoryUtils.swapHotbarItems(container, spadeSlot, bestSpade.slotNumber);
+			InventoryUtils.swapHotbarItems(container, spadeSlot, bestSpade.getSlotNumber());
 			if (instant.isDisabled())
 				return true;
 		}
 		
 		// Shears
-		if (bestShears != null && bestShears.slotNumber != shearsSlot) {
+		if (bestShears != null && bestShears.getSlotNumber() != shearsSlot) {
 			openInventory();
-			InventoryUtils.swapHotbarItems(container, shearsSlot, bestShears.slotNumber);
+			InventoryUtils.swapHotbarItems(container, shearsSlot, bestShears.getSlotNumber());
 			if (instant.isDisabled())
 				return true;
 		}
 		
+		// Gapples
+		if (mostGapples != null && mostGapples.getSlotNumber() != gappleSlot) {
+			openInventory();
+			InventoryUtils.swapHotbarItems(container, gappleSlot, mostGapples.getSlotNumber());
+			if (instant.isDisabled())
+				return true;
+		}
+		
+		// Blocks
+		if (mostBlocks != null && mostBlocks.getSlotNumber() != blockSlot) {
+			openInventory();
+			InventoryUtils.swapHotbarItems(container, blockSlot, mostBlocks.getSlotNumber());
+			if (instant.isDisabled())
+				return true;
+		}
+		
+		// Auto armor
+		if (autoArmor.isEnabled()) {
+			if (bestChestplate != null && bestChestplate.getSlotNumber() != chestplateSlot) {
+				openInventory();
+				if (container.getSlot(chestplateSlot).getHasStack()) {
+					InventoryUtils.dropItem(container, chestplateSlot);
+					if (instant.isDisabled() && armorSwapMode.is("Separate actions")) {
+						return true;
+					}
+				}
+				InventoryUtils.shiftLeftClick(container, bestChestplate.getSlotNumber());
+				if (instant.isDisabled())
+					return true;
+			}
+			if (bestLeggings != null && bestLeggings.getSlotNumber() != leggingsSlot) {
+				openInventory();
+				if (container.getSlot(leggingsSlot).getHasStack()) {
+					InventoryUtils.dropItem(container, leggingsSlot);
+					if (instant.isDisabled() && armorSwapMode.is("Separate actions")) {
+						return true;
+					}
+				}
+				InventoryUtils.shiftLeftClick(container, bestLeggings.getSlotNumber());
+				if (instant.isDisabled())
+					return true;
+			}
+			if (bestHelmet != null && bestHelmet.getSlotNumber() != helmetSlot) {
+				openInventory();
+				if (container.getSlot(helmetSlot).getHasStack()) {
+					InventoryUtils.dropItem(container, helmetSlot);
+					if (instant.isDisabled() && armorSwapMode.is("Separate actions")) {
+						return true;
+					}
+				}
+				InventoryUtils.shiftLeftClick(container, bestHelmet.getSlotNumber());
+				if (instant.isDisabled())
+					return true;
+			}
+			if (bestBoots != null && bestBoots.getSlotNumber() != bootsSlot) {
+				openInventory();
+				if (container.getSlot(bootsSlot).getHasStack()) {
+					InventoryUtils.dropItem(container, bootsSlot);
+					if (instant.isDisabled() && armorSwapMode.is("Separate actions")) {
+						return true;
+					}
+				}
+				InventoryUtils.shiftLeftClick(container, bestBoots.getSlotNumber());
+				if (instant.isDisabled())
+					return true;
+			}
+		}
+		
 		return false;
+	}
+
+	private void setBestGear(List<Slot> slots) {
+		Slot[] bestGearSet = InventoryUtils.getBestGearSetInInventory(slots, weaponChoice.is("Sword"), weaponSlot, bowSlot, pickaxeSlot, axeSlot, spadeSlot, shearsSlot, blockSlot, gappleSlot);
+		bestWeapon = bestGearSet[0];
+		bestBow = bestGearSet[1];
+		bestPickaxe = bestGearSet[2];
+		bestAxe = bestGearSet[3];
+		bestSpade = bestGearSet[4];
+		bestShears = bestGearSet[5];
+		mostGapples = bestGearSet[6];
+		mostBlocks = bestGearSet[7];
+		bestHelmet = bestGearSet[8];
+		bestChestplate = bestGearSet[9];
+		bestLeggings = bestGearSet[10];
+		bestBoots = bestGearSet[11];
 	}
 	
 }

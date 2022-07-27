@@ -30,7 +30,7 @@ public class ModSprint extends Module {
 			return;
 		
 		if (mc.thePlayer.onGround && mc.thePlayer.getFoodStats().getFoodLevel() >= 3
-				&& !mc.thePlayer.isCollidedHorizontally && !mc.thePlayer.isEating() && !mc.thePlayer.isSprinting()
+				&& !mc.thePlayer.isCollidedHorizontally && !mc.thePlayer.isUsingItem() && !mc.thePlayer.isSprinting()
 				&& (omni.isDisabled() ? mc.thePlayer.moveForward > 0
 						: (mc.thePlayer.moveForward != 0 || mc.thePlayer.moveStrafing != 0))) {
 			mc.thePlayer.setSprinting(true);

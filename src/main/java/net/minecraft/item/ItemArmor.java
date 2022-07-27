@@ -278,4 +278,12 @@ public class ItemArmor extends Item
             return this.name;
         }
     }
+    
+    /**
+	 * @return the armorType
+	 */
+	public int getArmorType() {
+		return armorType;
+	}
+    
 }

@@ -160,4 +160,12 @@ public class Slot
     {
         return true;
     }
+    
+    /**
+	 * @return the slotNumber
+	 */
+	public int getSlotNumber() {
+		return slotNumber;
+	}
+    
 }

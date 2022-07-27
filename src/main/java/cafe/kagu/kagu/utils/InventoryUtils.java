@@ -6,6 +6,7 @@ package cafe.kagu.kagu.utils;
 import java.util.List;
 import java.util.Map;
 
+import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.enchantment.Enchantment;
@@ -15,6 +16,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemAxe;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemBow;
 import net.minecraft.item.ItemPickaxe;
 import net.minecraft.item.ItemShears;
@@ -23,8 +25,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
 import net.minecraft.item.ItemTool;
 import net.minecraft.item.Item.ToolMaterial;
+import net.minecraft.item.ItemAppleGold;
+import net.minecraft.item.ItemArmor;
 import net.minecraft.network.play.client.C0BPacketEntityAction;
 import net.minecraft.network.play.client.C0BPacketEntityAction.Action;
+import optifine.Reflector;
 import net.minecraft.network.play.client.C0DPacketCloseWindow;
 import net.minecraft.network.play.client.C0EPacketClickWindow;
 
@@ -100,88 +105,269 @@ public class InventoryUtils {
 	}
 	
 	/**
-	 * Gets the best weapon from a list of slots and returns it
-	 * @param slots The slots to search
-	 * @param sword Set to true if it should only use swords, if it's false it'll search for axes
-	 * @param firstCheck The first slot number to check, use -1 to ignore
-	 * @return The slot with the best weapon, null if nothing is found
+	 * Drops all the items inside a specific slot
+	 * @param container The container
+	 * @param slot The slot to drop
 	 */
-	public static Slot getBestWeapon(List<Slot> slots, boolean sword, int firstCheck) {
-		Slot bestWeapon = null;
-		double bestScore = Double.MIN_VALUE;
-		boolean firstChecked = false;
-		for (int i = firstCheck; i >= 9 || !firstChecked; i--) {
-			if (i < 0) {
-				i = slots.size();
-				firstChecked = true;
-				continue;
-			}
-			Slot slot = slots.get(i);
-			if (!slot.getHasStack() || !(sword ? slot.getStack().getItem() instanceof ItemSword : slot.getStack().getItem() instanceof ItemAxe)) {
-				if (!firstChecked) {
-					i = slots.size();
-					firstChecked = true;
-				}
-				continue;
-			}
-			
-			// Score weapon
-			ItemStack stack = slot.getStack();
-			double score = (sword ? ((ItemSword)stack.getItem()).getAttackDamage() : ((ItemTool)stack.getItem()).getDamageVsEntity())
-					+ EnchantmentHelper.getEnchantmentLevel(Enchantment.sharpness.getEffectId(), stack) * 1.25
-					+ EnchantmentHelper.getEnchantmentLevel(Enchantment.fireAspect.getEffectId(), stack) * 0.75
-					+ EnchantmentHelper.getEnchantmentLevel(Enchantment.knockback.getEffectId(), stack) * 0.65;
-			if (score > bestScore) {
-				bestScore = score;
-				bestWeapon = slot;
-			}
-			if (!firstChecked) {
-				i = slots.size();
-				firstChecked = true;
-			}
-		}
-		return bestWeapon;
+	public static void dropItem(Container container, int slot) {
+		mc.playerController.windowClick(container.windowId, slot, 1, 4, mc.thePlayer);
 	}
 	
 	/**
-	 * Gets the best bow from a list of slots and returns it
-	 * @param slots The slots to search
-	 * @param firstCheck The first slot number to check, use -1 to ignore
-	 * @return The slot with the best bow, null if nothing is found
+	 * Calculates the best gear set in the inventory in one pass, each first check should be the slot number that the current item is placed in
+	 * @param slots The slots to check
+	 * @param sword Set to true if it should only use swords, if it's false it'll search for axe
+	 * @param firstWeaponCheck The slot of the first weapon to check
+	 * @param firstBowCheck The slot of the first bow to check
+	 * @param firstPickaxeCheck The slot of the first pickaxe to check
+	 * @param firstAxeCheck The slot of the first axe to check
+	 * @param firstSpadeCheck The slot of the first spade to check
+	 * @param firstShearsCheck The slot of the first shears to check
+	 * @param firstGapplesCheck The slot of the first gapples to check
+	 * @param firstBlocksCheck The slot of the first blocks to check
+	 * @return An array of slots, the values in the array are in the same order as the first checks with the last four values being the armors listed from helmet to boots
 	 */
-	public static Slot getBestBow(List<Slot> slots, int firstCheck) {
-		Slot bestBow = null;
-		double bestScore = Double.MIN_VALUE;
-		boolean firstChecked = false;
-		for (int i = firstCheck; i >= 9 || !firstChecked; i--) {
-			if (i < 0) {
-				i = slots.size();
-				firstChecked = true;
-				continue;
-			}
-			Slot slot = slots.get(i);
-			if (!slot.getHasStack() || !(slot.getStack().getItem() instanceof ItemBow)) {
-				if (!firstChecked) {
-					i = slots.size();
-					firstChecked = true;
-				}
-				continue;
-			}
-			
-			// Score weapon
-			ItemStack stack = slot.getStack();
-			double score = (EnchantmentHelper.getEnchantmentLevel(Enchantment.power.getEffectId(), stack)* 0.5D + 0.5D)
-					+ EnchantmentHelper.getEnchantmentLevel(Enchantment.punch.getEffectId(), stack) * 0.75;
-			if (score > bestScore) {
-				bestScore = score;
-				bestBow = slot;
-			}
-			if (!firstChecked) {
-				i = slots.size();
-				firstChecked = true;
+	public static Slot[] getBestGearSetInInventory(List<Slot> slots, boolean sword, int firstWeaponCheck, int firstBowCheck,
+			int firstPickaxeCheck, int firstAxeCheck, int firstSpadeCheck, int firstShearsCheck, int firstGapplesCheck, int firstBlocksCheck) {
+//		Slot[] bestItems = new Slot[] { slots.get(firstWeaponCheck), slots.get(firstBowCheck),
+//				slots.get(firstPickaxeCheck), slots.get(firstAxeCheck), slots.get(firstSpadeCheck),
+//				slots.get(firstShearsCheck), slots.get(firstGapplesCheck), slots.get(firstBlocksCheck), slots.get(5), slots.get(6), slots.get(7), slots.get(8) };
+		Slot[] bestItems = new Slot[12];
+		double[] bestScores = new double[] { Double.MIN_VALUE, Double.MIN_VALUE, Double.MIN_VALUE, Double.MIN_VALUE,
+				Double.MIN_VALUE, Double.MIN_VALUE, Double.MIN_VALUE, Double.MIN_VALUE, Double.MIN_VALUE,
+				Double.MIN_VALUE, Double.MIN_VALUE, Double.MIN_VALUE };
+		
+		// Do first checks
+		{ // Weapon
+			Slot slot = slots.get(firstWeaponCheck);
+			if (slot.getHasStack() && (sword
+					? slot.getStack().getItem() instanceof ItemSword
+					: slot.getStack().getItem() instanceof ItemAxe)) {
+				bestScores[0] = getWeaponScore(slot.getStack(), sword);
+				bestItems[0] = slot;
 			}
 		}
-		return bestBow;
+		{ // Bow
+			Slot slot = slots.get(firstBowCheck);
+			if (slot.getHasStack() && slot.getStack().getItem() instanceof ItemBow) {
+				bestScores[1] = getBowScore(slot.getStack());
+				bestItems[1] = slot;
+			}
+		}
+		{ // Pickaxe
+			Slot slot = slots.get(firstPickaxeCheck);
+			if (slot.getHasStack() && slot.getStack().getItem() instanceof ItemPickaxe) {
+				ItemStack stack = slot.getStack();
+				bestScores[2] = getToolScore(stack, (ItemTool)stack.getItem(), Blocks.stone);
+				bestItems[2] = slot;
+			}
+		}
+		{ // Axe
+			Slot slot = slots.get(firstAxeCheck);
+			if (slot.getHasStack() && slot.getStack().getItem() instanceof ItemAxe) {
+				ItemStack stack = slot.getStack();
+				bestScores[3] = getToolScore(stack, (ItemTool)stack.getItem(), Blocks.planks);
+				bestItems[3] = slot;
+			}
+		}
+		{ // Spade
+			Slot slot = slots.get(firstSpadeCheck);
+			if (slot.getHasStack() && slot.getStack().getItem() instanceof ItemSpade) {
+				ItemStack stack = slot.getStack();
+				bestScores[4] = getToolScore(stack, (ItemTool)stack.getItem(), Blocks.dirt);
+				bestItems[4] = slot;
+			}
+		}
+		{ // Shears
+			Slot slot = slots.get(firstShearsCheck);
+			if (slot.getHasStack() && slot.getStack().getItem() instanceof ItemShears) {
+				ItemStack stack = slot.getStack();
+				bestScores[5] = getShearsScore(stack, (ItemShears)stack.getItem());
+				bestItems[5] = slot;
+			}
+		}
+		{ // Blocks
+			Slot slot = slots.get(firstBlocksCheck);
+			if (slot.getHasStack() && slot.getStack().getItem() instanceof ItemBlock && !((ItemBlock)slot.getStack().getItem()).getBlock().doesBlockActivate()) {
+				ItemStack stack = slot.getStack();
+				bestScores[6] = stack.getStackSize();
+				bestItems[6] = slot;
+			}
+		}
+		{ // Gapples
+			Slot slot = slots.get(firstGapplesCheck);
+			if (slot.getHasStack() && slot.getStack().getItem() instanceof ItemAppleGold) {
+				ItemStack stack = slot.getStack();
+				bestScores[7] = stack.getStackSize();
+				bestItems[7] = slot;
+			}
+		}
+		{ // Armor
+			for (int armor = 0; armor < 3; armor++) {
+				Slot slot = slots.get(5 + armor);
+				if (slot.getHasStack() && slot.getStack().getItem() instanceof ItemArmor && ((ItemArmor)slot.getStack().getItem()).getArmorType() == armor) {
+					bestScores[8 + armor] = getArmorScore(slot);
+					bestItems[8 + armor] = slot;
+				}
+			}
+		}
+		
+		for (Slot slot : slots) {
+			if (!slot.getHasStack())
+				continue;
+			ItemStack stack = slot.getStack();
+			
+			// Weapon
+			if (sword ? slot.getStack().getItem() instanceof ItemSword : slot.getStack().getItem() instanceof ItemAxe) {
+				double score = getWeaponScore(stack, sword);
+				if (score > bestScores[0]) {
+					bestScores[0] = score;
+					bestItems[0] = slot;
+				}
+			}
+			
+			// Bow
+			if (slot.getStack().getItem() instanceof ItemBow) {
+				double score = getBowScore(stack);
+				if (score > bestScores[1]) {
+					bestScores[1] = score;
+					bestItems[1] = slot;
+				}
+			}
+			
+			// Pickaxe
+			if (slot.getStack().getItem() instanceof ItemPickaxe) {
+				double score = getToolScore(stack, (ItemTool)stack.getItem(), Blocks.stone);
+				if (score > bestScores[2]) {
+					bestScores[2] = score;
+					bestItems[2] = slot;
+				}
+			}
+			
+			// Axe
+			if (slot.getStack().getItem() instanceof ItemAxe) {
+				double score = getToolScore(stack, (ItemTool)stack.getItem(), Blocks.planks);
+				if (score > bestScores[3]) {
+					bestScores[3] = score;
+					bestItems[3] = slot;
+				}
+			}
+			
+			// Spade
+			if (slot.getStack().getItem() instanceof ItemSpade) {
+				double score = getToolScore(stack, (ItemTool)stack.getItem(), Blocks.dirt);
+				if (score > bestScores[4]) {
+					bestScores[4] = score;
+					bestItems[4] = slot;
+				}
+			}
+			
+			// Shears
+			if (slot.getStack().getItem() instanceof ItemShears) {
+				double score = getShearsScore(stack, (ItemShears)stack.getItem());
+				if (score > bestScores[5]) {
+					bestScores[5] = score;
+					bestItems[5] = slot;
+				}
+			}
+			
+			// Blocks
+			if (slot.getStack().getItem() instanceof ItemBlock && !((ItemBlock)slot.getStack().getItem()).getBlock().doesBlockActivate()) {
+				double score = stack.getStackSize();
+				if (score > bestScores[6]) {
+					bestScores[6] = score;
+					bestItems[6] = slot;
+				}
+			}
+			
+			// Gapples
+			if (slot.getStack().getItem() instanceof ItemAppleGold) {
+				double score = stack.getStackSize();
+				if (score > bestScores[7]) {
+					bestScores[7] = score;
+					bestItems[7] = slot;
+				}
+			}
+			
+			// Armor
+			for (int armor = 0; armor < 3; armor++) {
+				if (slot.getHasStack() && slot.getStack().getItem() instanceof ItemArmor && ((ItemArmor)slot.getStack().getItem()).getArmorType() == armor && getArmorScore(slot) > bestScores[8 + armor]) {
+					bestScores[8 + armor] = getArmorScore(slot);
+					bestItems[8 + armor] = slot;
+				}
+			}
+			
+		}
+		
+		return bestItems;
+	}
+	
+	/**
+	 * @param stack The stack, should contain a weapon
+	 * @param sword Set to true if it should only use swords, if it's false it'll search for axes
+	 * @return The weapons score
+	 */
+	public static double getWeaponScore(ItemStack stack, boolean sword) {
+		return (sword ? ((ItemSword) stack.getItem()).getAttackDamage()
+				: ((ItemTool) stack.getItem()).getDamageVsEntity())
+				+ EnchantmentHelper.getEnchantmentLevel(Enchantment.sharpness.getEffectId(), stack) * 1.25
+				+ EnchantmentHelper.getEnchantmentLevel(Enchantment.fireAspect.getEffectId(), stack) * 0.75
+				+ EnchantmentHelper.getEnchantmentLevel(Enchantment.knockback.getEffectId(), stack) * 0.65
+				- (Reflector.ForgeItem_getDurabilityForDisplay.exists() ? Reflector.callDouble(stack.getItem(),
+						Reflector.ForgeItem_getDurabilityForDisplay, new Object[] { stack }) < 25 ? 10 : 0 : 0);
+	}
+	
+	/**
+	 * @param stack The stack, should contain a bow
+	 * @return The bows score
+	 */
+	public static double getBowScore(ItemStack stack) {
+		return (EnchantmentHelper.getEnchantmentLevel(Enchantment.power.getEffectId(), stack) * 0.5D + 0.5D)
+				+ EnchantmentHelper.getEnchantmentLevel(Enchantment.punch.getEffectId(), stack) * 0.75
+				- (Reflector.ForgeItem_getDurabilityForDisplay.exists() ? Reflector.callDouble(stack.getItem(),
+						Reflector.ForgeItem_getDurabilityForDisplay, new Object[] { stack }) < 25 ? 10 : 0 : 0);
+	}
+	
+	/**
+	 * @param stack The stack, should contain a tool
+	 * @param tool The tool
+	 * @param testBlock The block to test the break speed on
+	 * @return The tools score
+	 */
+	public static double getToolScore(ItemStack stack, ItemTool tool, Block testBlock) {
+		return tool.getStrVsBlock(stack, testBlock) + scoreToolEnchantments(stack)
+				- (Reflector.ForgeItem_getDurabilityForDisplay.exists() ? Reflector.callDouble(stack.getItem(),
+						Reflector.ForgeItem_getDurabilityForDisplay, new Object[] { stack }) < 25 ? 10 : 0 : 0)
+				- (tool.getToolMaterial() == ToolMaterial.GOLD ? 5 : 0);
+	}
+	
+	/**
+	 * @param stack The stack, should contain some shears
+	 * @param shears The shears
+	 * @return The shears score
+	 */
+	public static double getShearsScore(ItemStack stack, ItemShears shears) {
+		return shears.getStrVsBlock(stack, Blocks.wool) + scoreToolEnchantments(stack)
+				- (Reflector.ForgeItem_getDurabilityForDisplay.exists() ? Reflector.callDouble(stack.getItem(),
+						Reflector.ForgeItem_getDurabilityForDisplay, new Object[] { stack }) < 25 ? 10 : 0 : 0);
+	}
+	
+	/**
+	 * Calculates the armor score
+	 * @param slot The slot to check
+	 * @return The armor score
+	 */
+	public static double getArmorScore(Slot slot) {
+		double score = Double.MIN_VALUE;
+		if (!slot.getHasStack() || !(slot.getStack().getItem() instanceof ItemArmor))
+			return score;
+		ItemStack stack = slot.getStack();
+		ItemArmor itemArmor = (ItemArmor)stack.getItem();
+		score += itemArmor.getArmorMaterial().getDamageReductionAmount(itemArmor.getArmorType())
+				+ EnchantmentHelper.getEnchantmentLevel(Enchantment.protection.getEffectId(), stack)
+				+ EnchantmentHelper.getEnchantmentLevel(Enchantment.unbreaking.getEffectId(), stack) * 0.3
+				+ EnchantmentHelper.getEnchantmentLevel(Enchantment.thorns.getEffectId(), stack) * 0.6;
+		return score;
 	}
 	
 	/**
@@ -192,176 +378,6 @@ public class InventoryUtils {
 		return EnchantmentHelper.getEnchantmentLevel(Enchantment.efficiency.getEffectId(), stack)
 				+ EnchantmentHelper.getEnchantmentLevel(Enchantment.unbreaking.getEffectId(), stack) * 0.3
 				- EnchantmentHelper.getEnchantmentLevel(Enchantment.silkTouch.getEffectId(), stack) * 0.25;
-	}
-	
-	/**
-	 * Gets the best pickaxe from a list of slots and returns it
-	 * @param slots The slots to search
-	 * @param firstCheck The first slot number to check, use -1 to ignore
-	 * @return The slot with the best pickaxe, null if nothing is found
-	 */
-	public static Slot getBestPickaxe(List<Slot> slots, int firstCheck) {
-		Slot bestPickaxe = null;
-		double bestScore = Double.MIN_VALUE;
-		boolean firstChecked = false;
-		for (int i = firstCheck; i >= 9 || !firstChecked; i--) {
-			if (i < 0) {
-				i = slots.size();
-				firstChecked = true;
-				continue;
-			}
-			Slot slot = slots.get(i);
-			if (!slot.getHasStack() || !(slot.getStack().getItem() instanceof ItemPickaxe)) {
-				if (!firstChecked) {
-					i = slots.size();
-					firstChecked = true;
-				}
-				continue;
-			}
-			
-			// Score weapon
-			ItemStack stack = slot.getStack();
-			ItemTool tool = (ItemTool)stack.getItem();
-			double score = tool.getStrVsBlock(stack, Blocks.stone) + scoreToolEnchantments(stack);
-			if (tool.getToolMaterial() == ToolMaterial.GOLD)
-				score -= 6.0001;
-			if (score > bestScore) {
-				bestScore = score;
-				bestPickaxe = slot;
-			}
-			if (!firstChecked) {
-				i = slots.size();
-				firstChecked = true;
-			}
-		}
-		return bestPickaxe;
-	}
-	
-	/**
-	 * Gets the best axe from a list of slots and returns it
-	 * @param slots The slots to search
-	 * @param firstCheck The first slot number to check, use -1 to ignore
-	 * @return The slot with the best axe, null if nothing is found
-	 */
-	public static Slot getBestAxe(List<Slot> slots, int firstCheck) {
-		Slot bestAxe = null;
-		double bestScore = Double.MIN_VALUE;
-		boolean firstChecked = false;
-		for (int i = firstCheck; i >= 9 || !firstChecked; i--) {
-			if (i < 0) {
-				i = slots.size();
-				firstChecked = true;
-				continue;
-			}
-			Slot slot = slots.get(i);
-			if (!slot.getHasStack() || !(slot.getStack().getItem() instanceof ItemAxe)) {
-				if (!firstChecked) {
-					i = slots.size();
-					firstChecked = true;
-				}
-				continue;
-			}
-			
-			// Score weapon
-			ItemStack stack = slot.getStack();
-			ItemTool tool = (ItemTool)stack.getItem();
-			double score = tool.getStrVsBlock(stack, Blocks.planks) + scoreToolEnchantments(stack);
-			if (tool.getToolMaterial() == ToolMaterial.GOLD)
-				score -= 6.0001;
-			if (score > bestScore) {
-				bestScore = score;
-				bestAxe = slot;
-			}
-			if (!firstChecked) {
-				i = slots.size();
-				firstChecked = true;
-			}
-		}
-		return bestAxe;
-	}
-	
-	/**
-	 * Gets the best spade from a list of slots and returns it
-	 * @param slots The slots to search
-	 * @param firstCheck The first slot number to check, use -1 to ignore
-	 * @return The slot with the best pickaze, null if nothing is found
-	 */
-	public static Slot getBestSpade(List<Slot> slots, int firstCheck) {
-		Slot bestSpade = null;
-		double bestScore = Double.MIN_VALUE;
-		boolean firstChecked = false;
-		for (int i = firstCheck; i >= 9 || !firstChecked; i--) {
-			if (i < 0) {
-				i = slots.size();
-				firstChecked = true;
-				continue;
-			}
-			Slot slot = slots.get(i);
-			if (!slot.getHasStack() || !(slot.getStack().getItem() instanceof ItemSpade)) {
-				if (!firstChecked) {
-					i = slots.size();
-					firstChecked = true;
-				}
-				continue;
-			}
-			
-			// Score weapon
-			ItemStack stack = slot.getStack();
-			ItemTool tool = (ItemTool)stack.getItem();
-			double score = tool.getStrVsBlock(stack, Blocks.dirt) + scoreToolEnchantments(stack);
-			if (tool.getToolMaterial() == ToolMaterial.GOLD)
-				score -= 6.0001;
-			if (score > bestScore) {
-				bestScore = score;
-				bestSpade = slot;
-			}
-			if (!firstChecked) {
-				i = slots.size();
-				firstChecked = true;
-			}
-		}
-		return bestSpade;
-	}
-	
-	/**
-	 * Gets the best shears from a list of slots and returns it
-	 * @param slots The slots to search
-	 * @param firstCheck The first slot number to check, use -1 to ignore
-	 * @return The slot with the best shears, null if nothing is found
-	 */
-	public static Slot getBestShears(List<Slot> slots, int firstCheck) {
-		Slot bestShears = null;
-		double bestScore = Double.MIN_VALUE;
-		boolean firstChecked = false;
-		for (int i = firstCheck; i >= 9 || !firstChecked; i--) {
-			if (i < 0) {
-				i = slots.size();
-				firstChecked = true;
-				continue;
-			}
-			Slot slot = slots.get(i);
-			if (!slot.getHasStack() || !(slot.getStack().getItem() instanceof ItemShears)) {
-				if (!firstChecked) {
-					i = slots.size();
-					firstChecked = true;
-				}
-				continue;
-			}
-			
-			// Score weapon
-			ItemStack stack = slot.getStack();
-			ItemShears shears = (ItemShears)stack.getItem();
-			double score = shears.getStrVsBlock(stack, Blocks.wool) + scoreToolEnchantments(stack);
-			if (score > bestScore) {
-				bestScore = score;
-				bestShears = slot;
-			}
-			if (!firstChecked) {
-				i = slots.size();
-				firstChecked = true;
-			}
-		}
-		return bestShears;
 	}
 	
 }

@@ -3,9 +3,12 @@
  */
 package cafe.kagu.kagu.mods.impl.combat;
 
+import java.awt.Robot;
+import java.awt.event.InputEvent;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
 import javax.vecmath.Vector3d;
@@ -25,9 +28,7 @@ import cafe.kagu.kagu.settings.impl.IntegerSetting;
 import cafe.kagu.kagu.settings.impl.ModeSetting;
 import cafe.kagu.kagu.utils.SpoofUtils;
 import cafe.kagu.kagu.utils.TimerUtil;
-import cafe.kagu.kagu.utils.UiUtils;
 import cafe.kagu.kagu.utils.ChatUtils;
-import cafe.kagu.kagu.utils.DrawUtils3D;
 import cafe.kagu.kagu.utils.PlayerUtils;
 import cafe.kagu.kagu.utils.RotationUtils;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -46,7 +47,6 @@ import net.minecraft.network.play.client.C08PacketPlayerBlockPlacement;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.MathHelper;
 
 /**
  * @author lavaflowglow
@@ -56,7 +56,7 @@ public class ModKillAura extends Module {
 
 	public ModKillAura() {
 		super("KillAura", Category.COMBAT);
-		setSettings(rotationMode, linearSpeed, blockMode, preferredTargetMetrics, targetSelectionMode, swingMode,
+		setSettings(rotationMode, linearSpeed, blockMode, preferredTargetMetrics, targetSelectionMode, swingMode, clickMode,
 				hitRange, blockRange, hitChance, minAps, maxAps, silentRotations, targetAll, targetPlayers, targetAnimals, targetMobs);
 		EventBus.setSubscriber(new ApsMinMaxFixer(this), true);
 	}
@@ -71,6 +71,7 @@ public class ModKillAura extends Module {
 	private ModeSetting preferredTargetMetrics = new ModeSetting("Preferred Target Metrics", "Distance", "Distance");
 	private ModeSetting targetSelectionMode = new ModeSetting("Target Selection", "Instant", "Instant");
 	private ModeSetting swingMode = new ModeSetting("Swing Mode", "Swing", "Swing", "Server Side", "No Swing");
+	private ModeSetting clickMode = new ModeSetting("Click Mode", "Random >=Min & <=Max", "Random >=Min & <=Max", "Gaussian");
 	
 	// Ranges
 	private DoubleSetting hitRange = new DoubleSetting("Hit Range", 3, 1, 7, 0.1);
@@ -105,6 +106,11 @@ public class ModKillAura extends Module {
 		lastRotations[0] = thePlayer.rotationYaw;
 		lastRotations[1] = thePlayer.rotationPitch;
 		spike = 3;
+	}
+	
+	@Override
+	public void onDisable() {
+		stopBlocking();
 	}
 	
 	@EventHandler
@@ -143,8 +149,6 @@ public class ModKillAura extends Module {
 					stopBlocking();
 				
 				// Block animations
-				if (blocking)
-					SpoofUtils.setSpoofBlocking(true);
 				
 			}
 			
@@ -181,16 +185,26 @@ public class ModKillAura extends Module {
 			}
 			
 			if (!blockMode.is("None")) {
-				stopBlocking();
+//				stopBlocking();
 			}
 			
 			// Hit chance, bypasses percent checks
-			if (hitChance.getValue() != 0 && RandomUtils.nextInt(0, 101) <= hitChance.getValue())
+			if (hitChance.getValue() != 0 && RandomUtils.nextInt(0, 101) <= hitChance.getValue()) {
 				mc.getNetHandler().getNetworkManager().sendPacket(new C02PacketUseEntity(target, Action.ATTACK));
-			
-			if (!blockMode.is("None")) {
-				startBlocking();
+//				Robot bot = null;
+//				try {
+//					bot = new Robot();
+//				} catch (Exception failed) {
+//					System.err.println("Failed instantiating Robot: " + failed);
+//				}
+//				int mask = InputEvent.BUTTON1_DOWN_MASK;
+//				bot.mousePress(mask);
+//				bot.mouseRelease(mask);
 			}
+			
+//			if (!blockMode.is("None")) {
+//				startBlocking();
+//			}
 			
 			setAps();
 			
@@ -356,6 +370,7 @@ public class ModKillAura extends Module {
 	 * Starts blocking
 	 */
 	private void startBlocking() {
+		SpoofUtils.setSpoofBlocking(true);
 		if (blocking)
 			return;
 		EntityPlayerSP thePlayer = mc.thePlayer;
@@ -403,6 +418,13 @@ public class ModKillAura extends Module {
 	 */
 	private void setAps() {
 		aps = RandomUtils.nextDouble(minAps.getValue(), maxAps.getValue());
+		
+		switch (clickMode.getMode()) {
+			case "Gaussian":{
+				aps = Math.abs(ThreadLocalRandom.current().nextGaussian()) * (maxAps.getValue() - minAps.getValue()) + minAps.getValue();
+			}break;
+		}
+		
 	}
 	
 	/**
