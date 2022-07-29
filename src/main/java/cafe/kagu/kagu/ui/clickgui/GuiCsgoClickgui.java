@@ -26,7 +26,7 @@ import cafe.kagu.kagu.eventBus.EventBus;
 import cafe.kagu.kagu.eventBus.Handler;
 import cafe.kagu.kagu.eventBus.Event.EventPosition;
 import cafe.kagu.kagu.eventBus.EventHandler;
-import cafe.kagu.kagu.eventBus.impl.EventCheatTick;
+import cafe.kagu.kagu.eventBus.impl.EventCheatRenderTick;
 import cafe.kagu.kagu.eventBus.impl.EventKeyUpdate;
 import cafe.kagu.kagu.eventBus.impl.EventTick;
 import cafe.kagu.kagu.font.FontRenderer;
@@ -799,7 +799,7 @@ public class GuiCsgoClickgui extends GuiScreen {
 	
 	// For anybody trying to port this to their own client, the cheat tick loop runs at 64 ticks a second
 	@EventHandler
-	public Handler<EventCheatTick> onPreTick = e -> {
+	public Handler<EventCheatRenderTick> onPreTick = e -> {
 		if (e.isPost())
 			return;
 		

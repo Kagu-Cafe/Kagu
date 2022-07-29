@@ -205,6 +205,10 @@ public class ModEsp extends Module {
 						continue;
 					}
 					
+					// Antibot
+					if (ModuleManager.modAntiBot.isEnabled() && ent instanceof EntityPlayer && ModuleManager.modAntiBot.isBot((EntityPlayer)ent))
+						continue;
+					
 					// Render targeting
 					if (targetAll.isDisabled()) {
 						if (targetPlayers.isEnabled() && ent instanceof EntityPlayer);
@@ -285,6 +289,11 @@ public class ModEsp extends Module {
 	
 	@EventHandler
 	private Handler<EventEntityRender> onEntityRender = e -> {
+		
+		// Antibot
+		if (ModuleManager.modAntiBot.isEnabled() && ((EventEntityRender) e).getEntity() instanceof EntityPlayer
+				&& ModuleManager.modAntiBot.isBot((EntityPlayer) ((EventEntityRender) e).getEntity()))
+			return;
 		
 		// Chams
 		if (chams.isEnabled()) {

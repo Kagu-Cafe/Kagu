@@ -5,7 +5,7 @@ package cafe.kagu.kagu.mods.impl.visual;
 
 import cafe.kagu.kagu.eventBus.Handler;
 import cafe.kagu.kagu.eventBus.EventHandler;
-import cafe.kagu.kagu.eventBus.impl.EventCheatTick;
+import cafe.kagu.kagu.eventBus.impl.EventCheatRenderTick;
 import cafe.kagu.kagu.eventBus.impl.EventRenderItem;
 import cafe.kagu.kagu.eventBus.impl.EventTick;
 import cafe.kagu.kagu.mods.Module;

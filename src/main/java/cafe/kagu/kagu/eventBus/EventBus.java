@@ -11,7 +11,7 @@ import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import cafe.kagu.kagu.eventBus.impl.EventCheatTick;
+import cafe.kagu.kagu.eventBus.impl.EventCheatRenderTick;
 import cafe.kagu.kagu.eventBus.impl.EventPlayerUpdate;
 import cafe.kagu.kagu.eventBus.impl.EventRender2D;
 import cafe.kagu.kagu.eventBus.impl.EventRender3D;
@@ -46,7 +46,7 @@ public class EventBus {
 	public static void distribute(Event e) {
 		// Don't send events if the world or player is null
 		Minecraft mc = Minecraft.getMinecraft();
-		if ((mc.theWorld == null || mc.thePlayer == null) && !(e instanceof EventCheatTick)) {
+		if ((mc.theWorld == null || mc.thePlayer == null) && !(e instanceof EventCheatRenderTick)) {
 			return;
 		}
 		

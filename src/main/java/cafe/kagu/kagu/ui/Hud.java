@@ -16,7 +16,7 @@ import cafe.kagu.kagu.Kagu;
 import cafe.kagu.kagu.eventBus.Handler;
 import cafe.kagu.kagu.eventBus.EventHandler;
 import cafe.kagu.kagu.eventBus.impl.EventRender2D;
-import cafe.kagu.kagu.eventBus.impl.EventCheatTick;
+import cafe.kagu.kagu.eventBus.impl.EventCheatRenderTick;
 import cafe.kagu.kagu.font.FontRenderer;
 import cafe.kagu.kagu.font.FontUtils;
 import cafe.kagu.kagu.mods.Module;
@@ -132,7 +132,7 @@ public class Hud {
 	 * Handles animations
 	 */
 	@EventHandler
-	private Handler<EventCheatTick> onCheatTick = e -> {
+	private Handler<EventCheatRenderTick> onCheatTick = e -> {
 		if (e.isPost())
 			return;
 		

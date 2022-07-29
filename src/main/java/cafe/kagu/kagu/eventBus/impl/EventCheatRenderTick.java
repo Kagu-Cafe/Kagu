@@ -9,12 +9,12 @@ import cafe.kagu.kagu.eventBus.Event;
  * @author lavaflowglow
  *
  */
-public class EventCheatTick extends Event {
+public class EventCheatRenderTick extends Event {
 
 	/**
 	 * @param eventPosition
 	 */
-	public EventCheatTick(EventPosition eventPosition) {
+	public EventCheatRenderTick(EventPosition eventPosition) {
 		super(eventPosition);
 	}
 

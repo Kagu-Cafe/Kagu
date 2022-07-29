@@ -21,6 +21,7 @@ import cafe.kagu.kagu.eventBus.Handler;
 import cafe.kagu.kagu.eventBus.impl.EventPlayerUpdate;
 import cafe.kagu.kagu.eventBus.impl.EventSettingUpdate;
 import cafe.kagu.kagu.mods.Module;
+import cafe.kagu.kagu.mods.ModuleManager;
 import cafe.kagu.kagu.settings.SettingDependency;
 import cafe.kagu.kagu.settings.impl.BooleanSetting;
 import cafe.kagu.kagu.settings.impl.DoubleSetting;
@@ -60,9 +61,6 @@ public class ModKillAura extends Module {
 				hitRange, blockRange, hitChance, minAps, maxAps, silentRotations, targetAll, targetPlayers, targetAnimals, targetMobs);
 		EventBus.setSubscriber(new ApsMinMaxFixer(this), true);
 	}
-	
-	// Modes
-	private ModeSetting attackPosition = new ModeSetting("Attack Position", "PRE", "PRE", "POST");
 	
 	private ModeSetting rotationMode = new ModeSetting("Rotation Mode", "Lock", "Lock", "Lock+", "Linear", "Linear+", "Linear Humanized");
 	private DoubleSetting linearSpeed = new DoubleSetting("Linear Speed", 10, 0.5, 180, 0.5).setDependency(() -> rotationMode.is("Linear") || rotationMode.is("Linear+") || rotationMode.is("Linear Humanized"));
@@ -115,63 +113,59 @@ public class ModKillAura extends Module {
 	
 	@EventHandler
 	private Handler<EventPlayerUpdate> onPlayerUpdate = e -> {
+		if (e.isPost())
+			return;
 		
+		// Rotations, target selection, blocking
 		EntityLivingBase target = null;
 		double distanceFromPlayer = 3621;
 		float[] rotations = null;
 		
-		// Rotations, target selection, blocking
-		if (e.isPre()) {
-			setInfo(new DecimalFormat("0.00").format(aps) + " APS", rotationMode.getMode());
+		setInfo(new DecimalFormat("0.00").format(aps) + " APS", rotationMode.getMode());
+		
+		EntityLivingBase[] targets = getTargets();
+		if (targets.length == 0) {
+			stopBlocking();
+			return;
+		}
+		
+		target = targets[0];
+		this.target = target;
+		
+		if (target == null) {
+			stopBlocking();
+			return;
+		}
+		
+		distanceFromPlayer = getDistanceFromPlayerEyes(target);
+		
+		// Check if the target is within the block distance
+		if (!blockMode.is("None")) {
 			
-			EntityLivingBase[] targets = getTargets();
-			if (targets.length == 0) {
+//			if (blockMode.is("Test") && mc.thePlayer.ticksExisted % 10 == 0)
+//				blocking = false;
+			
+			// Block or unblock
+			if (distanceFromPlayer <= blockRange.getValue())
+				startBlocking();
+			else
 				stopBlocking();
-				return;
-			}
 			
-			target = targets[0];
-			this.target = target;
-			
-			if (target == null) {
-				stopBlocking();
-				return;
-			}
-			
-			distanceFromPlayer = getDistanceFromPlayerEyes(target);
-			
-			// Check if the target is within the block distance
-			if (!blockMode.is("None")) {
-				
-//				if (blockMode.is("Test") && mc.thePlayer.ticksExisted % 10 == 0)
-//					blocking = false;
-				
-				// Block or unblock
-				if (distanceFromPlayer <= blockRange.getValue())
-					startBlocking();
-				else
-					stopBlocking();
-				
-				// Block animations
-				
-			}
-			
-			// Get and set the rotations
-			rotations = getRotations(target, e);
-			e.setRotationYaw(rotations[0]);
-			e.setRotationPitch(rotations[1]);
-			SpoofUtils.setSpoofedYaw(rotations[0]);
-			SpoofUtils.setSpoofedPitch(rotations[1]);
-			if (silentRotations.isDisabled()) {
-				mc.thePlayer.rotationYaw = rotations[0];
-				mc.thePlayer.rotationPitch = rotations[1];
-			}
+		}
+		
+		// Get and set the rotations
+		rotations = getRotations(target, e);
+		e.setRotationYaw(rotations[0]);
+		e.setRotationPitch(rotations[1]);
+		SpoofUtils.setSpoofedYaw(rotations[0]);
+		SpoofUtils.setSpoofedPitch(rotations[1]);
+		if (silentRotations.isDisabled()) {
+			mc.thePlayer.rotationYaw = rotations[0];
+			mc.thePlayer.rotationPitch = rotations[1];
 		}
 		
 		// Attacking
 		if (target == null || rotations == null)
-			return;
-		if (attackPosition.is("PRE") ? e.isPost() : e.isPre())
 			return;
 		
 		// Check if we're able to hit
@@ -204,6 +198,9 @@ public class ModKillAura extends Module {
 //				int mask = InputEvent.BUTTON1_DOWN_MASK;
 //				bot.mousePress(mask);
 //				bot.mouseRelease(mask);
+				if (distanceFromPlayer <= blockRange.getValue() && !blockMode.is("Test")) {
+					stopBlocking();
+				}
 			}
 			
 			if (!blockMode.is("None") && !blockMode.is("Vanilla") && !blockMode.is("Test")) {
@@ -334,7 +331,8 @@ public class ModKillAura extends Module {
 						ent instanceof EntityLivingBase && 
 						getDistanceFromPlayerEyes((EntityLivingBase)ent) <= Math.max(hitRange.getValue(), blockRange.getValue()) && 
 						ent != mc.thePlayer && 
-						(((EntityLivingBase)ent).getMaxHealth() <= 0 || ((EntityLivingBase)ent).getHealth() > 0))
+						(((EntityLivingBase)ent).getMaxHealth() <= 0 || ((EntityLivingBase)ent).getHealth() > 0)
+						&& (!(ent instanceof EntityPlayer) || (ModuleManager.modAntiBot.isEnabled() ? !ModuleManager.modAntiBot.isBot((EntityPlayer)ent) : true)))
 				.collect(Collectors.toList());
 		
 		// Remove targets that don't fit the required target settings
@@ -376,8 +374,13 @@ public class ModKillAura extends Module {
 	 */
 	private void startBlocking() {
 		SpoofUtils.setSpoofBlocking(true);
-		if (blocking)
+		if (blocking) {
+			if (blockMode.is("Test")) {
+				mc.getNetHandler().getNetworkManager().sendPacket(new C02PacketUseEntity(target, RotationUtils.getVectorForRotation(lastRotations[0], lastRotations[1])));
+				mc.getNetHandler().getNetworkManager().sendPacket(new C02PacketUseEntity(target, Action.INTERACT));
+			}
 			return;
+		}
 		EntityPlayerSP thePlayer = mc.thePlayer;
 		if (!(thePlayer.inventory.getCurrentItem() != null && thePlayer.inventory.getCurrentItem().getItem() instanceof ItemSword)) {
 			blocking = true;
@@ -390,8 +393,6 @@ public class ModKillAura extends Module {
 						new C08PacketPlayerBlockPlacement(BlockPos.ORIGIN, 255, thePlayer.getHeldItem(), 0, 0, 0));
 			}break;
 			case "Test":{
-				mc.getNetHandler().getNetworkManager().sendPacket(new C02PacketUseEntity(target, RotationUtils.getVectorForRotation(lastRotations[0], lastRotations[1])));
-				mc.getNetHandler().getNetworkManager().sendPacket(new C02PacketUseEntity(target, Action.INTERACT));
 				mc.getNetHandler().getNetworkManager().sendPacket(
 						new C08PacketPlayerBlockPlacement(BlockPos.ORIGIN, 255, thePlayer.getHeldItem(), 0, 0, 0));
 			}break;
@@ -415,13 +416,13 @@ public class ModKillAura extends Module {
 		switch (blockMode.getMode()) {
 			case "Vanilla":{
 				mc.getNetHandler().getNetworkManager()
-						.sendPacketNoEvent(new C07PacketPlayerDigging(
+						.sendPacket(new C07PacketPlayerDigging(
 								net.minecraft.network.play.client.C07PacketPlayerDigging.Action.RELEASE_USE_ITEM,
 								BlockPos.ORIGIN, EnumFacing.DOWN));
 			}break;
 			case "Test":{
 				mc.getNetHandler().getNetworkManager()
-						.sendPacketNoEvent(new C07PacketPlayerDigging(
+						.sendPacket(new C07PacketPlayerDigging(
 								net.minecraft.network.play.client.C07PacketPlayerDigging.Action.RELEASE_USE_ITEM,
 								BlockPos.ORIGIN, EnumFacing.DOWN));
 			}break;

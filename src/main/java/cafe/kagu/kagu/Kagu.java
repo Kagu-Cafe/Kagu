@@ -15,7 +15,8 @@ import org.lwjgl.opengl.GL13;
 import cafe.kagu.kagu.commands.CommandManager;
 import cafe.kagu.kagu.eventBus.EventBus;
 import cafe.kagu.kagu.eventBus.Event.EventPosition;
-import cafe.kagu.kagu.eventBus.impl.EventCheatTick;
+import cafe.kagu.kagu.eventBus.impl.EventCheatProcessTick;
+import cafe.kagu.kagu.eventBus.impl.EventCheatRenderTick;
 import cafe.kagu.kagu.font.FontUtils;
 import cafe.kagu.kagu.managers.AltManager;
 import cafe.kagu.kagu.managers.FileManager;
@@ -223,7 +224,7 @@ public class Kagu {
 		
 		// Start a cheat loop thread
 		logger.info("Starting the cheat loop thread...");
-		Thread cheatThread = new Thread(() -> {
+		Thread cheatThread1 = new Thread(() -> {
 			double tps = 64;
 			while (true) {
 				try {
@@ -233,22 +234,48 @@ public class Kagu {
 				}
 				// Kagu hook
 				{
-					EventCheatTick eventCheatTick = new EventCheatTick(EventPosition.PRE);
+					EventCheatRenderTick eventCheatTick = new EventCheatRenderTick(EventPosition.PRE);
 					eventCheatTick.post();
 					if (eventCheatTick.isCanceled())
 						continue;
 				}
 				// Kagu hook
 				{
-					EventCheatTick eventCheatTick = new EventCheatTick(EventPosition.POST);
+					EventCheatRenderTick eventCheatTick = new EventCheatRenderTick(EventPosition.POST);
 					eventCheatTick.post();
 					if (eventCheatTick.isCanceled())
 						continue;
 				}
 			}
-		}, "Cheat loop");
-		cheatThread.setDaemon(true);
-		cheatThread.start();
+		}, "Render cheat loop");
+		Thread cheatThread2 = new Thread(() -> {
+			double tps = 64;
+			while (true) {
+				try {
+					Thread.sleep((long) (1000 / tps));
+				} catch (Exception e) {
+					// TODO: handle exception
+				}
+				// Kagu hook
+				{
+					EventCheatProcessTick eventCheatTick = new EventCheatProcessTick(EventPosition.PRE);
+					eventCheatTick.post();
+					if (eventCheatTick.isCanceled())
+						continue;
+				}
+				// Kagu hook
+				{
+					EventCheatProcessTick eventCheatTick = new EventCheatProcessTick(EventPosition.POST);
+					eventCheatTick.post();
+					if (eventCheatTick.isCanceled())
+						continue;
+				}
+			}
+		}, "Process cheat loop");
+		cheatThread1.setDaemon(true);
+		cheatThread1.start();
+		cheatThread2.setDaemon(true);
+		cheatThread2.start();
 		logger.info("Started the cheat loop thread");
 		
 		logger.info(name + " v" + version + " has been started");

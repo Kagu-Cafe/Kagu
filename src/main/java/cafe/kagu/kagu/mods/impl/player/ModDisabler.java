@@ -27,7 +27,7 @@ public class ModDisabler extends Module {
 		setSettings(mode);
 	}
 	
-	private ModeSetting mode = new ModeSetting("Mode", "S08 C04", "S08 C04", "C04 Connect");
+	private ModeSetting mode = new ModeSetting("Mode", "S08 C04", "S08 C04", "C04 Connect", "Test");
 	
 	private boolean changeNextC06 = false;
 	
@@ -38,6 +38,7 @@ public class ModDisabler extends Module {
 	
 	@EventHandler
 	private Handler<EventTick> onTick = e -> {
+		
 		if (e.isPost())
 			return;
 		setInfo(mode.getMode());
@@ -72,6 +73,12 @@ public class ModDisabler extends Module {
 			}break;
 			case "C04 Connect":{
 				if (thePlayer.ticksExisted > 0 || !(e.getPacket() instanceof C06PacketPlayerPosLook))
+					break;
+				C06PacketPlayerPosLook c06 = (C06PacketPlayerPosLook)e.getPacket();
+				e.setPacket(new C04PacketPlayerPosition(c06.getPositionX(), c06.getPositionY(), c06.getPositionZ(), c06.isOnGround()));
+			}break;
+			case "Test":{
+				if (!(e.getPacket() instanceof C06PacketPlayerPosLook))
 					break;
 				C06PacketPlayerPosLook c06 = (C06PacketPlayerPosLook)e.getPacket();
 				e.setPacket(new C04PacketPlayerPosition(c06.getPositionX(), c06.getPositionY(), c06.getPositionZ(), c06.isOnGround()));
