@@ -142,10 +142,10 @@ public class ModKillAura extends Module {
 		// Check if the target is within the block distance
 		if (!blockMode.is("None")) {
 			
-//			if (blockMode.is("Test") && mc.thePlayer.ticksExisted % 10 == 0)
-//				blocking = false;
-			
 			// Block or unblock
+			if ((blockMode.is("Test") && mc.thePlayer.ticksExisted % 40 == 0))
+				stopBlocking();
+			
 			if (distanceFromPlayer <= blockRange.getValue())
 				startBlocking();
 			else
@@ -198,9 +198,6 @@ public class ModKillAura extends Module {
 //				int mask = InputEvent.BUTTON1_DOWN_MASK;
 //				bot.mousePress(mask);
 //				bot.mouseRelease(mask);
-				if (distanceFromPlayer <= blockRange.getValue() && !blockMode.is("Test")) {
-					stopBlocking();
-				}
 			}
 			
 			if (!blockMode.is("None") && !blockMode.is("Vanilla") && !blockMode.is("Test")) {
@@ -375,9 +372,9 @@ public class ModKillAura extends Module {
 	private void startBlocking() {
 		SpoofUtils.setSpoofBlocking(true);
 		if (blocking) {
-			if (blockMode.is("Test")) {
-				mc.getNetHandler().getNetworkManager().sendPacket(new C02PacketUseEntity(target, RotationUtils.getVectorForRotation(lastRotations[0], lastRotations[1])));
-				mc.getNetHandler().getNetworkManager().sendPacket(new C02PacketUseEntity(target, Action.INTERACT));
+			if (blockMode.is("Test") && !(canHit && apsTimer.hasTimeElapsed((long) (1000 / aps), false))) {
+//				mc.getNetHandler().getNetworkManager().sendPacket(new C02PacketUseEntity(target, RotationUtils.getVectorForRotation(lastRotations[0], lastRotations[1])));
+//				mc.getNetHandler().getNetworkManager().sendPacket(new C02PacketUseEntity(target, Action.INTERACT));
 			}
 			return;
 		}
