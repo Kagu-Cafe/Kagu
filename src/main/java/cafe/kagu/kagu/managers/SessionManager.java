@@ -115,7 +115,7 @@ public class SessionManager {
 	public static void startMicrosoftAuth() {
 		Map<String, String> authInfo = new Yaml().load(FileManager.readStringFromFile(FileManager.MICROSOFT_CONFIGURATION));
 		String clientId = authInfo.get("Azure Client Id");
-		String url = "https://login.live.com/oauth20_authorize.srf?client_id=" + clientId + "&response_type=code&redirect_uri=http://localhost:3621&scope=XboxLive.signin%20offline_access";
+		String url = "https://login.live.com/oauth20_authorize.srf?client_id=" + clientId + "&prompt=select_account&response_type=code&redirect_uri=http://localhost:3621&scope=XboxLive.signin%20offline_access";
 		try {
 			Minecraft.getMinecraft().currentScreen.setClickedLinkURI(new URI(url));
 		}catch (Exception e) {
