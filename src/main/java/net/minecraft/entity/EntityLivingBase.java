@@ -3,6 +3,10 @@ package net.minecraft.entity;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.google.common.collect.Maps;
+
+import cafe.kagu.kagu.mods.ModuleManager;
+import cafe.kagu.kagu.mods.impl.move.ModNoSlow;
+
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -1590,6 +1594,7 @@ public abstract class EntityLivingBase extends Entity
      */
     public void moveEntityWithHeading(float strafe, float forward)
     {
+    	ModNoSlow modNoSlow = ModuleManager.modNoSlow;
         if (this.isServerWorld())
         {
             if (!this.isInWater() || this instanceof EntityPlayer && ((EntityPlayer)this).capabilities.isFlying)
@@ -1626,11 +1631,13 @@ public abstract class EntityLivingBase extends Entity
                     if (this.isOnLadder())
                     {
                         float f6 = 0.15F;
-                        this.motionX = MathHelper.clamp_double(this.motionX, (double)(-f6), (double)f6);
-                        this.motionZ = MathHelper.clamp_double(this.motionZ, (double)(-f6), (double)f6);
+                        if (modNoSlow.isDisabled() || modNoSlow.getCancelLadderSlowdown().isDisabled()) {
+                            this.motionX = MathHelper.clamp_double(this.motionX, (double)(-f6), (double)f6);
+                            this.motionZ = MathHelper.clamp_double(this.motionZ, (double)(-f6), (double)f6);
+                        }
                         this.fallDistance = 0.0F;
 
-                        if (this.motionY < -0.15D)
+                        if (this.motionY < -0.15D && (modNoSlow.isDisabled() || modNoSlow.getCancelLadderDescentSlowdown().isDisabled()))
                         {
                             this.motionY = -0.15D;
                         }

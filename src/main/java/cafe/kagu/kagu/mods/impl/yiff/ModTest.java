@@ -73,9 +73,7 @@ public class ModTest extends Module {
 	public Handler<EventPlayerUpdate> onPlayerUpdate = e -> {
 		if (e.isPre())
 			return;
-		
-		ChatUtils.addChatMessage(((EventPlayerUpdate)e).getRotationYaw(), ((EventPlayerUpdate)e).getRotationPitch());
-		
+		ChatUtils.addChatMessage(MovementUtils.getMotion());
 	};
 	
 }

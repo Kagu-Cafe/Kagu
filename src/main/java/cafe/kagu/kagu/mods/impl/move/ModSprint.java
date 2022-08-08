@@ -12,6 +12,7 @@ import cafe.kagu.kagu.settings.impl.BooleanSetting;
 import cafe.kagu.kagu.settings.impl.ModeSetting;
 import cafe.kagu.kagu.utils.ChatUtils;
 import cafe.kagu.kagu.utils.MovementUtils;
+import net.minecraft.client.settings.KeyBinding;
 
 /**
  * @author lavaflowglow
@@ -38,17 +39,25 @@ public class ModSprint extends Module {
 		if (e.isPost())
 			return;
 		
-		if (MovementUtils.isPlayerMoving() && mode.is("On Move")) {
-			mc.thePlayer.setSprinting(true);
-			return;
+		switch (mode.getMode()) {
+			case "On Move":{
+				if (MovementUtils.isPlayerMoving()) {
+					mc.thePlayer.setSprinting(true);
+					return;
+				}
+			}break;
+			case "Vanilla":{
+				KeyBinding.setKeyBindState(mc.gameSettings.keyBindSprint.getKeyCode(), true);
+			}break;
+			case "Omni":{
+				if (mc.thePlayer.onGround && mc.thePlayer.getFoodStats().getFoodLevel() >= 3
+						&& !mc.thePlayer.isCollidedHorizontally && !mc.thePlayer.isUsingItem()
+						&& MovementUtils.isPlayerMoving()) {
+					mc.thePlayer.setSprinting(true);
+				}
+			}break;
 		}
 		
-		if (mc.thePlayer.onGround && mc.thePlayer.getFoodStats().getFoodLevel() >= 3
-				&& !mc.thePlayer.isCollidedHorizontally && !mc.thePlayer.isUsingItem()
-				&& (mode.is("Vanilla") ? mc.thePlayer.moveForward > 0
-						: MovementUtils.isPlayerMoving())) {
-			mc.thePlayer.setSprinting(true);
-		}
 	};
 
 }

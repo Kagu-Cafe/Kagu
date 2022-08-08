@@ -7,6 +7,9 @@ import com.mojang.authlib.GameProfile;
 import cafe.kagu.kagu.eventBus.Event.EventPosition;
 import cafe.kagu.kagu.eventBus.impl.EventChatSendMessage;
 import cafe.kagu.kagu.eventBus.impl.EventPlayerUpdate;
+import cafe.kagu.kagu.mods.ModuleManager;
+import cafe.kagu.kagu.mods.impl.move.ModNoSlow;
+import cafe.kagu.kagu.mods.impl.move.ModScaffold;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.MovingSoundMinecartRiding;
 import net.minecraft.client.audio.PositionedSoundRecord;
@@ -575,6 +578,9 @@ public class EntityPlayerSP extends AbstractClientPlayer
      */
     public void setSprinting(boolean sprinting)
     {
+    	ModScaffold modScaffold = ModuleManager.modScaffold;
+    	if (modScaffold.isEnabled() && modScaffold.getSprint().isDisabled())
+    		sprinting = false;
         super.setSprinting(sprinting);
         this.sprintingTicksLeft = sprinting ? 600 : 0;
     }
@@ -774,6 +780,7 @@ public class EntityPlayerSP extends AbstractClientPlayer
      */
     public void onLivingUpdate()
     {
+    	ModNoSlow modNoSlow = ModuleManager.modNoSlow;
         if (this.sprintingTicksLeft > 0)
         {
             --this.sprintingTicksLeft;
@@ -845,7 +852,7 @@ public class EntityPlayerSP extends AbstractClientPlayer
         boolean flag2 = this.movementInput.moveForward >= f;
         this.movementInput.updatePlayerMoveState();
 
-        if (this.isUsingItem() && !this.isRiding())
+        if (this.isUsingItem() && !this.isRiding() && (modNoSlow.isDisabled() || modNoSlow.getCancelItemSlowdown().isDisabled()))
         {
             this.movementInput.moveStrafe *= 0.2F;
             this.movementInput.moveForward *= 0.2F;
@@ -858,7 +865,7 @@ public class EntityPlayerSP extends AbstractClientPlayer
         this.pushOutOfBlocks(this.posX + (double)this.width * 0.35D, this.getEntityBoundingBox().minY + 0.5D, this.posZ + (double)this.width * 0.35D);
         boolean flag3 = (float)this.getFoodStats().getFoodLevel() > 6.0F || this.capabilities.allowFlying;
 
-        if (this.onGround && !flag1 && !flag2 && this.movementInput.moveForward >= f && !this.isSprinting() && flag3 && !this.isUsingItem() && !this.isPotionActive(Potion.blindness))
+        if (this.onGround && (!flag1 || (modNoSlow.isEnabled() && modNoSlow.getCancelItemSlowdown().isEnabled())) && !flag2 && this.movementInput.moveForward >= f && !this.isSprinting() && flag3 && (!this.isUsingItem() || (modNoSlow.isEnabled() && modNoSlow.getCancelItemSlowdown().isEnabled())) && !this.isPotionActive(Potion.blindness))
         {
             if (this.sprintToggleTimer <= 0 && !this.mc.gameSettings.keyBindSprint.isKeyDown())
             {
@@ -870,7 +877,7 @@ public class EntityPlayerSP extends AbstractClientPlayer
             }
         }
 
-        if (!this.isSprinting() && this.movementInput.moveForward >= f && flag3 && !this.isUsingItem() && !this.isPotionActive(Potion.blindness) && this.mc.gameSettings.keyBindSprint.isKeyDown())
+        if (!this.isSprinting() && this.movementInput.moveForward >= f && flag3 && (!this.isUsingItem() || (modNoSlow.isEnabled() && modNoSlow.getCancelItemSlowdown().isEnabled())) && !this.isPotionActive(Potion.blindness) && this.mc.gameSettings.keyBindSprint.isKeyDown())
         {
             this.setSprinting(true);
         }

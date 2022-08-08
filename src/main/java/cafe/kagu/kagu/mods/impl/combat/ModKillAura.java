@@ -45,6 +45,7 @@ import net.minecraft.network.play.client.C0APacketAnimation;
 import net.minecraft.network.play.client.C02PacketUseEntity.Action;
 import net.minecraft.network.play.client.C07PacketPlayerDigging;
 import net.minecraft.network.play.client.C08PacketPlayerBlockPlacement;
+import net.minecraft.network.play.client.C09PacketHeldItemChange;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
@@ -65,7 +66,7 @@ public class ModKillAura extends Module {
 	private ModeSetting rotationMode = new ModeSetting("Rotation Mode", "Lock", "Lock", "Lock+", "Linear", "Linear+", "Linear Humanized");
 	private DoubleSetting linearSpeed = new DoubleSetting("Linear Speed", 10, 0.5, 180, 0.5).setDependency(() -> rotationMode.is("Linear") || rotationMode.is("Linear+") || rotationMode.is("Linear Humanized"));
 	
-	private ModeSetting blockMode = new ModeSetting("Block Mode", "None", "None", "Fake", "Vanilla", "Test");
+	private ModeSetting blockMode = new ModeSetting("Block Mode", "None", "None", "Fake", "Vanilla", "Hypixel", "Test");
 	private ModeSetting preferredTargetMetrics = new ModeSetting("Preferred Target Metrics", "Distance", "Distance");
 	private ModeSetting targetSelectionMode = new ModeSetting("Target Selection", "Instant", "Instant");
 	private ModeSetting swingMode = new ModeSetting("Swing Mode", "Swing", "Swing", "Server Side", "No Swing");
@@ -143,8 +144,11 @@ public class ModKillAura extends Module {
 		if (!blockMode.is("None")) {
 			
 			// Block or unblock
-			if ((blockMode.is("Test") && mc.thePlayer.ticksExisted % 40 == 0))
-				stopBlocking();
+//			if (blockMode.is("Hypixel") && blocking && mc.thePlayer.ticksExisted % 10 == 0) {
+//				mc.getNetHandler().getNetworkManager().sendPacketNoEvent(new C09PacketHeldItemChange(mc.thePlayer.inventory.currentItem));
+//			}
+			if ((blockMode.is("Hypixel") && mc.thePlayer.ticksExisted % 10 == 0))
+				blocking = false;
 			
 			if (distanceFromPlayer <= blockRange.getValue())
 				startBlocking();
@@ -182,7 +186,7 @@ public class ModKillAura extends Module {
 				case "No Swing":break;
 			}
 			
-			if (!blockMode.is("None") && !blockMode.is("Vanilla") && !blockMode.is("Test")) {
+			if (!blockMode.is("None") && !blockMode.is("Vanilla") && !blockMode.is("Hypixel")) {
 				stopBlocking();
 			}
 			
@@ -200,7 +204,7 @@ public class ModKillAura extends Module {
 //				bot.mouseRelease(mask);
 			}
 			
-			if (!blockMode.is("None") && !blockMode.is("Vanilla") && !blockMode.is("Test")) {
+			if (!blockMode.is("None") && !blockMode.is("Vanilla") && !blockMode.is("Hypixel")) {
 				startBlocking();
 			}
 			
@@ -371,13 +375,8 @@ public class ModKillAura extends Module {
 	 */
 	private void startBlocking() {
 		SpoofUtils.setSpoofBlocking(true);
-		if (blocking) {
-			if (blockMode.is("Test") && !(canHit && apsTimer.hasTimeElapsed((long) (1000 / aps), false))) {
-//				mc.getNetHandler().getNetworkManager().sendPacket(new C02PacketUseEntity(target, RotationUtils.getVectorForRotation(lastRotations[0], lastRotations[1])));
-//				mc.getNetHandler().getNetworkManager().sendPacket(new C02PacketUseEntity(target, Action.INTERACT));
-			}
+		if (blocking)
 			return;
-		}
 		EntityPlayerSP thePlayer = mc.thePlayer;
 		if (!(thePlayer.inventory.getCurrentItem() != null && thePlayer.inventory.getCurrentItem().getItem() instanceof ItemSword)) {
 			blocking = true;
@@ -389,9 +388,10 @@ public class ModKillAura extends Module {
 				mc.getNetHandler().getNetworkManager().sendPacket(
 						new C08PacketPlayerBlockPlacement(BlockPos.ORIGIN, 255, thePlayer.getHeldItem(), 0, 0, 0));
 			}break;
-			case "Test":{
-				mc.getNetHandler().getNetworkManager().sendPacket(
+			case "Hypixel":{
+				mc.getNetHandler().getNetworkManager().sendPacketNoEvent(
 						new C08PacketPlayerBlockPlacement(BlockPos.ORIGIN, 255, thePlayer.getHeldItem(), 0, 0, 0));
+				mc.getNetHandler().getNetworkManager().sendPacketNoEvent(new C09PacketHeldItemChange(mc.thePlayer.inventory.currentItem));
 			}break;
 		}
 		
@@ -417,9 +417,9 @@ public class ModKillAura extends Module {
 								net.minecraft.network.play.client.C07PacketPlayerDigging.Action.RELEASE_USE_ITEM,
 								BlockPos.ORIGIN, EnumFacing.DOWN));
 			}break;
-			case "Test":{
+			case "Hypixel":{
 				mc.getNetHandler().getNetworkManager()
-						.sendPacket(new C07PacketPlayerDigging(
+						.sendPacketNoEvent(new C07PacketPlayerDigging(
 								net.minecraft.network.play.client.C07PacketPlayerDigging.Action.RELEASE_USE_ITEM,
 								BlockPos.ORIGIN, EnumFacing.DOWN));
 			}break;

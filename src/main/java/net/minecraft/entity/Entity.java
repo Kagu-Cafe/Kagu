@@ -6,6 +6,7 @@ import java.util.UUID;
 import java.util.concurrent.Callable;
 
 import cafe.kagu.kagu.mods.ModuleManager;
+import cafe.kagu.kagu.mods.impl.move.ModNoSlow;
 import cafe.kagu.kagu.utils.ChatUtils;
 import cafe.kagu.kagu.utils.MovementUtils;
 import cafe.kagu.kagu.utils.SpoofUtils;
@@ -593,6 +594,7 @@ public abstract class Entity implements ICommandSender
      */
     public void moveEntity(double x, double y, double z)
     {
+    	ModNoSlow modNoSlow = ModuleManager.modNoSlow;
         if (this.noClip)
         {
             this.setEntityBoundingBox(this.getEntityBoundingBox().offset(x, y, z));
@@ -605,7 +607,7 @@ public abstract class Entity implements ICommandSender
             double d1 = this.posY;
             double d2 = this.posZ;
 
-            if (this.isInWeb)
+            if (this.isInWeb && (modNoSlow.isDisabled() || modNoSlow.getCancelWebSlowdown().isDisabled()))
             {
                 this.isInWeb = false;
                 x *= 0.25D;

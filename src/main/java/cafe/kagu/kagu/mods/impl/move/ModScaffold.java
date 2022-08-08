@@ -20,13 +20,14 @@ import cafe.kagu.kagu.eventBus.impl.EventTick;
 import cafe.kagu.kagu.mods.Module;
 import cafe.kagu.kagu.settings.impl.BooleanSetting;
 import cafe.kagu.kagu.settings.impl.DoubleSetting;
+import cafe.kagu.kagu.settings.impl.IntegerSetting;
 import cafe.kagu.kagu.settings.impl.ModeSetting;
 import cafe.kagu.kagu.utils.ChatUtils;
 import cafe.kagu.kagu.utils.DrawUtils3D;
 import cafe.kagu.kagu.utils.MovementUtils;
 import cafe.kagu.kagu.utils.RotationUtils;
 import cafe.kagu.kagu.utils.SpoofUtils;
-import cafe.kagu.kagu.utils.UiUtils;
+import cafe.kagu.kagu.utils.TimerUtil;
 import cafe.kagu.kagu.utils.WorldUtils;
 import cafe.kagu.kagu.utils.WorldUtils.PlaceOnInfo;
 import net.minecraft.block.Block;
@@ -42,7 +43,6 @@ import net.minecraft.network.play.client.C09PacketHeldItemChange;
 import net.minecraft.network.play.client.C0APacketAnimation;
 import net.minecraft.network.play.client.C0BPacketEntityAction;
 import net.minecraft.network.play.client.C0BPacketEntityAction.Action;
-import net.minecraft.network.play.client.C16PacketClientStatus;
 import net.minecraft.network.play.server.S09PacketHeldItemChange;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
@@ -61,7 +61,7 @@ public class ModScaffold extends Module {
 	public ModScaffold() {
 		super("Scaffold", Category.MOVEMENT);
 		setSettings(rotationMode, c08Position, itemMode, swingMode, vec3Mode, rayTraceMissMode, maxBlockReach, keepY,
-				visuals, safewalk, accountForMovement, ignoreWorldBorder, sprint, silentRotations, extend, extendDistance, tower,
+				visuals, safewalk, accountForMovement, ignoreWorldBorder, sprint, silentRotations, avoidSwitchingBlocks, blockSwitchDelay, extend, extendDistance, tower,
 				towerMode);
 	}
 	
@@ -77,8 +77,12 @@ public class ModScaffold extends Module {
 	private BooleanSetting safewalk = new BooleanSetting("Safewalk", true);
 	private BooleanSetting accountForMovement = new BooleanSetting("Account For Movement", false);
 	private BooleanSetting ignoreWorldBorder = new BooleanSetting("Ignore World Border", false);
-	private BooleanSetting sprint = new BooleanSetting("Allow Sprint", true);
+	private BooleanSetting sprint = new BooleanSetting("Allow Sprint", false);
 	private BooleanSetting silentRotations = new BooleanSetting("Silent Rotations", true);
+	
+	// Additional Switch settings
+	private BooleanSetting avoidSwitchingBlocks = new BooleanSetting("Avoid Switching Blocks", true);
+	private IntegerSetting blockSwitchDelay = new IntegerSetting("Block Switch Delay", 50, 0, 400, 10);
 	
 	private DoubleSetting maxBlockReach = new DoubleSetting("Max Block Reach", 3, 1, 4, 0.5);
 	
@@ -102,6 +106,7 @@ public class ModScaffold extends Module {
 	
 	// Used for item selection
 	private int currentItemSlot = 0;
+	private TimerUtil switchDelayTimer = new TimerUtil();
 	
 	// Rotation vars
 	private PlaceOnInfo lastPlaceOnInfo = null;
@@ -231,6 +236,15 @@ public class ModScaffold extends Module {
 		if (e.isPost())
 			return;
 		
+		// Prevent flags by minimizing how often we have to switch blocks (only if enabled)
+		if (avoidSwitchingBlocks.isEnabled() && mc.thePlayer.inventory.getStackInSlot(currentItemSlot).getItem() != null && mc.thePlayer.inventory.getStackInSlot(currentItemSlot).getItem() instanceof ItemBlock) {
+			Block block = ((ItemBlock)mc.thePlayer.inventory.getStackInSlot(currentItemSlot).getItem()).getBlock();
+			if (!(block.canCollideCheck(block.getDefaultState(), false) && !block.doesBlockActivate()
+					&& WorldUtils.additionalPlaceOnBlockCheck(block)))
+				ChatUtils.addChatMessage("No Switch");
+				return;
+		}
+		
 		int largestBlocks = -1;
 		int currentSlot = -1;
 		InventoryPlayer inventory = mc.thePlayer.inventory;
@@ -266,6 +280,7 @@ public class ModScaffold extends Module {
 				
 			}break;
 		}
+		switchDelayTimer.reset();
 		
 	};
 	
@@ -469,7 +484,7 @@ public class ModScaffold extends Module {
 			return;
 		
 		// Only attempt place if place pos and place on info is set, canPlace is set to true, and there is something the player can place with
-		if (placePos == null || placeOnInfo == null || !canPlace)
+		if (placePos == null || placeOnInfo == null || !canPlace || !switchDelayTimer.hasTimeElapsed(blockSwitchDelay.getValue()))
 			return;
 		
 		// Vars
@@ -580,6 +595,13 @@ public class ModScaffold extends Module {
 		}
 		
 		return new float[] {0, 0, 0};
+	}
+	
+	/**
+	 * @return the sprint
+	 */
+	public BooleanSetting getSprint() {
+		return sprint;
 	}
 	
 }

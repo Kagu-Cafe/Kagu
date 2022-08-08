@@ -3,6 +3,9 @@ package net.minecraft.entity.player;
 import com.google.common.base.Charsets;
 import com.google.common.collect.Lists;
 import com.mojang.authlib.GameProfile;
+
+import cafe.kagu.kagu.mods.ModuleManager;
+
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
@@ -155,8 +158,22 @@ public abstract class EntityPlayer extends EntityLivingBase
      * This is the item that is in use when the player is holding down the useItemButton (e.g., bow, food, sword)
      */
     private ItemStack itemInUse;
-
+    
     /**
+     * @return The current item in use object
+     */
+    public ItemStack getItemInUseObject() {
+    	return itemInUse;
+    }
+
+	/**
+	 * @param itemInUse the itemInUse to set
+	 */
+	public void setItemInUseObject(ItemStack itemInUse) {
+		this.itemInUse = itemInUse;
+	}
+
+	/**
      * This field starts off equal to getMaxItemUseDuration and is decremented on each tick
      */
     private int itemInUseCount;
@@ -1359,7 +1376,8 @@ public abstract class EntityPlayer extends EntityLivingBase
                             targetEntity.addVelocity((double)(-MathHelper.sin(this.rotationYaw * (float)Math.PI / 180.0F) * (float)i * 0.5F), 0.1D, (double)(MathHelper.cos(this.rotationYaw * (float)Math.PI / 180.0F) * (float)i * 0.5F));
                             this.motionX *= 0.6D;
                             this.motionZ *= 0.6D;
-                            this.setSprinting(false);
+                            if (ModuleManager.modKeepSprintAfterCombat.isDisabled())
+                            	this.setSprinting(false);
                         }
 
                         if (targetEntity instanceof EntityPlayerMP && targetEntity.velocityChanged)
