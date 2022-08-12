@@ -974,4 +974,33 @@ public class EntityPlayerSP extends AbstractClientPlayer
             this.sendPlayerAbilities();
         }
     }
+    
+    /**
+	 * @param lastReportedYaw the lastReportedYaw to set
+	 */
+	public void setLastReportedYaw(float lastReportedYaw) {
+		this.lastReportedYaw = lastReportedYaw;
+	}
+    
+    /**
+	 * @return the lastReportedYaw
+	 */
+	public float getLastReportedYaw() {
+		return lastReportedYaw;
+	}
+	
+	/**
+	 * @param lastReportedPitch the lastReportedPitch to set
+	 */
+	public void setLastReportedPitch(float lastReportedPitch) {
+		this.lastReportedPitch = lastReportedPitch;
+	}
+	
+	/**
+	 * @return the lastReportedPitch
+	 */
+	public float getLastReportedPitch() {
+		return lastReportedPitch;
+	}
+    
 }

@@ -262,7 +262,7 @@ public class NetHandlerPlayServer implements INetHandlerPlayServer, ITickable
                         double d17 = this.playerEntity.posY;
                         double d18 = this.playerEntity.posZ;
 
-                        if (packetIn.getRotating())
+                        if (packetIn.isRotating())
                         {
                             f4 = packetIn.getYaw();
                             f = packetIn.getPitch();
@@ -338,7 +338,7 @@ public class NetHandlerPlayServer implements INetHandlerPlayServer, ITickable
                         }
                     }
 
-                    if (packetIn.getRotating())
+                    if (packetIn.isRotating())
                     {
                         f1 = packetIn.getYaw();
                         f2 = packetIn.getPitch();

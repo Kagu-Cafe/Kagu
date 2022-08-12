@@ -18,12 +18,40 @@ public class ModHud extends Module {
 		setSettings(hudEnabled, visual3dEnabled, arraylistAnimation, arraylistColors);
 	}
 	
-	public BooleanSetting hudEnabled = new BooleanSetting("HUD Enabled", true);
-	public BooleanSetting visual3dEnabled = new BooleanSetting("3D Visuals Enabled", true);
+	private BooleanSetting hudEnabled = new BooleanSetting("HUD Enabled", true);
+	private BooleanSetting visual3dEnabled = new BooleanSetting("3D Visuals Enabled", true);
 	
 	// ArrayList options
-	public ModeSetting arraylistAnimation = new ModeSetting("ArrayList Animation", "Squeeze", "Squeeze", "Slide");
-	public ModeSetting arraylistColors = new ModeSetting("ArrayList Colors", "White", "White", "Category Colors");
+	private ModeSetting arraylistAnimation = new ModeSetting("ArrayList Animation", "Squeeze", "Squeeze", "Slide");
+	private ModeSetting arraylistColors = new ModeSetting("ArrayList Colors", "White", "White", "Category Colors");
+	
+	/**
+	 * @return the hudEnabled
+	 */
+	public BooleanSetting getHudEnabled() {
+		return hudEnabled;
+	}
+	
+	/**
+	 * @return the visual3dEnabled
+	 */
+	public BooleanSetting getVisual3dEnabled() {
+		return visual3dEnabled;
+	}
+	
+	/**
+	 * @return the arraylistAnimation
+	 */
+	public ModeSetting getArraylistAnimationModeSetting() {
+		return arraylistAnimation;
+	}
+	
+	/**
+	 * @return the arraylistColors
+	 */
+	public ModeSetting getArraylistColors() {
+		return arraylistColors;
+	}
 	
 	@Override
 	public double getArraylistAnimation() {

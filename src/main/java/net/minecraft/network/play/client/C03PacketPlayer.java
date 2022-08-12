@@ -2,6 +2,8 @@ package net.minecraft.network.play.client;
 
 import java.io.IOException;
 
+import cafe.kagu.kagu.mods.ModuleManager;
+import cafe.kagu.kagu.mods.impl.player.ModDisabler;
 import cafe.kagu.kagu.utils.ChatUtils;
 import net.minecraft.network.Packet;
 import net.minecraft.network.PacketBuffer;
@@ -86,7 +88,7 @@ public class C03PacketPlayer implements Packet<INetHandlerPlayServer>
         return this.moving;
     }
 
-    public boolean getRotating()
+    public boolean isRotating()
     {
         return this.rotating;
     }
@@ -153,7 +155,8 @@ public class C03PacketPlayer implements Packet<INetHandlerPlayServer>
 
         public void writePacketData(PacketBuffer buf) throws IOException
         {
-            buf.writeFloat(this.yaw);
+        	ModDisabler modDisabler = ModuleManager.modDisabler;
+            buf.writeFloat(this.yaw + (modDisabler.isEnabled() && (modDisabler.getMode().is("Rapid Rotate") || modDisabler.getMode().is("Inverse Rapid Rotate")) ? (modDisabler.getRapidRotation() * 360) : 0));
             buf.writeFloat(this.pitch);
             super.writePacketData(buf);
         }
@@ -191,10 +194,11 @@ public class C03PacketPlayer implements Packet<INetHandlerPlayServer>
 
         public void writePacketData(PacketBuffer buf) throws IOException
         {
+        	ModDisabler modDisabler = ModuleManager.modDisabler;
             buf.writeDouble(this.x);
             buf.writeDouble(this.y);
             buf.writeDouble(this.z);
-            buf.writeFloat(this.yaw);
+            buf.writeFloat(this.yaw + (modDisabler.isEnabled() && (modDisabler.getMode().is("Rapid Rotate") || modDisabler.getMode().is("Inverse Rapid Rotate")) ? (modDisabler.getRapidRotation() * 360) : 0));
             buf.writeFloat(this.pitch);
             super.writePacketData(buf);
         }

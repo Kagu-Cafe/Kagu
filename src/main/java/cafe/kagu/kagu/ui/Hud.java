@@ -96,7 +96,7 @@ public class Hud {
 			// Animation
 			GlStateManager.pushMatrix();
 			
-			switch(ModuleManager.modHud.arraylistAnimation.getMode()) {
+			switch(ModuleManager.modHud.getArraylistAnimationModeSetting().getMode()) {
 				case "Slide":{
 					indexIncrement = mod.getArraylistAnimation();
 					GlStateManager.translate((moduleFr.getStringWidth(mod.getName()) + infoLength + 4) * (1 - mod.getArraylistAnimation()), 0, 0);
@@ -110,7 +110,7 @@ public class Hud {
 			}
 			
 			// Color for the text
-			int textColor = ModuleManager.modHud.arraylistColors.is("White") ? -1 : mod.getCategory().getArraylistColor();
+			int textColor = ModuleManager.modHud.getArraylistColors().is("White") ? -1 : mod.getCategory().getArraylistColor();
 			
 			// Module name
 			moduleFr.drawString(mod.getName(), sr.getScaledWidth() - moduleFr.getStringWidth(mod.getName()) - infoLength, index * moduleFr.getFontHeight(), textColor, true);

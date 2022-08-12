@@ -51,10 +51,10 @@ public class EventBus {
 		}
 		
 		// Disable specific visuals if they are disabled in the conifg
-		if (ModuleManager.modHud != null && ModuleManager.modHud.visual3dEnabled.isDisabled() && e instanceof EventRender3D) {
+		if (ModuleManager.modHud != null && ModuleManager.modHud.getVisual3dEnabled().isDisabled() && e instanceof EventRender3D) {
 			return;
 		}
-		if (ModuleManager.modHud != null && ModuleManager.modHud.hudEnabled.isDisabled() && e instanceof EventRender2D) {
+		if (ModuleManager.modHud != null && ModuleManager.modHud.getHudEnabled().isDisabled() && e instanceof EventRender2D) {
 			return;
 		}
 		

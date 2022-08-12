@@ -18,9 +18,11 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemBow;
 import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemSword;
+import net.minecraft.network.play.client.C03PacketPlayer;
 import net.minecraft.network.play.client.C08PacketPlayerBlockPlacement;
 import net.minecraft.network.play.client.C09PacketHeldItemChange;
 import net.minecraft.network.play.client.C03PacketPlayer.C04PacketPlayerPosition;
+import net.minecraft.network.play.client.C03PacketPlayer.C05PacketPlayerLook;
 import net.minecraft.network.play.client.C03PacketPlayer.C06PacketPlayerPosLook;
 import net.minecraft.network.play.server.S04PacketEntityEquipment;
 import net.minecraft.network.play.server.S08PacketPlayerPosLook;
@@ -38,21 +40,29 @@ public class ModDisabler extends Module {
 		setSettings(mode);
 	}
 	
-	private ModeSetting mode = new ModeSetting("Mode", "S08 C04", "S08 C04", "C04 Connect", "Hypixel NoSlow", "Test");
+	private ModeSetting mode = new ModeSetting("Mode", "S08 C04", "S08 C04", "C04 Connect", "Hypixel NoSlow", "Rapid Rotate", "Inverse Rapid Rotate", "Always Send Rotating", "Test");
 	
 	private boolean changeNextC06 = false;
+	private float rapidRotation = 0;
 	
 	@Override
 	public void onEnable() {
 		changeNextC06 = false;
+		rapidRotation = 0;
 	}
 	
 	@EventHandler
 	private Handler<EventTick> onTick = e -> {
-		
 		if (e.isPost())
 			return;
 		setInfo(mode.getMode());
+		switch (mode.getMode()) {
+			case "Always Send Rotating":{
+				// Tricks mc into thinking that the player rotated and that it needs to send an update to the server
+				mc.thePlayer.setLastReportedYaw(mc.thePlayer.getLastReportedYaw() + 1);
+				mc.thePlayer.setLastReportedPitch(mc.thePlayer.getLastReportedPitch() + 1);
+			}break;
+		}
 	};
 	
 	@EventHandler
@@ -125,6 +135,24 @@ public class ModDisabler extends Module {
 					}
 				}
 			}break;
+			case "Rapid Rotate":
+			case "Inverse Rapid Rotate":{
+				if (e.getPacket() instanceof C03PacketPlayer) {
+					C03PacketPlayer c03 = (C03PacketPlayer)e.getPacket();
+					if (c03.isRotating())
+						return;
+					// If c03 is c04
+					if (c03 instanceof C04PacketPlayerPosition) {
+						C04PacketPlayerPosition c04 = (C04PacketPlayerPosition)c03;
+						e.setPacket(new C06PacketPlayerPosLook(c04.getPositionX(), c04.getPositionY(), c04.getPositionZ(), mc.thePlayer.getLastReportedYaw(), mc.thePlayer.getLastReportedPitch(), c03.isOnGround()));
+					}
+					
+					// Else could only be normal c03 because c05 & c06 both have rotating set to true
+					else {
+						e.setPacket(new C05PacketPlayerLook(mc.thePlayer.getLastReportedYaw(), mc.thePlayer.getLastReportedPitch(), c03.isOnGround()));
+					}
+				}
+			}break;
 			case "Test":{
 				if (!(e.getPacket() instanceof C06PacketPlayerPosLook))
 					break;
@@ -139,6 +167,17 @@ public class ModDisabler extends Module {
 	 */
 	public ModeSetting getMode() {
 		return mode;
+	}
+	
+	/**
+	 * @return the rapidRotation
+	 */
+	public float getRapidRotation() {
+		if (mode.is("Inverse Rapid Rotate"))
+			rapidRotation--;
+		else
+			rapidRotation++;
+		return rapidRotation;
 	}
 	
 }
