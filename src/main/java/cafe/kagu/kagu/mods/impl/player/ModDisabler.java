@@ -13,12 +13,14 @@ import cafe.kagu.kagu.mods.Module;
 import cafe.kagu.kagu.settings.impl.BooleanSetting;
 import cafe.kagu.kagu.settings.impl.ModeSetting;
 import cafe.kagu.kagu.utils.ChatUtils;
+import cafe.kagu.kagu.utils.TimerUtil;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBow;
 import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemSword;
 import net.minecraft.network.play.client.C03PacketPlayer;
+import net.minecraft.network.play.client.C07PacketPlayerDigging;
 import net.minecraft.network.play.client.C08PacketPlayerBlockPlacement;
 import net.minecraft.network.play.client.C09PacketHeldItemChange;
 import net.minecraft.network.play.client.C03PacketPlayer.C04PacketPlayerPosition;
@@ -28,6 +30,7 @@ import net.minecraft.network.play.server.S04PacketEntityEquipment;
 import net.minecraft.network.play.server.S08PacketPlayerPosLook;
 import net.minecraft.network.play.server.S09PacketHeldItemChange;
 import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 
 /**
  * @author lavaflowglow
@@ -44,11 +47,15 @@ public class ModDisabler extends Module {
 	
 	private boolean changeNextC06 = false;
 	private float rapidRotation = 0;
+	private TimerUtil hypixelNoSlowTimer = new TimerUtil();
+	private boolean hypixelNoSlowBlockOnPost = false;
 	
 	@Override
 	public void onEnable() {
 		changeNextC06 = false;
 		rapidRotation = 0;
+		hypixelNoSlowTimer.reset();
+		hypixelNoSlowBlockOnPost = false;
 	}
 	
 	@EventHandler
@@ -67,18 +74,10 @@ public class ModDisabler extends Module {
 	
 	@EventHandler
 	private Handler<EventPlayerUpdate> onPlayerUpdate = e -> {
-		if (e.isPost())
-			return;
 		EntityPlayerSP thePlayer = mc.thePlayer;
 		switch (mode.getMode()) {
 			case "Hypixel NoSlow":{
-//				if (thePlayer.isUsingItem() && thePlayer.ticksExisted % 5 == 0) {
-//					thePlayer.setItemInUseObject(null);
-//					thePlayer.setItemInUse(thePlayer.getCurrentEquippedItem(), 21);
-//				}
-				if (thePlayer.isUsingItem() && thePlayer.ticksExisted % 15 == 0) {
-					mc.getNetHandler().getNetworkManager().sendPacketNoEvent(new C09PacketHeldItemChange(mc.thePlayer.inventory.currentItem));
-				}
+				
 			}break;
 		}
 	};
@@ -92,16 +91,6 @@ public class ModDisabler extends Module {
 			case "S08 C04":{
 				if (e.getPacket() instanceof S08PacketPlayerPosLook)
 					changeNextC06 = true;
-			}break;
-			case "Hypixel NoSlow":{
-//				if (!(e.getPacket() instanceof S09PacketHeldItemChange))
-//					break;
-//				S09PacketHeldItemChange s09 = (S09PacketHeldItemChange)e.getPacket();
-//				ChatUtils.addChatMessage("S09");
-//				if (s09.getHeldItemHotbarIndex() == mc.thePlayer.inventory.currentItem) {
-//					ChatUtils.addChatMessage("Canceled");
-//					e.cancel();
-//				}
 			}break;
 		}
 	};
@@ -125,15 +114,6 @@ public class ModDisabler extends Module {
 					break;
 				C06PacketPlayerPosLook c06 = (C06PacketPlayerPosLook)e.getPacket();
 				e.setPacket(new C04PacketPlayerPosition(c06.getPositionX(), c06.getPositionY(), c06.getPositionZ(), c06.isOnGround()));
-			}break;
-			case "Hypixel NoSlow":{
-				if (e.getPacket() instanceof C08PacketPlayerBlockPlacement) {
-					C08PacketPlayerBlockPlacement c08 = (C08PacketPlayerBlockPlacement)e.getPacket();
-					Item item = c08.getStack().getItem();
-					if (item instanceof ItemSword || item instanceof ItemFood || item instanceof ItemBow) {
-						mc.getNetHandler().getNetworkManager().sendPacketNoEvent(new C09PacketHeldItemChange(mc.thePlayer.inventory.currentItem));
-					}
-				}
 			}break;
 			case "Rapid Rotate":
 			case "Inverse Rapid Rotate":{

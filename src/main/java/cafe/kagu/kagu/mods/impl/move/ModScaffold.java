@@ -447,8 +447,8 @@ public class ModScaffold extends Module {
 					rotations[1] = lastRotations[1];
 				}
 				else {
-					hypixelPositions[0] = ThreadLocalRandom.current().nextGaussian() / 2;
-					hypixelPositions[1] = ThreadLocalRandom.current().nextGaussian() / 2;
+					hypixelPositions[0] = ThreadLocalRandom.current().nextGaussian() * 0.3;
+					hypixelPositions[1] = ThreadLocalRandom.current().nextGaussian() * 0.3;
 				}
 //				ChatUtils.addChatMessage(hypixelPositions[0], hypixelPositions[1]);
 				RotationUtils.makeRotationValuesLoopCorrectly(lastRotations, rotations);
