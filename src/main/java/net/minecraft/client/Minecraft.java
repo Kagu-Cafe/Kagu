@@ -1560,7 +1560,7 @@ public class Minecraft implements IThreadListener, IPlayerUsage
      */
     private void rightClickMouse()
     {
-        if (!this.playerController.func_181040_m())
+        if (!this.playerController.isHittingBlock())
         {
             this.rightClickDelayTimer = 4;
             boolean flag = true;

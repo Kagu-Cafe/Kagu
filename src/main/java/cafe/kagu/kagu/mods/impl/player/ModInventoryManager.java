@@ -8,6 +8,7 @@ import java.util.List;
 
 import cafe.kagu.kagu.eventBus.EventHandler;
 import cafe.kagu.kagu.eventBus.Handler;
+import cafe.kagu.kagu.eventBus.impl.EventPacketSend;
 import cafe.kagu.kagu.eventBus.impl.EventTick;
 import cafe.kagu.kagu.mods.Module;
 import cafe.kagu.kagu.settings.impl.BooleanSetting;
@@ -30,6 +31,9 @@ import net.minecraft.item.ItemBow;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
 import net.minecraft.item.ItemTool;
+import net.minecraft.network.play.client.C0BPacketEntityAction;
+import net.minecraft.network.play.client.C0DPacketCloseWindow;
+import net.minecraft.network.play.client.C0BPacketEntityAction.Action;
 import net.minecraft.world.WorldSettings.GameType;
 
 /**
@@ -162,19 +166,39 @@ public class ModInventoryManager extends Module {
 	};
 	
 	/**
+	 * Used to fix a bug where it would double send inventory open
+	 */
+	@EventHandler
+	private Handler<EventPacketSend> onPacketSend = e -> {
+		if (e.isPost())
+			return;
+		if (mode.is("Inventory Open") || inventorySpoof.is("None"))
+			return;
+		if (e.getPacket() instanceof C0DPacketCloseWindow) {
+			C0DPacketCloseWindow c0d = (C0DPacketCloseWindow)e.getPacket();
+			if (c0d.getWindowId() != mc.thePlayer.inventoryContainer.windowId)
+				return;
+			if (!inventoryOpen || mc.currentScreen instanceof GuiInventory)
+				e.cancel();
+			else
+				inventoryOpen = false;
+		}
+	};
+	
+	/**
 	 * Opens inventory
 	 */
 	private void openInventory() {
-		if (inventoryOpen || mode.is("Inventory Open") || mode.is("None"))
+		if (inventoryOpen || mode.is("Inventory Open") || inventorySpoof.is("None"))
 			return;
-		InventoryUtils.sendOpenInventory();
+		inventoryOpen = true;
 	}
 	
 	/**
 	 * Closes inventory
 	 */
 	private void closeInventory() {
-		if (!inventoryOpen || mode.is("Inventory Open") || mode.is("None"))
+		if (!inventoryOpen || mode.is("Inventory Open") || inventorySpoof.is("None"))
 			return;
 		InventoryUtils.sendCloseContainer(mc.thePlayer.inventoryContainer);
 	}

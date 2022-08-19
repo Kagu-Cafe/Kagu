@@ -30,6 +30,7 @@ import cafe.kagu.kagu.settings.impl.ModeSetting;
 import cafe.kagu.kagu.utils.SpoofUtils;
 import cafe.kagu.kagu.utils.TimerUtil;
 import cafe.kagu.kagu.utils.ChatUtils;
+import cafe.kagu.kagu.utils.MovementUtils;
 import cafe.kagu.kagu.utils.PlayerUtils;
 import cafe.kagu.kagu.utils.RotationUtils;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -58,8 +59,9 @@ public class ModKillAura extends Module {
 
 	public ModKillAura() {
 		super("KillAura", Category.COMBAT);
-		setSettings(rotationMode, linearSpeed, blockMode, preferredTargetMetrics, targetSelectionMode, swingMode, clickMode,
-				hitRange, blockRange, hitChance, minAps, maxAps, silentRotations, targetAll, targetPlayers, targetAnimals, targetMobs);
+		setSettings(rotationMode, linearSpeed, blockMode, preferredTargetMetrics, targetSelectionMode, swingMode,
+				clickMode, hitRange, blockRange, hitChance, minAps, maxAps, slowOnBlock, blockSlowdown, silentRotations,
+				targetAll, targetPlayers, targetAnimals, targetMobs);
 		EventBus.setSubscriber(new ApsMinMaxFixer(this), true);
 	}
 	
@@ -82,6 +84,9 @@ public class ModKillAura extends Module {
 	// APS settings
 	private DoubleSetting minAps = new DoubleSetting("Min APS", 10, 0, 20, 0.1);
 	private DoubleSetting maxAps = new DoubleSetting("Max APS", 10, 0.1, 20, 0.1);
+	
+	private BooleanSetting slowOnBlock = new BooleanSetting("Slow On Block", false).setDependency(() -> !blockMode.is("None") && !blockMode.is("Fake"));
+	private DoubleSetting blockSlowdown = new DoubleSetting("Block Slowdown", 0.2, 0.0, 1.0, 0.05).setDependency(() -> slowOnBlock.isEnabled( )&& !slowOnBlock.isHidden());
 	
 	private BooleanSetting silentRotations = new BooleanSetting("Silent Rotations", true);
 	
@@ -375,6 +380,12 @@ public class ModKillAura extends Module {
 	 */
 	private void startBlocking() {
 		SpoofUtils.setSpoofBlocking(true);
+		if (slowOnBlock.isEnabled() && mc.thePlayer.getCurrentEquippedItem() != null && mc.thePlayer.getCurrentEquippedItem().getItem() instanceof ItemSword) {
+			if (MovementUtils.isTrueOnGround()) {
+		        mc.thePlayer.motionX *= blockSlowdown.getValue();
+		        mc.thePlayer.motionZ *= blockSlowdown.getValue();
+			}
+		}
 		if (blocking)
 			return;
 		EntityPlayerSP thePlayer = mc.thePlayer;

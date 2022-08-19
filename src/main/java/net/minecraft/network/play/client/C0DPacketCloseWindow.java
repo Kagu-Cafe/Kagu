@@ -41,4 +41,19 @@ public class C0DPacketCloseWindow implements Packet<INetHandlerPlayServer>
     {
         buf.writeByte(this.windowId);
     }
+    
+    /**
+	 * @return the windowId
+	 */
+	public int getWindowId() {
+		return windowId;
+	}
+	
+	/**
+	 * @param windowId the windowId to set
+	 */
+	public void setWindowId(int windowId) {
+		this.windowId = windowId;
+	}
+    
 }

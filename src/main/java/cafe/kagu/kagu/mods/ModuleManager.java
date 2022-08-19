@@ -13,6 +13,7 @@ import cafe.kagu.kagu.mods.impl.combat.ModKillAura;
 import cafe.kagu.kagu.mods.impl.combat.ModReach;
 import cafe.kagu.kagu.mods.impl.exploit.ModAntiCrash;
 import cafe.kagu.kagu.mods.impl.exploit.ModBlink;
+import cafe.kagu.kagu.mods.impl.exploit.ModCivBreak;
 import cafe.kagu.kagu.mods.impl.exploit.ModCrasher;
 import cafe.kagu.kagu.mods.impl.exploit.ModCreative64Stack;
 import cafe.kagu.kagu.mods.impl.exploit.ModGroundClip;
@@ -99,6 +100,7 @@ public class ModuleManager {
 	public static ModGroundClip modGroundClip = new ModGroundClip();
 	public static ModSpecialSlime modSpecialSlime = new ModSpecialSlime();
 	public static ModKeepSprintAfterCombat modKeepSprintAfterCombat = new ModKeepSprintAfterCombat();
+	public static ModCivBreak modCivBreak = new ModCivBreak();
 	
 	// Development
 	public static ModTest modTest = new ModTest();
@@ -142,6 +144,7 @@ public class ModuleManager {
 			modAntiBot,
 			modNoSlow,
 			modKeepSprintAfterCombat,
+			modCivBreak,
 			
 			modBlink
 	};

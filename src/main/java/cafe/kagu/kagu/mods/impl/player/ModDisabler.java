@@ -13,14 +13,17 @@ import cafe.kagu.kagu.mods.Module;
 import cafe.kagu.kagu.settings.impl.BooleanSetting;
 import cafe.kagu.kagu.settings.impl.ModeSetting;
 import cafe.kagu.kagu.utils.ChatUtils;
+import cafe.kagu.kagu.utils.MovementUtils;
 import cafe.kagu.kagu.utils.TimerUtil;
 import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBow;
 import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemSword;
 import net.minecraft.network.play.client.C03PacketPlayer;
 import net.minecraft.network.play.client.C07PacketPlayerDigging;
+import net.minecraft.network.play.client.C07PacketPlayerDigging.Action;
 import net.minecraft.network.play.client.C08PacketPlayerBlockPlacement;
 import net.minecraft.network.play.client.C09PacketHeldItemChange;
 import net.minecraft.network.play.client.C03PacketPlayer.C04PacketPlayerPosition;
@@ -43,19 +46,15 @@ public class ModDisabler extends Module {
 		setSettings(mode);
 	}
 	
-	private ModeSetting mode = new ModeSetting("Mode", "S08 C04", "S08 C04", "C04 Connect", "Hypixel NoSlow", "Rapid Rotate", "Inverse Rapid Rotate", "Always Send Rotating", "Test");
+	private ModeSetting mode = new ModeSetting("Mode", "S08 C04", "S08 C04", "C04 Connect", "Rapid Rotate", "Inverse Rapid Rotate", "Always Send Rotating", "Test");
 	
 	private boolean changeNextC06 = false;
 	private float rapidRotation = 0;
-	private TimerUtil hypixelNoSlowTimer = new TimerUtil();
-	private boolean hypixelNoSlowBlockOnPost = false;
 	
 	@Override
 	public void onEnable() {
 		changeNextC06 = false;
 		rapidRotation = 0;
-		hypixelNoSlowTimer.reset();
-		hypixelNoSlowBlockOnPost = false;
 	}
 	
 	@EventHandler
@@ -76,7 +75,7 @@ public class ModDisabler extends Module {
 	private Handler<EventPlayerUpdate> onPlayerUpdate = e -> {
 		EntityPlayerSP thePlayer = mc.thePlayer;
 		switch (mode.getMode()) {
-			case "Hypixel NoSlow":{
+			case "Test":{
 				
 			}break;
 		}
@@ -134,10 +133,7 @@ public class ModDisabler extends Module {
 				}
 			}break;
 			case "Test":{
-				if (!(e.getPacket() instanceof C06PacketPlayerPosLook))
-					break;
-				C06PacketPlayerPosLook c06 = (C06PacketPlayerPosLook)e.getPacket();
-				e.setPacket(new C04PacketPlayerPosition(c06.getPositionX(), c06.getPositionY(), c06.getPositionZ(), c06.isOnGround()));
+				
 			}break;
 		}
 	};

@@ -77,13 +77,6 @@ public class InventoryUtils {
 	}
 	
 	/**
-	 * Sends an open packet for the inventory
-	 */
-	public static void sendOpenInventory() {
-		mc.getNetHandler().getNetworkManager().sendPacket(new C0BPacketEntityAction(mc.thePlayer, Action.OPEN_INVENTORY));
-	}
-	
-	/**
 	 * Simulates a shift left click inside of a container
 	 * @param container The container, used to get transaction id and window id
 	 * @param slot The slot to click

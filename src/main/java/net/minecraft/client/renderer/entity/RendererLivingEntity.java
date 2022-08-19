@@ -306,10 +306,11 @@ public abstract class RendererLivingEntity<T extends EntityLivingBase> extends R
         boolean flag1 = !flag && !entitylivingbaseIn.isInvisibleToPlayer(Minecraft.getMinecraft().thePlayer);
         
         // Kagu view invisible
+        l:
         if (ModuleManager.modEsp.isEnabled() && ModuleManager.modEsp.getRenderInvisibleModels().isEnabled()) {
     		if (ModuleManager.modAntiBot.isEnabled() && entitylivingbaseIn instanceof EntityPlayer
     				&& ModuleManager.modAntiBot.isBot((EntityPlayer) entitylivingbaseIn))
-    			return;
+    			break l;
         	flag = true;
         	flag1 = false;
         }

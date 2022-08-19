@@ -224,6 +224,10 @@ public class PlayerControllerMP
         }
         else
         {
+        	boolean civBreak = ModuleManager.modCivBreak.isEnabled();
+        	if (civBreak && ModuleManager.modCivBreak.getNoBlockHitDelay().isEnabled()) {
+        		blockHitDelay = 0;
+        	}
             if (this.currentGameType.isCreative())
             {
                 this.netClientHandler.addToSendQueue(new C07PacketPlayerDigging(C07PacketPlayerDigging.Action.START_DESTROY_BLOCK, loc, face));
@@ -236,11 +240,18 @@ public class PlayerControllerMP
                 {
                     this.netClientHandler.addToSendQueue(new C07PacketPlayerDigging(C07PacketPlayerDigging.Action.ABORT_DESTROY_BLOCK, this.currentBlock, face));
                 }
-
                 this.netClientHandler.addToSendQueue(new C07PacketPlayerDigging(C07PacketPlayerDigging.Action.START_DESTROY_BLOCK, loc, face));
+                
                 Block block1 = this.mc.theWorld.getBlockState(loc).getBlock();
                 boolean flag = block1.getMaterial() != Material.air;
-
+                
+                if (civBreak && flag) {
+                	this.netClientHandler.addToSendQueue(new C07PacketPlayerDigging(C07PacketPlayerDigging.Action.STOP_DESTROY_BLOCK, loc, face));
+//                	curBlockDamageMP = 1.0f;
+                	this.onPlayerDestroyBlock(loc, face);
+                	return true;
+                }
+                
                 if (flag && this.curBlockDamageMP == 0.0F)
                 {
                     block1.onBlockClicked(this.mc.theWorld, loc, this.mc.thePlayer);
@@ -282,7 +293,12 @@ public class PlayerControllerMP
     public boolean onPlayerDamageBlock(BlockPos posBlock, EnumFacing directionFacing)
     {
         this.syncCurrentPlayItem();
-
+        
+        boolean civBreak = ModuleManager.modCivBreak.isEnabled();
+        if (civBreak && ModuleManager.modCivBreak.getNoBlockHitDelay().isEnabled()) {
+        	blockHitDelay = 0;
+        }
+        
         if (this.blockHitDelay > 0)
         {
             --this.blockHitDelay;
@@ -614,8 +630,23 @@ public class PlayerControllerMP
         return this.currentGameType;
     }
 
-    public boolean func_181040_m()
+    public boolean isHittingBlock()
     {
         return this.isHittingBlock;
     }
+    
+    /**
+	 * @param curBlockDamageMP the curBlockDamageMP to set
+	 */
+	public void setCurBlockDamageMP(float curBlockDamageMP) {
+		this.curBlockDamageMP = curBlockDamageMP;
+	}
+	
+	/**
+	 * @return the curBlockDamageMP
+	 */
+	public float getCurBlockDamageMP() {
+		return curBlockDamageMP;
+	}
+    
 }

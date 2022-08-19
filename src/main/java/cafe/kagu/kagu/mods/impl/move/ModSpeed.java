@@ -25,7 +25,7 @@ public class ModSpeed extends Module {
 		setSettings(mode, speed);
 	}
 	
-	private ModeSetting mode = new ModeSetting("Mode", "Vanilla", "Vanilla", "Strafe");
+	private ModeSetting mode = new ModeSetting("Mode", "Vanilla", "Vanilla", "Strafe", "Strafe On Ground");
 	private DoubleSetting speed = new DoubleSetting("Speed", 1, 0.1, 10, 0.1).setDependency(() -> mode.is("Vanilla"));
 	
 	@EventHandler
@@ -60,6 +60,14 @@ public class ModSpeed extends Module {
 				if (MovementUtils.isTrueOnGround() && !mc.gameSettings.keyBindJump.isKeyDown())
 					thePlayer.jump();
 				MovementUtils.setMotion(MovementUtils.getMotion());
+			}break;
+			case "Strafe On Ground":{
+				if (!MovementUtils.isPlayerMoving())
+					MovementUtils.setMotion(0);
+				else if (MovementUtils.isTrueOnGround()) {
+					thePlayer.jump();
+					MovementUtils.setMotion(MovementUtils.getMotion());
+				}
 			}break;
 		}
 		
