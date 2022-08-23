@@ -3,6 +3,8 @@
  */
 package cafe.kagu.kagu.mods.impl.move;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 import javax.vecmath.Vector3d;
@@ -38,6 +40,7 @@ import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.client.C08PacketPlayerBlockPlacement;
@@ -116,6 +119,9 @@ public class ModScaffold extends Module {
 	
 	// Tower vars
 	private TimerUtil towerTimerUtil = new TimerUtil();
+	
+	// Blacklisted blocks to place with
+	private static final Block[] BLACKLISTED_BLOCKS = new Block[] {Blocks.sand, Blocks.gravel, Blocks.cactus, Blocks.iron_bars};
 	
 	@Override
 	public void onEnable() {
@@ -239,6 +245,7 @@ public class ModScaffold extends Module {
 		int largestBlocks = -1;
 		int currentSlot = -1;
 		InventoryPlayer inventory = mc.thePlayer.inventory;
+		List<Block> blacklisted = Arrays.asList(BLACKLISTED_BLOCKS);
 		for (int i = 0; i < 9; i++) {
 			ItemStack item = inventory.getStackInSlot(i);
 			if (item == null || item.getItem() == null || !(item.getItem() instanceof ItemBlock))
@@ -249,6 +256,8 @@ public class ModScaffold extends Module {
 					&& WorldUtils.additionalPlaceOnBlockCheck(block)))
 				continue;
 			if (item.getStackSize() <= largestBlocks)
+				continue;
+			if (blacklisted.contains(block))
 				continue;
 			currentSlot = i;
 			largestBlocks = item.getStackSize();

@@ -23,6 +23,7 @@ import cafe.kagu.kagu.mods.Module;
 import cafe.kagu.kagu.mods.ModuleManager;
 import cafe.kagu.kagu.settings.SettingDependency;
 import cafe.kagu.kagu.settings.impl.BooleanSetting;
+import cafe.kagu.kagu.settings.impl.DoubleSetting;
 import cafe.kagu.kagu.settings.impl.ModeSetting;
 import cafe.kagu.kagu.utils.DrawUtils3D;
 import cafe.kagu.kagu.utils.MiscUtils;
@@ -47,11 +48,14 @@ public class ModEsp extends Module {
 	
 	public ModEsp() {
 		super("ESP", Category.VISUAL);
-		setSettings(mode, chams, renderInvisibleModels, targetAll, targetPlayers, targetAnimals, targetMobs, targetSelf);
+		setSettings(mode, boxExpand, chams, renderInvisibleModels, targetAll, targetPlayers, targetAnimals, targetMobs, targetSelf);
 	}
 	
 	// ESP modes
 	private ModeSetting mode = new ModeSetting("Mode", "Kagu 2D", "Kagu 2D", "Simple White", "Test");
+	
+	// Expand box size
+	private DoubleSetting boxExpand = new DoubleSetting("Box Expand", 0, 0, 1, 0.01);
 	
 	// Chams
 	private BooleanSetting chams = new BooleanSetting("Chams", true);
@@ -197,6 +201,7 @@ public class ModEsp extends Module {
 			case "Kagu 2D":
 			case "Simple White":{
 				ArrayList<EspEntity> draw2dEntities = new ArrayList<EspEntity>();
+				double expand = boxExpand.getValue();
 				for (Entity ent : mc.theWorld.loadedEntityList) {
 					
 					// Only get living entities
@@ -225,7 +230,8 @@ public class ModEsp extends Module {
 					double left = Integer.MAX_VALUE, top = Integer.MAX_VALUE, right = Integer.MIN_VALUE, bottom = Integer.MIN_VALUE;
 					
 					// Get bounding box
-					AxisAlignedBB boundingBox = entityLivingBase.getEntityBoundingBox();
+					double collisionBorderSize = entityLivingBase.getCollisionBorderSize();
+					AxisAlignedBB boundingBox = entityLivingBase.getEntityBoundingBox().expand(expand + collisionBorderSize, expand + collisionBorderSize, expand + collisionBorderSize);
 					// Correct bounding box coords to be smooth with the entity's interpolation
 					if (entityLivingBase != mc.thePlayer) {
 						

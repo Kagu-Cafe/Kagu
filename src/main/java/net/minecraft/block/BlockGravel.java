@@ -21,11 +21,6 @@ public class BlockGravel extends BlockFalling
         return rand.nextInt(10 - fortune * 3) == 0 ? Items.flint : Item.getItemFromBlock(this);
     }
     
-    @Override
-    public boolean doesBlockActivate() {
-    	return true;
-    }
-    
     /**
      * Get the MapColor for this Block and the given BlockState
      */
