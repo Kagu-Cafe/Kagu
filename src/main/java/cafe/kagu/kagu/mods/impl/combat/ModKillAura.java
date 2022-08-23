@@ -132,6 +132,7 @@ public class ModKillAura extends Module {
 		EntityLivingBase[] targets = getTargets();
 		if (targets.length == 0) {
 			stopBlocking();
+			this.target = null;
 			return;
 		}
 		
@@ -491,6 +492,13 @@ public class ModKillAura extends Module {
 			
 		};
 		
+	}
+	
+	/**
+	 * @return the target
+	 */
+	public EntityLivingBase getTarget() {
+		return target;
 	}
 	
 }

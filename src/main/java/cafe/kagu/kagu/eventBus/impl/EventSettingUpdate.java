@@ -31,6 +31,24 @@ public class EventSettingUpdate extends Event {
 	}
 	
 	/**
+	 * Does nothing, not used in this event
+	 */
+	@Override
+	@Deprecated
+	public void cancel() {
+		
+	}
+	
+	/**
+	 * Does nothing, not used in this event
+	 */
+	@Override
+	@Deprecated
+	public void setCanceled(boolean canceled) {
+		
+	}
+	
+	/**
 	 * @return false, not used in this event
 	 */
 	@Deprecated

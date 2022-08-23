@@ -30,6 +30,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer.EnumChatVisibility;
+import net.minecraft.network.play.client.C03PacketPlayer;
 import net.minecraft.network.play.client.C15PacketClientSettings;
 import net.minecraft.network.play.client.C17PacketCustomPayload;
 import net.minecraft.network.play.client.C18PacketSpectate;
@@ -73,7 +74,11 @@ public class ModTest extends Module {
 	public Handler<EventPlayerUpdate> onPlayerUpdate = e -> {
 		if (e.isPre())
 			return;
-		ChatUtils.addChatMessage(MovementUtils.getMotion());
+		EntityPlayerSP thePlayer = mc.thePlayer;
+		if (thePlayer.fallDistance > 2.5) {
+			mc.getNetHandler().getNetworkManager().sendPacketNoEvent(new C03PacketPlayer(true));
+			thePlayer.fallDistance = 0;
+		}
 	};
 	
 }

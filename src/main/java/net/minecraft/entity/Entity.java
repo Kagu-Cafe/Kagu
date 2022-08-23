@@ -378,7 +378,34 @@ public abstract class Entity implements ICommandSender
         float f1 = this.height;
         this.setEntityBoundingBox(new AxisAlignedBB(x - (double)f, y, z - (double)f, x + (double)f, y + (double)f1, z + (double)f));
     }
-
+    
+    /**
+     * Offsets the players position
+     * @param offsetX The x value to offset
+     * @param offsetY The y value to offset
+     * @param offsetZ The z value to offset
+     */
+    public void offsetPosition(double offsetX, double offsetY, double offsetZ) {
+        this.posX += offsetX;
+        this.posY += offsetY;
+        this.posZ += offsetZ;
+        float f = this.width / 2.0F;
+        float f1 = this.height;
+        this.setEntityBoundingBox(new AxisAlignedBB(this.posX - (double)f, this.posY, this.posZ - (double)f, this.posX + (double)f, this.posY + (double)f1, this.posZ + (double)f));
+    }
+    
+    /**
+     * Sets the players motion
+     * @param motionX The motion x to set
+     * @param motionY The motion y to set
+     * @param motionZ The motion z to set
+     */
+    public void setMotion(double motionX, double motionY, double motionZ) {
+    	this.motionX = motionX;
+    	this.motionY = motionY;
+    	this.motionZ = motionZ;
+    }
+    
     /**
      * Adds 15% to the entity's yaw and subtracts 15% from the pitch. Clamps pitch from -90 to 90. Both arguments in
      * degrees.

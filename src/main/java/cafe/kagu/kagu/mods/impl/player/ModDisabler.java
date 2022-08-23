@@ -3,6 +3,9 @@
  */
 package cafe.kagu.kagu.mods.impl.player;
 
+import java.util.LinkedList;
+import java.util.Queue;
+
 import cafe.kagu.kagu.eventBus.EventHandler;
 import cafe.kagu.kagu.eventBus.Handler;
 import cafe.kagu.kagu.eventBus.impl.EventPacketReceive;
@@ -21,11 +24,14 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemBow;
 import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemSword;
+import net.minecraft.network.Packet;
+import net.minecraft.network.play.client.C00PacketKeepAlive;
 import net.minecraft.network.play.client.C03PacketPlayer;
 import net.minecraft.network.play.client.C07PacketPlayerDigging;
 import net.minecraft.network.play.client.C07PacketPlayerDigging.Action;
 import net.minecraft.network.play.client.C08PacketPlayerBlockPlacement;
 import net.minecraft.network.play.client.C09PacketHeldItemChange;
+import net.minecraft.network.play.client.C0FPacketConfirmTransaction;
 import net.minecraft.network.play.client.C03PacketPlayer.C04PacketPlayerPosition;
 import net.minecraft.network.play.client.C03PacketPlayer.C05PacketPlayerLook;
 import net.minecraft.network.play.client.C03PacketPlayer.C06PacketPlayerPosLook;
@@ -51,10 +57,17 @@ public class ModDisabler extends Module {
 	private boolean changeNextC06 = false;
 	private float rapidRotation = 0;
 	
+	private boolean syncedC06 = false;
+	private Queue<Packet<?>> pingPackets = new LinkedList<>();
+	private TimerUtil c03Timer = new TimerUtil();
+	
 	@Override
 	public void onEnable() {
 		changeNextC06 = false;
 		rapidRotation = 0;
+		syncedC06 = false;
+		pingPackets.clear();
+		c03Timer.reset();
 	}
 	
 	@EventHandler
@@ -67,6 +80,9 @@ public class ModDisabler extends Module {
 				// Tricks mc into thinking that the player rotated and that it needs to send an update to the server
 				mc.thePlayer.setLastReportedYaw(mc.thePlayer.getLastReportedYaw() + 1);
 				mc.thePlayer.setLastReportedPitch(mc.thePlayer.getLastReportedPitch() + 1);
+			}break;
+			case "Test":{
+				setInfo(pingPackets.size() + "", syncedC06 + "");
 			}break;
 		}
 	};
@@ -133,7 +149,20 @@ public class ModDisabler extends Module {
 				}
 			}break;
 			case "Test":{
-				
+				if (e.getPacket() instanceof C0FPacketConfirmTransaction || e.getPacket() instanceof C00PacketKeepAlive) {
+					if (pingPackets.add(e.getPacket()))
+						e.cancel();
+				}
+				else if (e.getPacket() instanceof C03PacketPlayer) {
+					C03PacketPlayer c03 = (C03PacketPlayer)e.getPacket();
+					Packet<?> packet = pingPackets.poll();
+					while (packet != null && packet instanceof C00PacketKeepAlive) {
+						mc.getNetHandler().getNetworkManager().sendPacketNoEvent(packet);
+						packet = pingPackets.poll();
+					}
+					if (packet != null)
+						mc.getNetHandler().getNetworkManager().sendPacketNoEvent(packet);
+				}
 			}break;
 		}
 	};

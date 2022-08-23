@@ -12,9 +12,11 @@ import org.lwjgl.opengl.GL11;
 
 import cafe.kagu.kagu.eventBus.EventHandler;
 import cafe.kagu.kagu.eventBus.Handler;
+import cafe.kagu.kagu.eventBus.impl.EventCheatProcessTick;
 import cafe.kagu.kagu.eventBus.impl.EventPacketReceive;
 import cafe.kagu.kagu.eventBus.impl.EventPacketSend;
 import cafe.kagu.kagu.eventBus.impl.EventPlayerUpdate;
+import cafe.kagu.kagu.eventBus.impl.EventRender2D;
 import cafe.kagu.kagu.eventBus.impl.EventRender3D;
 import cafe.kagu.kagu.eventBus.impl.EventTick;
 import cafe.kagu.kagu.mods.Module;
@@ -61,8 +63,8 @@ public class ModScaffold extends Module {
 	public ModScaffold() {
 		super("Scaffold", Category.MOVEMENT);
 		setSettings(rotationMode, c08Position, itemMode, swingMode, vec3Mode, rayTraceMissMode, maxBlockReach, keepY,
-				visuals, safewalk, accountForMovement, ignoreWorldBorder, sprint, silentRotations, avoidSwitchingBlocks, blockSwitchDelay, extend, extendDistance, tower,
-				towerMode);
+				visuals3D, visuals2D, safewalk, ignoreWorldBorder, sprint, silentRotations, blockSwitchDelay, extend,
+				extendDistance, tower, towerMode);
 	}
 	
 	private ModeSetting rotationMode = new ModeSetting("Rotation Mode", "None", "None", "Lock", "Snap", "Hypixel");
@@ -73,15 +75,14 @@ public class ModScaffold extends Module {
 	private ModeSetting rayTraceMissMode = (ModeSetting) new ModeSetting("Vec3 Raytrace Miss Backup", "Origin", "Origin", "Center", "Rand >=0 <=1", "Rand >=0.2 <=0.8").setDependency(() -> vec3Mode.is("Raytrace"));
 	
 	private BooleanSetting keepY = new BooleanSetting("Keep Y", false);
-	private BooleanSetting visuals = new BooleanSetting("Visuals", true);
+	private BooleanSetting visuals3D = new BooleanSetting("3D Visuals", true);
+	private BooleanSetting visuals2D = new BooleanSetting("2D Visuals", true);
 	private BooleanSetting safewalk = new BooleanSetting("Safewalk", true);
-	private BooleanSetting accountForMovement = new BooleanSetting("Account For Movement", false);
 	private BooleanSetting ignoreWorldBorder = new BooleanSetting("Ignore World Border", false);
 	private BooleanSetting sprint = new BooleanSetting("Allow Sprint", false);
 	private BooleanSetting silentRotations = new BooleanSetting("Silent Rotations", true);
 	
 	// Additional Switch settings
-	private BooleanSetting avoidSwitchingBlocks = new BooleanSetting("Avoid Switching Blocks", true);
 	private IntegerSetting blockSwitchDelay = new IntegerSetting("Block Switch Delay", 50, 0, 400, 10);
 	
 	private DoubleSetting maxBlockReach = new DoubleSetting("Max Block Reach", 3, 1, 4, 0.5);
@@ -112,6 +113,9 @@ public class ModScaffold extends Module {
 	private PlaceOnInfo lastPlaceOnInfo = null;
 	private boolean placedBlock = false;
 	private double[] hypixelPositions = new double[] {0, 0};
+	
+	// Tower vars
+	private TimerUtil towerTimerUtil = new TimerUtil();
 	
 	@Override
 	public void onEnable() {
@@ -164,11 +168,7 @@ public class ModScaffold extends Module {
 		
 		switch (towerMode.getMode()) {
 			case "Vanilla":{
-				if (MovementUtils.isTrueOnGround(1))
-					thePlayer.setPosition(thePlayer.posX, thePlayer.posY + 2, thePlayer.posZ);
-				if (thePlayer.motionY > 0)
-					thePlayer.motionY = 0;
-				thePlayer.fallDistance = 0;
+				
 			}break;
 		}
 	};
@@ -236,15 +236,6 @@ public class ModScaffold extends Module {
 		if (e.isPost())
 			return;
 		
-		// Prevent flags by minimizing how often we have to switch blocks (only if enabled)
-		if (avoidSwitchingBlocks.isEnabled() && mc.thePlayer.inventory.getStackInSlot(currentItemSlot).getItem() != null && mc.thePlayer.inventory.getStackInSlot(currentItemSlot).getItem() instanceof ItemBlock) {
-			Block block = ((ItemBlock)mc.thePlayer.inventory.getStackInSlot(currentItemSlot).getItem()).getBlock();
-			if (!(block.canCollideCheck(block.getDefaultState(), false) && !block.doesBlockActivate()
-					&& WorldUtils.additionalPlaceOnBlockCheck(block)))
-				ChatUtils.addChatMessage("No Switch");
-				return;
-		}
-		
 		int largestBlocks = -1;
 		int currentSlot = -1;
 		InventoryPlayer inventory = mc.thePlayer.inventory;
@@ -284,11 +275,20 @@ public class ModScaffold extends Module {
 		
 	};
 	
+	@EventHandler
+	private Handler<EventTick> onTickSafewalk = e -> {
+		if (e.isPost())
+			return;
+		// Safewalk
+		if (safewalk.isEnabled())
+			SpoofUtils.setSpoofSneakMovement(true);
+	};
+	
 	/**
 	 * Used for block selection & safewalk
 	 */
 	@EventHandler
-	private Handler<EventTick> onTickBlock = e -> {
+	private Handler<EventCheatProcessTick> onCheatProcessTickBlock = e -> {
 		if (e.isPost())
 			return;
 		
@@ -309,17 +309,6 @@ public class ModScaffold extends Module {
 		if (MovementUtils.isTrueOnGround()) {
 			keepYPosition = (int)(mc.thePlayer.posY - 1);
 		}
-		
-		// Account for movement
-		if (accountForMovement.isEnabled()) {
-			playerPos[0] += thePlayer.motionX;
-			playerPos[1] += thePlayer.motionY + 0.0784000015258789;
-			playerPos[2] += thePlayer.motionZ;
-		}
-		
-		// Safewalk
-		if (safewalk.isEnabled())
-			SpoofUtils.setSpoofSneakMovement(true);
 		
 		// Default place pos
 		placePos = new BlockPos(playerPos[0], shouldKeepY ? keepYPosition : (playerPos[1] - 1), playerPos[2]);
@@ -350,6 +339,8 @@ public class ModScaffold extends Module {
 		
 		// Find what block and placing we should place on
 		PlaceOnInfo tempInfo = WorldUtils.getPlaceOn(placePos, maxBlockReach.getValue());
+		if (tempInfo == null)
+			return;
 		BlockPos tempPos = tempInfo.getPlaceOn();
 		EnumFacing tempFacing = tempInfo.getPlaceFacing();
 		BlockPos currentPos = null;
@@ -367,11 +358,11 @@ public class ModScaffold extends Module {
 	};
 	
 	/**
-	 * Used for visuals
+	 * Used for 3d visuals
 	 */
 	@EventHandler
 	private Handler<EventRender3D> onRender3D = e -> {
-		if (visuals.isDisabled())
+		if (visuals3D.isDisabled())
 			return;
 		
 		BlockPos placePos = this.placePos;
@@ -398,12 +389,22 @@ public class ModScaffold extends Module {
 	};
 	
 	/**
+	 * Used for 2d visuals
+	 */
+	@EventHandler
+	private Handler<EventRender2D> onRender2D = e -> {
+		if (e.isPost() || visuals2D.isDisabled())
+			return;
+	};
+	
+	/**
 	 * Used for rotations, always rotates on the pre event
 	 */
 	@EventHandler
 	private Handler<EventPlayerUpdate> rotationPlayerUpdate = e -> {
 		if (e.isPost())
 			return;
+		PlaceOnInfo placeOnInfo = this.placeOnInfo;
 		
 		switch (rotationMode.getMode()) {
 			case "None":{
@@ -553,6 +554,15 @@ public class ModScaffold extends Module {
         		}break;
 			}
         	placedBlock = true;
+        }
+        
+        // Tower again
+        if (isTowering()) {
+			switch (towerMode.getMode()) {
+				case "Vanilla":{
+					thePlayer.offsetPosition(0, 1, 0);
+				}break;
+			}
         }
         
 	};

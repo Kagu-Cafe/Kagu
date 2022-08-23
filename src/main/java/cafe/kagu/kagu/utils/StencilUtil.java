@@ -54,10 +54,16 @@ public class StencilUtil {
 	 * Disables stencil test
 	 */
 	public static void disableStencilTest() {
+		enableWrite();
+		clearStencil();
+		disableWrite();
 		GL11.glDisable(GL11.GL_STENCIL_TEST);
 		GL11.glStencilFunc(GL11.GL_ALWAYS, 1, 0xff); // Set test to always pass, that way it will always write
 	}
 	
+	/**
+	 * Clears the stencil, write must be enabled for this to happen correctly
+	 */
 	public static void clearStencil() {
 		GL11.glClear(GL11.GL_STENCIL_BUFFER_BIT); // Clear the stencil bit
 		GL11.glClearStencil(0); // Clear the stencil

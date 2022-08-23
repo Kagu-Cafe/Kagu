@@ -9,16 +9,14 @@ import java.lang.reflect.Type;
 /**
  * 
  * @author lavaflowglow
- *
  * @param <E> The event that you want to listen for, also includes events that
- *            extend off of the event
+ *            extend off of that event
  */
 @SuppressWarnings("hiding")
 public interface Handler<E extends Event> {
 
 	/**
 	 * Called when the subscriber receives an event
-	 * 
 	 * @param e The event being received
 	 */
 	public void onEvent(E e);

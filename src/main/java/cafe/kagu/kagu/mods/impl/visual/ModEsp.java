@@ -77,7 +77,6 @@ public class ModEsp extends Module {
 	
 	@EventHandler
 	private Handler<EventRender2D> onRender2D = e -> {
-		
 		if (e.isPost())
 			return;
 		

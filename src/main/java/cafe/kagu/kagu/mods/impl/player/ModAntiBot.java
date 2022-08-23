@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import cafe.kagu.kagu.eventBus.EventHandler;
 import cafe.kagu.kagu.eventBus.Handler;
@@ -39,8 +40,8 @@ public class ModAntiBot extends Module {
 	
 	private ModeSetting mode = new ModeSetting("Mode", "Hypixel", "Hypixel");
 	
-	private List<EntityPlayer> hypixelBots = new ArrayList<EntityPlayer>();
-	private List<EntityPlayer> hypixelWhitelistedPlayers = new ArrayList<EntityPlayer>();
+	private List<EntityPlayer> hypixelBots = new CopyOnWriteArrayList<EntityPlayer>();
+	private List<EntityPlayer> hypixelWhitelistedPlayers = new CopyOnWriteArrayList<EntityPlayer>();
 	
 	@Override
 	public void onDisable() {

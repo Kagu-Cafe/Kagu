@@ -75,7 +75,7 @@ public class ModFly extends Module {
 				if (thePlayer.hurtTime > 0 && !verusDamage) {
 					verusFlyTicks = 22;
 					verusMotion = 7.5;
-					thePlayer.setPosition(thePlayer.posX, thePlayer.posY + 3, thePlayer.posZ);
+					thePlayer.offsetPosition(0, 3, 0);
 					verusDamage = true;
 				}
 				

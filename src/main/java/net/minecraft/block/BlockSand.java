@@ -68,7 +68,12 @@ public class BlockSand extends BlockFalling
     {
         return new BlockState(this, new IProperty[] {VARIANT});
     }
-
+    
+    @Override
+    public boolean doesBlockActivate() {
+    	return true;
+    }
+    
     public static enum EnumType implements IStringSerializable
     {
         SAND(0, "sand", "default", MapColor.sandColor),

@@ -1,6 +1,9 @@
 package net.minecraft.client.gui;
 
 import com.google.common.collect.Lists;
+
+import cafe.kagu.kagu.mods.ModuleManager;
+
 import java.io.IOException;
 import java.util.List;
 import net.minecraft.network.play.client.C14PacketTabComplete;
@@ -173,6 +176,7 @@ public class GuiChat extends GuiScreen
     {
         if (mouseButton == 0)
         {
+        	ModuleManager.modTargetHud.setLeftMouseDown(true);
             IChatComponent ichatcomponent = this.mc.ingameGUI.getChatGUI().getChatComponent(Mouse.getX(), Mouse.getY());
 
             if (this.handleComponentClick(ichatcomponent))
@@ -184,7 +188,14 @@ public class GuiChat extends GuiScreen
         this.inputField.mouseClicked(mouseX, mouseY, mouseButton);
         super.mouseClicked(mouseX, mouseY, mouseButton);
     }
-
+    
+    @Override
+    protected void mouseReleased(int mouseX, int mouseY, int state) {
+    	if (state == 0) {
+    		ModuleManager.modTargetHud.setLeftMouseDown(false);
+    	}
+    }
+    
     /**
      * Sets the text of the chat
      */
@@ -300,6 +311,7 @@ public class GuiChat extends GuiScreen
      */
     public void drawScreen(int mouseX, int mouseY, float partialTicks)
     {
+    	ModuleManager.modTargetHud.mouseMove(mouseX, mouseY);
         drawRect(2, this.height - 14, this.width - 2, this.height - 2, Integer.MIN_VALUE);
         this.inputField.drawTextBox();
         IChatComponent ichatcomponent = this.mc.ingameGUI.getChatGUI().getChatComponent(Mouse.getX(), Mouse.getY());

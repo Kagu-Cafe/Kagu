@@ -7,10 +7,15 @@ import java.util.List;
 
 import cafe.kagu.kagu.eventBus.EventBus;
 import cafe.kagu.kagu.mods.Module;
+import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.MathHelper;
 
 /**
  * @author lavaflowglow
@@ -41,6 +46,48 @@ public class MovementUtils {
 	public static boolean isTrueOnGround(double distance) {
 		EntityPlayerSP thePlayer = mc.thePlayer;
 		return !mc.theWorld.getCollidingBoundingBoxes(thePlayer, thePlayer.getEntityBoundingBox().offset(0, -distance, 0)).isEmpty();
+	}
+	
+	/**
+	 * @param distance The distance from the ground to check
+	 * @return true if can step, otherwise false
+	 */
+	public static boolean canStep(double distance) {
+		EntityPlayerSP thePlayer = mc.thePlayer;
+		float strafeYaw = RotationUtils.getStrafeYaw() + 90;
+		double intendedMotion = MathHelper.clamp_double(Math.sqrt(thePlayer.moveForward * thePlayer.moveForward + thePlayer.moveStrafing * thePlayer.moveStrafing), -0.2, 0.2);
+		return isTrueOnGround(distance) && isPlayerMoving()
+				&& ((!mc.theWorld.getCollidingBoundingBoxes(thePlayer,
+						thePlayer.getEntityBoundingBox().offset(Math.cos(Math.toRadians(strafeYaw)) * intendedMotion,
+								0.1, Math.sin(Math.toRadians(strafeYaw)) * intendedMotion))
+						.isEmpty()
+						&& mc.theWorld
+								.getCollidingBoundingBoxes(thePlayer,
+										thePlayer.getEntityBoundingBox().offset(Math.cos(Math.toRadians(strafeYaw))
+												* intendedMotion, distance,
+												Math.sin(Math.toRadians(strafeYaw)) * intendedMotion))
+								.isEmpty())
+						|| (!mc.theWorld
+								.getCollidingBoundingBoxes(thePlayer,
+										thePlayer.getEntityBoundingBox()
+												.offset(Math.cos(Math.toRadians(strafeYaw)) * intendedMotion, 0.1, 0))
+								.isEmpty()
+								&& mc.theWorld
+										.getCollidingBoundingBoxes(thePlayer,
+												thePlayer.getEntityBoundingBox().offset(
+														Math.cos(Math.toRadians(strafeYaw)) * intendedMotion, distance,
+														0))
+										.isEmpty())
+						|| (!mc.theWorld
+								.getCollidingBoundingBoxes(thePlayer,
+										thePlayer.getEntityBoundingBox().offset(0, 0.1,
+												Math.sin(Math.toRadians(strafeYaw)) * intendedMotion))
+								.isEmpty()
+								&& mc.theWorld
+										.getCollidingBoundingBoxes(thePlayer,
+												thePlayer.getEntityBoundingBox().offset(0, distance,
+														Math.sin(Math.toRadians(strafeYaw)) * intendedMotion))
+										.isEmpty()));
 	}
 	
 	/**
@@ -80,6 +127,26 @@ public class MovementUtils {
 	public static double getMotion() {
 		EntityPlayerSP thePlayer = mc.thePlayer;
 		return Math.sqrt(thePlayer.motionX * thePlayer.motionX + thePlayer.motionZ * thePlayer.motionZ);
+	}
+	
+	/**
+	 * @return true if the player is over the void, otherwise false
+	 */
+	public static boolean isOverVoid() {
+		if (isTrueOnGround(1))
+			return false;
+		EntityPlayerSP thePlayer = mc.thePlayer;
+		WorldClient theWorld = mc.theWorld;
+		double[] playerPosition = new double[] {thePlayer.posX, thePlayer.posZ};
+		
+		for (double d = thePlayer.posY; d > 0; d -= 0.5) {
+			BlockPos checkPos = new BlockPos(playerPosition[0], d, playerPosition[1]);
+			Block block = theWorld.getBlockState(checkPos).getBlock();
+			if (block.isBlockSolid(theWorld, checkPos, EnumFacing.UP))
+				return false;
+		}
+		
+		return true;
 	}
 	
 }

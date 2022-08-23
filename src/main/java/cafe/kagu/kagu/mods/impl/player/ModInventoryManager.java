@@ -34,6 +34,9 @@ import net.minecraft.item.ItemTool;
 import net.minecraft.network.play.client.C0BPacketEntityAction;
 import net.minecraft.network.play.client.C0DPacketCloseWindow;
 import net.minecraft.network.play.client.C0BPacketEntityAction.Action;
+import net.minecraft.stats.Achievement;
+import net.minecraft.stats.AchievementList;
+import net.minecraft.stats.StatList;
 import net.minecraft.world.WorldSettings.GameType;
 
 /**
@@ -44,7 +47,7 @@ public class ModInventoryManager extends Module {
 	
 	public ModInventoryManager() {
 		super("Inventory Manager", Category.PLAYER);
-		setSettings(c0ePosition, mode, instant, delay, inventorySpoof, weaponChoice, dropItems, adventureCheck, autoArmor, armorSwapMode);
+		setSettings(c0ePosition, mode, instant, delay, inventorySpoof, weaponChoice, dropItems, dropNonScaffoldCompatibleBlocks, adventureCheck, autoArmor, armorSwapMode);
 	}
 	
 	private ModeSetting c0ePosition = new ModeSetting("C0E Position", "PRE", "PRE", "POST");
@@ -54,6 +57,7 @@ public class ModInventoryManager extends Module {
 	private BooleanSetting instant = new BooleanSetting("Instant", false);
 	private IntegerSetting delay = new IntegerSetting("Millis Delay", 0, 0, 2500, 50).setDependency(instant::isDisabled);
 	private BooleanSetting dropItems = new BooleanSetting("Drop Items", true);
+	private BooleanSetting dropNonScaffoldCompatibleBlocks = new BooleanSetting("Drop Non Scaffold Compatible Blocks", true).setDependency(dropItems::isEnabled);
 	private BooleanSetting adventureCheck = new BooleanSetting("Adventure Mode Check", true);
 	private BooleanSetting autoArmor = new BooleanSetting("Auto Armor", true);
 	private ModeSetting armorSwapMode = new ModeSetting("Armor Swap Mode", "Instant", "Instant", "Separate actions").setDependency(() -> instant.isDisabled() && autoArmor.isEnabled());
@@ -191,6 +195,7 @@ public class ModInventoryManager extends Module {
 	private void openInventory() {
 		if (inventoryOpen || mode.is("Inventory Open") || inventorySpoof.is("None"))
 			return;
+		mc.thePlayer.triggerAchievement(AchievementList.openInventory);
 		inventoryOpen = true;
 	}
 	
@@ -231,7 +236,9 @@ public class ModInventoryManager extends Module {
 			ItemStack stack = slot.getStack();
 			Item item = stack.getItem();
 			
-			if (item instanceof ItemTool || item instanceof ItemSword || (item instanceof ItemBow && !MiscUtils.removeFormatting(slot.getStack().getDisplayName()).toLowerCase().contains("kit")) || (item instanceof ItemBlock && ((ItemBlock)item).getBlock().doesBlockActivate())
+			if (item instanceof ItemTool || item instanceof ItemSword || (item instanceof ItemBow
+					&& !MiscUtils.removeFormatting(slot.getStack().getDisplayName()).toLowerCase().contains("kit"))
+					|| (item instanceof ItemBlock && dropNonScaffoldCompatibleBlocks.isEnabled() && ((ItemBlock) item).getBlock().doesBlockActivate())
 					|| item instanceof ItemArmor) {
 				openInventory();
 				InventoryUtils.dropItem(container, slot.getSlotNumber());

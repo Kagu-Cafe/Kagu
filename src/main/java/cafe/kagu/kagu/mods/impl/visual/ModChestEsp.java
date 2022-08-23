@@ -37,16 +37,16 @@ public class ModChestEsp extends Module {
 	}
 	
 	// Visible chest esp colors
-	private IntegerSetting visibleRed = new IntegerSetting("Visible R", 0, 0, 255, 1);
-	private IntegerSetting visibleGreen = new IntegerSetting("Visible G", 255, 0, 255, 1);
-	private IntegerSetting visibleBlue = new IntegerSetting("Visible B", 0, 0, 255, 1);
-	private IntegerSetting visibleAlpha = new IntegerSetting("Visible A", 110, 0, 255, 1);
+	private IntegerSetting visibleRed = new IntegerSetting("Visible R", 165, 0, 255, 1);
+	private IntegerSetting visibleGreen = new IntegerSetting("Visible G", 224, 0, 255, 1);
+	private IntegerSetting visibleBlue = new IntegerSetting("Visible B", 254, 0, 255, 1);
+	private IntegerSetting visibleAlpha = new IntegerSetting("Visible A", 100, 0, 255, 1);
 	
 	// Hidden chest esp colors
-	private IntegerSetting hiddenRed = new IntegerSetting("Hidden R", 255, 0, 255, 1);
-	private IntegerSetting hiddenGreen = new IntegerSetting("Hidden G", 0, 0, 255, 1);
-	private IntegerSetting hiddenBlue = new IntegerSetting("Hidden B", 0, 0, 255, 1);
-	private IntegerSetting hiddenAlpha = new IntegerSetting("Hidden A", 70, 0, 255, 1);
+	private IntegerSetting hiddenRed = new IntegerSetting("Hidden R", 213, 0, 255, 1);
+	private IntegerSetting hiddenGreen = new IntegerSetting("Hidden G", 140, 0, 255, 1);
+	private IntegerSetting hiddenBlue = new IntegerSetting("Hidden B", 255, 0, 255, 1);
+	private IntegerSetting hiddenAlpha = new IntegerSetting("Hidden A", 100, 0, 255, 1);
 	
 	@EventHandler
 	private Handler<EventRender3D> on3DRender = e -> {
@@ -61,8 +61,8 @@ public class ModChestEsp extends Module {
 		GlStateManager.depthMask(false);
 		
 		StencilUtil.enableStencilTest();
-		StencilUtil.clearStencil();
 		StencilUtil.enableWrite();
+		StencilUtil.clearStencil();
 		
 		// Setup stencil
 		for (TileEntity tileEntity : mc.theWorld.loadedTileEntityList) {

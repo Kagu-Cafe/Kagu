@@ -21,18 +21,21 @@ import cafe.kagu.kagu.mods.impl.exploit.ModKeepSprintAfterCombat;
 import cafe.kagu.kagu.mods.impl.exploit.ModNoHCollisionSlowdown;
 import cafe.kagu.kagu.mods.impl.exploit.ModSpecialSlime;
 import cafe.kagu.kagu.mods.impl.exploit.ModTimer;
+import cafe.kagu.kagu.mods.impl.move.ModAntiVoid;
 import cafe.kagu.kagu.mods.impl.move.ModFly;
 import cafe.kagu.kagu.mods.impl.move.ModMoonJump;
 import cafe.kagu.kagu.mods.impl.move.ModNoSlow;
 import cafe.kagu.kagu.mods.impl.move.ModScaffold;
 import cafe.kagu.kagu.mods.impl.move.ModSpeed;
 import cafe.kagu.kagu.mods.impl.move.ModSprint;
+import cafe.kagu.kagu.mods.impl.move.ModStep;
 import cafe.kagu.kagu.mods.impl.move.ModVelocity;
 import cafe.kagu.kagu.mods.impl.player.ModAntiAim;
 import cafe.kagu.kagu.mods.impl.player.ModAntiBot;
 import cafe.kagu.kagu.mods.impl.player.ModChestStealer;
 import cafe.kagu.kagu.mods.impl.player.ModDisabler;
 import cafe.kagu.kagu.mods.impl.player.ModInventoryManager;
+import cafe.kagu.kagu.mods.impl.player.ModNoFall;
 import cafe.kagu.kagu.mods.impl.visual.ModAmbience;
 import cafe.kagu.kagu.mods.impl.visual.ModAnimations;
 import cafe.kagu.kagu.mods.impl.visual.ModDistastefulEars;
@@ -40,8 +43,8 @@ import cafe.kagu.kagu.mods.impl.visual.ModChestEsp;
 import cafe.kagu.kagu.mods.impl.visual.ModClickGui;
 import cafe.kagu.kagu.mods.impl.visual.ModEsp;
 import cafe.kagu.kagu.mods.impl.visual.ModHud;
-import cafe.kagu.kagu.mods.impl.visual.ModIndicators;
 import cafe.kagu.kagu.mods.impl.visual.ModNormalZoomCam;
+import cafe.kagu.kagu.mods.impl.visual.ModTargetHud;
 import cafe.kagu.kagu.mods.impl.visual.ModViewModels;
 import cafe.kagu.kagu.mods.impl.yiff.ModDebugBoundingBoxes;
 import cafe.kagu.kagu.mods.impl.yiff.ModTest;
@@ -70,6 +73,8 @@ public class ModuleManager {
 	public static ModScaffold modScaffold = new ModScaffold();
 	public static ModVelocity modVelocity = new ModVelocity();
 	public static ModNoSlow modNoSlow = new ModNoSlow();
+	public static ModStep modStep = new ModStep();
+	public static ModAntiVoid modAntiVoid = new ModAntiVoid();
 	
 	// Player
 	public static ModAntiAim modAntiAim = new ModAntiAim();
@@ -77,6 +82,7 @@ public class ModuleManager {
 	public static ModChestStealer modChestStealer = new ModChestStealer();
 	public static ModInventoryManager modInventoryManager = new ModInventoryManager();
 	public static ModAntiBot modAntiBot = new ModAntiBot();
+	public static ModNoFall modNoFall = new ModNoFall();
 	
 	// Visual
 	public static ModClickGui modClickGui = new ModClickGui();
@@ -86,9 +92,9 @@ public class ModuleManager {
 	public static ModChestEsp modChestEsp = new ModChestEsp();
 	public static ModEsp modEsp = new ModEsp();
 	public static ModNormalZoomCam modNormalZoomCam = new ModNormalZoomCam();
-	public static ModIndicators modIndicators = new ModIndicators();
 	public static ModDistastefulEars modDistastefulEars = new ModDistastefulEars();
 	public static ModAmbience modAmbience = new ModAmbience();
+	public static ModTargetHud modTargetHud = new ModTargetHud();
 	
 	// Exploit
 	public static ModCreative64Stack modCreative64Stack = new ModCreative64Stack();
@@ -129,7 +135,6 @@ public class ModuleManager {
 			modCrasher,
 			modReach,
 			modHitboxes,
-			modIndicators,
 			modNoHCollisionSlowdown,
 			modSpeed,
 			modDistastefulEars,
@@ -145,6 +150,10 @@ public class ModuleManager {
 			modNoSlow,
 			modKeepSprintAfterCombat,
 			modCivBreak,
+			modStep,
+			modTargetHud,
+			modNoFall,
+			modAntiVoid,
 			
 			modBlink
 	};
