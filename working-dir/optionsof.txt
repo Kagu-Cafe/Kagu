@@ -1,4 +1,4 @@
-ofRenderDistanceChunks:5
+ofRenderDistanceChunks:7
 ofFogType:3
 ofFogStart:0.6
 ofMipmapType:0
@@ -59,7 +59,7 @@ ofLazyChunkLoading:true
 ofDynamicFov:true
 ofDynamicLights:3
 ofFullscreenMode:Default
-ofFastMath:false
+ofFastMath:true
 ofFastRender:false
 ofTranslucentBlocks:0
 key_of.key.zoom:46

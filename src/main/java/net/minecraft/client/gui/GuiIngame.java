@@ -376,6 +376,7 @@ public class GuiIngame extends Gui
         	GlStateManager.popAttrib();
         	GlStateManager.popMatrix();
         }
+        GlStateManager.enableBlend();
         
     }
 

@@ -843,7 +843,7 @@ public abstract class Entity implements ICommandSender
             this.worldObj.theProfiler.endSection();
             this.worldObj.theProfiler.startSection("rest");
             this.resetPositionToBB();
-            if (ModuleManager.modNoHCollisionSlowdown.isEnabled() && this == Minecraft.getMinecraft().thePlayer && !Minecraft.getMinecraft().theWorld.isAnyLiquid(getEntityBoundingBox())) {
+            if (ModuleManager.modNoHCollisionSlowdown.isEnabled() && this == Minecraft.getMinecraft().thePlayer && !Minecraft.getMinecraft().theWorld.isAnyLiquid(getEntityBoundingBox()) && !((EntityPlayer)this).isOnLadder()) {
             	d3 = x;
             	d5 = z;
             }

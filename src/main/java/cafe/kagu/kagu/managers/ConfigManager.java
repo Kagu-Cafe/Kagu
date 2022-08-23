@@ -17,8 +17,8 @@ import cafe.kagu.kagu.settings.impl.BooleanSetting;
 import cafe.kagu.kagu.settings.impl.DoubleSetting;
 import cafe.kagu.kagu.settings.impl.IntegerSetting;
 import cafe.kagu.kagu.settings.impl.KeybindSetting;
-import cafe.kagu.kagu.settings.impl.LongSetting;
 import cafe.kagu.kagu.settings.impl.ModeSetting;
+import cafe.kagu.kagu.settings.impl.SlotSetting;
 import cafe.kagu.kagu.utils.MiscUtils;
 
 /**
@@ -41,7 +41,7 @@ public class ConfigManager {
 			config += (config.isEmpty() ? "" : Kagu.UNIT_SEPARATOR) + module.getName() + Kagu.GROUP_SEPARATOR
 				+ module.getCategory() + Kagu.GROUP_SEPARATOR
 				+ module.isEnabled();
-			for (Setting setting : module.getSettings()) {
+			for (Setting<?> setting : module.getSettings()) {
 				
 				// Get the setting type
 				String settingType = MiscUtils.getSettingType(setting);
@@ -57,14 +57,14 @@ public class ConfigManager {
 				else if (setting instanceof IntegerSetting) {
 					settingValue = ((IntegerSetting)setting).getValue() + "";
 				}
-				else if (setting instanceof LongSetting) {
-					settingValue = ((LongSetting)setting).getValue() + "";
-				}
 				else if (setting instanceof ModeSetting) {
 					settingValue = ((ModeSetting)setting).getMode();
 				}
 				else if (setting instanceof KeybindSetting) {
 					settingValue = ((KeybindSetting)setting).getKeybind() + "";
+				}
+				else if (setting instanceof SlotSetting) {
+					settingValue = ((SlotSetting)setting).getSelectedSlot() + "";
 				}
 				else {
 					settingValue = "error";
@@ -122,7 +122,7 @@ public class ConfigManager {
 					String settingValue = settingSplit[3];
 					
 					// Find setting and load the value
-					for (Setting setting : module.getSettings()) {
+					for (Setting<?> setting : module.getSettings()) {
 						if (!(setting.getName().equals(settingName) && MiscUtils.getSettingType(setting).equals(settingType)))
 							continue;
 						
@@ -144,16 +144,16 @@ public class ConfigManager {
 									((IntegerSetting)setting).setValue(Integer.parseInt(settingValue));
 								}break;
 								
-								case "long":{
-									((LongSetting)setting).setValue(Long.parseLong(settingValue));
-								}break;
-								
 								case "mode":{
 									((ModeSetting)setting).setMode(settingValue);
 								}break;
 								
 								case "bind":{
 									((KeybindSetting)setting).setKeybind(Integer.parseInt(settingValue));
+								}break;
+								
+								case "slot":{
+									((SlotSetting)setting).setSelectedSlot(Integer.parseInt(settingValue));
 								}break;
 								
 								default:
