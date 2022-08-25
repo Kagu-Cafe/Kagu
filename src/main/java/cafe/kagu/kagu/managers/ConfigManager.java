@@ -108,7 +108,7 @@ public class ConfigManager {
 			String name = moduleSplit[0];
 			Category category = Category.getCategoryFromName(moduleSplit[1]);
 			if (category == null)
-				return; // Category doesn't exist and wasn't found
+				continue; // Category doesn't exist and wasn't found
 			boolean enabled = moduleSplit[2].equals("true");
 			
 			// Find the module

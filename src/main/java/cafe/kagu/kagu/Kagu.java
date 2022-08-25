@@ -223,7 +223,7 @@ public class Kagu {
 		logger.info("Hooked the hud");
 		
 		// Start a cheat loop thread
-		logger.info("Starting the cheat loop thread...");
+		logger.info("Starting the cheat loop threads...");
 		Thread cheatThread1 = new Thread(() -> {
 			double tps = 64;
 			while (true) {
@@ -276,7 +276,12 @@ public class Kagu {
 		cheatThread1.start();
 		cheatThread2.setDaemon(true);
 		cheatThread2.start();
-		logger.info("Started the cheat loop thread");
+		logger.info("Started the cheat loop threads");
+		
+		// Start the alt manager
+		logger.info("Starting the javafx ui...");
+		
+		logger.info("Started the javafx ui");
 		
 		logger.info(name + " v" + version + " has been started");
 		
