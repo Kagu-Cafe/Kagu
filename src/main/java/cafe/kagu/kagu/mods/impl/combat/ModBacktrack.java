@@ -3,7 +3,6 @@
  */
 package cafe.kagu.kagu.mods.impl.combat;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -41,6 +40,9 @@ public class ModBacktrack extends Module {
 	private Handler<EventTick> onTick = e -> {
 		if (e.isPost())
 			return;
+		
+		// Set info
+		setInfo(backtrackTicks.getValue() + " ticks");
 		
 		// Update backtracks
 		for (Entity entity : mc.theWorld.getLoadedEntityList()) {

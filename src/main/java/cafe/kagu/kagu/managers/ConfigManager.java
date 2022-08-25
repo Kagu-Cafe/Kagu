@@ -92,6 +92,13 @@ public class ConfigManager {
 		// Load the file
 		String config = FileManager.readStringFromFile(file);
 		
+		{ // Disable all modules, this way if the config doesn't contain the module it will just be disabled
+			Module[] modules = ModuleManager.getModules();
+			for (Module module : modules)
+				module.disable();
+		}
+		
+		// Load config
 		String[] modulesString = config.split(Kagu.UNIT_SEPARATOR);
 		for (String moduleString : modulesString) {
 			
@@ -99,16 +106,15 @@ public class ConfigManager {
 			
 			// Name and category
 			String name = moduleSplit[0];
-			Category category = Category.valueOf(moduleSplit[1]);
+			Category category = Category.getCategoryFromName(moduleSplit[1]);
+			if (category == null)
+				return; // Category doesn't exist and wasn't found
 			boolean enabled = moduleSplit[2].equals("true");
 			
 			// Find the module
 			for (Module module : ModuleManager.getModules()) {
 				if (!(module.getCategory() == category && module.getName().equals(name)))
 					continue;
-				
-				// Disable if enabled
-				module.disable();
 				
 				// Load settings
 				if (moduleSplit.length > 3) for (int settingsIndex = 3; settingsIndex < moduleSplit.length; settingsIndex++) {

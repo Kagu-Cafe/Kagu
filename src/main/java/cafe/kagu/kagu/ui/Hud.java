@@ -37,6 +37,10 @@ public class Hud {
 	@EventHandler
 	private Handler<EventRender2D> renderHud = e -> {
 		
+		// Don't render if hide hud is enabled
+		if (ModuleManager.modHideHud.isEnabled())
+			return;
+		
 		// We only want to render on the post event
 		if (e.isPre()) {
 			return;

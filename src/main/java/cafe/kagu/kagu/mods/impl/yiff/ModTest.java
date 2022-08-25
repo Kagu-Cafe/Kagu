@@ -45,7 +45,7 @@ import net.minecraft.util.MathHelper;
 public class ModTest extends Module {
 
 	public ModTest() {
-		super("Test", Category.DEVELOPMENT);
+		super("Test", Category.EXPLOIT);
 		slotSetting1.setInvalidSlots(slotSetting2);
 		slotSetting2.setInvalidSlots(slotSetting1);
 		setSettings(booleanSetting, decimalSetting1, decimalSetting2, decimalSetting3, modeSetting1, modeSetting2,

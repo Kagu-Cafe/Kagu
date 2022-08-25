@@ -23,7 +23,7 @@ import net.minecraft.util.IChatComponent;
 public class ModFullHypixelDisabler extends Module {
 	
 	public ModFullHypixelDisabler() {
-		super("FullHypixelDisabler", Category.DEVELOPMENT);
+		super("FullHypixelDisabler", Category.EXPLOIT);
 	}
 	
 	@EventHandler

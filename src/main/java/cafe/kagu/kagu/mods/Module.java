@@ -264,7 +264,7 @@ public abstract class Module {
 		VISUAL("Visual", 0xff3dc2d9), 
 		PLAYER("Player", 0xffd9883d), 
 		EXPLOIT("Exploit", 0xfffff34a), 
-		DEVELOPMENT("Development", 0xffff4af6),
+		GHOST("Ghost", 0xff878787),
 		COMBAT("Combat", 0xffe63e3e), 
 		MOVEMENT("Movement", 0xff3dd979);
 
@@ -301,7 +301,19 @@ public abstract class Module {
 		public int getArraylistColor() {
 			return arraylistColor;
 		}
-
+		
+		/**
+		 * @param name The name of the category
+		 * @return The category
+		 */
+		public static Category getCategoryFromName(String name) {
+			for (Category category : Category.values()) {
+				if (category.getName().equalsIgnoreCase(name))
+					return category;
+			}
+			return null;
+		}
+		
 	}
 
 }
