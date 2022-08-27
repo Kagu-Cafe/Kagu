@@ -14,11 +14,12 @@ public class EventRender3D extends Event {
 	private float partialTicks;
 	
 	/**
-	 * @param eventPosition
+	 * @param eventPosition The position of the event
 	 * @param partialTicks The partial ticks
 	 */
 	public EventRender3D(EventPosition eventPosition, float partialTicks) {
 		super(eventPosition);
+		this.partialTicks = partialTicks;
 	}
 	
 	/**

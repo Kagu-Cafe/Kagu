@@ -3,6 +3,8 @@ package cafe.kagu.kagu;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -225,64 +227,51 @@ public class Kagu {
 		
 		// Start a cheat loop thread
 		logger.info("Starting the cheat loop threads...");
-		Thread cheatThread1 = new Thread(() -> {
-			double tps = 64;
-			while (true) {
-				try {
-					Thread.sleep((long) (1000 / tps));
-				} catch (Exception e) {
-					// TODO: handle exception
-				}
+		long cheatLoopDelay = 1000 /* One second */ / 64 /* Tick rate */;
+		new Timer("Cheat Render Event", true).scheduleAtFixedRate(new TimerTask() {
+			@Override
+			public void run() {
 				// Kagu hook
 				{
 					EventCheatRenderTick eventCheatTick = new EventCheatRenderTick(EventPosition.PRE);
 					eventCheatTick.post();
 					if (eventCheatTick.isCanceled())
-						continue;
+						return;
 				}
 				// Kagu hook
 				{
 					EventCheatRenderTick eventCheatTick = new EventCheatRenderTick(EventPosition.POST);
 					eventCheatTick.post();
-					if (eventCheatTick.isCanceled())
-						continue;
 				}
 			}
-		}, "Render cheat loop");
-		Thread cheatThread2 = new Thread(() -> {
-			double tps = 64;
-			while (true) {
-				try {
-					Thread.sleep((long) (1000 / tps));
-				} catch (Exception e) {
-					// TODO: handle exception
-				}
+		}, 0, cheatLoopDelay);
+		new Timer("Cheat Process Event", true).scheduleAtFixedRate(new TimerTask() {
+			@Override
+			public void run() {
 				// Kagu hook
 				{
 					EventCheatProcessTick eventCheatTick = new EventCheatProcessTick(EventPosition.PRE);
 					eventCheatTick.post();
 					if (eventCheatTick.isCanceled())
-						continue;
+						return;
 				}
 				// Kagu hook
 				{
 					EventCheatProcessTick eventCheatTick = new EventCheatProcessTick(EventPosition.POST);
 					eventCheatTick.post();
-					if (eventCheatTick.isCanceled())
-						continue;
 				}
 			}
-		}, "Process cheat loop");
-		cheatThread1.setDaemon(true);
-		cheatThread1.start();
-		cheatThread2.setDaemon(true);
-		cheatThread2.start();
+		}, 0, cheatLoopDelay);
 		logger.info("Started the cheat loop threads");
 		
 		// Start the ghost ui
-		logger.info("Starting the obs proof ui...");
-		GhostUi.start();
-		logger.info("Started the obs proof ui");
+		logger.info("Starting the obs proof ui (Windows OS only)...");
+		if (OSUtil.isWindows()) {
+			GhostUi.start();
+			logger.info("Started the obs proof ui");
+		}else {
+			logger.info("Failed to start obs proof ui");
+		}
 		
 		logger.info(name + " v" + version + " has been started");
 		

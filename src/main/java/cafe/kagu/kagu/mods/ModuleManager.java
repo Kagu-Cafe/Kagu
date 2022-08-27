@@ -22,6 +22,7 @@ import cafe.kagu.kagu.mods.impl.exploit.ModNoHCollisionSlowdown;
 import cafe.kagu.kagu.mods.impl.exploit.ModSpecialSlime;
 import cafe.kagu.kagu.mods.impl.exploit.ModTimer;
 import cafe.kagu.kagu.mods.impl.ghost.ModHideHud;
+import cafe.kagu.kagu.mods.impl.ghost.ModObsProofUi;
 import cafe.kagu.kagu.mods.impl.move.ModAntiVoid;
 import cafe.kagu.kagu.mods.impl.move.ModFly;
 import cafe.kagu.kagu.mods.impl.move.ModMoonJump;
@@ -50,6 +51,7 @@ import cafe.kagu.kagu.mods.impl.visual.ModNormalZoomCam;
 import cafe.kagu.kagu.mods.impl.visual.ModTargetHud;
 import cafe.kagu.kagu.mods.impl.visual.ModViewModels;
 import cafe.kagu.kagu.mods.impl.yiff.ModTest;
+import cafe.kagu.kagu.utils.OSUtil;
 
 /**
  * @author lavaflowglow
@@ -115,6 +117,7 @@ public class ModuleManager {
 	
 	// Ghost
 	public static ModHideHud modHideHud = new ModHideHud();
+	public static ModObsProofUi modObsProofUi = new ModObsProofUi();
 	
 	// An array of all the modules in the client
 	private static final Module[] MODULES = new Module[] {
@@ -160,6 +163,7 @@ public class ModuleManager {
 			modAntiVoid,
 			modHideHud,
 			modCamera,
+			modObsProofUi,
 			
 			modBlink
 	};
