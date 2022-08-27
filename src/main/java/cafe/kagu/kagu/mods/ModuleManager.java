@@ -39,6 +39,7 @@ import cafe.kagu.kagu.mods.impl.player.ModInventoryManager;
 import cafe.kagu.kagu.mods.impl.player.ModNoFall;
 import cafe.kagu.kagu.mods.impl.visual.ModAmbience;
 import cafe.kagu.kagu.mods.impl.visual.ModAnimations;
+import cafe.kagu.kagu.mods.impl.visual.ModCamera;
 import cafe.kagu.kagu.mods.impl.visual.ModDistastefulEars;
 import cafe.kagu.kagu.mods.impl.visual.ModChestEsp;
 import cafe.kagu.kagu.mods.impl.visual.ModClickGui;
@@ -97,6 +98,7 @@ public class ModuleManager {
 	public static ModDistastefulEars modDistastefulEars = new ModDistastefulEars();
 	public static ModAmbience modAmbience = new ModAmbience();
 	public static ModTargetHud modTargetHud = new ModTargetHud();
+	public static ModCamera modCamera = new ModCamera();
 	
 	// Exploit
 	public static ModCreative64Stack modCreative64Stack = new ModCreative64Stack();
@@ -157,6 +159,7 @@ public class ModuleManager {
 			modNoFall,
 			modAntiVoid,
 			modHideHud,
+			modCamera,
 			
 			modBlink
 	};

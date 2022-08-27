@@ -25,6 +25,7 @@ import cafe.kagu.kagu.managers.SessionManager;
 import cafe.kagu.kagu.mods.ModuleManager;
 import cafe.kagu.kagu.ui.Hud;
 import cafe.kagu.kagu.ui.clickgui.GuiCsgoClickgui;
+import cafe.kagu.kagu.ui.ghost.GhostUi;
 import cafe.kagu.kagu.ui.gui.GuiDefaultMainMenu;
 import cafe.kagu.kagu.ui.gui.MainMenuHandler;
 import cafe.kagu.kagu.utils.InventoryUtils;
@@ -278,10 +279,10 @@ public class Kagu {
 		cheatThread2.start();
 		logger.info("Started the cheat loop threads");
 		
-		// Start the alt manager
-		logger.info("Starting the javafx ui...");
-		
-		logger.info("Started the javafx ui");
+		// Start the ghost ui
+		logger.info("Starting the obs proof ui...");
+		GhostUi.start();
+		logger.info("Started the obs proof ui");
 		
 		logger.info(name + " v" + version + " has been started");
 		

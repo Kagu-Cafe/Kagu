@@ -7,6 +7,7 @@ import cafe.kagu.kagu.eventBus.Event.EventPosition;
 import cafe.kagu.kagu.eventBus.impl.EventRender3D;
 import cafe.kagu.kagu.eventBus.impl.EventEntitiesRender;
 import cafe.kagu.kagu.mods.ModuleManager;
+import cafe.kagu.kagu.mods.impl.visual.ModCamera;
 import cafe.kagu.kagu.ui.gui.GuiDefaultMainMenu;
 import cafe.kagu.kagu.utils.ChatUtils;
 import cafe.kagu.kagu.utils.SpoofUtils;
@@ -765,7 +766,11 @@ public class EntityRenderer implements IResourceManagerReloadListener
         double d0 = entity.prevPosX + (entity.posX - entity.prevPosX) * (double)partialTicks;
         double d1 = entity.prevPosY + (entity.posY - entity.prevPosY) * (double)partialTicks + (double)f;
         double d2 = entity.prevPosZ + (entity.posZ - entity.prevPosZ) * (double)partialTicks;
-
+        
+    	ModCamera modCamera = ModuleManager.modCamera;
+    	boolean modCameraEnabled = modCamera.isEnabled();
+    	boolean modCameraAnimationEnabled = modCameraEnabled && modCamera.getAnimations().isEnabled() && entity == mc.thePlayer && this.mc.gameSettings.thirdPersonView > 0;
+        
         if (entity instanceof EntityLivingBase && ((EntityLivingBase)entity).isPlayerSleeping())
         {
             f = (float)((double)f + 1.0D);
@@ -794,6 +799,13 @@ public class EntityRenderer implements IResourceManagerReloadListener
         else if (this.mc.gameSettings.thirdPersonView > 0)
         {
             double d3 = (double)(this.thirdPersonDistanceTemp + (this.thirdPersonDistance - this.thirdPersonDistanceTemp) * partialTicks);
+            if (modCameraEnabled) {
+            	d3 = modCamera.getDistance().getValue();
+            	if (modCameraAnimationEnabled) {
+            		modCamera.setWantedDistance(d3);
+            		d3 = modCamera.getCurrentDistance();
+            	}
+            }
 
             if (this.mc.gameSettings.debugCamEnable)
             {
@@ -803,47 +815,72 @@ public class EntityRenderer implements IResourceManagerReloadListener
             {
                 float f1 = entity.rotationYaw;
                 float f2 = entity.rotationPitch;
-
+                float mult = 1;
+                
                 if (this.mc.gameSettings.thirdPersonView == 2)
                 {
-                    f2 += 180.0F;
+                	if (modCameraAnimationEnabled) {
+                		modCamera.setWantedFunny(1);
+                		mult = modCamera.getCurrentFunny();
+                	}
+                	if (!modCameraAnimationEnabled)
+                		f2 += 180.0F;
                 }
-
-                double d4 = (double)(-MathHelper.sin(f1 / 180.0F * (float)Math.PI) * MathHelper.cos(f2 / 180.0F * (float)Math.PI)) * d3;
-                double d5 = (double)(MathHelper.cos(f1 / 180.0F * (float)Math.PI) * MathHelper.cos(f2 / 180.0F * (float)Math.PI)) * d3;
-                double d6 = (double)(-MathHelper.sin(f2 / 180.0F * (float)Math.PI)) * d3;
-
-                for (int i = 0; i < 8; ++i)
+                else if (modCameraAnimationEnabled) {
+                	mult = modCamera.getCurrentFunny();
+                	modCamera.setWantedFunny(0);
+                }
+                
+                cameraClip:
                 {
-                    float f3 = (float)((i & 1) * 2 - 1);
-                    float f4 = (float)((i >> 1 & 1) * 2 - 1);
-                    float f5 = (float)((i >> 2 & 1) * 2 - 1);
-                    f3 = f3 * 0.1F;
-                    f4 = f4 * 0.1F;
-                    f5 = f5 * 0.1F;
-                    MovingObjectPosition movingobjectposition = this.mc.theWorld.rayTraceBlocks(new Vec3(d0 + (double)f3, d1 + (double)f4, d2 + (double)f5), new Vec3(d0 - d4 + (double)f3 + (double)f5, d1 - d6 + (double)f4, d2 - d5 + (double)f5));
+                	if (modCameraEnabled && modCamera.getCameraClip().isEnabled())
+                		break cameraClip;
+                	double d4 = (double)(-MathHelper.sin(f1 / 180.0F * (float)Math.PI) * MathHelper.cos(f2 / 180.0F * (float)Math.PI)) * d3;
+                    double d5 = (double)(MathHelper.cos(f1 / 180.0F * (float)Math.PI) * MathHelper.cos(f2 / 180.0F * (float)Math.PI)) * d3;
+                    double d6 = (double)(-MathHelper.sin(f2 / 180.0F * (float)Math.PI)) * d3;
 
-                    if (movingobjectposition != null)
+                    for (int i = 0; i < 8; ++i)
                     {
-                        double d7 = movingobjectposition.hitVec.distanceTo(new Vec3(d0, d1, d2));
+                        float f3 = (float)((i & 1) * 2 - 1);
+                        float f4 = (float)((i >> 1 & 1) * 2 - 1);
+                        float f5 = (float)((i >> 2 & 1) * 2 - 1);
+                        f3 = f3 * 0.1F;
+                        f4 = f4 * 0.1F;
+                        f5 = f5 * 0.1F;
+                        MovingObjectPosition movingobjectposition = this.mc.theWorld.rayTraceBlocks(new Vec3(d0 + (double)f3, d1 + (double)f4, d2 + (double)f5), new Vec3(d0 - d4 + (double)f3 + (double)f5, d1 - d6 + (double)f4, d2 - d5 + (double)f5));
 
-                        if (d7 < d3)
+                        if (movingobjectposition != null)
                         {
-                            d3 = d7;
+                            double d7 = movingobjectposition.hitVec.distanceTo(new Vec3(d0, d1, d2));
+
+                            if (d7 < d3)
+                            {
+                                d3 = d7;
+                            }
                         }
                     }
                 }
-
-                if (this.mc.gameSettings.thirdPersonView == 2)
+                
+                if (this.mc.gameSettings.thirdPersonView == 2 && !modCameraAnimationEnabled)
                 {
                     GlStateManager.rotate(180.0F, 0.0F, 1.0F, 0.0F);
                 }
-
-                GlStateManager.rotate(entity.rotationPitch - f2, 1.0F, 0.0F, 0.0F);
-                GlStateManager.rotate(entity.rotationYaw - f1, 0.0F, 1.0F, 0.0F);
+                
+                float wantedYaw = entity.rotationYaw - f1;
+                float wantedPitch = entity.rotationPitch - f2;
+                
+                if (modCameraAnimationEnabled) {
+                	modCamera.setWantedYaw(wantedYaw);
+                	modCamera.setWantedPitch(wantedPitch);
+                	wantedYaw = modCamera.getCurrentYaw();
+                	wantedPitch = modCamera.getCurrentPitch();
+                }
+                
+                GlStateManager.rotate(wantedPitch, 1.0F, 0.0F, 0.0F);
+                GlStateManager.rotate(wantedYaw, 0.0F, 1.0F, 0.0F);
                 GlStateManager.translate(0.0F, 0.0F, (float)(-d3));
-                GlStateManager.rotate(f1 - entity.rotationYaw, 0.0F, 1.0F, 0.0F);
-                GlStateManager.rotate(f2 - entity.rotationPitch, 1.0F, 0.0F, 0.0F);
+                GlStateManager.rotate(-wantedYaw, 0.0F, 1.0F, 0.0F);
+                GlStateManager.rotate(-wantedPitch, 1.0F, 0.0F, 0.0F);
             }
         }
         else
@@ -878,7 +915,7 @@ public class EntityRenderer implements IResourceManagerReloadListener
         }
         else if (!this.mc.gameSettings.debugCamEnable)
         {
-            GlStateManager.rotate(entity.prevRotationPitch + (entity.rotationPitch - entity.prevRotationPitch) * partialTicks, 1.0F, 0.0F, 0.0F);
+           GlStateManager.rotate(entity.prevRotationPitch + (entity.rotationPitch - entity.prevRotationPitch) * partialTicks, modCameraAnimationEnabled && mc.gameSettings.thirdPersonView == 2 ? -1.0F : 1.0F, 0.0F, 0.0F);
 
             if (entity instanceof EntityAnimal)
             {
@@ -887,10 +924,10 @@ public class EntityRenderer implements IResourceManagerReloadListener
             }
             else
             {
-                GlStateManager.rotate(entity.prevRotationYaw + (entity.rotationYaw - entity.prevRotationYaw) * partialTicks + 180.0F, 0.0F, 1.0F, 0.0F);
+                GlStateManager.rotate(entity.prevRotationYaw + (entity.rotationYaw - entity.prevRotationYaw) * partialTicks + 180.0F + (modCameraAnimationEnabled ? (180 * modCamera.getCurrentFunny()) : 0), 0.0F, 1.0F, 0.0F);
             }
         }
-
+        
         GlStateManager.translate(0.0F, -f, 0.0F);
         d0 = entity.prevPosX + (entity.posX - entity.prevPosX) * (double)partialTicks;
         d1 = entity.prevPosY + (entity.posY - entity.prevPosY) * (double)partialTicks + (double)f;
