@@ -150,6 +150,20 @@ public class DrawUtils3D {
      * @return The location where the 3d location would render on screen
      */
     public static Vector3f project2D(float x, float y, float z, Vector3d offsets) {
+    	return project2D(x, y, z, offsets, true);
+    }
+    
+    /**
+     * Takes world coordinates and returns the position on scren where they render 
+     * Only works during the 3d render event. Not 100% sure why, my guess is that minecraft sets the projection matrix before the 3d render event
+     * @param x The x pos of the 3d location
+     * @param y The y pos of the 3d location
+     * @param z The z pos of the 3d location
+     * @param offsets The offsets for the render
+     * @param accountForScaledResolution set to true if you want to account for the scaled resolution in the gui screen, seto to false if you just want the raw point on the display
+     * @return The location where the 3d location would render on screen
+     */
+    public static Vector3f project2D(float x, float y, float z, Vector3d offsets, boolean accountForScaledResolution) {
     	
     	// Offset the coords
     	x -= offsets.getX();
@@ -159,6 +173,8 @@ public class DrawUtils3D {
     	// Used for gui scaling because minecraft's code sucks and has a fucking gui scale setting for some reason
 		ScaledResolution scaledResolution = new ScaledResolution(Minecraft.getMinecraft());
 		int scaleFactor = scaledResolution.getScaleFactor();
+		if (!accountForScaledResolution)
+			scaleFactor = 1;
     	
         GL11.glGetFloat(GL11.GL_MODELVIEW_MATRIX, modelMatrix); // Fills the model matrix buffer
         GL11.glGetFloat(GL11.GL_PROJECTION_MATRIX, projectionMatrix); // Fills the projection matrix buffer

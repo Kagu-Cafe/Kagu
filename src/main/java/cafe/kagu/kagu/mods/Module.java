@@ -222,7 +222,10 @@ public abstract class Module {
 				return;
 		}
 		
+		boolean wasEnabled = isEnabled();
 		enabled = false;
+		if (wasEnabled)
+			onDisable();
 		
 		// Kagu hook
 		{
@@ -245,7 +248,10 @@ public abstract class Module {
 				return;
 		}
 		
+		boolean wasDisabled = isDisabled();
 		enabled = true;
+		if (wasDisabled)
+			onEnable();
 		
 		// Kagu hook
 		{

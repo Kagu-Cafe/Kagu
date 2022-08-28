@@ -13,8 +13,10 @@ import cafe.kagu.kagu.eventBus.EventHandler;
 import cafe.kagu.kagu.eventBus.Handler;
 import cafe.kagu.kagu.eventBus.impl.EventRenderObs;
 import cafe.kagu.kagu.mods.Module;
+import cafe.kagu.kagu.settings.impl.BooleanSetting;
 import cafe.kagu.kagu.settings.impl.IntegerSetting;
 import cafe.kagu.kagu.settings.impl.LabelSetting;
+import cafe.kagu.kagu.ui.ghost.GhostUi;
 import cafe.kagu.kagu.utils.ChatUtils;
 import cafe.kagu.kagu.utils.OSUtil;
 import javafx.geometry.Rectangle2D;
@@ -27,12 +29,13 @@ public class ModObsProofUi extends Module {
 	
 	public ModObsProofUi() {
 		super("ObsProofUI", Category.GHOST);
-		setSettings(offsetX, offsetY, windowsOnlyLabel);
+		setSettings(windowsOnlyLabel, offsetX, offsetY, offsetCalibrationRect);
 	}
 	
 	private LabelSetting windowsOnlyLabel = new LabelSetting("Windows only feature").setDependency(() -> !OSUtil.isWindows());
 	private IntegerSetting offsetX = new IntegerSetting("Offset X", 8, -20, 20, 1).setDependency(OSUtil::isWindows);
-	private IntegerSetting offsetY = new IntegerSetting("Offset Y", 30, -40, 40, 1).setDependency(OSUtil::isWindows);
+	private IntegerSetting offsetY = new IntegerSetting("Offset Y", 31, -40, 40, 1).setDependency(OSUtil::isWindows);
+	private BooleanSetting offsetCalibrationRect = new BooleanSetting("Offset Calibration Rect", false).setDependency(OSUtil::isWindows);
 	
 	@Override
 	public void onEnable() {
@@ -42,16 +45,15 @@ public class ModObsProofUi extends Module {
 		}
 	}
 	
+	private static final Color COLOR = new Color(214, 140, 255, 100);
 	@EventHandler
 	private Handler<EventRenderObs> onRenderObs = e -> {
-		if (e.isPost())
+		if (e.isPost() || offsetCalibrationRect.isDisabled())
 			return;
-		int x = RandomUtils.nextInt(0, mc.displayWidth) - 50;
-		int y = RandomUtils.nextInt(0, mc.displayHeight) - 50;
 		Graphics2D graphics2d = e.getGraphics();
-		graphics2d.setStroke(new BasicStroke(0.02f));
-		graphics2d.setColor(Color.PINK);
-		graphics2d.fillRect(x, y, x + 100, y + 100);
+		GhostUi ghostUi = e.getGhostUi();
+		graphics2d.setColor(COLOR);
+		graphics2d.fillRect(-100, -100, ghostUi.getWidth() + 200, ghostUi.getHeight() + 200);
 	};
 	
 	/**

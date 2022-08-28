@@ -8,11 +8,16 @@ import java.awt.Container;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.Toolkit;
+import java.awt.image.BufferedImage;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
 import org.lwjgl.opengl.Display;
 
@@ -50,18 +55,24 @@ public class GhostUi extends JFrame {
 			return;
 		
 		ghostUi = new GhostUi();
-		ghostUi.setContentPane(new DrawPane());
-		
-		long eventDelay = 1000 /* One second */ / 144 /* Our desired fps */;
+		DrawPane drawPane = new DrawPane();
+		ghostUi.setContentPane(drawPane);
+		Toolkit toolkit = Toolkit.getDefaultToolkit();
 		
 		// Do our event
 		new Timer("Ghost UI Event", true).scheduleAtFixedRate(new TimerTask() {
 			@Override
 			public void run() {
+				GhostUi ghostUi = GhostUi.ghostUi;
+				if ((ghostUi.getWidth() == 0 && ghostUi.getHeight() == 0) || !ghostUi.isVisible())
+					return;
 				// Paint changes
-				ghostUi.repaint();
+				drawPane.repaint(0);
+				drawPane.paintImmediately(0, 0, ghostUi.getWidth(), ghostUi.getHeight());
+				toolkit.sync();
 			}
-		}, 0, eventDelay);
+		}, 0, 1);
+		
 	}
 	
 	public GhostUi() {
@@ -80,13 +91,13 @@ public class GhostUi extends JFrame {
 		setFocusable(false);
 		
 		// Sets more stuff that will be overridden later
-		setSize(100, 100);
-		setLocation(400, 500);
+		setSize(0, 0);
+		setLocation(0, 0);
 		
 		// Makes window visible
 		setVisible(true);
 		
-		// Makes the window not cancel mouse events (totally not skidded from this github project https://github.com/aeris170/Crosshair-Overlay)
+		// Makes mouse events fall through the window (totally not skidded from https://github.com/aeris170/Crosshair-Overlay/blob/57b4316d4ebf4dd671f53febd88384a845dc03b8/src/xhair/Overlay.java#L157)
 		HWND handleToWindow = new HWND(); // Create a new useless window handle
 		handleToWindow.setPointer(Native.getComponentPointer(this)); // Get the pointer for our jframe, then put it into our now useful window handle
 		int windowLong = User32.INSTANCE.GetWindowLong(handleToWindow, WinUser.GWL_EXSTYLE); // Normally returns a dword, but that's the size of an int so we use int idfk
@@ -102,7 +113,7 @@ public class GhostUi extends JFrame {
 	private Handler<EventCheatRenderTick> onCheatRenderTick = e -> {
 		if (e.isPost() || ghostUi == null || mc == null || !Display.isCreated())
 			return;
-		GhostUi ghostUi = this.ghostUi;
+		GhostUi ghostUi = GhostUi.ghostUi;
 		ModObsProofUi modObsProofUi = ModuleManager.modObsProofUi;
 		
 		// If the game isn't in focus or the obs proof ui is disabled then don't render overlay
@@ -116,34 +127,45 @@ public class GhostUi extends JFrame {
 			ghostUi.setVisible(true);
 		
 		// Set the overlay size and position
-		ghostUi.setSize(mc.displayWidth - 1, mc.displayHeight + 1);
+		ghostUi.setSize(mc.displayWidth - 1, mc.displayHeight);
 		ghostUi.setLocation(Display.getX() + modObsProofUi.getOffsetX().getValue(), Display.getY() + modObsProofUi.getOffsetY().getValue());
 		
 	};
 	
 	private static class DrawPane extends JComponent{
 		
+		private static final long serialVersionUID = 4424436145565545290L;
+		
+		private Toolkit toolkit = Toolkit.getDefaultToolkit();
+		
+		@Override
+		public boolean isLightweight() {
+			return true;
+		}
+		
 		@Override
 		protected void paintComponent(Graphics g) {
 			super.paintComponent(g);
 			Graphics2D graphics2d = (Graphics2D)g;
-			graphics2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-			
+			graphics2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+			GhostUi ghostUi = GhostUi.ghostUi;
 			
 			// Kagu hook
 			{
-				EventRenderObs eventRenderObs = new EventRenderObs(EventPosition.PRE, graphics2d);
+				EventRenderObs eventRenderObs = new EventRenderObs(EventPosition.PRE, graphics2d, ghostUi);
 				eventRenderObs.post();
-				if (eventRenderObs.isCanceled())
+				if (eventRenderObs.isCanceled()) {
+					toolkit.sync();
 					return;
+				}
 			}
 			
 			// Kagu hook
 			{
-				EventRenderObs eventRenderObs = new EventRenderObs(EventPosition.POST, graphics2d);
+				EventRenderObs eventRenderObs = new EventRenderObs(EventPosition.POST, graphics2d, ghostUi);
 				eventRenderObs.post();
 			}
-			
+			toolkit.sync();
 		}
 		
 	}

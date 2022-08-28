@@ -22,6 +22,7 @@ import cafe.kagu.kagu.mods.impl.exploit.ModNoHCollisionSlowdown;
 import cafe.kagu.kagu.mods.impl.exploit.ModSpecialSlime;
 import cafe.kagu.kagu.mods.impl.exploit.ModTimer;
 import cafe.kagu.kagu.mods.impl.ghost.ModHideHud;
+import cafe.kagu.kagu.mods.impl.ghost.ModObsProofEsp;
 import cafe.kagu.kagu.mods.impl.ghost.ModObsProofUi;
 import cafe.kagu.kagu.mods.impl.move.ModAntiVoid;
 import cafe.kagu.kagu.mods.impl.move.ModFly;
@@ -118,6 +119,7 @@ public class ModuleManager {
 	// Ghost
 	public static ModHideHud modHideHud = new ModHideHud();
 	public static ModObsProofUi modObsProofUi = new ModObsProofUi();
+	public static ModObsProofEsp modObsProofEsp = new ModObsProofEsp();
 	
 	// An array of all the modules in the client
 	private static final Module[] MODULES = new Module[] {
@@ -164,6 +166,7 @@ public class ModuleManager {
 			modHideHud,
 			modCamera,
 			modObsProofUi,
+			modObsProofEsp,
 			
 			modBlink
 	};

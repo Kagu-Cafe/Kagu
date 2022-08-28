@@ -70,6 +70,11 @@ public class ModEsp extends Module {
 	// Invisible
 	private BooleanSetting renderInvisibleModels = new BooleanSetting("Render Invisible Models", false);
 	
+	@Override
+	public void onDisable() {
+		draw2dEntities.clear();
+	}
+	
 	/**
 	 * @return the renderInvisibleModels
 	 */
@@ -323,7 +328,7 @@ public class ModEsp extends Module {
 		
 	};
 	
-	private class EspEntity {
+	public static class EspEntity {
 
 		/**
 		 * @param entityLivingBase The entity to render
