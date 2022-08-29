@@ -143,13 +143,14 @@ public class GhostUi extends JFrame {
 			return true;
 		}
 		
+		private long l = System.currentTimeMillis();
+		
 		@Override
 		protected void paintComponent(Graphics g) {
 			super.paintComponent(g);
 			Graphics2D graphics2d = (Graphics2D)g;
 			graphics2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
 			GhostUi ghostUi = GhostUi.ghostUi;
-			
 			// Kagu hook
 			{
 				EventRenderObs eventRenderObs = new EventRenderObs(EventPosition.PRE, graphics2d, ghostUi);
@@ -166,6 +167,10 @@ public class GhostUi extends JFrame {
 				eventRenderObs.post();
 			}
 			toolkit.sync();
+			
+			long systemTime = System.currentTimeMillis();
+			ModuleManager.modObsProofUi.funny(systemTime - l);
+			l = System.currentTimeMillis();
 		}
 		
 	}

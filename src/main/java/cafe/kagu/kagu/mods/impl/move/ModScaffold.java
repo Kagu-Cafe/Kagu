@@ -65,9 +65,9 @@ public class ModScaffold extends Module {
 	
 	public ModScaffold() {
 		super("Scaffold", Category.MOVEMENT);
-		setSettings(rotationMode, c08Position, itemMode, swingMode, vec3Mode, rayTraceMissMode, maxBlockReach, keepY,
-				visuals3D, visuals2D, safewalk, ignoreWorldBorder, sprint, silentRotations, blockSwitchDelay, extend,
-				extendDistance, tower, towerMode);
+		setSettings(rotationMode, c08Position, itemMode, swingMode, vec3Mode, rayTraceMissMode, maxBlockReach,
+				delayBlockPlacements, delayPlacedBlockUpdateTicks, keepY, visuals3D, visuals2D, safewalk, ignoreWorldBorder, sprint, silentRotations,
+				blockSwitchDelay, extend, extendDistance, tower, towerMode);
 	}
 	
 	private ModeSetting rotationMode = new ModeSetting("Rotation Mode", "None", "None", "Lock", "Snap", "Hypixel");
@@ -88,7 +88,9 @@ public class ModScaffold extends Module {
 	// Additional Switch settings
 	private IntegerSetting blockSwitchDelay = new IntegerSetting("Block Switch Delay", 50, 0, 400, 10);
 	
-	private DoubleSetting maxBlockReach = new DoubleSetting("Max Block Reach", 3, 1, 4, 0.5);
+	private DoubleSetting maxBlockReach = new DoubleSetting("Max Block Reach", 3, 1, 6, 0.5);
+	private IntegerSetting delayBlockPlacements = new IntegerSetting("Skip Block Placement Ticks", 0, 0, 6, 1);
+	private IntegerSetting delayPlacedBlockUpdateTicks = new IntegerSetting("Delay Placed Block Update Ticks", 0, 0, 6, 1);
 	
 	// Extend
 	private BooleanSetting extend = new BooleanSetting("Extend", false);
@@ -123,6 +125,10 @@ public class ModScaffold extends Module {
 	// Blacklisted blocks to place with
 	private static final Block[] BLACKLISTED_BLOCKS = new Block[] {Blocks.sand, Blocks.gravel, Blocks.cactus, Blocks.iron_bars};
 	
+	// Used to delay block placements
+	private int blockPlacmentTicksSkipped = 0;
+	private int placedBlockUpdateTicks = 0;
+	
 	@Override
 	public void onEnable() {
 		placePos = null;
@@ -137,6 +143,7 @@ public class ModScaffold extends Module {
 		lastRotations[0] = rotations[0];
 		lastRotations[1] = rotations[1];
 		placedBlock = false;
+		blockPlacmentTicksSkipped = 0;
 	}
 	
 	@Override
@@ -451,18 +458,28 @@ public class ModScaffold extends Module {
 				lastRotations = rotations;
 				rotations = RotationUtils
 						.getRotations(new Vector3d(placeOn.getX() + 0.5 + (double) placeFace.getFrontOffsetX() / 2 + (double) placeFace.getFrontOffsetZ() / 2 * hypixelPositions[0],
-								placeOn.getY() + 0.5 + (double) placeFace.getFrontOffsetY() / 2,
+								placeOn.getY() + 0.75 + (double) placeFace.getFrontOffsetY() / 2,
 								placeOn.getZ() + 0.5 + (double) placeFace.getFrontOffsetZ() / 2 + (double) placeFace.getFrontOffsetX() / 2 * hypixelPositions[1]));
-				if (!placedBlock) {
+				if (Math.abs((rotations[0] - lastRotations[0])) > 30) {
+					
+				}
+				else if (!placedBlock) {
 					rotations[1] = lastRotations[1];
 				}
-				else {
-					hypixelPositions[0] = ThreadLocalRandom.current().nextGaussian() * 0.3;
-					hypixelPositions[1] = ThreadLocalRandom.current().nextGaussian() * 0.3;
+				if (placedBlock) {
+//					if (hypixelPositions[0] == 0.25)
+//						hypixelPositions[0] = -0.25;
+//					else
+//						hypixelPositions[0] = 0.25;
+//					hypixelPositions[1] = hypixelPositions[0];
+					hypixelPositions[0] = ThreadLocalRandom.current().nextGaussian() * 0.15;
+					hypixelPositions[1] = hypixelPositions[0];
+//					ChatUtils.addChatMessage(hypixelPositions[0], hypixelPositions[1]);
 				}
-//				ChatUtils.addChatMessage(hypixelPositions[0], hypixelPositions[1]);
 				RotationUtils.makeRotationValuesLoopCorrectly(lastRotations, rotations);
-				canPlace = true;
+//				canPlace = true;
+				canPlace = Math.abs(rotations[0] - lastRotations[0]) < 18;
+				rotations[0] = lastRotations[0] + (rotations[0] - lastRotations[0]) * (0.9f + RandomUtils.nextFloat(0.0f, 0.5f));
 			}break;
 		}
 		
@@ -493,6 +510,11 @@ public class ModScaffold extends Module {
 		if (c08Position.is("PRE") ? e.isPost() : e.isPre())
 			return;
 		
+		if (delayPlacedBlockUpdateTicks.getValue() > 0 && placedBlockUpdateTicks == 0) {
+			placedBlock = true;
+		}
+		placedBlockUpdateTicks--;
+		
 		// Only attempt place if place pos and place on info is set, canPlace is set to true, and there is something the player can place with
 		if (placePos == null || placeOnInfo == null || !canPlace || !switchDelayTimer.hasTimeElapsed(blockSwitchDelay.getValue()))
 			return;
@@ -520,6 +542,12 @@ public class ModScaffold extends Module {
 		
 		// This is if you click blocks that show guis or do stuff, the scaffold targeting should avoid blocks like this but in the case it doesn't this should catch it
         if (placeOnState.getBlock().doesBlockActivate()) {
+        	return;
+        }
+        
+        // Delay block placement setting
+        if (delayBlockPlacements.getValue() > 0 && blockPlacmentTicksSkipped <= delayBlockPlacements.getValue()) {
+        	blockPlacmentTicksSkipped++;
         	return;
         }
         
@@ -562,7 +590,14 @@ public class ModScaffold extends Module {
         			
         		}break;
 			}
-        	placedBlock = true;
+        	
+        	if (delayPlacedBlockUpdateTicks.getValue() == 0) {
+        		placedBlock = true;
+        	}else {
+        		placedBlockUpdateTicks = delayPlacedBlockUpdateTicks.getValue();
+        	}
+        	
+        	blockPlacmentTicksSkipped = 0;
         }
         
         // Tower again

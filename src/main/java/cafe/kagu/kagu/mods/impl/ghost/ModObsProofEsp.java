@@ -106,8 +106,51 @@ public class ModObsProofEsp extends Module {
 //					graphics2d.drawRect(x + 1, y + 1, width - 2, height - 2);
 //					graphics2d.setColor(BANNOCK_SONA_PURPLE);
 //					graphics2d.drawRect(x - 1, y - 1, width + 1, height + 1);
+					
+					// First corner
+					int lineWidth = 1;
+					int infoBarGap = lineWidth * 3;
+					int nametagGap = lineWidth;
+					double cornerSize = 0.35;
+					
+					// Black
 					graphics2d.setColor(Color.BLACK);
-					graphics2d.drawRect(x, y, width, height);
+					
+					// TL
+					graphics2d.fillRect(x, y, lineWidth * 3, (int)(height * cornerSize));
+					graphics2d.fillRect(x, y, (int)(width * cornerSize), lineWidth * 3);
+					
+					// BL
+					graphics2d.fillRect(x, (int) (y + height * (1 - cornerSize)), lineWidth * 3, (int)(height * cornerSize));
+					graphics2d.fillRect(x, y + height - lineWidth * 3, (int)(width * cornerSize), lineWidth * 3);
+					
+					// TR
+					graphics2d.fillRect(x + width - lineWidth * 3, y, lineWidth * 3, (int)(height * cornerSize));
+					graphics2d.fillRect((int) (x + width * (1 - cornerSize)), y, (int)(width * cornerSize), lineWidth * 3);
+					
+					// BR
+					graphics2d.fillRect(x + width - lineWidth * 3, (int) (y + height * (1 - cornerSize)), lineWidth * 3, (int)(Math.ceil(height * cornerSize)));
+					graphics2d.fillRect((int) (x + width * (1 - cornerSize)), y + height - lineWidth * 3, (int)(Math.ceil(width * cornerSize)), lineWidth * 3);
+					
+					// White
+					graphics2d.setColor(Color.WHITE);
+					
+					// TL
+					graphics2d.fillRect(x + lineWidth, y + lineWidth, lineWidth, (int)(height * cornerSize) - lineWidth * 2);
+					graphics2d.fillRect(x + lineWidth, y + lineWidth, (int)(width * cornerSize) - lineWidth * 2, lineWidth);
+					
+					// BL
+					graphics2d.fillRect(x + lineWidth, (int) (y + height * (1 - cornerSize)) + lineWidth, lineWidth, (int)(height * cornerSize) - lineWidth * 2);
+					graphics2d.fillRect(x + lineWidth, y + height - lineWidth * 2, (int)(width * cornerSize) - lineWidth * 2, lineWidth);
+					
+					// TR
+					graphics2d.fillRect(x + width - lineWidth * 2, y + lineWidth, lineWidth, (int)(height * cornerSize) - lineWidth * 2);
+					graphics2d.fillRect((int) (x + width * (1 - cornerSize)) + lineWidth, y + lineWidth, (int)(width * cornerSize) - lineWidth * 2, lineWidth);
+					
+					// BR
+					graphics2d.fillRect(x + width - lineWidth * 2, (int) (y + height * (1 - cornerSize)) + lineWidth, lineWidth, (int)(Math.ceil(height * cornerSize)) - lineWidth * 2);
+					graphics2d.fillRect((int) (x + width * (1 - cornerSize)) + lineWidth, y + height - lineWidth * 2, (int)(Math.ceil(width * cornerSize)) - lineWidth * 2, lineWidth);
+					
 				}
 			}break;
 		}
@@ -119,6 +162,8 @@ public class ModObsProofEsp extends Module {
 		if (e.isPost())
 			return;
 		setInfo(mode.getMode());
+		if (ModuleManager.modObsProofUi.isDisabled())
+			toggle();
 	};
 	
 	@EventHandler
@@ -162,6 +207,7 @@ public class ModObsProofEsp extends Module {
 					if (entityLivingBase != mc.thePlayer) {
 						
 						Vector3d entityRenderCoords = DrawUtils3D.get3dEntityOffsets(entityLivingBase);
+//						Vector3d entityRenderCoords = new Vector3d(entityLivingBase.posX, entityLivingBase.posY, entityLivingBase.posZ);
 						
 						// Center the offsets interpolated coords to the entity
 						entityRenderCoords.setX(entityRenderCoords.getX() - ((boundingBox.maxX - boundingBox.minX) / 2));
