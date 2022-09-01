@@ -2132,4 +2132,12 @@ public class NetHandlerPlayClient implements INetHandlerPlayClient
     {
         return this.profile;
     }
+    
+    /**
+	 * @return the doneLoadingTerrain
+	 */
+	public boolean isDoneLoadingTerrain() {
+		return doneLoadingTerrain;
+	}
+    
 }

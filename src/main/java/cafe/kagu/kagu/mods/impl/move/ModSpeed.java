@@ -13,6 +13,7 @@ import cafe.kagu.kagu.settings.impl.ModeSetting;
 import cafe.kagu.kagu.utils.ChatUtils;
 import cafe.kagu.kagu.utils.MovementUtils;
 import cafe.kagu.kagu.utils.RotationUtils;
+import cafe.kagu.kagu.utils.WorldUtils;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.util.MathHelper;
@@ -88,7 +89,13 @@ public class ModSpeed extends Module {
 					return;
 				}
 				if (MovementUtils.isTrueOnGround()) {
+					onGroundTicks++;
+				}
+				
+				if (onGroundTicks >= 2) {
 					thePlayer.jump();
+					onGroundTicks = 0;
+//					hypixelYaw = RotationUtils.getStrafeYaw();
 				}
 				
 				// Smooth Strafe
@@ -105,19 +112,15 @@ public class ModSpeed extends Module {
 			}break;
 			case "Test":{
 				if (!MovementUtils.isPlayerMoving()) {
-					MovementUtils.setMotion(0);
-					return;
+//					MovementUtils.setMotion(0);
+//					return;
 				}
 				
-				if (thePlayer.ticksExisted % 7 == 0) {
-					MovementUtils.setMotion(0.31);
-				}
-				if (MovementUtils.isTrueOnGround()) {
-//					speedDouble = 0.35;
+				if (MovementUtils.isTrueOnGround(0.4)) {
+					MovementUtils.setMotion(MovementUtils.getMotion());
 					thePlayer.jump();
-//					MovementUtils.setMotion(0.34);
-//					speedDouble = MovementUtils.getMotion();
 				}
+				
 			}break;
 		}
 		

@@ -30,7 +30,7 @@ public class ModFly extends Module {
 		setSettings(mode);
 	}
 	
-	private ModeSetting mode = new ModeSetting("Mode", "Verus", "Verus", "AirHop");
+	private ModeSetting mode = new ModeSetting("Mode", "Vanilla", "Vanilla", "Verus", "AirHop");
 	
 	private int airhopY = 0;
 	
@@ -114,6 +114,17 @@ public class ModFly extends Module {
 					airhopY = (int)((EventPlayerUpdate)e).getPosY();
 					thePlayer.setPosition(thePlayer.posX, ((EventPlayerUpdate)e).getPosY(), thePlayer.posZ);
 				}
+			}break;
+			case "Vanilla":{
+				MovementUtils.setMotion(MovementUtils.isPlayerMoving() ? 1 : 0);
+				if (mc.gameSettings.keyBindJump.isKeyDown())
+					thePlayer.motionY = 0.4;
+				else if (mc.gameSettings.keyBindSneak.isKeyDown())
+					thePlayer.motionY = -0.4;
+				else
+					thePlayer.motionY = 0;
+				((EventPlayerUpdate)e).setOnGround(true);
+				setInfo(mode.getMode());
 			}break;
 		}
 		

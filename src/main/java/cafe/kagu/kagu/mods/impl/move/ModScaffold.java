@@ -301,7 +301,7 @@ public class ModScaffold extends Module {
 	};
 	
 	/**
-	 * Used for block selection & safewalk
+	 * Used for block selection
 	 */
 	@EventHandler
 	private Handler<EventCheatProcessTick> onCheatProcessTickBlock = e -> {
@@ -420,6 +420,7 @@ public class ModScaffold extends Module {
 	private Handler<EventPlayerUpdate> rotationPlayerUpdate = e -> {
 		if (e.isPost())
 			return;
+		mc.getNetHandler().getNetworkManager().sendPacketNoEvent(new C08PacketPlayerBlockPlacement(null));
 		PlaceOnInfo placeOnInfo = this.placeOnInfo;
 		
 		switch (rotationMode.getMode()) {

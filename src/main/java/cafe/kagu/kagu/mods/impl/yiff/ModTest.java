@@ -80,10 +80,7 @@ public class ModTest extends Module {
 		if (e.isPre())
 			return;
 		EntityPlayerSP thePlayer = mc.thePlayer;
-		if (thePlayer.fallDistance > 2.5) {
-			mc.getNetHandler().getNetworkManager().sendPacketNoEvent(new C03PacketPlayer(true));
-			thePlayer.fallDistance = 0;
-		}
+		ChatUtils.addChatMessage(thePlayer.posY - thePlayer.lastTickPosY);
 	};
 
 }
