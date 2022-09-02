@@ -5,12 +5,16 @@ package cafe.kagu.kagu.mods.impl.player;
 
 import cafe.kagu.kagu.eventBus.EventHandler;
 import cafe.kagu.kagu.eventBus.Handler;
+import cafe.kagu.kagu.eventBus.impl.EventPacketReceive;
+import cafe.kagu.kagu.eventBus.impl.EventPacketSend;
 import cafe.kagu.kagu.eventBus.impl.EventPlayerUpdate;
 import cafe.kagu.kagu.eventBus.impl.EventTick;
 import cafe.kagu.kagu.mods.Module;
 import cafe.kagu.kagu.settings.impl.ModeSetting;
+import cafe.kagu.kagu.utils.MovementUtils;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.network.play.client.C03PacketPlayer;
+import net.minecraft.network.play.server.S08PacketPlayerPosLook;
 
 /**
  * @author DistastefulBannock
@@ -23,7 +27,7 @@ public class ModNoFall extends Module {
 		setSettings(mode);
 	}
 	
-	private ModeSetting mode = new ModeSetting("Mode", "Hypixel", "Hypixel", "Always On Ground", "Always Off Ground", "Packet", "Test");
+	private ModeSetting mode = new ModeSetting("Mode", "Hypixel", "Hypixel", "Always On Ground", "Always Off Ground", "Packet", "Ground Clip", "Test");
 	
 	@EventHandler
 	private Handler<EventTick> onTick = e ->{
@@ -60,5 +64,27 @@ public class ModNoFall extends Module {
 			}break;
 		}
 	};
+	
+	@EventHandler
+	private Handler<EventPacketReceive> onPacketReceive = e -> {
+		if (e.isPre())
+			return;
+		EntityPlayerSP thePlayer = mc.thePlayer;
+		switch (mode.getMode()) {
+			case "Ground Clip":{
+				if (e.getPacket() instanceof S08PacketPlayerPosLook && thePlayer.fallDistance >= 3) {
+					thePlayer.fallDistance = 0;
+					MovementUtils.jump();
+				}
+			}break;
+		}
+	};
+	
+	/**
+	 * @return the mode
+	 */
+	public ModeSetting getMode() {
+		return mode;
+	}
 	
 }

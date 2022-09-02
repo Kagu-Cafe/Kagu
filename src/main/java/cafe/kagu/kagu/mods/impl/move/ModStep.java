@@ -24,7 +24,16 @@ public class ModStep extends Module {
 		setSettings(mode);
 	}
 	
-	private ModeSetting mode = new ModeSetting("Mode", "Vanilla", "Vanilla", "0.38 Motion", "Test");
+	private ModeSetting mode = new ModeSetting("Mode", "Vanilla", "Vanilla", "0.38 Motion", "Vulcan", "Test");
+	
+	private int ticks = 0;
+	private boolean isStepping = false;
+	
+	@Override
+	public void onEnable() {
+		ticks = 0;
+		isStepping = false;
+	}
 	
 	@EventHandler
 	private Handler<EventPlayerUpdate> onPlayerUpdate = e -> {
@@ -36,12 +45,30 @@ public class ModStep extends Module {
 		switch (mode.getMode()) {
 			case "Vanilla":{
 				if (MovementUtils.canStep(1) && MovementUtils.isTrueOnGround()) {
-					thePlayer.setPosition(thePlayer.posX, thePlayer.posY + 1, thePlayer.posZ);
+					thePlayer.setPosition(thePlayer.posX, thePlayer.posY + 1f, thePlayer.posZ);
 				}
 			}break;
 			case "0.38 Motion":{
 				if (MovementUtils.canStep(1.1) && !MovementUtils.canStep(0.6) && MovementUtils.isTrueOnGround()) {
 					thePlayer.motionY = 0.38;
+				}
+			}break;
+			case "Vulcan":{
+				if (MovementUtils.canStep(1.1) && !MovementUtils.canStep(0.6) && MovementUtils.isTrueOnGround() && thePlayer.motionY < -0.01) {
+					isStepping = true;
+					ticks = 0;
+				}
+				ticks++;
+				if (isStepping) {
+					switch (ticks) {
+						case 1:{
+							thePlayer.offsetPosition(0, 0.41999998688697815f, 0);
+						}
+						case 2:{
+//							thePlayer.offsetPosition(0, 0.580000013, 0);
+							isStepping = false;
+						}
+					}
 				}
 			}break;
 			case "Test":{

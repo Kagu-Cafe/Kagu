@@ -10,6 +10,7 @@ import org.lwjgl.input.Keyboard;
 
 import cafe.kagu.kagu.eventBus.Handler;
 import cafe.kagu.kagu.eventBus.EventHandler;
+import cafe.kagu.kagu.eventBus.impl.EventPacketSend;
 import cafe.kagu.kagu.eventBus.impl.EventPlayerUpdate;
 import cafe.kagu.kagu.eventBus.impl.EventRender3D;
 import cafe.kagu.kagu.eventBus.impl.EventTick;
@@ -32,7 +33,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer.EnumChatVisibility;
+import net.minecraft.network.play.client.C00PacketKeepAlive;
 import net.minecraft.network.play.client.C03PacketPlayer;
+import net.minecraft.network.play.client.C0FPacketConfirmTransaction;
 import net.minecraft.network.play.client.C15PacketClientSettings;
 import net.minecraft.network.play.client.C17PacketCustomPayload;
 import net.minecraft.network.play.client.C18PacketSpectate;
@@ -67,20 +70,45 @@ public class ModTest extends Module {
 	private SlotSetting slotSetting1 = new SlotSetting("Slot 1", 1), slotSetting2 = new SlotSetting("Slot 2", 2);
 
 	private float[] lastRotations = new float[] { 0, 0 };
-
+	private int ticks = 0;
+	
 	@Override
 	public void onEnable() {
 		EntityPlayerSP thePlayer = mc.thePlayer;
 		lastRotations[0] = thePlayer.rotationYaw;
 		lastRotations[1] = thePlayer.rotationPitch;
+		ticks = 0;
 	}
 
 	@EventHandler
-	public Handler<EventPlayerUpdate> onPlayerUpdate = e -> {
+	private Handler<EventPlayerUpdate> onPlayerUpdate = e -> {
 		if (e.isPre())
 			return;
 		EntityPlayerSP thePlayer = mc.thePlayer;
-		ChatUtils.addChatMessage(thePlayer.posY - thePlayer.lastTickPosY);
+//		ChatUtils.addChatMessage(thePlayer.posY - thePlayer.lastTickPosY);
+//		if (MovementUtils.isTrueOnGround() && MovementUtils.isPlayerMoving()) {
+//			MovementUtils.jump();
+//			e.setOnGround(true);
+//			thePlayer.motionY += 0.04f;
+//			ticks = 0;
+//			MovementUtils.setMotion(0.6);
+//		}
+		
+		ticks++;
+		
+//		MovementUtils.setMotion(Math.max(MovementUtils.getMotion(), (MovementUtils.isTrueOnGround() ? 0 : 0.36)));
+		
+//		ChatUtils.addChatMessage(thePlayer.motionY);
+		
 	};
-
+	
+	@EventHandler
+	private Handler<EventPacketSend> onPacketSend = e -> {
+		if (e.isPost())
+			return;
+		if (e.getPacket() instanceof C00PacketKeepAlive) {
+			e.cancel();
+		}
+	};
+	
 }

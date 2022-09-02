@@ -12,6 +12,8 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.multiplayer.WorldClient;
+import net.minecraft.potion.Potion;
+import net.minecraft.stats.StatList;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
@@ -147,6 +149,39 @@ public class MovementUtils {
 		}
 		
 		return true;
+	}
+	
+	/**
+	 * Makes the player jump with the correct jump height
+	 */
+	public static void jump() {
+		EntityPlayerSP thePlayer = mc.thePlayer;
+		thePlayer.motionY = 0.42F; // Needs to be a float, some anticheats check whether or not it is (fuck you vulcan)
+
+        if (thePlayer.isPotionActive(Potion.jump))
+        {
+        	thePlayer.motionY += (double)((float)(thePlayer.getActivePotionEffect(Potion.jump).getAmplifier() + 1) * 0.1F);
+        }
+
+        if (thePlayer.isSprinting())
+        {
+            float f = thePlayer.rotationYaw * 0.017453292F;
+            thePlayer.motionX -= (double)(MathHelper.sin(f) * 0.2F);
+            thePlayer.motionZ += (double)(MathHelper.cos(f) * 0.2F);
+        }
+
+        thePlayer.isAirBorne = true;
+        
+        thePlayer.triggerAchievement(StatList.jumpStat);
+
+        if (thePlayer.isSprinting())
+        {
+        	thePlayer.addExhaustion(0.8F);
+        }
+        else
+        {
+        	thePlayer.addExhaustion(0.2F);
+        }
 	}
 	
 }

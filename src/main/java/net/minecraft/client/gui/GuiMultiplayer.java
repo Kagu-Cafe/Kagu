@@ -197,21 +197,90 @@ public class GuiMultiplayer extends GuiScreen implements GuiYesNoCallback
             	}break;
             	case 3621:{
             		String startName = "";
-            		switch (RandomUtils.nextInt(0, 5)) {
-            			case 0:{
-            				startName = "Furry";
-            			}break;
-            			case 1:{
-            				startName = "E621_";
-            			}break;
+            		switch (RandomUtils.nextInt(2, 30)) {
             			case 2:{
-            				startName = "Kagu";
+            				startName = "Kagu"; // name of the client, the rest are names of people in the comm
             			}break;
             			case 3:{
             				startName = "Distaste";
             			}break;
             			case 4:{
             				startName = "lava";
+            			}break;
+            			case 5:{
+            				startName = "cyph";
+            			}break;
+            			case 6:{
+            				startName = "boeing";
+            			}break;
+            			case 7:{
+            				startName = "Aether";
+            			}break;
+            			case 8:{
+            				startName = "haiku";
+            			}break;
+            			case 9:{
+            				startName = "divine";
+            			}break;
+            			case 10:{
+            				startName = "k1_";
+            			}break;
+            			case 11:{
+            				startName = "Spinyfish";
+            			}break;
+            			case 12:{
+            				startName = "Eterezy";
+            			}break;
+            			case 13:{
+            				startName = "Tengoku";
+            			}break;
+            			case 14:{
+            				startName = "flashy";
+            			}break;
+            			case 15:{
+            				startName = "nef";
+            			}break;
+            			case 16:{
+            				startName = "gaming";
+            			}break;
+            			case 17:{
+            				startName = "fang";
+            			}break;
+            			case 18:{
+            				startName = "cope";
+            			}break;
+            			case 19:{
+            				startName = "Cystemz";
+            			}break;
+            			case 20:{
+            				startName = "quick";
+            			}break;
+            			case 21:{
+            				startName = "brownie";
+            			}break;
+            			case 22:{
+            				startName = "Creida";
+            			}break;
+            			case 23:{
+            				startName = "allahleaks";
+            			}break;
+            			case 24:{
+            				startName = "penk";
+            			}break;
+            			case 25:{
+            				startName = "dort";
+            			}break;
+            			case 26:{
+            				startName = "xevier";
+            			}break;
+            			case 27:{
+            				startName = "Taste";
+            			}break;
+            			case 28:{
+            				startName = "gast";
+            			}break;
+            			case 29:{
+            				startName = "nandji";
             			}break;
             		}
             		SessionManager.loginCracked(startName + RandomUtils.nextInt(1000, 10000));
