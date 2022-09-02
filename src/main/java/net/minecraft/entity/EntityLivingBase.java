@@ -6,6 +6,8 @@ import com.google.common.collect.Maps;
 
 import cafe.kagu.kagu.mods.ModuleManager;
 import cafe.kagu.kagu.mods.impl.move.ModNoSlow;
+import cafe.kagu.kagu.mods.impl.visual.ModFunnyLimbs;
+import cafe.kagu.kagu.utils.ChatUtils;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -16,6 +18,7 @@ import java.util.UUID;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.Minecraft;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.BaseAttributeMap;
@@ -1739,9 +1742,23 @@ public abstract class EntityLivingBase extends Entity
         {
             f7 = 1.0F;
         }
-
+        
+        ModFunnyLimbs modFunnyLimbs = ModuleManager.modFunnyLimbs;
+        boolean funnyLimbs = (modFunnyLimbs.getSelfOnly().isDisabled() || this == Minecraft.getMinecraft().thePlayer) && modFunnyLimbs.isEnabled();
+        
+        if (funnyLimbs && modFunnyLimbs.getMode().is("Walk")) {
+        	limbSwingAmount = 0;
+        	limbSwing = 0;
+        }
+        
         this.limbSwingAmount += (f7 - this.limbSwingAmount) * 0.4F;
+        if (funnyLimbs && modFunnyLimbs.getMode().is("Jitter")) {
+        	limbSwingAmount *= -1;
+        }
         this.limbSwing += this.limbSwingAmount;
+        if (funnyLimbs && modFunnyLimbs.getMode().is("Jitter")) {
+        	limbSwingAmount *= -1;
+        }
     }
 
     /**

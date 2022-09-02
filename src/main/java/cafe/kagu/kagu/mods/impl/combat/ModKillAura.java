@@ -501,4 +501,11 @@ public class ModKillAura extends Module {
 		return target;
 	}
 	
+	/**
+	 * @return the blocking
+	 */
+	public boolean isBlocking() {
+		return blocking;
+	}
+	
 }

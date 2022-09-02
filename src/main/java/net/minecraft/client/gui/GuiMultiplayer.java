@@ -202,7 +202,7 @@ public class GuiMultiplayer extends GuiScreen implements GuiYesNoCallback
             				startName = "Furry";
             			}break;
             			case 1:{
-            				startName = "E621";
+            				startName = "E621_";
             			}break;
             			case 2:{
             				startName = "Kagu";

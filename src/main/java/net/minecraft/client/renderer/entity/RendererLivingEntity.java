@@ -3,6 +3,7 @@ package net.minecraft.client.renderer.entity;
 import com.google.common.collect.Lists;
 
 import cafe.kagu.kagu.mods.ModuleManager;
+import cafe.kagu.kagu.mods.impl.visual.ModFunnyLimbs;
 import cafe.kagu.kagu.mods.impl.visual.ModViewModels;
 import cafe.kagu.kagu.utils.SpoofUtils;
 
@@ -107,6 +108,13 @@ public abstract class RendererLivingEntity<T extends EntityLivingBase> extends R
     {
         if (!Reflector.RenderLivingEvent_Pre_Constructor.exists() || !Reflector.postForgeBusEvent(Reflector.RenderLivingEvent_Pre_Constructor, new Object[] {entity, this, Double.valueOf(x), Double.valueOf(y), Double.valueOf(z)}))
         {
+        	
+            ModFunnyLimbs modFunnyLimbs = ModuleManager.modFunnyLimbs;
+            boolean funnyLimbs = (modFunnyLimbs.getSelfOnly().isDisabled() || entity == Minecraft.getMinecraft().thePlayer) && modFunnyLimbs.isEnabled();
+            if (funnyLimbs && modFunnyLimbs.getMode().is("Choppy")) {
+            	partialTicks = Math.round(partialTicks);
+            }
+        	
             GlStateManager.pushMatrix();
             GlStateManager.disableCull();
             this.mainModel.swingProgress = this.getSwingProgress(entity, partialTicks);
