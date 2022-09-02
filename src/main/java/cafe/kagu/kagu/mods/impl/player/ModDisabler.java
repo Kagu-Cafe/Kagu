@@ -66,7 +66,7 @@ public class ModDisabler extends Module {
 		switch (mode.getMode()) {
 			case "Hypixel Strafe":
 			case "Basic Desync":{
-				ChatUtils.addChatMessage("he-hewwo mista >w<, pwease welog. The disabler won't work unless you do ;-;");
+				ChatUtils.addChatMessage("he-hewwo mista >~<, pwease welog. The disabler won't work unless you do ;-;");
 			}break;
 		}
 		

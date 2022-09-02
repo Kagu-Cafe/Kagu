@@ -48,6 +48,15 @@ public class EventRender3D extends Event {
 	}
 	
 	/**
+	 * @return false
+	 */
+	@Override
+	@Deprecated
+	public boolean isPre() {
+		return false;
+	}
+	
+	/**
 	 * This event doesn't have a post call
 	 * @return false
 	 */

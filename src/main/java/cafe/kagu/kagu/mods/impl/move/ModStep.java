@@ -5,6 +5,7 @@ package cafe.kagu.kagu.mods.impl.move;
 
 import cafe.kagu.kagu.eventBus.EventHandler;
 import cafe.kagu.kagu.eventBus.Handler;
+import cafe.kagu.kagu.eventBus.impl.EventMovementUpdate;
 import cafe.kagu.kagu.eventBus.impl.EventPlayerUpdate;
 import cafe.kagu.kagu.mods.Module;
 import cafe.kagu.kagu.settings.impl.ModeSetting;
@@ -28,11 +29,14 @@ public class ModStep extends Module {
 	
 	private int ticks = 0;
 	private boolean isStepping = false;
+	private float[] movementInput = new float[2];
 	
 	@Override
 	public void onEnable() {
 		ticks = 0;
 		isStepping = false;
+		movementInput[0] = mc.thePlayer.moveForward;
+		movementInput[1] = mc.thePlayer.moveStrafing;
 	}
 	
 	@EventHandler
@@ -54,7 +58,7 @@ public class ModStep extends Module {
 				}
 			}break;
 			case "Vulcan":{
-				if (MovementUtils.canStep(1.1) && !MovementUtils.canStep(0.6) && MovementUtils.isTrueOnGround() && thePlayer.motionY < -0.01) {
+				if (!isStepping && MovementUtils.isPlayerMoving() && MovementUtils.canStep(1.1) && !MovementUtils.canStep(0.6) && MovementUtils.isTrueOnGround() && thePlayer.motionY < -0.01) {
 					isStepping = true;
 					ticks = 0;
 				}
@@ -63,11 +67,10 @@ public class ModStep extends Module {
 					switch (ticks) {
 						case 1:{
 							thePlayer.offsetPosition(0, 0.41999998688697815f, 0);
-						}
+						}break;
 						case 2:{
-//							thePlayer.offsetPosition(0, 0.580000013, 0);
 							isStepping = false;
-						}
+						}break;
 					}
 				}
 			}break;
@@ -80,6 +83,16 @@ public class ModStep extends Module {
 					if (!MovementUtils.isTrueOnGround(0.2))
 						thePlayer.motionY -= 0.05;
 				}
+			}break;
+		}
+	};
+	
+	@EventHandler
+	private Handler<EventMovementUpdate> onMovementUpdate = e -> {
+		switch (mode.getMode()) {
+			case "Vulcan":{
+				if (isStepping && ticks >= 1)
+					e.cancel();
 			}break;
 		}
 	};

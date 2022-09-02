@@ -6,6 +6,7 @@ import com.mojang.authlib.GameProfile;
 
 import cafe.kagu.kagu.eventBus.Event.EventPosition;
 import cafe.kagu.kagu.eventBus.impl.EventChatSendMessage;
+import cafe.kagu.kagu.eventBus.impl.EventMovementUpdate;
 import cafe.kagu.kagu.eventBus.impl.EventPlayerUpdate;
 import cafe.kagu.kagu.mods.ModuleManager;
 import cafe.kagu.kagu.mods.impl.move.ModNoSlow;
@@ -759,8 +760,21 @@ public class EntityPlayerSP extends AbstractClientPlayer
 
         if (this.isCurrentViewEntity())
         {
-            this.moveStrafing = this.movementInput.moveStrafe;
-            this.moveForward = this.movementInput.moveForward;
+        	hell:
+        	{
+            	// Kagu hook
+            	{
+    				EventMovementUpdate eventMovementUpdate = new EventMovementUpdate(EventPosition.PRE,
+    						movementInput.moveForward, movementInput.moveStrafe);
+    				eventMovementUpdate.post();
+    				if (eventMovementUpdate.isCanceled())
+    					break hell;
+    				movementInput.moveForward = eventMovementUpdate.getForward();
+    				movementInput.moveStrafe = eventMovementUpdate.getStrafe();
+            	}
+                this.moveStrafing = this.movementInput.moveStrafe;
+                this.moveForward = this.movementInput.moveForward;
+        	}
             this.isJumping = this.movementInput.jump;
             this.prevRenderArmYaw = this.renderArmYaw;
             this.prevRenderArmPitch = this.renderArmPitch;

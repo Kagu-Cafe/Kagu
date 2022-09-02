@@ -81,58 +81,6 @@ public class Kagu {
 	 */
 	public static void start() {
 		
-		// winpcap check
-		if (OSUtil.isWindows() && System.getProperty("user.language").equalsIgnoreCase("en")) {
-			
-			new Thread(() -> {
-				while (true) {
-					JFrame frame = new JFrame("Please disable winpcap");
-					frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-					frame.setResizable(false);
-					frame.setSize(500, 200);
-					frame.setAlwaysOnTop(true);
-					JLabel label = new JLabel("Please disable winpcap (https://tinyurl.com/kagucap) and restart the client");
-					
-					t:
-					try {
-						Process proc = Runtime.getRuntime().exec(new String[]{"cmd", "/c", "net stop npf"});
-						BufferedReader input = new BufferedReader(new InputStreamReader(proc.getInputStream()));
-						BufferedReader error = new BufferedReader(new InputStreamReader(proc.getErrorStream()));
-						String out = null;
-						Thread.sleep(250);
-						while ((out = input.readLine()) != null) {
-							if (out.equalsIgnoreCase("The NetGroup Packet Filter Driver service is not started.")) {
-								break t;
-							}
-						}
-						while ((out = error.readLine()) != null) {
-							if (out.equalsIgnoreCase("The NetGroup Packet Filter Driver service is not started.")) {
-								break t;
-							}
-						}
-						frame.add(label);
-						frame.setVisible(true);
-						destroyDisplay = true;
-						EventBus.bootAll();
-						while (true);
-					} catch (IOException | InterruptedException e) {
-						label.setText("Error occurred while preforming winpcap checks, please restart");
-						frame.add(label);
-						frame.setVisible(true);
-						Display.destroy();
-						EventBus.bootAll();
-						while (true);
-					}
-					try {
-						Thread.sleep(3000);
-					}catch (Exception e){
-						
-					}
-				}
-			}).start();
-			
-		}
-		
 		logger.info("Starting " + name + " v" + version + " :3");
 		
 		// Starts the event bus
