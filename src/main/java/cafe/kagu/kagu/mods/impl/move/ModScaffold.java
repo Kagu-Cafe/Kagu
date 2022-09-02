@@ -420,7 +420,7 @@ public class ModScaffold extends Module {
 	private Handler<EventPlayerUpdate> rotationPlayerUpdate = e -> {
 		if (e.isPost())
 			return;
-		mc.getNetHandler().getNetworkManager().sendPacketNoEvent(new C08PacketPlayerBlockPlacement(null));
+		
 		PlaceOnInfo placeOnInfo = this.placeOnInfo;
 		
 		switch (rotationMode.getMode()) {

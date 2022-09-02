@@ -7,8 +7,6 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
-import java.util.UUID;
-
 import cafe.kagu.kagu.eventBus.EventHandler;
 import cafe.kagu.kagu.eventBus.Handler;
 import cafe.kagu.kagu.eventBus.impl.EventPacketReceive;
@@ -18,43 +16,22 @@ import cafe.kagu.kagu.eventBus.impl.EventRender2D;
 import cafe.kagu.kagu.eventBus.impl.EventTick;
 import cafe.kagu.kagu.font.FontUtils;
 import cafe.kagu.kagu.mods.Module;
-import cafe.kagu.kagu.settings.impl.BooleanSetting;
 import cafe.kagu.kagu.settings.impl.ModeSetting;
 import cafe.kagu.kagu.utils.ChatUtils;
-import cafe.kagu.kagu.utils.MovementUtils;
 import cafe.kagu.kagu.utils.TimerUtil;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.ScaledResolution;
-import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.entity.player.PlayerCapabilities;
-import net.minecraft.init.Blocks;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemBow;
-import net.minecraft.item.ItemFood;
-import net.minecraft.item.ItemSword;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.client.C00PacketKeepAlive;
 import net.minecraft.network.play.client.C03PacketPlayer;
-import net.minecraft.network.play.client.C07PacketPlayerDigging;
-import net.minecraft.network.play.client.C07PacketPlayerDigging.Action;
 import net.minecraft.network.play.client.C08PacketPlayerBlockPlacement;
-import net.minecraft.network.play.client.C09PacketHeldItemChange;
 import net.minecraft.network.play.client.C0BPacketEntityAction;
-import net.minecraft.network.play.client.C0EPacketClickWindow;
 import net.minecraft.network.play.client.C0FPacketConfirmTransaction;
-import net.minecraft.network.play.client.C12PacketUpdateSign;
-import net.minecraft.network.play.client.C13PacketPlayerAbilities;
-import net.minecraft.network.play.client.C18PacketSpectate;
 import net.minecraft.network.play.client.C03PacketPlayer.C04PacketPlayerPosition;
 import net.minecraft.network.play.client.C03PacketPlayer.C05PacketPlayerLook;
 import net.minecraft.network.play.client.C03PacketPlayer.C06PacketPlayerPosLook;
-import net.minecraft.network.play.server.S04PacketEntityEquipment;
 import net.minecraft.network.play.server.S08PacketPlayerPosLook;
-import net.minecraft.network.play.server.S09PacketHeldItemChange;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.IChatComponent;
 
 /**
  * @author lavaflowglow
@@ -67,12 +44,12 @@ public class ModDisabler extends Module {
 		setSettings(mode);
 	}
 	
-	private ModeSetting mode = new ModeSetting("Mode", "S08 C04", "S08 C04", "C04 Connect", "Rapid Rotate", "Inverse Rapid Rotate", "Always Send Rotating", "Hypixel Strafe", "Test");
+	private ModeSetting mode = new ModeSetting("Mode", "S08 C04", "S08 C04", "C04 Connect", "Rapid Rotate", "Inverse Rapid Rotate", "Always Send Rotating", "Hypixel Strafe", "Basic Desync", "Test");
 	
 	private boolean changeNextC06 = false;
 	private float rapidRotation = 0;
 	
-	private boolean syncedC06 = false;
+	private boolean synced = false;
 	private Queue<Packet<?>> pingPackets = new LinkedList<>();
 	private TimerUtil c03Timer = new TimerUtil();
 	private int c0fsInQueue = 0;
@@ -81,10 +58,18 @@ public class ModDisabler extends Module {
 	public void onEnable() {
 		changeNextC06 = false;
 		rapidRotation = 0;
-		syncedC06 = false;
+		synced = false;
 		pingPackets.clear();
 		c03Timer.reset();
 		c0fsInQueue = 0;
+		
+		switch (mode.getMode()) {
+			case "Hypixel Strafe":
+			case "Basic Desync":{
+				ChatUtils.addChatMessage("he-hewwo mista >w<, pwease welog. The disabler won't work unless you do ;-;");
+			}break;
+		}
+		
 	}
 	
 	@EventHandler
@@ -102,7 +87,7 @@ public class ModDisabler extends Module {
 			}break;
 			case "Hypixel Strafe":{
 				if (thePlayer.ticksExisted == 0) {
-					syncedC06 = false;
+					synced = false;
 					setInfo("Please Wait...");
 					pingPackets.clear();
 				}
@@ -110,7 +95,7 @@ public class ModDisabler extends Module {
 				if (e.isPost()) {
 					if (pingPackets.size() > 0) {
 						setInfo("Made watchdog our bitch");
-						syncedC06 = true;
+						synced = true;
 					}
 					if (c0fsInQueue < 8)
 						return;
@@ -134,6 +119,13 @@ public class ModDisabler extends Module {
 //					if (syncedC06)
 //						ChatUtils.addChatMessage("Cum");
 				}
+			}break;
+			case "Basic Desync":{
+				if (thePlayer.ticksExisted == 0)
+					synced = false;
+			}break;
+			case "Test":{
+				
 			}break;
 		}
 	};
@@ -248,12 +240,12 @@ public class ModDisabler extends Module {
 					}
 				}
 				else if (e.getPacket() instanceof C00PacketKeepAlive) {
-					if (syncedC06)
+					if (synced)
 						if (pingPackets.offer(e.getPacket()))
 							e.cancel();
 				}
 				else if (e.getPacket() instanceof C03PacketPlayer) {
-					if (!syncedC06 && thePlayer.ticksExisted < 60)
+					if (!synced && thePlayer.ticksExisted < 60)
 						e.cancel();
 				}
 				else if (e.getPacket() instanceof C08PacketPlayerBlockPlacement) {
@@ -269,15 +261,34 @@ public class ModDisabler extends Module {
 					}
 				}
 			}break;
+			case "Basic Desync":{
+				if (e.getPacket() instanceof C03PacketPlayer) {
+					if (!synced && thePlayer.ticksExisted <= 60) {
+						e.cancel();
+					}else if (!synced) {
+						synced = true;
+					}
+				}
+			}break;
 			case "Test":{
 				if (e.getPacket() instanceof C03PacketPlayer) {
 					C03PacketPlayer c03 = (C03PacketPlayer)e.getPacket();
-					if (!c03.isMoving() && !c03.isRotating())
+					if (thePlayer.ticksExisted < 60)
 						e.cancel();
 				}
-				else if (e.getPacket() instanceof C00PacketKeepAlive || e.getPacket() instanceof C0FPacketConfirmTransaction) {
-					ChatUtils.addChatMessage(e.getPacket());
-					e.cancel();
+				else if (e.getPacket() instanceof C0BPacketEntityAction) {
+					
+					// Cancel start and stop spring packets, bypasses omnisprint checks and allows us to sprint scaffold and omni sprint
+					C0BPacketEntityAction c0b = (C0BPacketEntityAction)e.getPacket();
+					if (c0b.getAction() == net.minecraft.network.play.client.C0BPacketEntityAction.Action.START_SPRINTING
+							|| c0b.getAction() == net.minecraft.network.play.client.C0BPacketEntityAction.Action.STOP_SPRINTING)
+						e.cancel();
+					
+				}
+				else if (e.getPacket() instanceof C0FPacketConfirmTransaction || e.getPacket() instanceof C00PacketKeepAlive) {
+//					C0FPacketConfirmTransaction c0f = (C0FPacketConfirmTransaction)e.getPacket();
+//					ChatUtils.addChatMessage(c0f.getUid());
+//					e.cancel();
 				}
 			}break;
 		}
@@ -287,9 +298,19 @@ public class ModDisabler extends Module {
 	private Handler<EventRender2D> onRender2D = e -> {
 		if (e.isPost())
 			return;
-		if (mode.is("Hypixel Strafe") && !syncedC06) {
-			ScaledResolution sr = new ScaledResolution(mc);
-			FontUtils.ROBOTO_REGULAR_10.drawCenteredString("Desyncing (" + (mc.thePlayer.ticksExisted < 60 ? "1" : "2") + "/2)...", sr.getScaledWidth() / 2, sr.getScaledHeight() * 0.75, 0xffff0000);
+		ScaledResolution sr = new ScaledResolution(mc);
+		EntityPlayerSP thePlayer = mc.thePlayer;
+		switch (mode.getMode()) {
+			case "Hypixel Strafe":{
+				if (synced)
+					return;
+				FontUtils.ROBOTO_REGULAR_10.drawCenteredString("Desyncing (" + (mc.thePlayer.ticksExisted < 60 ? "1" : "2") + "/2)...", sr.getScaledWidth() / 2, sr.getScaledHeight() * 0.75, 0xffff0000);
+			}break;
+			case "Basic Desync":{
+				if (thePlayer.ticksExisted > 60 || synced)
+					return;
+				FontUtils.ROBOTO_REGULAR_10.drawCenteredString("Desyncing (" + mc.thePlayer.ticksExisted + "/60)...", sr.getScaledWidth() / 2, sr.getScaledHeight() * 0.75, 0xffff0000);
+			}break;
 		}
 	};
 	

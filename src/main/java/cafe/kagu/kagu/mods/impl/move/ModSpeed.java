@@ -16,6 +16,11 @@ import cafe.kagu.kagu.utils.RotationUtils;
 import cafe.kagu.kagu.utils.WorldUtils;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.init.Items;
+import net.minecraft.item.ItemStack;
+import net.minecraft.network.play.client.C03PacketPlayer;
+import net.minecraft.network.play.client.C08PacketPlayerBlockPlacement;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.MathHelper;
 
 /**
@@ -112,13 +117,16 @@ public class ModSpeed extends Module {
 			}break;
 			case "Test":{
 				if (!MovementUtils.isPlayerMoving()) {
-//					MovementUtils.setMotion(0);
-//					return;
+					MovementUtils.setMotion(0);
+					return;
 				}
 				
-				if (MovementUtils.isTrueOnGround(0.4)) {
-					MovementUtils.setMotion(MovementUtils.getMotion());
+				if (MovementUtils.isTrueOnGround() && thePlayer.motionY == -0.0784000015258789) {
 					thePlayer.jump();
+					MovementUtils.setMotion(speedDouble = 0.48);
+				}
+				else {
+					MovementUtils.setMotion(MovementUtils.getMotion());
 				}
 				
 			}break;
