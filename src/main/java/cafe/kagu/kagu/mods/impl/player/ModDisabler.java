@@ -272,9 +272,9 @@ public class ModDisabler extends Module {
 			}break;
 			case "Test":{
 				if (e.getPacket() instanceof C03PacketPlayer) {
-					C03PacketPlayer c03 = (C03PacketPlayer)e.getPacket();
-					if (thePlayer.ticksExisted < 60)
-						e.cancel();
+//					C03PacketPlayer c03 = (C03PacketPlayer)e.getPacket();
+//					if (thePlayer.ticksExisted < 60)
+//						e.cancel();
 				}
 				else if (e.getPacket() instanceof C0BPacketEntityAction) {
 					

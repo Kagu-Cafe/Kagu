@@ -18,6 +18,8 @@ public class SpoofUtils {
 	private static float spoofedYaw = 0, spoofedPitch = 0, spoofedLastYaw = 0, spoofedLastPitch = 0;
 	private static boolean spoofYaw = false, spoofPitch = false;
 	private static boolean spoofSneakMovement = false;
+	private static float spoofedMovementYaw = 0;
+	private static boolean spoofMovementYaw = false;
 	
 	/**
 	 * Called at the start of the client
@@ -151,5 +153,34 @@ public class SpoofUtils {
 	public static void setSpoofSneakMovement(boolean spoofSneakMovement) {
 		SpoofUtils.spoofSneakMovement = spoofSneakMovement;
 	}
-
+	
+	/**
+	 * @param spoofedMovementYaw the spoofedMovementYaw to set
+	 */
+	public static void setSpoofedMovementYaw(float spoofedMovementYaw) {
+		spoofMovementYaw = true;
+		SpoofUtils.spoofedMovementYaw = spoofedMovementYaw;
+	}
+	
+	/**
+	 * @return the spoofedMovementYaw
+	 */
+	public static float getSpoofedMovementYaw() {
+		return spoofedMovementYaw;
+	}
+	
+	/**
+	 * @return the spoofMovementYaw
+	 */
+	public static boolean isSpoofMovementYaw() {
+		return spoofMovementYaw;
+	}
+	
+	/**
+	 * @param spoofMovementYaw the spoofMovementYaw to set
+	 */
+	public static void setSpoofMovementYaw(boolean spoofMovementYaw) {
+		SpoofUtils.spoofMovementYaw = spoofMovementYaw;
+	}
+	
 }

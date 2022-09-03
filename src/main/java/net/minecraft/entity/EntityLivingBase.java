@@ -8,6 +8,7 @@ import cafe.kagu.kagu.mods.ModuleManager;
 import cafe.kagu.kagu.mods.impl.move.ModNoSlow;
 import cafe.kagu.kagu.mods.impl.visual.ModFunnyLimbs;
 import cafe.kagu.kagu.utils.ChatUtils;
+import cafe.kagu.kagu.utils.SpoofUtils;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -1138,7 +1139,7 @@ public abstract class EntityLivingBase extends Entity
         Block block = this.worldObj.getBlockState(new BlockPos(i, j, k)).getBlock();
         return (block == Blocks.ladder || block == Blocks.vine) && (!(this instanceof EntityPlayer) || !((EntityPlayer)this).isSpectator());
     }
-
+    
     /**
      * Checks whether target entity is alive.
      */
@@ -1571,7 +1572,11 @@ public abstract class EntityLivingBase extends Entity
 
         if (this.isSprinting())
         {
-            float f = this.rotationYaw * 0.017453292F;
+            float yaw = this.rotationYaw;
+            if (this == Minecraft.getMinecraft().thePlayer && SpoofUtils.isSpoofMovementYaw()) {
+            	yaw = SpoofUtils.getSpoofedMovementYaw();
+            }
+            float f = yaw * 0.017453292F;
             this.motionX -= (double)(MathHelper.sin(f) * 0.2F);
             this.motionZ += (double)(MathHelper.cos(f) * 0.2F);
         }

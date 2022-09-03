@@ -31,6 +31,7 @@ import cafe.kagu.kagu.mods.impl.move.ModNoSlow;
 import cafe.kagu.kagu.mods.impl.move.ModSafeWalk;
 import cafe.kagu.kagu.mods.impl.move.ModScaffold;
 import cafe.kagu.kagu.mods.impl.move.ModSpeed;
+import cafe.kagu.kagu.mods.impl.move.ModSpider;
 import cafe.kagu.kagu.mods.impl.move.ModSprint;
 import cafe.kagu.kagu.mods.impl.move.ModStep;
 import cafe.kagu.kagu.mods.impl.move.ModVelocity;
@@ -54,7 +55,6 @@ import cafe.kagu.kagu.mods.impl.visual.ModNormalZoomCam;
 import cafe.kagu.kagu.mods.impl.visual.ModTargetHud;
 import cafe.kagu.kagu.mods.impl.visual.ModViewModels;
 import cafe.kagu.kagu.mods.impl.yiff.ModTest;
-import cafe.kagu.kagu.utils.OSUtil;
 
 /**
  * @author lavaflowglow
@@ -83,6 +83,7 @@ public class ModuleManager {
 	public static ModStep modStep = new ModStep();
 	public static ModAntiVoid modAntiVoid = new ModAntiVoid();
 	public static ModSafeWalk modSafeWalk = new ModSafeWalk();
+	public static ModSpider modSpider = new ModSpider();
 	
 	// Player
 	public static ModAntiAim modAntiAim = new ModAntiAim();
@@ -173,6 +174,7 @@ public class ModuleManager {
 			modObsProofEsp,
 			modSafeWalk,
 			modFunnyLimbs,
+			modSpider,
 			
 			modBlink
 	};

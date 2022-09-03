@@ -57,7 +57,7 @@ public class MovementUtils {
 	public static boolean canStep(double distance) {
 		EntityPlayerSP thePlayer = mc.thePlayer;
 		float strafeYaw = RotationUtils.getStrafeYaw() + 90;
-		double intendedMotion = MathHelper.clamp_double(Math.sqrt(thePlayer.moveForward * thePlayer.moveForward + thePlayer.moveStrafing * thePlayer.moveStrafing), -0.2, 0.2);
+		double intendedMotion = MathHelper.clamp_double(Math.sqrt(thePlayer.moveForward * thePlayer.moveForward + thePlayer.moveStrafing * thePlayer.moveStrafing), -0.15, 0.15);
 		return isTrueOnGround(distance) && isPlayerMoving()
 				&& ((!mc.theWorld.getCollidingBoundingBoxes(thePlayer,
 						thePlayer.getEntityBoundingBox().offset(Math.cos(Math.toRadians(strafeYaw)) * intendedMotion,
@@ -149,39 +149,6 @@ public class MovementUtils {
 		}
 		
 		return true;
-	}
-	
-	/**
-	 * Makes the player jump with the correct jump height
-	 */
-	public static void jump() {
-		EntityPlayerSP thePlayer = mc.thePlayer;
-		thePlayer.motionY = 0.42F; // Needs to be a float, some anticheats check whether or not it is (fuck you vulcan)
-
-        if (thePlayer.isPotionActive(Potion.jump))
-        {
-        	thePlayer.motionY += (double)((float)(thePlayer.getActivePotionEffect(Potion.jump).getAmplifier() + 1) * 0.1F);
-        }
-
-        if (thePlayer.isSprinting())
-        {
-            float f = thePlayer.rotationYaw * 0.017453292F;
-            thePlayer.motionX -= (double)(MathHelper.sin(f) * 0.2F);
-            thePlayer.motionZ += (double)(MathHelper.cos(f) * 0.2F);
-        }
-
-        thePlayer.isAirBorne = true;
-        
-        thePlayer.triggerAchievement(StatList.jumpStat);
-
-        if (thePlayer.isSprinting())
-        {
-        	thePlayer.addExhaustion(0.8F);
-        }
-        else
-        {
-        	thePlayer.addExhaustion(0.2F);
-        }
 	}
 	
 }

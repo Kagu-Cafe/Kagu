@@ -74,7 +74,7 @@ public class ModNoFall extends Module {
 			case "Ground Clip":{
 				if (e.getPacket() instanceof S08PacketPlayerPosLook && thePlayer.fallDistance >= 3) {
 					thePlayer.fallDistance = 0;
-					MovementUtils.jump();
+					thePlayer.jump();
 				}
 			}break;
 		}
