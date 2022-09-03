@@ -21,6 +21,8 @@ public class SpoofUtils {
 	private static float spoofedMovementYaw = 0;
 	private static boolean spoofMovementYaw = false;
 	
+	private static Minecraft mc = Minecraft.getMinecraft();
+	
 	/**
 	 * Called at the start of the client
 	 */

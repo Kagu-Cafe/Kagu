@@ -30,6 +30,8 @@ import cafe.kagu.kagu.settings.impl.ModeSetting;
 import cafe.kagu.kagu.utils.SpoofUtils;
 import cafe.kagu.kagu.utils.TimerUtil;
 import cafe.kagu.kagu.utils.ChatUtils;
+import cafe.kagu.kagu.utils.CurvedPointHelper;
+import cafe.kagu.kagu.utils.MathUtils;
 import cafe.kagu.kagu.utils.MovementUtils;
 import cafe.kagu.kagu.utils.PlayerUtils;
 import cafe.kagu.kagu.utils.RotationUtils;
@@ -59,14 +61,17 @@ public class ModKillAura extends Module {
 
 	public ModKillAura() {
 		super("KillAura", Category.COMBAT);
-		setSettings(rotationMode, linearSpeed, blockMode, preferredTargetMetrics, targetSelectionMode, swingMode,
-				clickMode, hitRange, blockRange, hitChance, minAps, maxAps, slowOnBlock, blockSlowdown, silentRotations,
-				targetAll, targetPlayers, targetAnimals, targetMobs);
+		setSettings(rotationMode, linearSpeed, curveRotationSpeed, curveYawDifferenceToHit, blockMode,
+				preferredTargetMetrics, targetSelectionMode, swingMode, clickMode, hitRange, blockRange, hitChance,
+				minAps, maxAps, slowOnBlock, blockSlowdown, silentRotations, movementMatchRotation, targetAll,
+				targetPlayers, targetAnimals, targetMobs);
 		EventBus.setSubscriber(new ApsMinMaxFixer(this), true);
 	}
 	
-	private ModeSetting rotationMode = new ModeSetting("Rotation Mode", "Lock", "Lock", "Lock+", "Linear", "Linear+", "Linear Humanized");
+	private ModeSetting rotationMode = new ModeSetting("Rotation Mode", "Lock", "None", "Lock", "Lock+", "Linear", "Linear+", "Linear Humanized", "Quadratic Curve", "Cubic Curve");
 	private DoubleSetting linearSpeed = new DoubleSetting("Linear Speed", 10, 0.5, 180, 0.5).setDependency(() -> rotationMode.is("Linear") || rotationMode.is("Linear+") || rotationMode.is("Linear Humanized"));
+	private DoubleSetting curveRotationSpeed = new DoubleSetting("Rotation Speed", 0.1, 0.01, 1, 0.01).setDependency(() -> rotationMode.is("Quadratic Curve") || rotationMode.is("Cubic Curve"));
+	private DoubleSetting curveYawDifferenceToHit = new DoubleSetting("Min Hit Yaw Difference", 20, 1, 180, 0.5).setDependency(() -> rotationMode.is("Quadratic Curve") || rotationMode.is("Cubic Curve"));
 	
 	private ModeSetting blockMode = new ModeSetting("Block Mode", "None", "None", "Fake", "Vanilla", "Hypixel", "Test");
 	private ModeSetting preferredTargetMetrics = new ModeSetting("Preferred Target Metrics", "Distance", "Distance");
@@ -89,6 +94,7 @@ public class ModKillAura extends Module {
 	private DoubleSetting blockSlowdown = new DoubleSetting("Block Slowdown", 0.2, 0.0, 1.0, 0.05).setDependency(() -> slowOnBlock.isEnabled( )&& !slowOnBlock.isHidden());
 	
 	private BooleanSetting silentRotations = new BooleanSetting("Silent Rotations", true);
+	private BooleanSetting movementMatchRotation = new BooleanSetting("Match Movement With Rotation", false);
 	
 	// Targets
 	private BooleanSetting targetAll = new BooleanSetting("Target Everything", true);
@@ -97,12 +103,15 @@ public class ModKillAura extends Module {
 	private BooleanSetting targetMobs = new BooleanSetting("Target Mobs", false).setDependency(targetAll::isDisabled);
 	
 	// Vars
+	private EntityLivingBase lastTarget = null;
+	private EntityLivingBase target = null;
 	private double aps = minAps.getValue();
 	private boolean blocking = false;
 	private TimerUtil apsTimer = new TimerUtil();
 	private float[] lastRotations = new float[] {0, 0};
 	private boolean canHit = false;
 	private int spike = 3;
+	private CurvedPointHelper curvedPointHelper = null;
 	
 	@Override
 	public void onEnable() {
@@ -115,6 +124,7 @@ public class ModKillAura extends Module {
 	@Override
 	public void onDisable() {
 		stopBlocking();
+		curvedPointHelper = null;
 	}
 	
 	@EventHandler
@@ -133,6 +143,7 @@ public class ModKillAura extends Module {
 		if (targets.length == 0) {
 			stopBlocking();
 			this.target = null;
+			curvedPointHelper = null;
 			return;
 		}
 		
@@ -141,7 +152,13 @@ public class ModKillAura extends Module {
 		
 		if (target == null) {
 			stopBlocking();
+			curvedPointHelper = null;
 			return;
+		}
+		
+		if (target != lastTarget) {
+			curvedPointHelper = null;
+			lastTarget = target;
 		}
 		
 		distanceFromPlayer = getDistanceFromPlayerEyes(target);
@@ -167,8 +184,12 @@ public class ModKillAura extends Module {
 		rotations = getRotations(target, e);
 		e.setRotationYaw(rotations[0]);
 		e.setRotationPitch(rotations[1]);
-		SpoofUtils.setSpoofedYaw(rotations[0]);
-		SpoofUtils.setSpoofedPitch(rotations[1]);
+		if (!rotationMode.is("None")) {
+			SpoofUtils.setSpoofedYaw(rotations[0]);
+			SpoofUtils.setSpoofedPitch(rotations[1]);
+		}
+		if (movementMatchRotation.isEnabled())
+			SpoofUtils.setSpoofedMovementYaw(rotations[0]);
 		if (silentRotations.isDisabled()) {
 			mc.thePlayer.rotationYaw = rotations[0];
 			mc.thePlayer.rotationPitch = rotations[1];
@@ -235,18 +256,21 @@ public class ModKillAura extends Module {
 		AxisAlignedBB targetHitbox = target.getEntityBoundingBox().expand(hitboxSize, hitboxSize, hitboxSize);
 		
 		switch (rotationMode.getMode()) {
+			case "None":{
+				return new float[] {thePlayer.rotationYaw, thePlayer.rotationPitch};
+			} // break; not needed because we return before that point
 			case "Lock":{
 				canHit = true;
 				float[] result = RotationUtils.getRotations(playerEyePos, targetEyePos);
 				RotationUtils.makeRotationValuesLoopCorrectly(lastRotations, result);
 				return lastRotations = result;
-			}
+			} // break; not needed because we return before that point
 			case "Lock+":{
 				canHit = true;
 				float[] result = RotationUtils.getRotations(playerEyePos, PlayerUtils.getClosestPointInBoundingBox(playerEyePos, targetHitbox));
 				RotationUtils.makeRotationValuesLoopCorrectly(lastRotations, result);
 				return lastRotations = result;
-			}
+			} // break; not needed because we return before that point
 			case "Linear":
 			case "Linear+":
 			case "Linear Humanized":{
@@ -314,14 +338,33 @@ public class ModKillAura extends Module {
 				
 				canHit = yawOnPoint && pitchOnPoint;
 				return lastRotations = finalRotations;
-			}
+			} // break; not needed because we return before that point
+			case "Quadratic Curve":
+			case "Cubic Curve":{
+				canHit = true;
+				float[] targetRots = RotationUtils.getRotations(playerEyePos, targetEyePos);
+				RotationUtils.makeRotationValuesLoopCorrectly(lastRotations, targetRots);
+				
+				if (curvedPointHelper == null || curvedPointHelper.getProgress() >= 1) {
+					curvedPointHelper = new CurvedPointHelper(lastRotations, targetRots);
+					if (rotationMode.is("Cubic Curve")) {
+						curvedPointHelper.createCubicCurve();
+					}else {
+						curvedPointHelper.createQuadraticCurve();
+					}
+				}else {
+					curvedPointHelper.setEnd(targetRots);
+					curvedPointHelper.setStart(lastRotations);
+					curvedPointHelper.addProgress((float) curveRotationSpeed.getValue() + (float)ThreadLocalRandom.current().nextGaussian() * 0.1f);
+				}
+				
+				float[] finalRots = curvedPointHelper.getCurrentPoint();
+				return lastRotations = finalRots;
+			} // break; not needed because we return before that point
 		}
 		
 		return new float[] {0, 0};
 	}
-	
-	private EntityLivingBase lastTarget = null;
-	private EntityLivingBase target = null;
 	
 	/**
 	 * Gets an array of valid targets

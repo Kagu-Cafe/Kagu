@@ -128,7 +128,7 @@ public class DrawUtils3D {
 	 * @return The render position of the entity
 	 */
     public static Vector3d get3dEntityOffsets(EntityLivingBase entity) {
-        float partialTicks = Minecraft.getMinecraft().getTimer().renderPartialTicks;
+        float partialTicks = Minecraft.getMinecraft().getTimer().getRenderPartialTicks();
         double x = entity.lastTickPosX + (entity.posX - entity.lastTickPosX) * partialTicks;
         double y = entity.lastTickPosY + (entity.posY - entity.lastTickPosY) * partialTicks;
         double z = entity.lastTickPosZ + (entity.posZ - entity.lastTickPosZ) * partialTicks;

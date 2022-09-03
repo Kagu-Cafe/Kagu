@@ -70,7 +70,7 @@ public class ModScaffold extends Module {
 				blockSwitchDelay, extend, extendDistance, tower, towerMode);
 	}
 	
-	private ModeSetting rotationMode = new ModeSetting("Rotation Mode", "None", "None", "Lock", "Snap", "Hypixel");
+	private ModeSetting rotationMode = new ModeSetting("Rotation Mode", "None", "None", "Lock", "Snap", "Hypixel", "Vulcan");
 	private ModeSetting c08Position = new ModeSetting("C08 Position", "PRE", "PRE", "POST"); // PRE sends before the c03, this is default mc behaviour. POST sends after the c03, this isn't default behaviour but may bypass other anticheats
 	private ModeSetting itemMode = new ModeSetting("Item Selection", "Server", "Server", "Synced", "Spoof");
 	private ModeSetting swingMode = new ModeSetting("Swing Mode", "Server", "Server", "Synced", "No Swing");
@@ -482,6 +482,74 @@ public class ModScaffold extends Module {
 				canPlace = Math.abs(rotations[0] - lastRotations[0]) < 18;
 				rotations[0] = lastRotations[0] + (rotations[0] - lastRotations[0]) * (0.9f + RandomUtils.nextFloat(0.0f, 0.5f));
 			}break;
+			case "Vulcan":{
+				if (lastPlaceOnInfo == null && placeOnInfo == null) {
+					rotations[1] = 87.213f;
+					rotations[0] = lastRotations[0];
+					if (mc.thePlayer.ticksExisted % 2 == 0) {
+						rotations[0] += 90f;
+					}else {
+						rotations[0] -= 90f;
+					}
+//					RotationUtils.makeRotationValuesLoopCorrectly(lastRotations, rotations);
+					ChatUtils.addChatMessage(rotations[0]);
+					lastRotations = rotations;
+					break;
+				}
+				else if (lastPlaceOnInfo == null)
+					lastPlaceOnInfo = placeOnInfo;
+				BlockPos placeOn = lastPlaceOnInfo.getPlaceOn();
+				EnumFacing placeFace = lastPlaceOnInfo.getPlaceFacing();
+				rotations[1] = 87.213f;
+				EntityPlayerSP thePlayer = mc.thePlayer;
+				
+				// Used to not flag expand checks
+//				lastRotations = rotations;
+				Vector3d blockPos = new Vector3d(placeOn.getX() + 0.5 + (double) placeFace.getFrontOffsetX() / 2 + (double) placeFace.getFrontOffsetZ() / 2,
+						placeOn.getY() + 0.5 + (double) placeFace.getFrontOffsetY() / 2,
+						placeOn.getZ() + 0.5 + (double) placeFace.getFrontOffsetZ() / 2 + (double) placeFace.getFrontOffsetX() / 2);
+				
+				switch (placeFace) {
+					case NORTH:{
+						rotations[0] = 0;
+						if (thePlayer.posZ > blockPos.z) {
+							canPlace = false;
+						}else {
+							canPlace = true;
+						}
+					}break;
+					case EAST:{
+						rotations[0] = 90;
+						if (thePlayer.posX < blockPos.x) {
+							canPlace = false;
+						}else {
+							canPlace = true;
+						}
+					}break;
+					case SOUTH:{
+						rotations[0] = 180;
+						if (thePlayer.posZ < blockPos.z) {
+							canPlace = false;
+						}else {
+							canPlace = true;
+						}
+					}break;	
+					case WEST:{
+						rotations[0] = -90;
+						if (thePlayer.posX > blockPos.x) {
+							canPlace = false;
+						}else {
+							canPlace = true;
+						}
+					}break;
+					default:{
+						canPlace = true;
+					}break;
+				}
+				RotationUtils.makeRotationValuesLoopCorrectly(lastRotations, rotations);
+				lastRotations = rotations;
+			}break;
+			
 		}
 		
 		if (placeOnInfo != null)
@@ -500,7 +568,6 @@ public class ModScaffold extends Module {
 			mc.thePlayer.rotationYaw = rotations[0];
 			mc.thePlayer.rotationPitch = rotations[1];
 		}
-		
 	};
 	
 	/**
