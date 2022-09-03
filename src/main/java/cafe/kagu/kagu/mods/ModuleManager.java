@@ -12,6 +12,7 @@ import cafe.kagu.kagu.mods.impl.combat.ModHitboxes;
 import cafe.kagu.kagu.mods.impl.combat.ModKillAura;
 import cafe.kagu.kagu.mods.impl.combat.ModReach;
 import cafe.kagu.kagu.mods.impl.exploit.ModAntiCrash;
+import cafe.kagu.kagu.mods.impl.exploit.ModAntiGroundClipStuck;
 import cafe.kagu.kagu.mods.impl.exploit.ModBlink;
 import cafe.kagu.kagu.mods.impl.exploit.ModCivBreak;
 import cafe.kagu.kagu.mods.impl.exploit.ModCrasher;
@@ -120,6 +121,7 @@ public class ModuleManager {
 	public static ModSpecialSlime modSpecialSlime = new ModSpecialSlime();
 	public static ModKeepSprintAfterCombat modKeepSprintAfterCombat = new ModKeepSprintAfterCombat();
 	public static ModCivBreak modCivBreak = new ModCivBreak();
+	public static ModAntiGroundClipStuck modAntiGroundClipStuck = new ModAntiGroundClipStuck();
 	
 	// Ghost
 	public static ModHideHud modHideHud = new ModHideHud();
@@ -175,6 +177,7 @@ public class ModuleManager {
 			modSafeWalk,
 			modFunnyLimbs,
 			modSpider,
+			modAntiGroundClipStuck,
 			
 			modBlink
 	};

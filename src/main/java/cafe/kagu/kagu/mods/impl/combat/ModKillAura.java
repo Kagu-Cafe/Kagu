@@ -257,6 +257,7 @@ public class ModKillAura extends Module {
 		
 		switch (rotationMode.getMode()) {
 			case "None":{
+				canHit = true;
 				return new float[] {thePlayer.rotationYaw, thePlayer.rotationPitch};
 			} // break; not needed because we return before that point
 			case "Lock":{

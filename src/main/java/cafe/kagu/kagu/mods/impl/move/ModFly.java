@@ -30,7 +30,7 @@ public class ModFly extends Module {
 		setSettings(mode);
 	}
 	
-	private ModeSetting mode = new ModeSetting("Mode", "Vanilla", "Vanilla", "Verus", "AirHop");
+	private ModeSetting mode = new ModeSetting("Mode", "Vanilla", "Vanilla", "Verus", "AirHop", "Vulcan Glide");
 	
 	private int airhopY = 0;
 	
@@ -125,6 +125,9 @@ public class ModFly extends Module {
 					thePlayer.motionY = 0;
 				((EventPlayerUpdate)e).setOnGround(true);
 				setInfo(mode.getMode());
+			}break;
+			case "Vulcan Glide":{
+				thePlayer.motionY = thePlayer.ticksExisted % 2 == 0 ? Math.max(-0.1, thePlayer.motionY) : thePlayer.motionY;
 			}break;
 		}
 		
