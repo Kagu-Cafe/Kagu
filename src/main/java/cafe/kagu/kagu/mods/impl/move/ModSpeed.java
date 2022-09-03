@@ -34,7 +34,7 @@ public class ModSpeed extends Module {
 		setSettings(mode, speed);
 	}
 	
-	private ModeSetting mode = new ModeSetting("Mode", "Vanilla", "Vanilla", "Strafe", "Strafe On Ground", "Hypixel", "Test");
+	private ModeSetting mode = new ModeSetting("Mode", "Vanilla", "Vanilla", "Strafe", "Strafe On Ground", "Hypixel", "Vulcan Hover", "Test");
 	private DoubleSetting speed = new DoubleSetting("Speed", 1, 0.1, 10, 0.1).setDependency(() -> mode.is("Vanilla"));
 	
 	private double speedDouble = 0;
@@ -115,7 +115,7 @@ public class ModSpeed extends Module {
 				float maxRotationSpeed = 30;
 				MovementUtils.setMotion(MovementUtils.getMotion(), hypixelYaw += MathHelper.clamp_float((targetYaw - currentYaw) * 0.6f, -maxRotationSpeed, maxRotationSpeed));
 			}break;
-			case "Test":{
+			case "Vulcan Hover":{
 				if (!MovementUtils.isPlayerMoving()) {
 					MovementUtils.setMotion(0);
 					return;
@@ -123,10 +123,24 @@ public class ModSpeed extends Module {
 				
 				if (MovementUtils.isTrueOnGround() && thePlayer.motionY == -0.0784000015258789) {
 					thePlayer.jump();
-					MovementUtils.setMotion(speedDouble = 0.48);
+					onGroundTicks = 0;
 				}
-				else {
-					MovementUtils.setMotion(MovementUtils.getMotion());
+				onGroundTicks++;
+				
+				if (MovementUtils.isTrueOnGround(0.65) && !MovementUtils.isTrueOnGround() && thePlayer.motionY < 0.26) {
+//					if (onGroundTicks % 2 == 0) {
+						thePlayer.motionY = 0.2984000015258789f - (Math.random() / 500);
+//					}
+				}
+				
+			}break;
+			case "Test":{
+//				MovementUtils.setMotion(0.1);
+				
+				if (thePlayer.ticksExisted % 3 == 0) {
+					thePlayer.setPosition(thePlayer.posX, thePlayer.lastTickPosY, thePlayer.posZ);
+				}else {
+					e.setPosY(-999);
 				}
 				
 			}break;

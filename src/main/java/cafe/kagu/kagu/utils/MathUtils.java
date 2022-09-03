@@ -44,4 +44,35 @@ public class MathUtils {
 		return Math.sqrt((side1 * side1) + (side2 * side2));
 	}
 	
+	/**
+	 * Lerps two values
+	 * @param start The starting value
+	 * @param end The ending value
+	 * @param progress The current progress
+	 * @return The final lerped number
+	 */
+	public static double lerp(double start, double end, double progress) {
+		return start + Math.abs(end - start) * progress;
+	}
+	
+	/**
+	 * Calculates the range between two values and returns it
+	 * @param value1 The first value
+	 * @param value2 The second value
+	 * @return The range between the two values
+	 */
+	public static double getRange(double value1, double value2) {
+		return Math.abs(value2 - value1);
+	}
+	
+	/**
+	 * Calculates the range between two values and returns it
+	 * @param value1 The first value
+	 * @param value2 The second value
+	 * @return The range between the two values
+	 */
+	public static float getRange(float value1, float value2) {
+		return Math.abs(value2 - value1);
+	}
+	
 }

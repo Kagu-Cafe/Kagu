@@ -1,12 +1,5 @@
-import java.io.File;
-import java.lang.reflect.Field;
 import java.util.Arrays;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.core.config.ConfigurationSource;
-import org.apache.logging.log4j.core.config.Configurator;
-
-import cafe.kagu.kagu.Kagu;
 import net.minecraft.client.main.Main;
 
 public class Start

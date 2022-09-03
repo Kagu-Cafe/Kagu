@@ -15,6 +15,7 @@ import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.network.play.client.C03PacketPlayer;
 import net.minecraft.network.play.client.C07PacketPlayerDigging;
 import net.minecraft.network.play.client.C08PacketPlayerBlockPlacement;
+import net.minecraft.network.play.client.C09PacketHeldItemChange;
 import net.minecraft.network.play.client.C07PacketPlayerDigging.Action;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
@@ -32,7 +33,7 @@ public class ModNoSlow extends Module {
 	}
 	
 	private BooleanSetting cancelItemSlowdown = new BooleanSetting("Cancel Item Slowdown", true);
-	private ModeSetting itemNoSlowBypass = new ModeSetting("Item NoSlow Bypass", "None", "None", "NCP").setDependency(cancelItemSlowdown::isEnabled);
+	private ModeSetting itemNoSlowBypass = new ModeSetting("Item NoSlow Bypass", "None", "None", "NCP", "AACv4").setDependency(cancelItemSlowdown::isEnabled);
 	private BooleanSetting cancelSneakSlowdown = new BooleanSetting("Cancel Sneak Slowdown", false);
 	private BooleanSetting cancelWebSlowdown = new BooleanSetting("Cancel Web Slowdown", false);
 	private BooleanSetting cancelLadderSlowdown = new BooleanSetting("Cancel Ladder Slowdown", false);
@@ -46,6 +47,19 @@ public class ModNoSlow extends Module {
 		switch (itemNoSlowBypass.getMode()) {
 			case "NCP":{
 				if (!(e.getPacket() instanceof C03PacketPlayer) || !((C03PacketPlayer)e.getPacket()).isMoving() || !(thePlayer.isUsingItem() || thePlayer.isBlocking() || ModuleManager.modKillAura.isBlocking()))
+					return;
+				if (e.isPre()) {
+					mc.getNetHandler().getNetworkManager().sendPacket(
+							new C07PacketPlayerDigging(Action.RELEASE_USE_ITEM, BlockPos.ORIGIN, EnumFacing.DOWN));
+				}else {
+					mc.getNetHandler().getNetworkManager().sendPacket(
+							new C08PacketPlayerBlockPlacement(BlockPos.ORIGIN, 255, thePlayer.getHeldItem(), 0, 0, 0));
+				}
+			}break;
+			case "AACv4":{
+				if (!(e.getPacket() instanceof C03PacketPlayer) || !((C03PacketPlayer)e.getPacket()).isMoving() || !(thePlayer.isUsingItem() || thePlayer.isBlocking() || ModuleManager.modKillAura.isBlocking()))
+					return;
+				if (thePlayer.ticksExisted % 2 != 0)
 					return;
 				if (e.isPre()) {
 					mc.getNetHandler().getNetworkManager().sendPacket(

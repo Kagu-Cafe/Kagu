@@ -7,6 +7,10 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+import java.util.concurrent.ThreadLocalRandom;
+
+import org.apache.commons.lang3.RandomUtils;
+
 import cafe.kagu.kagu.eventBus.EventHandler;
 import cafe.kagu.kagu.eventBus.Handler;
 import cafe.kagu.kagu.eventBus.impl.EventPacketReceive;
@@ -44,7 +48,8 @@ public class ModDisabler extends Module {
 		setSettings(mode);
 	}
 	
-	private ModeSetting mode = new ModeSetting("Mode", "S08 C04", "S08 C04", "C04 Connect", "Rapid Rotate", "Inverse Rapid Rotate", "Always Send Rotating", "Hypixel Strafe", "Basic Desync", "Test");
+	private ModeSetting mode = new ModeSetting("Mode", "S08 C04", "S08 C04", "C04 Connect", "Rapid Rotate",
+			"Inverse Rapid Rotate", "Always Send Rotating", "Hypixel Strafe", "Basic Desync", "Vulcan", "Test");
 	
 	private boolean changeNextC06 = false;
 	private float rapidRotation = 0;
@@ -53,6 +58,7 @@ public class ModDisabler extends Module {
 	private Queue<Packet<?>> pingPackets = new LinkedList<>();
 	private TimerUtil c03Timer = new TimerUtil();
 	private int c0fsInQueue = 0;
+	private int ticks = 0;
 	
 	@Override
 	public void onEnable() {
@@ -62,6 +68,7 @@ public class ModDisabler extends Module {
 		pingPackets.clear();
 		c03Timer.reset();
 		c0fsInQueue = 0;
+		ticks = 0;
 		
 		switch (mode.getMode()) {
 			case "Hypixel Strafe":
@@ -74,9 +81,15 @@ public class ModDisabler extends Module {
 	
 	@EventHandler
 	private Handler<EventTick> onTick = e -> {
-		if (!mode.is("Hypixel Strafe"))
+		if (!mode.is("Hypixel Strafe") && !mode.is("Vulcan"))
 			setInfo(mode.getMode());
 		EntityPlayerSP thePlayer = mc.thePlayer;
+		
+		// Clear ping packets if disconnected
+		if (!mc.getNetHandler().isDoneLoadingTerrain()) {
+			pingPackets.clear();
+		}
+		
 		switch (mode.getMode()) {
 			case "Always Send Rotating":{
 				if (e.isPost())
@@ -123,6 +136,19 @@ public class ModDisabler extends Module {
 			case "Basic Desync":{
 				if (thePlayer.ticksExisted == 0)
 					synced = false;
+				setInfo("Basic Desync");
+			}break;
+			case "Vulcan":{
+				if (e.isPost())
+					return;
+				setInfo("Vulcan (" + pingPackets.size() + ")");
+				if (pingPackets.size() > 150 || thePlayer.ticksExisted == 0) {
+					NetworkManager networkManager = mc.getNetHandler().getNetworkManager();
+					Packet<?> p = null;
+					while ((p = pingPackets.poll()) != null) {
+						networkManager.sendPacketNoEvent(p);
+					}
+				}
 			}break;
 			case "Test":{
 				
@@ -270,11 +296,39 @@ public class ModDisabler extends Module {
 					}
 				}
 			}break;
+			case "Vulcan":{
+				if (e.getPacket() instanceof C0BPacketEntityAction) {
+					// Cancel start and stop spring packets
+					C0BPacketEntityAction c0b = (C0BPacketEntityAction)e.getPacket();
+					if (c0b.getAction() == net.minecraft.network.play.client.C0BPacketEntityAction.Action.START_SPRINTING
+							|| c0b.getAction() == net.minecraft.network.play.client.C0BPacketEntityAction.Action.STOP_SPRINTING)
+						e.cancel();
+				}
+				else if (e.getPacket() instanceof C0FPacketConfirmTransaction || e.getPacket() instanceof C00PacketKeepAlive) {
+					if (pingPackets.offer(e.getPacket()))
+						e.cancel();
+				}
+				else if (e.getPacket() instanceof C03PacketPlayer) {
+					
+					// Disables killaura strafe checks
+					C03PacketPlayer c03PacketPlayer = (C03PacketPlayer)e.getPacket();
+					if (c03PacketPlayer.isOnGround()) {
+						ticks = 0;
+					}
+					ticks++;
+					if (c03PacketPlayer.isMoving() && ticks <= 2) {
+						c03PacketPlayer.setX(c03PacketPlayer.getPositionX() + (Math.random() / 100) * (ThreadLocalRandom.current().nextBoolean() ? 1 : -1));
+						c03PacketPlayer.setZ(c03PacketPlayer.getPositionZ() + (Math.random() / 100) * (ThreadLocalRandom.current().nextBoolean() ? 1 : -1));
+					}
+					
+				}
+			}break;
 			case "Test":{
 				if (e.getPacket() instanceof C03PacketPlayer) {
 					C03PacketPlayer c03 = (C03PacketPlayer)e.getPacket();
-					if (thePlayer.ticksExisted < 60)
-						e.cancel();
+//					c03.setOnGround(false);
+//					if (thePlayer.ticksExisted < 60)
+//						e.cancel();
 				}
 				else if (e.getPacket() instanceof C0BPacketEntityAction) {
 					

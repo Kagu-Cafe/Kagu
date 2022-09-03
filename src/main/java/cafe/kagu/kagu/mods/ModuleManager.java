@@ -12,6 +12,7 @@ import cafe.kagu.kagu.mods.impl.combat.ModHitboxes;
 import cafe.kagu.kagu.mods.impl.combat.ModKillAura;
 import cafe.kagu.kagu.mods.impl.combat.ModReach;
 import cafe.kagu.kagu.mods.impl.exploit.ModAntiCrash;
+import cafe.kagu.kagu.mods.impl.exploit.ModAntiGroundClipStuck;
 import cafe.kagu.kagu.mods.impl.exploit.ModBlink;
 import cafe.kagu.kagu.mods.impl.exploit.ModCivBreak;
 import cafe.kagu.kagu.mods.impl.exploit.ModCrasher;
@@ -31,6 +32,7 @@ import cafe.kagu.kagu.mods.impl.move.ModNoSlow;
 import cafe.kagu.kagu.mods.impl.move.ModSafeWalk;
 import cafe.kagu.kagu.mods.impl.move.ModScaffold;
 import cafe.kagu.kagu.mods.impl.move.ModSpeed;
+import cafe.kagu.kagu.mods.impl.move.ModSpider;
 import cafe.kagu.kagu.mods.impl.move.ModSprint;
 import cafe.kagu.kagu.mods.impl.move.ModStep;
 import cafe.kagu.kagu.mods.impl.move.ModVelocity;
@@ -54,7 +56,6 @@ import cafe.kagu.kagu.mods.impl.visual.ModNormalZoomCam;
 import cafe.kagu.kagu.mods.impl.visual.ModTargetHud;
 import cafe.kagu.kagu.mods.impl.visual.ModViewModels;
 import cafe.kagu.kagu.mods.impl.yiff.ModTest;
-import cafe.kagu.kagu.utils.OSUtil;
 
 /**
  * @author lavaflowglow
@@ -83,6 +84,7 @@ public class ModuleManager {
 	public static ModStep modStep = new ModStep();
 	public static ModAntiVoid modAntiVoid = new ModAntiVoid();
 	public static ModSafeWalk modSafeWalk = new ModSafeWalk();
+	public static ModSpider modSpider = new ModSpider();
 	
 	// Player
 	public static ModAntiAim modAntiAim = new ModAntiAim();
@@ -119,6 +121,7 @@ public class ModuleManager {
 	public static ModSpecialSlime modSpecialSlime = new ModSpecialSlime();
 	public static ModKeepSprintAfterCombat modKeepSprintAfterCombat = new ModKeepSprintAfterCombat();
 	public static ModCivBreak modCivBreak = new ModCivBreak();
+	public static ModAntiGroundClipStuck modAntiGroundClipStuck = new ModAntiGroundClipStuck();
 	
 	// Ghost
 	public static ModHideHud modHideHud = new ModHideHud();
@@ -173,6 +176,8 @@ public class ModuleManager {
 			modObsProofEsp,
 			modSafeWalk,
 			modFunnyLimbs,
+			modSpider,
+			modAntiGroundClipStuck,
 			
 			modBlink
 	};

@@ -82,24 +82,9 @@ public class ModTest extends Module {
 
 	@EventHandler
 	private Handler<EventPlayerUpdate> onPlayerUpdate = e -> {
-		if (e.isPre())
+		if (e.isPost())
 			return;
-		EntityPlayerSP thePlayer = mc.thePlayer;
-//		ChatUtils.addChatMessage(thePlayer.posY - thePlayer.lastTickPosY);
-//		if (MovementUtils.isTrueOnGround() && MovementUtils.isPlayerMoving()) {
-//			MovementUtils.jump();
-//			e.setOnGround(true);
-//			thePlayer.motionY += 0.04f;
-//			ticks = 0;
-//			MovementUtils.setMotion(0.6);
-//		}
-		
-		ticks++;
-		
-//		MovementUtils.setMotion(Math.max(MovementUtils.getMotion(), (MovementUtils.isTrueOnGround() ? 0 : 0.36)));
-		
-//		ChatUtils.addChatMessage(thePlayer.motionY);
-		
+		e.setPosY(e.getPosY() - (Math.random() / 5));
 	};
 	
 	@EventHandler
@@ -107,7 +92,7 @@ public class ModTest extends Module {
 		if (e.isPost())
 			return;
 		if (e.getPacket() instanceof C00PacketKeepAlive) {
-			e.cancel();
+//			e.cancel();
 		}
 	};
 	
