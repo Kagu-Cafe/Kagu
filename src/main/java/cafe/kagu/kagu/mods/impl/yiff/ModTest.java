@@ -3,6 +3,9 @@
  */
 package cafe.kagu.kagu.mods.impl.yiff;
 
+import java.util.ArrayList;
+import java.util.stream.Collectors;
+
 import javax.vecmath.Vector3d;
 
 import org.apache.commons.lang3.RandomUtils;
@@ -15,6 +18,7 @@ import cafe.kagu.kagu.eventBus.impl.EventPlayerUpdate;
 import cafe.kagu.kagu.eventBus.impl.EventRender3D;
 import cafe.kagu.kagu.eventBus.impl.EventTick;
 import cafe.kagu.kagu.mods.Module;
+import cafe.kagu.kagu.mods.ModuleManager;
 import cafe.kagu.kagu.settings.impl.BooleanSetting;
 import cafe.kagu.kagu.settings.impl.DoubleSetting;
 import cafe.kagu.kagu.settings.impl.IntegerSetting;
@@ -32,6 +36,9 @@ import cafe.kagu.kagu.utils.UiUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayer.EnumChatVisibility;
 import net.minecraft.network.play.client.C00PacketKeepAlive;
 import net.minecraft.network.play.client.C03PacketPlayer;
@@ -85,6 +92,7 @@ public class ModTest extends Module {
 		if (e.isPost())
 			return;
 		e.setPosY(e.getPosY() - (Math.random() / 5));
+		
 	};
 	
 	@EventHandler

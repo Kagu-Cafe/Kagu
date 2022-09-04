@@ -36,6 +36,7 @@ import net.minecraft.network.play.client.C03PacketPlayer.C04PacketPlayerPosition
 import net.minecraft.network.play.client.C03PacketPlayer.C05PacketPlayerLook;
 import net.minecraft.network.play.client.C03PacketPlayer.C06PacketPlayerPosLook;
 import net.minecraft.network.play.server.S08PacketPlayerPosLook;
+import net.minecraft.util.BlockPos;
 
 /**
  * @author lavaflowglow
@@ -95,8 +96,8 @@ public class ModDisabler extends Module {
 				if (e.isPost())
 					return;
 				// Tricks mc into thinking that the player rotated and that it needs to send an update to the server
-				mc.thePlayer.setLastReportedYaw(mc.thePlayer.getLastReportedYaw() + 1);
-				mc.thePlayer.setLastReportedPitch(mc.thePlayer.getLastReportedPitch() + 1);
+				thePlayer.setLastReportedYaw(mc.thePlayer.getLastReportedYaw() + 1);
+				thePlayer.setLastReportedPitch(mc.thePlayer.getLastReportedPitch() + 1);
 			}break;
 			case "Hypixel Strafe":{
 				if (thePlayer.ticksExisted == 0) {
@@ -142,6 +143,11 @@ public class ModDisabler extends Module {
 				if (e.isPost())
 					return;
 				setInfo("Vulcan (" + pingPackets.size() + ")");
+				thePlayer.setLastReportedYaw(mc.thePlayer.getLastReportedYaw() + 1);
+				thePlayer.setLastReportedPitch(mc.thePlayer.getLastReportedPitch() + 1);
+				thePlayer.setLastReportedPosX(thePlayer.getLastReportedPosX() + 1);
+				thePlayer.setLastReportedPosY(thePlayer.getLastReportedPosY() + 1);
+				thePlayer.setLastReportedPosZ(thePlayer.getLastReportedPosZ() + 1);
 				if (pingPackets.size() > 150 || thePlayer.ticksExisted == 0) {
 					NetworkManager networkManager = mc.getNetHandler().getNetworkManager();
 					Packet<?> p = null;
@@ -319,6 +325,10 @@ public class ModDisabler extends Module {
 					if (c03PacketPlayer.isMoving() && ticks <= 2) {
 						c03PacketPlayer.setX(c03PacketPlayer.getPositionX() + (Math.random() / 100) * (ThreadLocalRandom.current().nextBoolean() ? 1 : -1));
 						c03PacketPlayer.setZ(c03PacketPlayer.getPositionZ() + (Math.random() / 100) * (ThreadLocalRandom.current().nextBoolean() ? 1 : -1));
+					}
+					if (c03PacketPlayer.isRotating() && Math.abs(c03PacketPlayer.getYaw() % 1) <= 0.3f) {
+						c03PacketPlayer.setYaw((float) (c03PacketPlayer.getYaw() + (Math.random() / 100) * (ThreadLocalRandom.current().nextBoolean() ? 1 : -1)));
+						c03PacketPlayer.setPitch((float) (c03PacketPlayer.getPitch() + (Math.random() / 100) * (ThreadLocalRandom.current().nextBoolean() ? 1 : -1)));
 					}
 					
 				}

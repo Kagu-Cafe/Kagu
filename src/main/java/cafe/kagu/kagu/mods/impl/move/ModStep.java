@@ -58,7 +58,7 @@ public class ModStep extends Module {
 				}
 			}break;
 			case "Vulcan":{
-				if (!isStepping && MovementUtils.isPlayerMoving() && MovementUtils.canStep(1.1) && !MovementUtils.canStep(0.6) && MovementUtils.isTrueOnGround() && thePlayer.motionY < -0.01) {
+				if (!isStepping && thePlayer.ticksExisted % 2 == 0 && MovementUtils.isPlayerMoving() && MovementUtils.canStep(1.1) && !MovementUtils.canStep(0.6) && MovementUtils.isTrueOnGround() && thePlayer.motionY < -0.01) {
 					isStepping = true;
 					ticks = 0;
 				}

@@ -27,6 +27,7 @@ import cafe.kagu.kagu.mods.impl.ghost.ModObsProofEsp;
 import cafe.kagu.kagu.mods.impl.ghost.ModObsProofUi;
 import cafe.kagu.kagu.mods.impl.move.ModAntiVoid;
 import cafe.kagu.kagu.mods.impl.move.ModFly;
+import cafe.kagu.kagu.mods.impl.move.ModMagnetAura;
 import cafe.kagu.kagu.mods.impl.move.ModMoonJump;
 import cafe.kagu.kagu.mods.impl.move.ModNoSlow;
 import cafe.kagu.kagu.mods.impl.move.ModSafeWalk;
@@ -85,6 +86,7 @@ public class ModuleManager {
 	public static ModAntiVoid modAntiVoid = new ModAntiVoid();
 	public static ModSafeWalk modSafeWalk = new ModSafeWalk();
 	public static ModSpider modSpider = new ModSpider();
+	public static ModMagnetAura modMagnetAura = new ModMagnetAura();
 	
 	// Player
 	public static ModAntiAim modAntiAim = new ModAntiAim();
@@ -178,6 +180,7 @@ public class ModuleManager {
 			modFunnyLimbs,
 			modSpider,
 			modAntiGroundClipStuck,
+			modMagnetAura,
 			
 			modBlink
 	};

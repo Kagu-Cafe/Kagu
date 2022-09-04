@@ -71,6 +71,7 @@ public class ModFly extends Module {
 		
 		switch (mode.getMode()) {
 			case "Verus":{
+				setInfo("Verus Damage");
 				mc.thePlayer.setSprinting(true);
 				if (thePlayer.hurtTime > 0 && !verusDamage) {
 					verusFlyTicks = 22;
@@ -99,6 +100,7 @@ public class ModFly extends Module {
 				}
 			}break;
 			case "AirHop":{
+				setInfo("AirHop");
 				if (MovementUtils.isTrueOnGround()) {
 					airhopY = (int)Math.round(thePlayer.posY);
 				}
@@ -127,7 +129,8 @@ public class ModFly extends Module {
 				setInfo(mode.getMode());
 			}break;
 			case "Vulcan Glide":{
-				thePlayer.motionY = thePlayer.ticksExisted % 2 == 0 ? Math.max(-0.1, thePlayer.motionY) : thePlayer.motionY;
+				setInfo("Vulcan Glide");
+				thePlayer.motionY = thePlayer.ticksExisted % 3 != 0 ? Math.max(-0.1, thePlayer.motionY) : thePlayer.motionY;
 			}break;
 		}
 		

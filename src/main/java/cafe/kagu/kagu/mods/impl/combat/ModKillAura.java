@@ -342,7 +342,6 @@ public class ModKillAura extends Module {
 			} // break; not needed because we return before that point
 			case "Quadratic Curve":
 			case "Cubic Curve":{
-				canHit = true;
 				float[] targetRots = RotationUtils.getRotations(playerEyePos, targetEyePos);
 				RotationUtils.makeRotationValuesLoopCorrectly(lastRotations, targetRots);
 				
@@ -360,6 +359,7 @@ public class ModKillAura extends Module {
 				}
 				
 				float[] finalRots = curvedPointHelper.getCurrentPoint();
+				canHit = MathUtils.getRange(finalRots[0], lastRotations[0]) <= curveYawDifferenceToHit.getValue();
 				return lastRotations = finalRots;
 			} // break; not needed because we return before that point
 		}

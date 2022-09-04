@@ -1016,5 +1016,47 @@ public class EntityPlayerSP extends AbstractClientPlayer
 	public float getLastReportedPitch() {
 		return lastReportedPitch;
 	}
-    
+
+	/**
+	 * @return the lastReportedPosX
+	 */
+	public double getLastReportedPosX() {
+		return lastReportedPosX;
+	}
+
+	/**
+	 * @param lastReportedPosX the lastReportedPosX to set
+	 */
+	public void setLastReportedPosX(double lastReportedPosX) {
+		this.lastReportedPosX = lastReportedPosX;
+	}
+
+	/**
+	 * @return the lastReportedPosY
+	 */
+	public double getLastReportedPosY() {
+		return lastReportedPosY;
+	}
+
+	/**
+	 * @param lastReportedPosY the lastReportedPosY to set
+	 */
+	public void setLastReportedPosY(double lastReportedPosY) {
+		this.lastReportedPosY = lastReportedPosY;
+	}
+
+	/**
+	 * @return the lastReportedPosZ
+	 */
+	public double getLastReportedPosZ() {
+		return lastReportedPosZ;
+	}
+
+	/**
+	 * @param lastReportedPosZ the lastReportedPosZ to set
+	 */
+	public void setLastReportedPosZ(double lastReportedPosZ) {
+		this.lastReportedPosZ = lastReportedPosZ;
+	}
+
 }

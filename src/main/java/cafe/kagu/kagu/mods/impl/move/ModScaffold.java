@@ -491,8 +491,6 @@ public class ModScaffold extends Module {
 					}else {
 						rotations[0] -= 90f;
 					}
-//					RotationUtils.makeRotationValuesLoopCorrectly(lastRotations, rotations);
-					ChatUtils.addChatMessage(rotations[0]);
 					lastRotations = rotations;
 					break;
 				}
