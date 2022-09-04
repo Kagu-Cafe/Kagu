@@ -63,7 +63,6 @@ import net.minecraft.util.ResourceLocation;
  */
 public class GuiCsgoClickgui extends GuiScreen {
 	
-	// Private because this is an a singleton class
 	private GuiCsgoClickgui() {
 		
 	}
@@ -1005,6 +1004,7 @@ public class GuiCsgoClickgui extends GuiScreen {
         		return;
         	}
         }
+        
 	}
 	
 }

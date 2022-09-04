@@ -23,6 +23,7 @@ import cafe.kagu.kagu.settings.impl.LabelSetting;
 import cafe.kagu.kagu.settings.impl.ModeSetting;
 import cafe.kagu.kagu.ui.clickgui.GuiCsgoClickgui;
 import cafe.kagu.kagu.utils.ChatUtils;
+import cafe.kagu.kagu.utils.ClickGuiUtils;
 import cafe.kagu.kagu.utils.StencilUtil;
 import cafe.kagu.kagu.utils.UiUtils;
 import net.minecraft.client.gui.GuiChat;
@@ -81,7 +82,7 @@ public class ModTargetHud extends Module {
 			return;
 		EntityLivingBase target = ModuleManager.modKillAura.getTarget();
 		if (ModuleManager.modKillAura.isDisabled() || target == null)
-			if (mc.getCurrentScreen() != null && (mc.getCurrentScreen() instanceof GuiChat || mc.getCurrentScreen() instanceof GuiCsgoClickgui))
+			if (mc.getCurrentScreen() != null && (mc.getCurrentScreen() instanceof GuiChat || ClickGuiUtils.isInClickGui()))
 				target = mc.thePlayer;
 			else {
 				animation1[0] = 0;

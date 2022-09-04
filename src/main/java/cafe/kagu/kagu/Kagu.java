@@ -30,6 +30,7 @@ import cafe.kagu.kagu.ui.clickgui.GuiCsgoClickgui;
 import cafe.kagu.kagu.ui.ghost.GhostUi;
 import cafe.kagu.kagu.ui.gui.GuiDefaultMainMenu;
 import cafe.kagu.kagu.ui.gui.MainMenuHandler;
+import cafe.kagu.kagu.utils.ClickGuiUtils;
 import cafe.kagu.kagu.utils.InventoryUtils;
 import cafe.kagu.kagu.utils.MovementUtils;
 import cafe.kagu.kagu.utils.OSUtil;
@@ -163,10 +164,15 @@ public class Kagu {
 		WorldUtils.start();
 		logger.info("Loaded the world utils");
 		
-		// Load the rotation utils
+		// Load the inventory utils
 		logger.info("Loading the inventory utils...");
 		InventoryUtils.start();
 		logger.info("Loaded the inventory utils");
+		
+		// Load the clickgui utils
+		logger.info("Loading the clickgui utils...");
+		ClickGuiUtils.start();
+		logger.info("Loaded the clickgui utils");
 		
 		// Hook the hud
 		logger.info("Hooking the hud...");
