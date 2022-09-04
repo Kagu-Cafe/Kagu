@@ -73,7 +73,7 @@ public class GuiAltManager extends GuiScreen {
 		}
 		UiUtils.drawRoundedRect(width - buttonWidth - buttonMargin, height - buttonHeight - buttonMargin, width - buttonMargin, height - buttonMargin, mojangButtonColor, buttonCurve);
 		mc.getTextureManager().bindTexture(mojangLogo);
-		Gui.drawTexture(width - buttonWidth - buttonMargin + buttonImageMargin, height - buttonHeight - buttonMargin + buttonImageMargin, buttonImageSize, buttonImageSize);
+		Gui.drawTexture(width - buttonWidth - buttonMargin + buttonImageMargin, height - buttonHeight - buttonMargin + buttonImageMargin, buttonImageSize, buttonImageSize, true);
 		mojangAltFont.drawCenteredString("Add Cracked Alt", width - buttonWidth - buttonMargin + buttonImageMargin + buttonImageSize + ((buttonWidth - buttonImageSize - buttonImageMargin * 2) / 2),
 				height - buttonHeight / 2 - buttonMargin - mojangAltFont.getFontHeight() / 2 + 2, 0xffffffff);
 		
@@ -89,7 +89,7 @@ public class GuiAltManager extends GuiScreen {
 		}
 		UiUtils.drawRoundedRect(width - buttonWidth * 2 - buttonMargin * 2, height - buttonHeight - buttonMargin, width - buttonMargin * 2 - buttonWidth, height - buttonMargin, microsoftButtonColor, buttonCurve);
 		mc.getTextureManager().bindTexture(microsoftLogo);
-		Gui.drawTexture(width - buttonWidth * 2 - buttonMargin * 2 + buttonImageMargin, height - buttonHeight - buttonMargin + buttonImageMargin, buttonImageSize, buttonImageSize);
+		Gui.drawTexture(width - buttonWidth * 2 - buttonMargin * 2 + buttonImageMargin, height - buttonHeight - buttonMargin + buttonImageMargin, buttonImageSize, buttonImageSize, true);
 		microsoftAltFont.drawCenteredString("Add Microsoft Alt", width - buttonWidth * 2 - buttonMargin * 2 + buttonImageMargin + buttonImageSize + ((buttonWidth - buttonImageSize - buttonImageMargin * 2) / 2),
 				height - buttonHeight / 2 - buttonMargin - microsoftAltFont.getFontHeight() / 2 - 2, microsoftFontColor);
 		

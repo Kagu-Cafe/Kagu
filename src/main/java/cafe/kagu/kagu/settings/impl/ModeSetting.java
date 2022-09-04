@@ -24,6 +24,7 @@ public class ModeSetting extends Setting<ModeSetting> {
 	public ModeSetting(String name, String defaultMode, String... modes) {
 		super(name);
 		this.modes.addAll(Arrays.asList(modes));
+		modeIndex = this.modes.indexOf(defaultMode) == -1 ? 0 : this.modes.indexOf(defaultMode);
 	}
 	
 	private List<String> modes = new ArrayList<>();

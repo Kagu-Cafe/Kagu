@@ -18,6 +18,7 @@ import cafe.kagu.kagu.eventBus.impl.EventRender3D;
 import cafe.kagu.kagu.eventBus.impl.EventTick;
 import cafe.kagu.kagu.mods.Module;
 import cafe.kagu.kagu.mods.ModuleManager;
+import cafe.kagu.kagu.mods.impl.visual.ModClickGui;
 import cafe.kagu.kagu.utils.DrawUtils3D;
 import net.minecraft.client.Minecraft;
 
@@ -68,7 +69,7 @@ public class EventBus {
 				}
 				
 				// If subscriber is linked to module AND the module is disabled then cancel
-				if (moduleSubscribers.containsKey(subscriber) && moduleSubscribers.get(subscriber).isDisabled()) {
+				if (moduleSubscribers.containsKey(subscriber) && moduleSubscribers.get(subscriber).isDisabled() && !(moduleSubscribers.get(subscriber) instanceof ModClickGui)) {
 					continue;
 				}
 				

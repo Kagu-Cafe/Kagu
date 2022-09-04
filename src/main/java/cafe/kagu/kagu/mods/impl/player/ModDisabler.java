@@ -329,10 +329,6 @@ public class ModDisabler extends Module {
 						c03PacketPlayer.setX(c03PacketPlayer.getPositionX() + (Math.random() / 100) * (ThreadLocalRandom.current().nextBoolean() ? 1 : -1));
 						c03PacketPlayer.setZ(c03PacketPlayer.getPositionZ() + (Math.random() / 100) * (ThreadLocalRandom.current().nextBoolean() ? 1 : -1));
 					}
-					if (c03PacketPlayer.isRotating() && Math.abs(c03PacketPlayer.getYaw() % 1) <= 0.3f) {
-//						c03PacketPlayer.setYaw((float) (c03PacketPlayer.getYaw() + (Math.random() / 100) * (ThreadLocalRandom.current().nextBoolean() ? 1 : -1)));
-//						c03PacketPlayer.setPitch(MathHelper.clamp_float((float) (c03PacketPlayer.getPitch() + (Math.random() / 100) * (ThreadLocalRandom.current().nextBoolean() ? 1 : -1)), -90, 90));
-					}
 					
 				}
 			}break;

@@ -259,10 +259,13 @@ public class Gui
      * @param y The y coord of the texture
      * @param width The width the texture should appear on screen
      * @param height The height the texture should appear on screen
+     * @param linear Whether the image should render with linear or nearest neighbor, in other words set to true for smoothing on the pixels and set to false for things like pixel art
      */
-    public static void drawTexture(double x, double y, double width, double height) {
+    public static void drawTexture(double x, double y, double width, double height, boolean linear) {
     	GlStateManager.pushMatrix();
     	GlStateManager.pushAttrib();
+		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, linear ? GL11.GL_LINEAR : GL11.GL_NEAREST);
+		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, linear ? GL11.GL_LINEAR : GL11.GL_NEAREST);
     	GlStateManager.color(1, 1, 1, 1);
     	GL11.glEnable(GL11.GL_BLEND);
     	GlStateManager.enableBlend();

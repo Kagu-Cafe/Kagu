@@ -27,6 +27,7 @@ import cafe.kagu.kagu.managers.SessionManager;
 import cafe.kagu.kagu.mods.ModuleManager;
 import cafe.kagu.kagu.ui.Hud;
 import cafe.kagu.kagu.ui.clickgui.GuiCsgoClickgui;
+import cafe.kagu.kagu.ui.clickgui.GuiDropdownClickgui;
 import cafe.kagu.kagu.ui.ghost.GhostUi;
 import cafe.kagu.kagu.ui.gui.GuiDefaultMainMenu;
 import cafe.kagu.kagu.ui.gui.MainMenuHandler;
@@ -130,9 +131,10 @@ public class Kagu {
 		logger.info("Started the session manager");
 		
 		// Start the clickgui
-		logger.info("Starting the clickgui...");
+		logger.info("Starting the clickguis...");
 		GuiCsgoClickgui.getInstance().start();
-		logger.info("Started the clickgui");
+		GuiDropdownClickgui.getInstance().start();
+		logger.info("Started the clickguis");
 		
 		// Load fonts
 		logger.info("Loading fonts...");
