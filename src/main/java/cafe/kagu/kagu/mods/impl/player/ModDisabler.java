@@ -20,6 +20,7 @@ import cafe.kagu.kagu.eventBus.impl.EventRender2D;
 import cafe.kagu.kagu.eventBus.impl.EventTick;
 import cafe.kagu.kagu.font.FontUtils;
 import cafe.kagu.kagu.mods.Module;
+import cafe.kagu.kagu.mods.ModuleManager;
 import cafe.kagu.kagu.settings.impl.ModeSetting;
 import cafe.kagu.kagu.utils.ChatUtils;
 import cafe.kagu.kagu.utils.MovementUtils;
@@ -325,10 +326,6 @@ public class ModDisabler extends Module {
 					ticks++;
 					if (c03PacketPlayer.isMoving() && ticks <= 2) {
 						c03PacketPlayer.setX(c03PacketPlayer.getPositionX() + (Math.random() / 100) * (ThreadLocalRandom.current().nextBoolean() ? 1 : -1));
-						if (Math.abs(thePlayer.posY - thePlayer.lastTickPosY) <= 0.079 && !MovementUtils.isTrueOnGround()) {
-//							ChatUtils.addChatMessage("t");
-							c03PacketPlayer.setY(c03PacketPlayer.getPositionY() + (Math.random() / 10) * (ThreadLocalRandom.current().nextBoolean() ? 1 : -1));
-						}
 						c03PacketPlayer.setZ(c03PacketPlayer.getPositionZ() + (Math.random() / 100) * (ThreadLocalRandom.current().nextBoolean() ? 1 : -1));
 					}
 					if (c03PacketPlayer.isRotating() && Math.abs(c03PacketPlayer.getYaw() % 1) <= 0.3f) {
