@@ -30,7 +30,7 @@ import cafe.kagu.kagu.settings.impl.ModeSetting;
 import cafe.kagu.kagu.utils.SpoofUtils;
 import cafe.kagu.kagu.utils.TimerUtil;
 import cafe.kagu.kagu.utils.ChatUtils;
-import cafe.kagu.kagu.utils.CurvedPointHelper;
+import cafe.kagu.kagu.utils.CurvedLineHelper;
 import cafe.kagu.kagu.utils.MathUtils;
 import cafe.kagu.kagu.utils.MovementUtils;
 import cafe.kagu.kagu.utils.PlayerUtils;
@@ -61,7 +61,7 @@ public class ModKillAura extends Module {
 
 	public ModKillAura() {
 		super("KillAura", Category.COMBAT);
-		setSettings(rotationMode, linearSpeed, curveRotationSpeed, curveYawDifferenceToHit, blockMode,
+		setSettings(rotationMode, vulcanMode, linearSpeed, curveRotationSpeed, curveYawDifferenceToHit, blockMode,
 				preferredTargetMetrics, targetSelectionMode, swingMode, clickMode, hitRange, blockRange, hitChance,
 				minAps, maxAps, slowOnBlock, blockSlowdown, silentRotations, movementMatchRotation, targetAll,
 				targetPlayers, targetAnimals, targetMobs);
@@ -69,6 +69,7 @@ public class ModKillAura extends Module {
 	}
 	
 	private ModeSetting rotationMode = new ModeSetting("Rotation Mode", "Lock", "None", "Lock", "Lock+", "Linear", "Linear+", "Linear Humanized", "Quadratic Curve", "Cubic Curve");
+	private BooleanSetting vulcanMode = new BooleanSetting("Vulcan Rotation Bypass", false);
 	private DoubleSetting linearSpeed = new DoubleSetting("Linear Speed", 10, 0.5, 180, 0.5).setDependency(() -> rotationMode.is("Linear") || rotationMode.is("Linear+") || rotationMode.is("Linear Humanized"));
 	private DoubleSetting curveRotationSpeed = new DoubleSetting("Rotation Speed", 0.1, 0.01, 1, 0.01).setDependency(() -> rotationMode.is("Quadratic Curve") || rotationMode.is("Cubic Curve"));
 	private DoubleSetting curveYawDifferenceToHit = new DoubleSetting("Min Hit Yaw Difference", 20, 1, 180, 0.5).setDependency(() -> rotationMode.is("Quadratic Curve") || rotationMode.is("Cubic Curve"));
@@ -111,7 +112,7 @@ public class ModKillAura extends Module {
 	private float[] lastRotations = new float[] {0, 0};
 	private boolean canHit = false;
 	private int spike = 3;
-	private CurvedPointHelper curvedPointHelper = null;
+	private CurvedLineHelper curvedPointHelper = null;
 	
 	@Override
 	public void onEnable() {
@@ -250,6 +251,8 @@ public class ModKillAura extends Module {
 	private float[] getRotations(EntityLivingBase target, EventPlayerUpdate eventPlayerUpdate) {
 		
 		EntityPlayerSP thePlayer = mc.thePlayer;
+		if (vulcanMode.isEnabled() && thePlayer.ticksExisted % 2 == 0)
+			return lastRotations;
 		Vector3d playerEyePos = new Vector3d(thePlayer.posX, thePlayer.posY + thePlayer.getEyeHeight(), thePlayer.posZ);
 		Vector3d targetEyePos = new Vector3d(target.posX, target.posY + target.getEyeHeight(), target.posZ);
 		float hitboxSize = target.getCollisionBorderSize();
@@ -346,7 +349,7 @@ public class ModKillAura extends Module {
 				RotationUtils.makeRotationValuesLoopCorrectly(lastRotations, targetRots);
 				
 				if (curvedPointHelper == null || curvedPointHelper.getProgress() >= 1) {
-					curvedPointHelper = new CurvedPointHelper(lastRotations, targetRots);
+					curvedPointHelper = new CurvedLineHelper(lastRotations, targetRots);
 					if (rotationMode.is("Cubic Curve")) {
 						curvedPointHelper.createCubicCurve();
 					}else {

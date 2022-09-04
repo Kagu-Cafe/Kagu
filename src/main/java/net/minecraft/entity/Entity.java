@@ -722,14 +722,13 @@ public abstract class Entity implements ICommandSender
             AxisAlignedBB axisalignedbb = this.getEntityBoundingBox();
             
             // For y block collision
-            for (AxisAlignedBB axisalignedbb1 : list1)
-            {
-				if (this == Minecraft.getMinecraft().thePlayer
-						&& (ModuleManager.modGroundClip.isEnabled() || (ModuleManager.modNoFall.isEnabled()
-								&& ModuleManager.modNoFall.getMode().is("Ground Clip") && fallDistance >= 3)))
-            		break;
-                y = axisalignedbb1.calculateYOffset(this.getEntityBoundingBox(), y);
-            }
+			if (!(this == Minecraft.getMinecraft().thePlayer
+					&& (ModuleManager.modGroundClip.isEnabled() || (ModuleManager.modNoFall.isEnabled()
+							&& ModuleManager.modNoFall.getMode().is("Ground Clip") && fallDistance >= 3))))
+	            for (AxisAlignedBB axisalignedbb1 : list1)
+	            {
+	                y = axisalignedbb1.calculateYOffset(this.getEntityBoundingBox(), y);
+	            }
 
             this.setEntityBoundingBox(this.getEntityBoundingBox().offset(0.0D, y, 0.0D));
             boolean flag1 = this.onGround || d4 != y && d4 < 0.0D;

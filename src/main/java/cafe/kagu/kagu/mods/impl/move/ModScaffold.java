@@ -483,69 +483,38 @@ public class ModScaffold extends Module {
 				rotations[0] = lastRotations[0] + (rotations[0] - lastRotations[0]) * (0.9f + RandomUtils.nextFloat(0.0f, 0.5f));
 			}break;
 			case "Vulcan":{
-				if (lastPlaceOnInfo == null && placeOnInfo == null) {
-					rotations[1] = 87.213f;
-					rotations[0] = lastRotations[0];
-					if (mc.thePlayer.ticksExisted % 2 == 0) {
-						rotations[0] += 90f;
-					}else {
-						rotations[0] -= 90f;
-					}
-					lastRotations = rotations;
+				if (lastPlaceOnInfo == null && placeOnInfo == null)
 					break;
-				}
 				else if (lastPlaceOnInfo == null)
 					lastPlaceOnInfo = placeOnInfo;
-				BlockPos placeOn = lastPlaceOnInfo.getPlaceOn();
-				EnumFacing placeFace = lastPlaceOnInfo.getPlaceFacing();
-				rotations[1] = 87.213f;
-				EntityPlayerSP thePlayer = mc.thePlayer;
+				
+				lastRotations = rotations = new float[] {-88.3f, 31.9f};
 				
 				// Used to not flag expand checks
 //				lastRotations = rotations;
+				EnumFacing placeFace = lastPlaceOnInfo.getPlaceFacing();
+				BlockPos placeOn = lastPlaceOnInfo.getPlaceOn();
 				Vector3d blockPos = new Vector3d(placeOn.getX() + 0.5 + (double) placeFace.getFrontOffsetX() / 2 + (double) placeFace.getFrontOffsetZ() / 2,
 						placeOn.getY() + 0.5 + (double) placeFace.getFrontOffsetY() / 2,
 						placeOn.getZ() + 0.5 + (double) placeFace.getFrontOffsetZ() / 2 + (double) placeFace.getFrontOffsetX() / 2);
-				
+				EntityPlayerSP thePlayer = mc.thePlayer;
 				switch (placeFace) {
 					case NORTH:{
-						rotations[0] = 0;
-						if (thePlayer.posZ > blockPos.z) {
-							canPlace = false;
-						}else {
-							canPlace = true;
-						}
+						canPlace = thePlayer.posZ < blockPos.z;
 					}break;
 					case EAST:{
-						rotations[0] = 90;
-						if (thePlayer.posX < blockPos.x) {
-							canPlace = false;
-						}else {
-							canPlace = true;
-						}
+						canPlace = thePlayer.posX > blockPos.x;
 					}break;
 					case SOUTH:{
-						rotations[0] = 180;
-						if (thePlayer.posZ < blockPos.z) {
-							canPlace = false;
-						}else {
-							canPlace = true;
-						}
+						canPlace = thePlayer.posZ > blockPos.z;
 					}break;	
 					case WEST:{
-						rotations[0] = -90;
-						if (thePlayer.posX > blockPos.x) {
-							canPlace = false;
-						}else {
-							canPlace = true;
-						}
+						canPlace = thePlayer.posX < blockPos.x;
 					}break;
 					default:{
 						canPlace = true;
 					}break;
 				}
-				RotationUtils.makeRotationValuesLoopCorrectly(lastRotations, rotations);
-				lastRotations = rotations;
 			}break;
 			
 		}
@@ -703,7 +672,12 @@ public class ModScaffold extends Module {
 	            AxisAlignedBB collisionBox = placeOnState.getBlock().getCollisionBoundingBox(theWorld, placeOn, placeOnState);
 	            
 	            // Do the raytrace
-	            MovingObjectPosition rayTrace = collisionBox.calculateIntercept(eyePos, vec32);
+	            MovingObjectPosition rayTrace = null;
+	            try {
+	            	rayTrace = collisionBox.calculateIntercept(eyePos, vec32);
+	            }catch(Exception e1) {
+	            	
+	            }
 	            
 	            // Process the results
 	            if (rayTrace == null || rayTrace.typeOfHit == MovingObjectType.MISS) {

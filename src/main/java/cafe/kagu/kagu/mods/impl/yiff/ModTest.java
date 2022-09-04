@@ -91,8 +91,11 @@ public class ModTest extends Module {
 	private Handler<EventPlayerUpdate> onPlayerUpdate = e -> {
 		if (e.isPost())
 			return;
-		e.setPosY(e.getPosY() - (Math.random() / 5));
-		
+		if (mc.thePlayer.hurtResistantTime == 19) {
+			mc.thePlayer.offsetPosition(1, 5.324, 1);
+			e.setPosY(mc.thePlayer.posY);
+//			MovementUtils.setMotion(2);
+		}
 	};
 	
 	@EventHandler

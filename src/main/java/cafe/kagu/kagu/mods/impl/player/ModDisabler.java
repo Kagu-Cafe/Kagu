@@ -39,6 +39,7 @@ import net.minecraft.network.play.client.C03PacketPlayer.C05PacketPlayerLook;
 import net.minecraft.network.play.client.C03PacketPlayer.C06PacketPlayerPosLook;
 import net.minecraft.network.play.server.S08PacketPlayerPosLook;
 import net.minecraft.util.BlockPos;
+import net.minecraft.util.MathHelper;
 
 /**
  * @author lavaflowglow
@@ -150,7 +151,7 @@ public class ModDisabler extends Module {
 				thePlayer.setLastReportedPosX(thePlayer.getLastReportedPosX() + 1);
 				thePlayer.setLastReportedPosY(thePlayer.getLastReportedPosY() + 1);
 				thePlayer.setLastReportedPosZ(thePlayer.getLastReportedPosZ() + 1);
-				if (pingPackets.size() > 150 || thePlayer.ticksExisted == 0) {
+				if (pingPackets.size() > 50 || thePlayer.ticksExisted == 0 || thePlayer.posY < 0) {
 					NetworkManager networkManager = mc.getNetHandler().getNetworkManager();
 					Packet<?> p = null;
 					while ((p = pingPackets.poll()) != null) {
@@ -329,8 +330,8 @@ public class ModDisabler extends Module {
 						c03PacketPlayer.setZ(c03PacketPlayer.getPositionZ() + (Math.random() / 100) * (ThreadLocalRandom.current().nextBoolean() ? 1 : -1));
 					}
 					if (c03PacketPlayer.isRotating() && Math.abs(c03PacketPlayer.getYaw() % 1) <= 0.3f) {
-						c03PacketPlayer.setYaw((float) (c03PacketPlayer.getYaw() + (Math.random() / 100) * (ThreadLocalRandom.current().nextBoolean() ? 1 : -1)));
-						c03PacketPlayer.setPitch((float) (c03PacketPlayer.getPitch() + (Math.random() / 100) * (ThreadLocalRandom.current().nextBoolean() ? 1 : -1)));
+//						c03PacketPlayer.setYaw((float) (c03PacketPlayer.getYaw() + (Math.random() / 100) * (ThreadLocalRandom.current().nextBoolean() ? 1 : -1)));
+//						c03PacketPlayer.setPitch(MathHelper.clamp_float((float) (c03PacketPlayer.getPitch() + (Math.random() / 100) * (ThreadLocalRandom.current().nextBoolean() ? 1 : -1)), -90, 90));
 					}
 					
 				}

@@ -8,13 +8,13 @@ import org.apache.commons.lang3.RandomUtils;
 
 import net.minecraft.util.MathHelper;
 
-public class CurvedPointHelper {
+public class CurvedLineHelper {
 	
 	/**
 	 * @param start The start point
 	 * @param end The end point
 	 */
-	public CurvedPointHelper(float[] start, float[] end) {
+	public CurvedLineHelper(float[] start, float[] end) {
 		if (start.length < 2 || end.length < 2)
 			throw new IllegalArgumentException("Both point arrays must be at least two in size");
 		this.start = start;
