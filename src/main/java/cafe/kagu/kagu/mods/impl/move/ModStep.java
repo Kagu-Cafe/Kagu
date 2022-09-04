@@ -91,7 +91,7 @@ public class ModStep extends Module {
 	private Handler<EventMovementUpdate> onMovementUpdate = e -> {
 		switch (mode.getMode()) {
 			case "Vulcan":{
-				if (isStepping && ticks >= 1)
+				if (isStepping)
 					e.cancel();
 			}break;
 		}
