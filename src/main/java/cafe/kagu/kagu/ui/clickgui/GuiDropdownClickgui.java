@@ -7,6 +7,9 @@ import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 
 import javax.imageio.ImageIO;
@@ -107,6 +110,17 @@ public class GuiDropdownClickgui extends GuiScreen {
 		isRightClick = false;
 		draggedTab = null;
 		Mouse.getDWheel();
+		
+		// Position the tabs in a semi neat order if they're unset
+		boolean setTabPositions = true;
+		for (Tab tab : TABS) {
+			if (tab.getPosX() != 0 || tab.getPosY() != 0)
+				setTabPositions = false;
+		}
+		if (setTabPositions) {
+			resetTabs();
+		}
+		
 	}
 	
 	@Override
@@ -167,6 +181,7 @@ public class GuiDropdownClickgui extends GuiScreen {
 		GL11.glEnable(GL11.GL_POLYGON_OFFSET_FILL);
 		int offsetUnits = TABS.length;
 		final int tabTitleColor = 0xff0a0611;
+		final int textColor = -1;
 		FontRenderer tabTitleFontRenderer = this.tabTitleFontRenderer;
 		double yOffset = 0;
 		int coolColor = backgroundImage.getSampleSolidColor();
@@ -187,7 +202,7 @@ public class GuiDropdownClickgui extends GuiScreen {
 			// Title
 			UiUtils.drawRoundedRect(0, yOffset, tabWidth, yOffset += (tabTitleFontRenderer.getFontHeight() + TAB_CORNER_SIZE * 2), tabTitleColor, TAB_CORNER_SIZE, TAB_CORNER_SIZE, 0d, 0d);
 //			tabTitleFontRenderer.drawCenteredString(tab.getCategory().getName(), tab.getWidth() / 2, TAB_CORNER_SIZE, -1);
-			tabTitleFontRenderer.drawString(tab.getCategory().getName(), TAB_CORNER_SIZE, TAB_CORNER_SIZE, -1);
+			tabTitleFontRenderer.drawString(tab.getCategory().getName(), TAB_CORNER_SIZE, TAB_CORNER_SIZE, textColor);
 			if ((isLeftClick || isRightClick) && UiUtils.isMouseInsideRoundedRect(mouseX - tab.getPosX(), mouseY - tab.getPosY(), 0, 0, tab.getWidth(), tabTitleFontRenderer.getFontHeight() + TAB_CORNER_SIZE * 2, TAB_CORNER_SIZE, 0)) {
 				if (isLeftClick) {
 					mouseOffsets[0] = mouseX - tab.getPosX();
@@ -244,6 +259,9 @@ public class GuiDropdownClickgui extends GuiScreen {
 		
 	};
 	
+	/**
+	 * Rechecks and sets the background image
+	 */
 	public void resetBackgroundImage() {
 		backgroundImage = bgImages.get(ModuleManager.modClickGui.getBgImage().getMode());
 	}
@@ -484,6 +502,29 @@ public class GuiDropdownClickgui extends GuiScreen {
 	@Override
 	public boolean doesGuiPauseGame() {
 		return false;
+	}
+	
+	/**
+	 * Resets the tab positioning
+	 */
+	public void resetTabs() {
+		if (ModuleManager.modClickGui.getBgImageFlip().isEnabled()) {
+			int spaceShift = width - 25;
+			ArrayList<Tab> tempTabs = new ArrayList<>(Arrays.asList(TABS));
+			Collections.reverse(tempTabs);
+			for (Tab tab : tempTabs) {
+				tab.setPosX(spaceShift - tab.getWidth());
+				tab.setPosY(25);
+				spaceShift -= (tab.getWidth() * 1.1);
+			}
+		}else {
+			int spaceShift = 25;
+			for (Tab tab : TABS) {
+				tab.setPosX(spaceShift);
+				tab.setPosY(25);
+				spaceShift += (tab.getWidth() * 1.1);
+			}
+		}
 	}
 	
 }

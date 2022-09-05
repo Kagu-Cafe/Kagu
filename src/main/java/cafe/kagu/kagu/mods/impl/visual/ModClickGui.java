@@ -22,7 +22,7 @@ public class ModClickGui extends Module {
 	
 	public ModClickGui() {
 		super("ClickGui", Category.VISUAL);
-		setSettings(mode, bgImage, bgImageAnimation, bgImageScale, bgImageFlip);
+		setSettings(mode, bgImage, bgImageAnimation, bgImageScale, bgImageFlip, resetClickGuiTabs);
 	}
 	
 	private ModeSetting mode = new ModeSetting("Mode", "CS:GO", "CS:GO", "Dropdown");
@@ -32,11 +32,18 @@ public class ModClickGui extends Module {
 	private ModeSetting bgImageAnimation = new ModeSetting("BG Image Animation", "Up From Bottom", "None", "Up From Bottom", "From Side", "Diagonal From Corner").setDependency(() -> mode.is("Dropdown"));
 	private DoubleSetting bgImageScale = new DoubleSetting("BG Image Scale", 1, 0.1, 4, 0.1).setDependency(() -> mode.is("Dropdown"));
 	private BooleanSetting bgImageFlip = new BooleanSetting("Flip BG Image", false).setDependency(() -> mode.is("Dropdown"));
+	private BooleanSetting resetClickGuiTabs = new BooleanSetting("Reset Tabs", false).setDependency(() -> mode.is("Dropdown"));
 	
 	@EventHandler
 	private Handler<EventSettingUpdate> onSettingUpdate = e -> {
 		if (e.getSetting() == bgImage) {
 			GuiDropdownClickgui.getInstance().resetBackgroundImage();
+		}
+		else if (e.getSetting() == resetClickGuiTabs) {
+			if (resetClickGuiTabs.isEnabled()) {
+				GuiDropdownClickgui.getInstance().resetTabs();
+				resetClickGuiTabs.toggle();
+			}
 		}
 		else if (e.getSetting() != mode)
 			return;
