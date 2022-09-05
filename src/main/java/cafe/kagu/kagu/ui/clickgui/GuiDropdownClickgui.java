@@ -22,6 +22,7 @@ import cafe.kagu.kagu.eventBus.Event.EventPosition;
 import cafe.kagu.kagu.eventBus.impl.EventCheatRenderTick;
 import cafe.kagu.kagu.eventBus.impl.EventKeyUpdate;
 import cafe.kagu.kagu.mods.ModuleManager;
+import cafe.kagu.kagu.mods.Module.Category;
 import cafe.kagu.kagu.mods.impl.visual.ModClickGui;
 import cafe.kagu.kagu.settings.Setting;
 import cafe.kagu.kagu.settings.impl.KeybindSetting;
@@ -66,7 +67,9 @@ public class GuiDropdownClickgui extends GuiScreen {
 		
 		// Populate the background image resource location data map
 		String dropdownImageFolder = "Kagu/dropdownClickgui/bgImage/";
-		bgImages.put("Furry 1", new BackgroundImage(dropdownImageFolder + "blue.png"));
+		bgImages.put("Fleur 1", new BackgroundImage(dropdownImageFolder + "fleur1.png"));
+		bgImages.put("Fleur 2", new BackgroundImage(dropdownImageFolder + "fleur2.png"));
+		bgImages.put("Distasteful", new BackgroundImage(dropdownImageFolder + "dark.png"));
 		bgImages.put("Astolfo 1", new BackgroundImage(dropdownImageFolder + "astolfo.png"));
 		bgImages.put("Wolf O'Donnell", new BackgroundImage(dropdownImageFolder + "wolf_odonnell.png"));
 		backgroundImage = bgImages.get(ModuleManager.modClickGui.getMode().getMode());
@@ -88,6 +91,7 @@ public class GuiDropdownClickgui extends GuiScreen {
 		selectedSetting = null;
 		isLeftClick = false;
 		isRightClick = false;
+		ModuleManager.modClickGui.getMode().setMode("CS:GO");
 	}
 	
 	@Override
@@ -108,14 +112,14 @@ public class GuiDropdownClickgui extends GuiScreen {
 		double animationY = 0;
 		switch(modClickGui.getBgImageAnimation().getMode()) {
 			case "Up From Bottom":{
-				animationX = imageHeight * (1 - bgImageAnimation);
+				animationY = imageHeight * (1 - bgImageAnimation);
 			}break;
 			case "Left From Right":{
-				animationY = imageWidth * (1 - bgImageAnimation);
+				animationX = imageWidth * (1 - bgImageAnimation);
 			}break;
 			case "Diagonal From Corner":{
-				animationX = imageHeight * (1 - bgImageAnimation);
-				animationY = imageWidth * (1 - bgImageAnimation);
+				animationX = imageWidth * (1 - bgImageAnimation);
+				animationY = imageHeight * (1 - bgImageAnimation);
 			}break;
 		}
 		drawTexture(width - imageWidth + animationX, height - imageHeight + animationY, imageWidth, imageHeight, true);
@@ -141,51 +145,79 @@ public class GuiDropdownClickgui extends GuiScreen {
 		
 	};
 	
-	@Override
-	protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
-		switch (mouseButton) {
-			case 0:{
-				isLeftClick = false;
-			}break;
-			case 1:{
-				isRightClick = false;
-			}break;
-		}
-	}
-	
-	@Override
-	protected void keyTyped(char typedChar, int keyCode) throws IOException {
-		
-		if (selectedSetting instanceof KeybindSetting) {
-			((KeybindSetting)selectedSetting).setKeybind(keyCode == Keyboard.KEY_ESCAPE ? Keyboard.KEY_NONE : keyCode);
-			selectedSetting = null;
-			return;
-		}
-		
-		if (keyCode == Keyboard.KEY_ESCAPE) {
-			mc.displayGuiScreen(null);
-			return;
-		}
-		
-		if (System.currentTimeMillis() - antiFuckupShittyMcCodeIsDogShitAndCantDoAnythingWithoutBreakingNinetyPercentOfMyShit < 100)
-			return;
-		
-        // Kagu hook
-        {
-        	EventKeyUpdate eventKeyUpdate = new EventKeyUpdate(EventPosition.PRE, keyCode, true);
-        	eventKeyUpdate.post();
-        	if (eventKeyUpdate.isCanceled()) {
-        		return;
-        	}
-        }
-	}
-	
 	public void resetBackgroundImage() {
 		backgroundImage = bgImages.get(ModuleManager.modClickGui.getBgImage().getMode());
 	}
 	
 	private class Tab {
 		
+		/**
+		 * The category for the tab
+		 */
+		public Tab(Category category) {
+			this.category = category;
+		}
+		
+		private Category category;
+		private int offsetX = 0, offsetY = 0;
+		private double expandAnimation = 0;
+
+		/**
+		 * @return the category
+		 */
+		public Category getCategory() {
+			return category;
+		}
+
+		/**
+		 * @param category the category to set
+		 */
+		public void setCategory(Category category) {
+			this.category = category;
+		}
+
+		/**
+		 * @return the offsetX
+		 */
+		public int getOffsetX() {
+			return offsetX;
+		}
+
+		/**
+		 * @param offsetX the offsetX to set
+		 */
+		public void setOffsetX(int offsetX) {
+			this.offsetX = offsetX;
+		}
+
+		/**
+		 * @return the offsetY
+		 */
+		public int getOffsetY() {
+			return offsetY;
+		}
+
+		/**
+		 * @param offsetY the offsetY to set
+		 */
+		public void setOffsetY(int offsetY) {
+			this.offsetY = offsetY;
+		}
+
+		/**
+		 * @return the expandAnimation
+		 */
+		public double getExpandAnimation() {
+			return expandAnimation;
+		}
+
+		/**
+		 * @param expandAnimation the expandAnimation to set
+		 */
+		public void setExpandAnimation(double expandAnimation) {
+			this.expandAnimation = expandAnimation;
+		}
+
 	}
 	
 	private class BackgroundImage {
@@ -196,7 +228,7 @@ public class GuiDropdownClickgui extends GuiScreen {
 			// Load the image, sample it for the average color, save color and cleanup and streams used
 			InputStream in = GuiDropdownClickgui.class.getClassLoader().getResourceAsStream("assets/minecraft/" + resourceLocation);
 			if (in == null) {
-				throw new IllegalArgumentException("The reosurce location provided does not point to any real resource, please double check the resource path");
+				throw new IllegalArgumentException("The resource location provided does not point to any real resource, please double check the resource path");
 			}
 			
 			// Load the image from the stream
@@ -237,11 +269,13 @@ public class GuiDropdownClickgui extends GuiScreen {
 			}
 			
 			// Calculate and save the sampled color
-			this.sampledColor = new Color((data[0] / data[0]) / 255f, (data[1] / data[3]) / 255f, (data[2] / data[3]) / 255f, ALPHA).getRGB();
+			this.sampledColor = new Color((data[0] / data[3]) / 255f, (data[1] / data[3]) / 255f, (data[2] / data[3]) / 255f, 
+					((data[0] / data[3]) / 255f + (data[1] / data[3]) / 255f + (data[2] / data[3]) / 255f) > 2.2 ? WHITE_ALPHA : ALPHA).getRGB();
 			
 		}
 		
 		private final float ALPHA = 75 / 255f;
+		private final float WHITE_ALPHA = 35 / 255f;
 		
 		private ResourceLocation resourceLocation;
 		private int width, height, sampledColor;
@@ -274,6 +308,50 @@ public class GuiDropdownClickgui extends GuiScreen {
 			return sampledColor;
 		}
 
+	}
+	
+	@Override
+	protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
+		switch (mouseButton) {
+			case 0:{
+				isLeftClick = false;
+			}break;
+			case 1:{
+				isRightClick = false;
+			}break;
+		}
+	}
+	
+	@Override
+	protected void keyTyped(char typedChar, int keyCode) throws IOException {
+		
+		if (selectedSetting instanceof KeybindSetting) {
+			((KeybindSetting)selectedSetting).setKeybind(keyCode == Keyboard.KEY_ESCAPE ? Keyboard.KEY_NONE : keyCode);
+			selectedSetting = null;
+			return;
+		}
+		
+		if (keyCode == Keyboard.KEY_ESCAPE) {
+			mc.displayGuiScreen(null);
+			return;
+		}
+		
+		if (System.currentTimeMillis() - antiFuckupShittyMcCodeIsDogShitAndCantDoAnythingWithoutBreakingNinetyPercentOfMyShit < 100)
+			return;
+		
+        // Kagu hook
+        {
+        	EventKeyUpdate eventKeyUpdate = new EventKeyUpdate(EventPosition.PRE, keyCode, true);
+        	eventKeyUpdate.post();
+        	if (eventKeyUpdate.isCanceled()) {
+        		return;
+        	}
+        }
+	}
+	
+	@Override
+	public boolean doesGuiPauseGame() {
+		return false;
 	}
 	
 }

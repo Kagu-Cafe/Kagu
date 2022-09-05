@@ -25,9 +25,9 @@ public class ModClickGui extends Module {
 	}
 	
 	private ModeSetting mode = new ModeSetting("Mode", "CS:GO", "CS:GO", "Dropdown");
-	private ModeSetting bgImage = new ModeSetting("Background Image", "Furry 1", "Furry 1", "Astolfo 1", "Wolf O'Donnell").setDependency(() -> mode.is("Dropdown"));
-	private ModeSetting bgImageAnimation = new ModeSetting("Background Image Animation", "Up From Bottom", "None", "Up From Bottom", "Left From Right", "Diagonal From Corner").setDependency(() -> mode.is("Dropdown"));
-	private DoubleSetting bgImageScale = new DoubleSetting("Background Image Scale", 1, 0.1, 4, 0.1).setDependency(() -> mode.is("Dropdown"));
+	private ModeSetting bgImage = new ModeSetting("BG Image", "Fleur 1", "Fleur 1", "Fleur 2", "Distasteful", "Astolfo 1", "Wolf O'Donnell").setDependency(() -> mode.is("Dropdown"));
+	private ModeSetting bgImageAnimation = new ModeSetting("BG Image Animation", "Up From Bottom", "None", "Up From Bottom", "Left From Right", "Diagonal From Corner").setDependency(() -> mode.is("Dropdown"));
+	private DoubleSetting bgImageScale = new DoubleSetting("BG Image Scale", 1, 0.1, 4, 0.1).setDependency(() -> mode.is("Dropdown"));
 	
 	@EventHandler
 	private Handler<EventSettingUpdate> onSettingUpdate = e -> {
@@ -36,14 +36,14 @@ public class ModClickGui extends Module {
 		}
 		else if (e.getSetting() != mode)
 			return;
-		switch (mode.getMode()) {
-			case "CS:GO":{
-				mc.displayGuiScreen(GuiCsgoClickgui.getInstance());
-			}break;
-			case "Dropdown":{
-				mc.displayGuiScreen(GuiDropdownClickgui.getInstance());
-			}break;
-		}
+//		switch (mode.getMode()) {
+//			case "CS:GO":{
+//				mc.displayGuiScreen(GuiCsgoClickgui.getInstance());
+//			}break;
+//			case "Dropdown":{
+//				mc.displayGuiScreen(GuiDropdownClickgui.getInstance());
+//			}break;
+//		}
 	};
 	
 	@Override
