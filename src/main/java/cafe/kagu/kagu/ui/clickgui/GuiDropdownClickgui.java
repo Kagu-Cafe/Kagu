@@ -15,20 +15,23 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
+import cafe.kagu.kagu.eventBus.Event.EventPosition;
 import cafe.kagu.kagu.eventBus.EventBus;
 import cafe.kagu.kagu.eventBus.EventHandler;
 import cafe.kagu.kagu.eventBus.Handler;
-import cafe.kagu.kagu.eventBus.Event.EventPosition;
 import cafe.kagu.kagu.eventBus.impl.EventCheatRenderTick;
 import cafe.kagu.kagu.eventBus.impl.EventKeyUpdate;
-import cafe.kagu.kagu.mods.ModuleManager;
+import cafe.kagu.kagu.font.FontRenderer;
+import cafe.kagu.kagu.font.FontUtils;
 import cafe.kagu.kagu.mods.Module.Category;
+import cafe.kagu.kagu.mods.ModuleManager;
 import cafe.kagu.kagu.mods.impl.visual.ModClickGui;
 import cafe.kagu.kagu.settings.Setting;
 import cafe.kagu.kagu.settings.impl.KeybindSetting;
-import cafe.kagu.kagu.utils.ChatUtils;
+import cafe.kagu.kagu.utils.UiUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 
 /**
@@ -58,6 +61,13 @@ public class GuiDropdownClickgui extends GuiScreen {
 	private long antiFuckupShittyMcCodeIsDogShitAndCantDoAnythingWithoutBreakingNinetyPercentOfMyShit = System.currentTimeMillis();
 	private BackgroundImage backgroundImage;
 	private double bgImageAnimation = 0;
+	private FontRenderer tabTitleFontRenderer = FontUtils.STRATUM2_MEDIUM_13_AA;
+	private FontRenderer tabModuleFontRenderer = FontUtils.STRATUM2_REGULAR_8_AA;
+	private final Tab[] TABS = new Tab[Category.values().length];
+	private int[] mouseOffsets = new int[2];
+	private Tab draggedTab = null;
+	
+	private final int TAB_CORNER_SIZE = 5;
 	
 	/**
 	 * Called when the client starts
@@ -70,10 +80,22 @@ public class GuiDropdownClickgui extends GuiScreen {
 		bgImages.put("Fleur 1", new BackgroundImage(dropdownImageFolder + "fleur1.png"));
 		bgImages.put("Fleur 2", new BackgroundImage(dropdownImageFolder + "fleur2.png"));
 		bgImages.put("Distasteful", new BackgroundImage(dropdownImageFolder + "dark.png"));
-		bgImages.put("Astolfo 1", new BackgroundImage(dropdownImageFolder + "astolfo.png"));
+		bgImages.put("Astolfo 1", new BackgroundImage(dropdownImageFolder + "astolfo1.png"));
+		bgImages.put("Astolfo 2", new BackgroundImage(dropdownImageFolder + "astolfo2.png"));
+		bgImages.put("Astolfo 3", new BackgroundImage(dropdownImageFolder + "astolfo3.png"));
+		bgImages.put("Felix 1", new BackgroundImage(dropdownImageFolder + "felix1.png"));
+		bgImages.put("Felix 2", new BackgroundImage(dropdownImageFolder + "felix2.png"));
 		bgImages.put("Wolf O'Donnell", new BackgroundImage(dropdownImageFolder + "wolf_odonnell.png"));
+		bgImages.put("Peter Griffin 1", new BackgroundImage(dropdownImageFolder + "peter1.png"));
+		bgImages.put("Peter Griffin 2", new BackgroundImage(dropdownImageFolder + "peter2.png"));
 		backgroundImage = bgImages.get(ModuleManager.modClickGui.getMode().getMode());
 		resetBackgroundImage();
+		
+		// Create all the tabs
+		int index = 0;
+		for (Category category : Category.values()) {
+			TABS[index++] = new Tab(category);
+		}
 		
 	}
 	
@@ -83,6 +105,7 @@ public class GuiDropdownClickgui extends GuiScreen {
 		selectedSetting = null;
 		isLeftClick = false;
 		isRightClick = false;
+		draggedTab = null;
 		Mouse.getDWheel();
 	}
 	
@@ -91,11 +114,15 @@ public class GuiDropdownClickgui extends GuiScreen {
 		selectedSetting = null;
 		isLeftClick = false;
 		isRightClick = false;
+		draggedTab = null;
 		ModuleManager.modClickGui.getMode().setMode("CS:GO");
 	}
 	
 	@Override
 	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+		
+		GlStateManager.pushMatrix();
+		GlStateManager.pushAttrib();
 		
 		BackgroundImage backgroundImage = this.backgroundImage;
 		ModClickGui modClickGui = ModuleManager.modClickGui;
@@ -104,6 +131,7 @@ public class GuiDropdownClickgui extends GuiScreen {
 		drawRect(0, 0, width, height, backgroundImage.getSampledColor());
 		
 		// Draw background image
+		boolean isFlipBgImage = modClickGui.getBgImageFlip().isEnabled();
 		double bgImageScale = (height * 0.5 / backgroundImage.getHeight()) * modClickGui.getBgImageScale().getValue();
 		mc.getTextureManager().bindTexture(backgroundImage.getResourceLocation());
 		double imageWidth = backgroundImage.getWidth() * bgImageScale;
@@ -114,7 +142,7 @@ public class GuiDropdownClickgui extends GuiScreen {
 			case "Up From Bottom":{
 				animationY = imageHeight * (1 - bgImageAnimation);
 			}break;
-			case "Left From Right":{
+			case "From Side":{
 				animationX = imageWidth * (1 - bgImageAnimation);
 			}break;
 			case "Diagonal From Corner":{
@@ -122,7 +150,79 @@ public class GuiDropdownClickgui extends GuiScreen {
 				animationY = imageHeight * (1 - bgImageAnimation);
 			}break;
 		}
-		drawTexture(width - imageWidth + animationX, height - imageHeight + animationY, imageWidth, imageHeight, true);
+		if (isFlipBgImage) {
+//			GlStateManager.pushMatrix();
+//			GlStateManager.disableCull();
+//			GL11.glDisable(GL11.GL_CULL_FACE);
+//			GlStateManager.translate(imageWidth - (imageWidth - animationX) + imageWidth / 2, 0, 0);
+//			GlStateManager.scale(-1, 1, 1);
+//			GlStateManager.translate(-(imageWidth - (imageWidth - animationX) + imageWidth / 2), 0, 0);
+			drawTexture(-(animationX), height - imageHeight + animationY, imageWidth, imageHeight, true);
+//			GlStateManager.popMatrix();
+		}else {
+			drawTexture(width - imageWidth + animationX, height - imageHeight + animationY, imageWidth, imageHeight, true);
+		}
+		
+		// Draw all the tabs
+		GL11.glEnable(GL11.GL_POLYGON_OFFSET_FILL);
+		int offsetUnits = TABS.length;
+		final int tabTitleColor = 0xff0a0611;
+		FontRenderer tabTitleFontRenderer = this.tabTitleFontRenderer;
+		double yOffset = 0;
+		int coolColor = backgroundImage.getSampleSolidColor();
+		for (Tab tab : TABS) {
+			
+			if (draggedTab == tab) {
+				tab.setPosX(mouseX - mouseOffsets[0]);
+				tab.setPosY(mouseY - mouseOffsets[1]);
+			}
+			
+			GlStateManager.pushMatrix();
+			GlStateManager.pushAttrib();
+			GlStateManager.translate(tab.getPosX(), tab.getPosY(), 0);
+			yOffset = 0;
+			double tabWidth = tab.getWidth();
+			GL11.glPolygonOffset(1f, -(offsetUnits--)); // Makes the tabs render in the correct order using polygon offsets
+			
+			// Title
+			UiUtils.drawRoundedRect(0, yOffset, tabWidth, yOffset += (tabTitleFontRenderer.getFontHeight() + TAB_CORNER_SIZE * 2), tabTitleColor, TAB_CORNER_SIZE, TAB_CORNER_SIZE, 0d, 0d);
+//			tabTitleFontRenderer.drawCenteredString(tab.getCategory().getName(), tab.getWidth() / 2, TAB_CORNER_SIZE, -1);
+			tabTitleFontRenderer.drawString(tab.getCategory().getName(), TAB_CORNER_SIZE, TAB_CORNER_SIZE, -1);
+			if ((isLeftClick || isRightClick) && UiUtils.isMouseInsideRoundedRect(mouseX - tab.getPosX(), mouseY - tab.getPosY(), 0, 0, tab.getWidth(), tabTitleFontRenderer.getFontHeight() + TAB_CORNER_SIZE * 2, TAB_CORNER_SIZE, 0)) {
+				if (isLeftClick) {
+					mouseOffsets[0] = mouseX - tab.getPosX();
+					mouseOffsets[1] = mouseY - tab.getPosY();
+					draggedTab = tab;
+					isLeftClick = false;
+				}else if (isRightClick) {
+					tab.setExpanded(!tab.isExpanded());
+					isRightClick = false;
+				}
+			}
+			
+			// Footer
+			drawRect(0, yOffset, tabWidth, yOffset + 1, coolColor);
+			if ((isLeftClick || isRightClick) && UiUtils.isMouseInsideRoundedRect(mouseX - tab.getPosX(), mouseY - tab.getPosY(), 0, yOffset + 1 ,tabWidth, yOffset + TAB_CORNER_SIZE * 2, 0, TAB_CORNER_SIZE)) {
+				if (isLeftClick) {
+					mouseOffsets[0] = mouseX - tab.getPosX();
+					mouseOffsets[1] = mouseY - tab.getPosY();
+					draggedTab = tab;
+					isLeftClick = false;
+				}else if (isRightClick) {
+					tab.setExpanded(!tab.isExpanded());
+					isRightClick = false;
+				}
+			}
+			UiUtils.drawRoundedRect(0, yOffset + 1 ,tabWidth, yOffset += (TAB_CORNER_SIZE * 2), tabTitleColor, 0d, 0d, TAB_CORNER_SIZE, TAB_CORNER_SIZE);
+			
+			GlStateManager.popAttrib();
+			GlStateManager.popMatrix();
+			
+		}
+		GL11.glDisable(GL11.GL_POLYGON_OFFSET_FILL);
+		
+		GlStateManager.popAttrib();
+		GlStateManager.popMatrix();
 		
 		isLeftClick = false;
 		isRightClick = false;
@@ -141,7 +241,6 @@ public class GuiDropdownClickgui extends GuiScreen {
 		}else {
 			bgImageAnimation -= bgImageAnimation * animationSpeed;
 		}
-//		System.out.println(bgImageAnimation);
 		
 	};
 	
@@ -156,52 +255,40 @@ public class GuiDropdownClickgui extends GuiScreen {
 		 */
 		public Tab(Category category) {
 			this.category = category;
+			width = (int)Math.ceil(tabTitleFontRenderer.getStringWidth(category.getName()) * 2);
 		}
 		
 		private Category category;
-		private int offsetX = 0, offsetY = 0;
+		private int posX = 0, posY = 0, width = 0;
 		private double expandAnimation = 0;
+		private boolean expanded = false;
 
 		/**
-		 * @return the category
+		 * @return the posX
 		 */
-		public Category getCategory() {
-			return category;
+		public int getPosX() {
+			return posX;
 		}
 
 		/**
-		 * @param category the category to set
+		 * @param posX the posX to set
 		 */
-		public void setCategory(Category category) {
-			this.category = category;
+		public void setPosX(int posX) {
+			this.posX = posX;
 		}
 
 		/**
-		 * @return the offsetX
+		 * @return the posY
 		 */
-		public int getOffsetX() {
-			return offsetX;
+		public int getPosY() {
+			return posY;
 		}
 
 		/**
-		 * @param offsetX the offsetX to set
+		 * @param posY the posY to set
 		 */
-		public void setOffsetX(int offsetX) {
-			this.offsetX = offsetX;
-		}
-
-		/**
-		 * @return the offsetY
-		 */
-		public int getOffsetY() {
-			return offsetY;
-		}
-
-		/**
-		 * @param offsetY the offsetY to set
-		 */
-		public void setOffsetY(int offsetY) {
-			this.offsetY = offsetY;
+		public void setPosY(int posY) {
+			this.posY = posY;
 		}
 
 		/**
@@ -216,6 +303,34 @@ public class GuiDropdownClickgui extends GuiScreen {
 		 */
 		public void setExpandAnimation(double expandAnimation) {
 			this.expandAnimation = expandAnimation;
+		}
+
+		/**
+		 * @return the expanded
+		 */
+		public boolean isExpanded() {
+			return expanded;
+		}
+
+		/**
+		 * @param expanded the expanded to set
+		 */
+		public void setExpanded(boolean expanded) {
+			this.expanded = expanded;
+		}
+
+		/**
+		 * @return the category
+		 */
+		public Category getCategory() {
+			return category;
+		}
+
+		/**
+		 * @return the width
+		 */
+		public int getWidth() {
+			return width;
 		}
 
 	}
@@ -271,6 +386,7 @@ public class GuiDropdownClickgui extends GuiScreen {
 			// Calculate and save the sampled color
 			this.sampledColor = new Color((data[0] / data[3]) / 255f, (data[1] / data[3]) / 255f, (data[2] / data[3]) / 255f, 
 					((data[0] / data[3]) / 255f + (data[1] / data[3]) / 255f + (data[2] / data[3]) / 255f) > 2.2 ? WHITE_ALPHA : ALPHA).getRGB();
+			this.sampleSolidColor = new Color((data[0] / data[3]) / 255f, (data[1] / data[3]) / 255f, (data[2] / data[3]) / 255f, 1).getRGB();
 			
 		}
 		
@@ -278,7 +394,7 @@ public class GuiDropdownClickgui extends GuiScreen {
 		private final float WHITE_ALPHA = 35 / 255f;
 		
 		private ResourceLocation resourceLocation;
-		private int width, height, sampledColor;
+		private int width, height, sampledColor, sampleSolidColor;
 		
 		/**
 		 * @return the resourceLocation
@@ -307,17 +423,33 @@ public class GuiDropdownClickgui extends GuiScreen {
 		public int getSampledColor() {
 			return sampledColor;
 		}
-
+		
+		/**
+		 * @return the sampleSolidColor
+		 */
+		public int getSampleSolidColor() {
+			return sampleSolidColor;
+		}
+		
 	}
 	
 	@Override
 	protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
 		switch (mouseButton) {
 			case 0:{
-				isLeftClick = false;
+				isLeftClick = true;
 			}break;
 			case 1:{
-				isRightClick = false;
+				isRightClick = true;
+			}break;
+		}
+	}
+	
+	@Override
+	protected void mouseReleased(int mouseX, int mouseY, int state) {
+		switch (state) {
+			case 0:{
+				draggedTab = null;
 			}break;
 		}
 	}

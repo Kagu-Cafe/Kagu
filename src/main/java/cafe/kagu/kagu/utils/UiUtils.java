@@ -378,9 +378,10 @@ public class UiUtils {
 	 * @param top          The top of the rect
 	 * @param right        The right of the rect
 	 * @param bottom       The bottom of the rect
-	 * @param cornerSize The corner size
+	 * @param cornerSizeT The corner size for the top corners
+	 * @param cornerSizeB The corner size for the bottom corners
 	 */
-	public static boolean isMouseInsideRoundedRect(double mouseX, double mouseY, double left, double top, double right, double bottom, double cornerSize) {
+	public static boolean isMouseInsideRoundedRect(double mouseX, double mouseY, double left, double top, double right, double bottom, double cornerSizeT, double cornerSizeB) {
 		
 		if (!Mouse.isInsideWindow())
 			return false;
@@ -397,49 +398,64 @@ public class UiUtils {
 			right = temp;
 		}
 		
-		// Horizontal rect check
-		if (mouseX >= left && mouseX < right && mouseY >= top + cornerSize && mouseY <= bottom - cornerSize) {
+		// Vertical rect check
+		if (mouseX >= left && mouseX < right && mouseY >= top + cornerSizeT && mouseY <= bottom - cornerSizeT) {
 			return true;
 		}
 		
-		// Vertical rect check
-		if (mouseX >= left + cornerSize && mouseX <= right - cornerSize && mouseY >= top && mouseY <= bottom) {
+		// Horizontal rect check
+		if (mouseX >= left + cornerSizeB && mouseX <= right - cornerSizeB && mouseY >= top && mouseY <= bottom) {
 			return true;
 		}
 		
 		// Circle checks
 		
 		// Top checks
-		if (mouseY <= top + cornerSize) {
+		if (mouseY <= top + cornerSizeT) {
 			
 			// TL check
-			if (mouseX <= left + cornerSize && MathUtils.getDistance2D(mouseX, mouseY, left + cornerSize, top + cornerSize) <= cornerSize) {
+			if (mouseX <= left + cornerSizeT && MathUtils.getDistance2D(mouseX, mouseY, left + cornerSizeT, top + cornerSizeT) <= cornerSizeT) {
 				return true;
 			}
 			
 			// TR check
-			if (mouseX >= right - cornerSize && MathUtils.getDistance2D(mouseX, mouseY, right - cornerSize, top + cornerSize) <= cornerSize) {
+			if (mouseX >= right - cornerSizeT && MathUtils.getDistance2D(mouseX, mouseY, right - cornerSizeT, top + cornerSizeT) <= cornerSizeT) {
 				return true;
 			}
 			
 		}
 		
 		// Bottom checks
-		if (mouseY >= bottom - cornerSize) {
+		if (mouseY >= bottom - cornerSizeB) {
 			
 			// BL check
-			if (mouseX <= left + cornerSize && MathUtils.getDistance2D(mouseX, mouseY, left + cornerSize, bottom - cornerSize) <= cornerSize) {
+			if (mouseX <= left + cornerSizeB && MathUtils.getDistance2D(mouseX, mouseY, left + cornerSizeB, bottom - cornerSizeB) <= cornerSizeB) {
 				return true;
 			}
 			
 			// BR check
-			if (mouseX >= right - cornerSize && MathUtils.getDistance2D(mouseX, mouseY, right - cornerSize, bottom - cornerSize) <= cornerSize) {
+			if (mouseX >= right - cornerSizeB && MathUtils.getDistance2D(mouseX, mouseY, right - cornerSizeB, bottom - cornerSizeB) <= cornerSizeB) {
 				return true;
 			}
 			
 		}
 		
 		return false;
+	}
+	
+	/**
+	 * Checks if the mouse is inside of a rounded rect using a mix of circle and rect bounding boxes
+	 * 
+	 * @param mouseX The x position of the mouse
+	 * @param mouseY The y position of the mouse
+	 * @param left         The left of the rect
+	 * @param top          The top of the rect
+	 * @param right        The right of the rect
+	 * @param bottom       The bottom of the rect
+	 * @param cornerSize The corner size
+	 */
+	public static boolean isMouseInsideRoundedRect(double mouseX, double mouseY, double left, double top, double right, double bottom, double cornerSize) {
+		return isMouseInsideRoundedRect(mouseX, mouseY, left, top, right, bottom, cornerSize, cornerSize);
 	}
 	
 	/**

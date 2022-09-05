@@ -3,9 +3,10 @@
  */
 package cafe.kagu.kagu.utils;
 
-import cafe.kagu.kagu.eventBus.EventBus;
 import cafe.kagu.kagu.ui.clickgui.GuiCsgoClickgui;
+import cafe.kagu.kagu.ui.clickgui.GuiDropdownClickgui;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiScreen;
 
 /**
  * @author lavaflowglow
@@ -26,7 +27,8 @@ public class ClickGuiUtils {
 	 * @return true if the player is in the clickgui, otherwise false
 	 */
 	public static boolean isInClickGui() {
-		return mc.getCurrentScreen() instanceof GuiCsgoClickgui;
+		GuiScreen currentScreen = mc.getCurrentScreen();
+		return currentScreen instanceof GuiCsgoClickgui || currentScreen instanceof GuiDropdownClickgui;
 	}
 	
 }

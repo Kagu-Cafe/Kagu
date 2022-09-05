@@ -32,6 +32,7 @@ public class FontUtils {
 	public static final FontRenderer STRATUM2_MEDIUM_18_AA = new FontRenderer(getFontFromInputStream(FontUtils.class.getResourceAsStream("stratum2-medium.ttf"), 36, Font.PLAIN), 0.5, true);
 	
 	// San francisco
+	public static final FontRenderer SAN_FRANCISCO_REGULAR_16_AA = new FontRenderer(getFontFromInputStream(FontUtils.class.getResourceAsStream("SFUIDisplay-Regular.ttf"), 32, Font.PLAIN), 0.5, true);
 	public static final FontRenderer SAN_FRANCISCO_REGULAR_10_AA = new FontRenderer(getFontFromInputStream(FontUtils.class.getResourceAsStream("SFUIDisplay-Regular.ttf"), 20, Font.PLAIN), 0.5, true);
 	public static final FontRenderer SAN_FRANCISCO_THIN_10_AA = new FontRenderer(getFontFromInputStream(FontUtils.class.getResourceAsStream("SFUIDisplay-Light.ttf"), 20, Font.PLAIN), 0.5, true);
 	

@@ -130,16 +130,16 @@ public class Kagu {
 		SessionManager.start();
 		logger.info("Started the session manager");
 		
+		// Load fonts
+		logger.info("Loading fonts...");
+		FontUtils.start();
+		logger.info("Loaded fonts");
+		
 		// Start the clickgui
 		logger.info("Starting the clickguis...");
 		GuiCsgoClickgui.getInstance().start();
 		GuiDropdownClickgui.getInstance().start();
 		logger.info("Started the clickguis");
-		
-		// Load fonts
-		logger.info("Loading fonts...");
-		FontUtils.start();
-		logger.info("Loaded fonts");
 		
 		// Load the main menu
 		logger.info("Loading the main menu handler...");

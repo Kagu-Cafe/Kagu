@@ -285,7 +285,7 @@ public abstract class Module {
 			
 			// We use these two chars when saving and loading files, if the config name contains them it could create issues
 			if (name.contains(Kagu.UNIT_SEPARATOR) || name.contains(Kagu.RECORD_SEPARATOR) || name.contains(Kagu.GROUP_SEPARATOR)) {
-				logger.error("Name of category (" + name + ") contains a forbidden character, please refrain from using the unit and record separator character when naming modules as they break file loading");
+				logger.error("Name of category (" + name + ") contains a forbidden character, please refrain from using unit, record, and grounp separator characters when naming modules as they break file saving and loading");
 				System.exit(0);
 				return;
 			}
