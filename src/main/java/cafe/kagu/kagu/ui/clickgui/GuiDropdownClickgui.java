@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.imageio.ImageIO;
 
@@ -27,13 +29,16 @@ import cafe.kagu.kagu.eventBus.impl.EventKeyUpdate;
 import cafe.kagu.kagu.font.FontRenderer;
 import cafe.kagu.kagu.font.FontUtils;
 import cafe.kagu.kagu.mods.Module.Category;
+import cafe.kagu.kagu.mods.Module;
 import cafe.kagu.kagu.mods.ModuleManager;
 import cafe.kagu.kagu.mods.impl.visual.ModClickGui;
 import cafe.kagu.kagu.settings.Setting;
 import cafe.kagu.kagu.settings.impl.KeybindSetting;
+import cafe.kagu.kagu.utils.ChatUtils;
 import cafe.kagu.kagu.utils.UiUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 
@@ -64,13 +69,14 @@ public class GuiDropdownClickgui extends GuiScreen {
 	private long antiFuckupShittyMcCodeIsDogShitAndCantDoAnythingWithoutBreakingNinetyPercentOfMyShit = System.currentTimeMillis();
 	private BackgroundImage backgroundImage;
 	private double bgImageAnimation = 0;
-	private FontRenderer tabTitleFontRenderer = FontUtils.STRATUM2_MEDIUM_13_AA;
-	private FontRenderer tabModuleFontRenderer = FontUtils.STRATUM2_REGULAR_8_AA;
 	private final Tab[] TABS = new Tab[Category.values().length];
 	private int[] mouseOffsets = new int[2];
 	private Tab draggedTab = null;
+	private Map<Category, Module[]> categoryModules = new HashMap<>();
 	
-	private final int TAB_CORNER_SIZE = 5;
+	private static final int TAB_CORNER_SIZE = 5;
+	private static final FontRenderer TAB_TITLE_FR = FontUtils.STRATUM2_MEDIUM_15_AA;
+	private static final FontRenderer TAB_MODULE_FR = FontUtils.STRATUM2_REGULAR_10_AA;
 	
 	/**
 	 * Called when the client starts
@@ -83,6 +89,8 @@ public class GuiDropdownClickgui extends GuiScreen {
 		bgImages.put("Fleur 1", new BackgroundImage(dropdownImageFolder + "fleur1.png"));
 		bgImages.put("Fleur 2", new BackgroundImage(dropdownImageFolder + "fleur2.png"));
 		bgImages.put("Distasteful", new BackgroundImage(dropdownImageFolder + "dark.png"));
+		bgImages.put("Sylveon 1", new BackgroundImage(dropdownImageFolder + "sylveon1.png"));
+		bgImages.put("Vaporeon 1", new BackgroundImage(dropdownImageFolder + "vaporeon1.png"));
 		bgImages.put("Astolfo 1", new BackgroundImage(dropdownImageFolder + "astolfo1.png"));
 		bgImages.put("Astolfo 2", new BackgroundImage(dropdownImageFolder + "astolfo2.png"));
 		bgImages.put("Astolfo 3", new BackgroundImage(dropdownImageFolder + "astolfo3.png"));
@@ -91,8 +99,24 @@ public class GuiDropdownClickgui extends GuiScreen {
 		bgImages.put("Wolf O'Donnell", new BackgroundImage(dropdownImageFolder + "wolf_odonnell.png"));
 		bgImages.put("Peter Griffin 1", new BackgroundImage(dropdownImageFolder + "peter1.png"));
 		bgImages.put("Peter Griffin 2", new BackgroundImage(dropdownImageFolder + "peter2.png"));
+		bgImages.put("Yoshi 1", new BackgroundImage(dropdownImageFolder + "yoshi1.png"));
+		bgImages.put("Yoshi 2", new BackgroundImage(dropdownImageFolder + "yoshi2.png"));
+		bgImages.put("Crazy Frog 1", new BackgroundImage(dropdownImageFolder + "crazyfrog1.png"));
 		backgroundImage = bgImages.get(ModuleManager.modClickGui.getMode().getMode());
 		resetBackgroundImage();
+		
+		// Assign modules to their categories
+		for (Category category : Category.values()) {
+			List<Module> modules = new ArrayList<>();
+			for (Module module : ModuleManager.getModules()) {
+				if (module.getCategory() == category) {
+					modules.add(module);
+				}
+			}
+			Module[] categoryModules = new Module[0];
+			categoryModules = modules.toArray(categoryModules);
+			this.categoryModules.put(category, categoryModules);
+		}
 		
 		// Create all the tabs
 		int index = 0;
@@ -129,7 +153,7 @@ public class GuiDropdownClickgui extends GuiScreen {
 		isLeftClick = false;
 		isRightClick = false;
 		draggedTab = null;
-		ModuleManager.modClickGui.getMode().setMode("CS:GO");
+//		ModuleManager.modClickGui.getMode().setMode("CS:GO");
 	}
 	
 	@Override
@@ -182,9 +206,11 @@ public class GuiDropdownClickgui extends GuiScreen {
 		int offsetUnits = TABS.length;
 		final int tabTitleColor = 0xff0a0611;
 		final int textColor = -1;
-		FontRenderer tabTitleFontRenderer = this.tabTitleFontRenderer;
+		FontRenderer tabTitleFontRenderer = TAB_TITLE_FR;
+		FontRenderer tabModuleFontRenderer = TAB_MODULE_FR;
 		double yOffset = 0;
-		int coolColor = backgroundImage.getSampleSolidColor();
+		int coolColor = backgroundImage.getSampledSolidColor();
+		Map<Category, Module[]> categoryModules = this.categoryModules;
 		for (Tab tab : TABS) {
 			
 			if (draggedTab == tab) {
@@ -214,6 +240,38 @@ public class GuiDropdownClickgui extends GuiScreen {
 					isRightClick = false;
 				}
 			}
+			
+			// Modules and settings
+			Module[] modules = categoryModules.get(tab.getCategory());
+			
+			// Get total height of tab fully expanded
+			double heightOffset = 0;
+			for (Module module : modules) {
+				heightOffset += 1 + tabModuleFontRenderer.getFontHeight() + 4;
+			}
+			GlStateManager.translate(0, -heightOffset * tab.getExpandAnimation(), 0);
+			
+			// Draw the modules
+			UiUtils.enableScissor(tab.getPosX(), tab.getPosY() + yOffset, tab.getPosX() + tabWidth, tab.getPosY() + yOffset + (heightOffset * (1 - tab.getExpandAnimation())));
+			for (Module module : modules) {
+				drawRect(0, yOffset, tabWidth, yOffset += 1, coolColor);
+				drawRect(0, yOffset, tabWidth, yOffset + tabModuleFontRenderer.getFontHeight() + 4, module.isEnabled() ? coolColor : tabTitleColor);
+				tabModuleFontRenderer.drawString(module.getName(), TAB_CORNER_SIZE, yOffset + 2, textColor);
+				
+				if ((isLeftClick || isRightClick) && UiUtils.isMouseInsideRoundedRect(mouseX - tab.getPosX(), mouseY - tab.getPosY() - -heightOffset * tab.getExpandAnimation(), 0, yOffset, tabWidth, yOffset + tabModuleFontRenderer.getFontHeight() + 4, 0)) {
+					if (isLeftClick) {
+						module.toggle();
+						isLeftClick = false;
+					}else if (isRightClick) {
+						module.setClickguiExtended(!module.isClickguiExtended());
+						isRightClick = false;
+					}
+				}
+				
+				yOffset += tabModuleFontRenderer.getFontHeight() + 4;
+			}
+			UiUtils.disableScissor();
+			yOffset--;
 			
 			// Footer
 			drawRect(0, yOffset, tabWidth, yOffset + 1, coolColor);
@@ -245,7 +303,7 @@ public class GuiDropdownClickgui extends GuiScreen {
 	
 	@EventHandler
 	private Handler<EventCheatRenderTick> onCheatRenderTick = e -> {
-		if (e.isPost())
+		if (e.isPost() || (!ModuleManager.modClickGui.getMode().is("Dropdown") && Minecraft.getMinecraft().getCurrentScreen() != getInstance()))
 			return;
 		
 		double animationSpeed = 0.1;
@@ -255,6 +313,14 @@ public class GuiDropdownClickgui extends GuiScreen {
 			bgImageAnimation += (1 - bgImageAnimation) * animationSpeed;
 		}else {
 			bgImageAnimation -= bgImageAnimation * animationSpeed;
+		}
+		
+		for (Tab tab : TABS) {
+			if (!tab.isExpanded()) {
+				tab.setExpandAnimation(tab.getExpandAnimation() + (1 - tab.getExpandAnimation()) * animationSpeed);
+			}else {
+				tab.setExpandAnimation(tab.getExpandAnimation() - tab.getExpandAnimation() * animationSpeed);
+			}
 		}
 		
 	};
@@ -273,7 +339,14 @@ public class GuiDropdownClickgui extends GuiScreen {
 		 */
 		public Tab(Category category) {
 			this.category = category;
-			width = (int)Math.ceil(tabTitleFontRenderer.getStringWidth(category.getName()) * 2);
+			width = (int)Math.ceil(TAB_TITLE_FR.getStringWidth(category.getName()) * 1.5);
+			
+			// Expand the size of the tab if a module name is too big for it
+			for (Module module : categoryModules.get(category)) {
+				if (Math.ceil(TAB_MODULE_FR.getStringWidth(module.getName())) + TAB_CORNER_SIZE > width)
+					width = (int) Math.ceil(TAB_MODULE_FR.getStringWidth(module.getName())) + TAB_CORNER_SIZE * 3;
+			}
+			
 		}
 		
 		private Category category;
@@ -404,7 +477,22 @@ public class GuiDropdownClickgui extends GuiScreen {
 			// Calculate and save the sampled color
 			this.sampledColor = new Color((data[0] / data[3]) / 255f, (data[1] / data[3]) / 255f, (data[2] / data[3]) / 255f, 
 					((data[0] / data[3]) / 255f + (data[1] / data[3]) / 255f + (data[2] / data[3]) / 255f) > 2.2 ? WHITE_ALPHA : ALPHA).getRGB();
-			this.sampleSolidColor = new Color((data[0] / data[3]) / 255f, (data[1] / data[3]) / 255f, (data[2] / data[3]) / 255f, 1).getRGB();
+			
+			if (((data[0] / data[3]) / 255f + (data[1] / data[3]) / 255f + (data[2] / data[3]) / 255f) < 1) {
+				int brighten = ((data[0] / data[3]) / 255f + (data[1] / data[3]) / 255f + (data[2] / data[3]) / 255f) < 0.5 ? 40 : 25;
+				this.sampledSolidColor = new Color(Math.min((data[0] / data[3]) + brighten, 255) / 255f,
+						Math.min((data[1] / data[3]) + brighten, 255) / 255f,
+						Math.min((data[2] / data[3]) + brighten, 255) / 255f, 1).getRGB();
+			}
+			else if (((data[0] / data[3]) / 255f + (data[1] / data[3]) / 255f + (data[2] / data[3]) / 255f) > 2) {
+				int darken = ((data[0] / data[3]) / 255f + (data[1] / data[3]) / 255f + (data[2] / data[3]) / 255f) > 2.5 ? 40 : 25;
+				this.sampledSolidColor = new Color(Math.max((data[0] / data[3]) - darken, 0) / 255f,
+						Math.max((data[1] / data[3]) - darken, 0) / 255f,
+						Math.max((data[2] / data[3]) - darken, 0) / 255f, 1).getRGB();
+			}
+			else {
+				this.sampledSolidColor = new Color((data[0] / data[3]) / 255f, (data[1] / data[3]) / 255f, (data[2] / data[3]) / 255f, 1).getRGB();
+			}
 			
 		}
 		
@@ -412,7 +500,7 @@ public class GuiDropdownClickgui extends GuiScreen {
 		private final float WHITE_ALPHA = 35 / 255f;
 		
 		private ResourceLocation resourceLocation;
-		private int width, height, sampledColor, sampleSolidColor;
+		private int width, height, sampledColor, sampledSolidColor;
 		
 		/**
 		 * @return the resourceLocation
@@ -445,8 +533,8 @@ public class GuiDropdownClickgui extends GuiScreen {
 		/**
 		 * @return the sampleSolidColor
 		 */
-		public int getSampleSolidColor() {
-			return sampleSolidColor;
+		public int getSampledSolidColor() {
+			return sampledSolidColor;
 		}
 		
 	}
@@ -509,7 +597,7 @@ public class GuiDropdownClickgui extends GuiScreen {
 	 */
 	public void resetTabs() {
 		if (ModuleManager.modClickGui.getBgImageFlip().isEnabled()) {
-			int spaceShift = width - 25;
+			int spaceShift = new ScaledResolution(Minecraft.getMinecraft()).getScaledWidth() - 25;
 			ArrayList<Tab> tempTabs = new ArrayList<>(Arrays.asList(TABS));
 			Collections.reverse(tempTabs);
 			for (Tab tab : tempTabs) {

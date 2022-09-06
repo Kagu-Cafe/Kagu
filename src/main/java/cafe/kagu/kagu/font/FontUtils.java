@@ -29,6 +29,7 @@ public class FontUtils {
 	public static final FontRenderer STRATUM2_REGULAR_8_AA = new FontRenderer(getFontFromInputStream(FontUtils.class.getResourceAsStream("stratum2_regular.ttf"), 15, Font.PLAIN), 0.5, true);
 	public static final FontRenderer STRATUM2_REGULAR_10_AA = new FontRenderer(getFontFromInputStream(FontUtils.class.getResourceAsStream("stratum2_regular.ttf"), 20, Font.PLAIN), 0.5, true);
 	public static final FontRenderer STRATUM2_MEDIUM_13_AA = new FontRenderer(getFontFromInputStream(FontUtils.class.getResourceAsStream("stratum2-medium.ttf"), 26, Font.PLAIN), 0.5, true);
+	public static final FontRenderer STRATUM2_MEDIUM_15_AA = new FontRenderer(getFontFromInputStream(FontUtils.class.getResourceAsStream("stratum2-medium.ttf"), 30, Font.PLAIN), 0.5, true);
 	public static final FontRenderer STRATUM2_MEDIUM_18_AA = new FontRenderer(getFontFromInputStream(FontUtils.class.getResourceAsStream("stratum2-medium.ttf"), 36, Font.PLAIN), 0.5, true);
 	
 	// San francisco

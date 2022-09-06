@@ -26,9 +26,9 @@ public class ModClickGui extends Module {
 	}
 	
 	private ModeSetting mode = new ModeSetting("Mode", "CS:GO", "CS:GO", "Dropdown");
-	private ModeSetting bgImage = new ModeSetting("BG Image", "Fleur 1", "Fleur 1", "Fleur 2", "Distasteful",
+	private ModeSetting bgImage = new ModeSetting("BG Image", "Fleur 1", "Fleur 1", "Fleur 2", "Distasteful", "Sylveon 1", "Vaporeon 1",
 			"Astolfo 1", "Astolfo 2", "Astolfo 3", "Felix 1", "Felix 2", "Wolf O'Donnell", "Peter Griffin 1",
-			"Peter Griffin 2").setDependency(() -> mode.is("Dropdown"));
+			"Peter Griffin 2", "Yoshi 1", "Yoshi 2", "Crazy Frog 1").setDependency(() -> mode.is("Dropdown"));
 	private ModeSetting bgImageAnimation = new ModeSetting("BG Image Animation", "Up From Bottom", "None", "Up From Bottom", "From Side", "Diagonal From Corner").setDependency(() -> mode.is("Dropdown"));
 	private DoubleSetting bgImageScale = new DoubleSetting("BG Image Scale", 1, 0.1, 4, 0.1).setDependency(() -> mode.is("Dropdown"));
 	private BooleanSetting bgImageFlip = new BooleanSetting("Flip BG Image", false).setDependency(() -> mode.is("Dropdown"));

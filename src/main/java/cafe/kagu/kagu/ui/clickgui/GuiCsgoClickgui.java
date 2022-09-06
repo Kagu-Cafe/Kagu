@@ -34,6 +34,7 @@ import cafe.kagu.kagu.font.FontUtils;
 import cafe.kagu.kagu.mods.Module;
 import cafe.kagu.kagu.mods.ModuleManager;
 import cafe.kagu.kagu.mods.Module.Category;
+import cafe.kagu.kagu.mods.impl.visual.ModClickGui;
 import cafe.kagu.kagu.settings.Setting;
 import cafe.kagu.kagu.settings.impl.BooleanSetting;
 import cafe.kagu.kagu.settings.impl.DoubleSetting;
@@ -842,7 +843,7 @@ public class GuiCsgoClickgui extends GuiScreen {
 	// For anybody trying to port this to their own client, the cheat tick loop runs at 64 ticks a second
 	@EventHandler
 	public Handler<EventCheatRenderTick> onPreTick = e -> {
-		if (e.isPost())
+		if (e.isPost() || (!ModuleManager.modClickGui.getMode().is("CS:GO") && Minecraft.getMinecraft().getCurrentScreen() != getInstance()))
 			return;
 		
 		targetOuterCircleRadius = (width * 0.35) * 0.5;
