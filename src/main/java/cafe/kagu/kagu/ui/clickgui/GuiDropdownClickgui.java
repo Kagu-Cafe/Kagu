@@ -86,22 +86,32 @@ public class GuiDropdownClickgui extends GuiScreen {
 		
 		// Populate the background image resource location data map
 		String dropdownImageFolder = "Kagu/dropdownClickgui/bgImage/";
+		
+		// Furries
 		bgImages.put("Fleur 1", new BackgroundImage(dropdownImageFolder + "fleur1.png"));
 		bgImages.put("Fleur 2", new BackgroundImage(dropdownImageFolder + "fleur2.png"));
 		bgImages.put("Distasteful", new BackgroundImage(dropdownImageFolder + "dark.png"));
 		bgImages.put("Sylveon 1", new BackgroundImage(dropdownImageFolder + "sylveon1.png"));
 		bgImages.put("Vaporeon 1", new BackgroundImage(dropdownImageFolder + "vaporeon1.png"));
+		bgImages.put("Wolf O'Donnell", new BackgroundImage(dropdownImageFolder + "wolf_odonnell.png"));
+		
+		// Anime (mostly femboys)
 		bgImages.put("Astolfo 1", new BackgroundImage(dropdownImageFolder + "astolfo1.png"));
 		bgImages.put("Astolfo 2", new BackgroundImage(dropdownImageFolder + "astolfo2.png"));
 		bgImages.put("Astolfo 3", new BackgroundImage(dropdownImageFolder + "astolfo3.png"));
 		bgImages.put("Felix 1", new BackgroundImage(dropdownImageFolder + "felix1.png"));
 		bgImages.put("Felix 2", new BackgroundImage(dropdownImageFolder + "felix2.png"));
-		bgImages.put("Wolf O'Donnell", new BackgroundImage(dropdownImageFolder + "wolf_odonnell.png"));
+		bgImages.put("Miku 1", new BackgroundImage(dropdownImageFolder + "miku1.png"));
+		bgImages.put("Miku 2", new BackgroundImage(dropdownImageFolder + "miku2.png"));
+		
+		// Other
 		bgImages.put("Peter Griffin 1", new BackgroundImage(dropdownImageFolder + "peter1.png"));
 		bgImages.put("Peter Griffin 2", new BackgroundImage(dropdownImageFolder + "peter2.png"));
 		bgImages.put("Yoshi 1", new BackgroundImage(dropdownImageFolder + "yoshi1.png"));
 		bgImages.put("Yoshi 2", new BackgroundImage(dropdownImageFolder + "yoshi2.png"));
 		bgImages.put("Crazy Frog 1", new BackgroundImage(dropdownImageFolder + "crazyfrog1.png"));
+		bgImages.put("Jeremy Clarkson", new BackgroundImage(dropdownImageFolder + "jeremy_clarkson.png"));
+		
 		backgroundImage = bgImages.get(ModuleManager.modClickGui.getMode().getMode());
 		resetBackgroundImage();
 		
@@ -153,7 +163,7 @@ public class GuiDropdownClickgui extends GuiScreen {
 		isLeftClick = false;
 		isRightClick = false;
 		draggedTab = null;
-//		ModuleManager.modClickGui.getMode().setMode("CS:GO");
+		ModuleManager.modClickGui.getMode().setMode("CS:GO");
 	}
 	
 	@Override

@@ -18,6 +18,8 @@ import cafe.kagu.kagu.Kagu;
 import cafe.kagu.kagu.eventBus.Event.EventPosition;
 import cafe.kagu.kagu.eventBus.impl.EventKeyUpdate;
 import cafe.kagu.kagu.eventBus.impl.EventTick;
+import cafe.kagu.kagu.mods.ModuleManager;
+import cafe.kagu.kagu.mods.impl.ghost.ModNoHitDelay;
 import cafe.kagu.kagu.ui.gui.GuiDefaultMainMenu;
 import cafe.kagu.kagu.ui.gui.MainMenuHandler;
 
@@ -1512,6 +1514,7 @@ public class Minecraft implements IThreadListener, IPlayerUsage
 
     private void clickMouse()
     {
+    	ModNoHitDelay modNoHitDelay = ModuleManager.modNoHitDelay;
         if (this.leftClickCounter <= 0)
         {
             this.thePlayer.swingItem();
@@ -1520,7 +1523,7 @@ public class Minecraft implements IThreadListener, IPlayerUsage
             {
                 logger.error("Null returned as \'hitResult\', this shouldn\'t happen!");
 
-                if (this.playerController.isNotCreative())
+                if (this.playerController.isNotCreative() && modNoHitDelay.isDisabled())
                 {
                     this.leftClickCounter = 10;
                 }
@@ -1544,7 +1547,7 @@ public class Minecraft implements IThreadListener, IPlayerUsage
 
                     case MISS:
                     default:
-                        if (this.playerController.isNotCreative())
+                        if (this.playerController.isNotCreative() && modNoHitDelay.isDisabled())
                         {
                             this.leftClickCounter = 10;
                         }

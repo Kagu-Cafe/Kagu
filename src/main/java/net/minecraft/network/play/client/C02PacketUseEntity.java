@@ -60,30 +60,54 @@ public class C02PacketUseEntity implements Packet<INetHandlerPlayServer>
         }
     }
 
-    /**
-     * Passes this Packet on to the NetHandler for processing.
-     */
-    public void processPacket(INetHandlerPlayServer handler)
-    {
-        handler.processUseEntity(this);
-    }
+	/**
+	 * Passes this Packet on to the NetHandler for processing.
+	 */
+	public void processPacket(INetHandlerPlayServer handler) {
+		handler.processUseEntity(this);
+	}
 
-    public Entity getEntityFromWorld(World worldIn)
-    {
-        return worldIn.getEntityByID(this.entityId);
-    }
+	public Entity getEntityFromWorld(World worldIn) {
+		return worldIn.getEntityByID(this.entityId);
+	}
 
-    public C02PacketUseEntity.Action getAction()
-    {
-        return this.action;
-    }
+	public C02PacketUseEntity.Action getAction() {
+		return this.action;
+	}
 
-    public Vec3 getHitVec()
-    {
-        return this.hitVec;
-    }
+	public Vec3 getHitVec() {
+		return this.hitVec;
+	}
 
-    public static enum Action
+	/**
+	 * @return the entityId
+	 */
+	public int getEntityId() {
+		return entityId;
+	}
+
+	/**
+	 * @param entityId the entityId to set
+	 */
+	public void setEntityId(int entityId) {
+		this.entityId = entityId;
+	}
+
+	/**
+	 * @param action the action to set
+	 */
+	public void setAction(C02PacketUseEntity.Action action) {
+		this.action = action;
+	}
+
+	/**
+	 * @param hitVec the hitVec to set
+	 */
+	public void setHitVec(Vec3 hitVec) {
+		this.hitVec = hitVec;
+	}
+
+	public static enum Action
     {
         INTERACT,
         ATTACK,

@@ -17,6 +17,7 @@ import cafe.kagu.kagu.font.FontRenderer;
 import cafe.kagu.kagu.font.FontUtils;
 import cafe.kagu.kagu.mods.Module;
 import cafe.kagu.kagu.mods.ModuleManager;
+import cafe.kagu.kagu.mods.impl.ghost.ModAutoRod;
 import cafe.kagu.kagu.settings.impl.DoubleSetting;
 import cafe.kagu.kagu.settings.impl.IntegerSetting;
 import cafe.kagu.kagu.settings.impl.LabelSetting;
@@ -81,7 +82,10 @@ public class ModTargetHud extends Module {
 		if (e.isPost())
 			return;
 		EntityLivingBase target = ModuleManager.modKillAura.getTarget();
-		if (ModuleManager.modKillAura.isDisabled() || target == null)
+		ModAutoRod modAutoRod = ModuleManager.modAutoRod;
+		if (target == null && modAutoRod.isEnabled() && modAutoRod.getTarget() != null)
+			target = modAutoRod.getTarget();
+		if (target == null)
 			if (mc.getCurrentScreen() != null && (mc.getCurrentScreen() instanceof GuiChat || ClickGuiUtils.isInClickGui()))
 				target = mc.thePlayer;
 			else {

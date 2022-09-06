@@ -148,4 +148,19 @@ public class KeyBinding implements Comparable<KeyBinding>
 
         return i;
     }
+    
+    /**
+	 * @param pressTime the pressTime to set
+	 */
+	public void setPressTime(int pressTime) {
+		this.pressTime = pressTime;
+	}
+	
+	/**
+	 * @return the pressTime
+	 */
+	public int getPressTime() {
+		return pressTime;
+	}
+    
 }
