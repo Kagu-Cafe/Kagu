@@ -3,6 +3,9 @@ package net.minecraft.util;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 
+import cafe.kagu.kagu.eventBus.Event.EventPosition;
+import cafe.kagu.kagu.eventBus.impl.EventMouseDeltasUpdate;
+
 public class MouseHelper
 {
     /** Mouse delta X this frame */
@@ -32,7 +35,16 @@ public class MouseHelper
 
     public void mouseXYChange()
     {
-        this.deltaX = Mouse.getDX();
-        this.deltaY = Mouse.getDY();
+    	EventMouseDeltasUpdate eventMouseDeltasUpdatePre = new EventMouseDeltasUpdate(EventPosition.PRE, Mouse.getDX(), Mouse.getDY());
+    	eventMouseDeltasUpdatePre.post();
+    	if (eventMouseDeltasUpdatePre.isCanceled()) {
+    		deltaX = 0;
+    		deltaY = 0;
+    		return;
+    	}
+        this.deltaX = eventMouseDeltasUpdatePre.getDeltaX();
+        this.deltaY = eventMouseDeltasUpdatePre.getDeltaY();
+        EventMouseDeltasUpdate eventMouseDeltasUpdatePost = new EventMouseDeltasUpdate(EventPosition.PRE, deltaX, deltaY);
+        eventMouseDeltasUpdatePost.post();
     }
 }

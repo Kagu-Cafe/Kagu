@@ -140,5 +140,27 @@ public class RotationUtils {
 		float f3 = MathHelper.sin(-pitch * 0.017453292F);
 		return new Vec3((double) (f1 * f2), (double) f3, (double) (f * f2));
 	}
-
+	
+	/**
+	 * Calculates the needed mouse offsets for a rotation offset
+	 * @param rotOffset The rotation offset
+	 * @return a float array containing the mouse deltas
+	 */
+	public static float[] getMouseDeltasForRotationOffset(float[] rotOffset) {
+        float f = mc.gameSettings.mouseSensitivity * 0.6F + 0.2F;
+        float f1 = f * f * f * 8.0F;
+        return new float[] {rotOffset[0] / f1, (rotOffset[1] / f1) * (mc.gameSettings.invertMouse ? -1 : 1)};
+	}
+	
+	/**
+	 * Calculates the resulting rotations for the provided mouse deltas
+	 * @param mouseDeltas The mouse deltas offset
+	 * @return a float array containing the resulting rotations
+	 */
+	public static float[] getRotationsForMouseDeltas(float[] mouseDeltas) {
+        float f = mc.gameSettings.mouseSensitivity * 0.6F + 0.2F;
+        float f1 = f * f * f * 8.0F;
+        return new float[] {mouseDeltas[0] * f1, (mouseDeltas[1] * f1) * (mc.gameSettings.invertMouse ? -1 : 1)};
+	}
+	
 }

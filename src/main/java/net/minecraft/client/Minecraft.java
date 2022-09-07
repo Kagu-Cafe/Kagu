@@ -19,6 +19,7 @@ import cafe.kagu.kagu.eventBus.Event.EventPosition;
 import cafe.kagu.kagu.eventBus.impl.EventKeyUpdate;
 import cafe.kagu.kagu.eventBus.impl.EventTick;
 import cafe.kagu.kagu.mods.ModuleManager;
+import cafe.kagu.kagu.mods.impl.ghost.ModChangeRightClickDelay;
 import cafe.kagu.kagu.mods.impl.ghost.ModNoHitDelay;
 import cafe.kagu.kagu.ui.gui.GuiDefaultMainMenu;
 import cafe.kagu.kagu.ui.gui.MainMenuHandler;
@@ -1565,7 +1566,8 @@ public class Minecraft implements IThreadListener, IPlayerUsage
     {
         if (!this.playerController.isHittingBlock())
         {
-            this.rightClickDelayTimer = 4;
+        	ModChangeRightClickDelay modChangeRightClickDelay = ModuleManager.modChangeRightClickDelay;
+            this.rightClickDelayTimer = modChangeRightClickDelay.isEnabled() ? modChangeRightClickDelay.getDelay().getValue() : 4;
             boolean flag = true;
             ItemStack itemstack = this.thePlayer.inventory.getCurrentItem();
 

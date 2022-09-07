@@ -22,6 +22,7 @@ import cafe.kagu.kagu.settings.impl.LabelSetting;
 import cafe.kagu.kagu.settings.impl.ModeSetting;
 import cafe.kagu.kagu.utils.ChatUtils;
 import cafe.kagu.kagu.utils.MathUtils;
+import cafe.kagu.kagu.utils.MovementUtils;
 import cafe.kagu.kagu.utils.RotationUtils;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.entity.Entity;
@@ -48,7 +49,7 @@ public class ModAutoRod extends Module {
 	
 	public ModAutoRod() {
 		super("AutoRod", Category.GHOST);
-		setSettings(labelSetting, maxDistance, cancelRodDistance, mode, handleHookContact, afterAttack);
+		setSettings(labelSetting, maxDistance, cancelRodDistance, mode, handleHookContact, dontRodInAir);
 	}
 	
 	private LabelSetting labelSetting = new LabelSetting("Switchs to and uses rod");
@@ -56,7 +57,7 @@ public class ModAutoRod extends Module {
 	private DoubleSetting cancelRodDistance = new DoubleSetting("Panic Cancel Rod Distance", 3.2, 0, 7, 0.1);
 	private ModeSetting mode = new ModeSetting("Mode", "Legit", "Legit");
 	private ModeSetting handleHookContact = new ModeSetting("Handle Hook Contact", "Switch Slots", "Switch Slots", "Retract");
-	private BooleanSetting afterAttack = new BooleanSetting("After Attack", true);
+	private BooleanSetting dontRodInAir = new BooleanSetting("Don't Rod While in Air", true);
 	
 	private EntityLivingBase target = null;
 	private boolean isRodding = false, retractNextTick = false;
@@ -126,12 +127,14 @@ public class ModAutoRod extends Module {
 		}
 		
 		// Retract if needed
-		if (retractNextTick) {
+		if (retractNextTick || thePlayer.hurtResistantTime == 19) {
 			if (lastSlot != -1) {
 				thePlayer.inventory.currentItem = lastSlot;
 				lastSlot = -1;
 			}
 			retractNextTick = false;
+			isRodding = false;
+			cooldownTicks = 2;
 			return;
 		}
 		
@@ -181,7 +184,7 @@ public class ModAutoRod extends Module {
 		
 		// Handle when miss player
 		if (isRodding && thePlayer.fishEntity != null && thePlayer.fishEntity.caughtEntity == null) {
-			if (thePlayer.getDistanceToEntity(target) + 0.5 < thePlayer.getDistanceToEntity(thePlayer.fishEntity)
+			if (thePlayer.getDistanceToEntity(target) + 1.75 < thePlayer.getDistanceToEntity(thePlayer.fishEntity)
 					|| thePlayer.fishEntity.isCollidedHorizontally || thePlayer.fishEntity.isCollidedVertically) {
 				retractNextTick = true;
 				isRodding = false;
@@ -195,7 +198,7 @@ public class ModAutoRod extends Module {
 		}
 		
 		// Throw rod if held (handled in minecraft class)
-		if (!isRodding) {
+		if (!isRodding && (dontRodInAir.isDisabled() || MovementUtils.isTrueOnGround())) {
 			isRodding = true;
 			if (mc.gameSettings.keyBindUseItem.getPressTime() <= 0)
 				mc.gameSettings.keyBindUseItem.setPressTime(1);
@@ -204,13 +207,20 @@ public class ModAutoRod extends Module {
 	
 	@EventHandler
 	private Handler<EventPacketSend> onPacketSend = e -> {
+		if (e.getPacket() instanceof C09PacketHeldItemChange && e.isPre() && isRodding) {
+			C09PacketHeldItemChange c09 = (C09PacketHeldItemChange)e.getPacket();
+			if (mc.thePlayer.inventory.getCurrentItem().getItem() instanceof ItemFishingRod && mc.thePlayer.inventory.currentItem == c09.getSlotId())
+				return;
+			if (isRodding)
+				retractNextTick = true;
+			lastSlot = c09.getSlotId();
+		}
+		
 		if (e.isPost() || e.isCanceled() || !(e.getPacket() instanceof C02PacketUseEntity))
 			return;
 		C02PacketUseEntity c02 = (C02PacketUseEntity)e.getPacket();
 		if (c02.getAction() != Action.ATTACK)
 			return;
-//		if (mc.theWorld.getEntityByID(c02.getEntityId()).getDistanceToEntity(mc.thePlayer) <= 3)
-//			ChatUtils.addChatMessage(new ChatComponentText("You sent an attack packet (" + mc.theWorld.getEntityByID(c02.getEntityId()).getDistanceToEntity(mc.thePlayer) + " meters)"));
 		Entity entity = mc.theWorld.getEntityByID(c02.getEntityId());
 		if (entity == null || !(entity instanceof EntityLivingBase))
 			return;
@@ -227,7 +237,7 @@ public class ModAutoRod extends Module {
 		
 		// Remove non living and out of range entities
 		potentialTargets = (ArrayList<Entity>) potentialTargets.stream()
-				.filter(ent -> ent instanceof EntityLivingBase && thePlayer.getDistanceToEntity(ent) <= 6
+				.filter(ent -> ent instanceof EntityLivingBase && thePlayer.getDistanceToEntity(ent) <= maxDistance.getValue()
 						&& ent != mc.thePlayer
 						&& (((EntityLivingBase) ent).getMaxHealth() <= 0 || ((EntityLivingBase) ent).getHealth() > 0)
 						&& (!(ent instanceof EntityPlayer) || (ModuleManager.modAntiBot.isEnabled()
