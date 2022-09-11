@@ -33,10 +33,13 @@ import cafe.kagu.kagu.mods.Module;
 import cafe.kagu.kagu.mods.ModuleManager;
 import cafe.kagu.kagu.mods.impl.visual.ModClickGui;
 import cafe.kagu.kagu.settings.Setting;
+import cafe.kagu.kagu.settings.impl.BooleanSetting;
 import cafe.kagu.kagu.settings.impl.KeybindSetting;
 import cafe.kagu.kagu.utils.ChatUtils;
+import cafe.kagu.kagu.utils.MiscUtils;
 import cafe.kagu.kagu.utils.UiUtils;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
@@ -73,6 +76,8 @@ public class GuiDropdownClickgui extends GuiScreen {
 	private int[] mouseOffsets = new int[2];
 	private Tab draggedTab = null;
 	private Map<Category, Module[]> categoryModules = new HashMap<>();
+	private Object hoveredText = null;
+	private double textScrollAnimation = 0, textScrollWidth = 1;
 	
 	private static final int TAB_CORNER_SIZE = 5;
 	private static final FontRenderer TAB_TITLE_FR = FontUtils.STRATUM2_MEDIUM_15_AA;
@@ -91,6 +96,8 @@ public class GuiDropdownClickgui extends GuiScreen {
 		bgImages.put("Fleur 1", new BackgroundImage(dropdownImageFolder + "fleur1.png"));
 		bgImages.put("Fleur 2", new BackgroundImage(dropdownImageFolder + "fleur2.png"));
 		bgImages.put("Distasteful", new BackgroundImage(dropdownImageFolder + "dark.png"));
+		bgImages.put("Cheddar 1", new BackgroundImage(dropdownImageFolder + "cheddar1.png"));
+		bgImages.put("Cheddar 2", new BackgroundImage(dropdownImageFolder + "cheddar2.png"));
 		bgImages.put("Sylveon 1", new BackgroundImage(dropdownImageFolder + "sylveon1.png"));
 		bgImages.put("Vaporeon 1", new BackgroundImage(dropdownImageFolder + "vaporeon1.png"));
 		bgImages.put("Wolf O'Donnell", new BackgroundImage(dropdownImageFolder + "wolf_odonnell.png"));
@@ -111,6 +118,7 @@ public class GuiDropdownClickgui extends GuiScreen {
 		bgImages.put("Yoshi 2", new BackgroundImage(dropdownImageFolder + "yoshi2.png"));
 		bgImages.put("Crazy Frog 1", new BackgroundImage(dropdownImageFolder + "crazyfrog1.png"));
 		bgImages.put("Jeremy Clarkson", new BackgroundImage(dropdownImageFolder + "jeremy_clarkson.png"));
+		bgImages.put("Niko 1", new BackgroundImage(dropdownImageFolder + "niko1.png"));
 		
 		backgroundImage = bgImages.get(ModuleManager.modClickGui.getMode().getMode());
 		resetBackgroundImage();
@@ -140,6 +148,8 @@ public class GuiDropdownClickgui extends GuiScreen {
 	public void initGui() {
 		antiFuckupShittyMcCodeIsDogShitAndCantDoAnythingWithoutBreakingNinetyPercentOfMyShit = System.currentTimeMillis();
 		selectedSetting = null;
+		hoveredText = null;
+		textScrollAnimation = 0;
 		isLeftClick = false;
 		isRightClick = false;
 		draggedTab = null;
@@ -160,6 +170,8 @@ public class GuiDropdownClickgui extends GuiScreen {
 	@Override
 	public void onGuiClosed() {
 		selectedSetting = null;
+		hoveredText = null;
+		textScrollAnimation = 0;
 		isLeftClick = false;
 		isRightClick = false;
 		draggedTab = null;
@@ -221,6 +233,9 @@ public class GuiDropdownClickgui extends GuiScreen {
 		double yOffset = 0;
 		int coolColor = backgroundImage.getSampledSolidColor();
 		Map<Category, Module[]> categoryModules = this.categoryModules;
+		Object hoveredText = null, oldHoveredText = this.hoveredText;
+		double textScrollAnimation = this.textScrollAnimation;
+		boolean hasHovered = false;
 		for (Tab tab : TABS) {
 			
 			if (draggedTab == tab) {
@@ -239,7 +254,7 @@ public class GuiDropdownClickgui extends GuiScreen {
 			UiUtils.drawRoundedRect(0, yOffset, tabWidth, yOffset += (tabTitleFontRenderer.getFontHeight() + TAB_CORNER_SIZE * 2), tabTitleColor, TAB_CORNER_SIZE, TAB_CORNER_SIZE, 0d, 0d);
 //			tabTitleFontRenderer.drawCenteredString(tab.getCategory().getName(), tab.getWidth() / 2, TAB_CORNER_SIZE, -1);
 			tabTitleFontRenderer.drawString(tab.getCategory().getName(), TAB_CORNER_SIZE, TAB_CORNER_SIZE, textColor);
-			if ((isLeftClick || isRightClick) && UiUtils.isMouseInsideRoundedRect(mouseX - tab.getPosX(), mouseY - tab.getPosY(), 0, 0, tab.getWidth(), tabTitleFontRenderer.getFontHeight() + TAB_CORNER_SIZE * 2, TAB_CORNER_SIZE, 0)) {
+			if (UiUtils.isMouseInsideRoundedRect(mouseX - tab.getPosX(), mouseY - tab.getPosY(), 0, 0, tab.getWidth(), tabTitleFontRenderer.getFontHeight() + TAB_CORNER_SIZE * 2, TAB_CORNER_SIZE, 0)) {
 				if (isLeftClick) {
 					mouseOffsets[0] = mouseX - tab.getPosX();
 					mouseOffsets[1] = mouseY - tab.getPosY();
@@ -249,6 +264,7 @@ public class GuiDropdownClickgui extends GuiScreen {
 					tab.setExpanded(!tab.isExpanded());
 					isRightClick = false;
 				}
+				hasHovered = true;
 			}
 			
 			// Modules and settings
@@ -257,18 +273,25 @@ public class GuiDropdownClickgui extends GuiScreen {
 			// Get total height of tab fully expanded
 			double heightOffset = 0;
 			for (Module module : modules) {
+				
+				// Module button height
 				heightOffset += 1 + tabModuleFontRenderer.getFontHeight() + 4;
+				
 			}
-			GlStateManager.translate(0, -heightOffset * tab.getExpandAnimation(), 0);
+			double scissor1 = tab.getPosY() + yOffset;
+			yOffset -= heightOffset * tab.getExpandAnimation();
+//			GlStateManager.translate(0, -heightOffset * tab.getExpandAnimation(), 0);
 			
 			// Draw the modules
-			UiUtils.enableScissor(tab.getPosX(), tab.getPosY() + yOffset, tab.getPosX() + tabWidth, tab.getPosY() + yOffset + (heightOffset * (1 - tab.getExpandAnimation())));
 			for (Module module : modules) {
+				UiUtils.enableScissor(tab.getPosX(), scissor1, tab.getPosX() + tabWidth, height);
+				
+				// Draw module button
 				drawRect(0, yOffset, tabWidth, yOffset += 1, coolColor);
 				drawRect(0, yOffset, tabWidth, yOffset + tabModuleFontRenderer.getFontHeight() + 4, module.isEnabled() ? coolColor : tabTitleColor);
 				tabModuleFontRenderer.drawString(module.getName(), TAB_CORNER_SIZE, yOffset + 2, textColor);
 				
-				if ((isLeftClick || isRightClick) && UiUtils.isMouseInsideRoundedRect(mouseX - tab.getPosX(), mouseY - tab.getPosY() - -heightOffset * tab.getExpandAnimation(), 0, yOffset, tabWidth, yOffset + tabModuleFontRenderer.getFontHeight() + 4, 0)) {
+				if (UiUtils.isMouseInsideRoundedRect(mouseX - tab.getPosX(), mouseY - tab.getPosY() - -heightOffset * tab.getExpandAnimation(), 0, yOffset, tabWidth, yOffset + tabModuleFontRenderer.getFontHeight() + 4, 0)) {
 					if (isLeftClick) {
 						module.toggle();
 						isLeftClick = false;
@@ -276,9 +299,90 @@ public class GuiDropdownClickgui extends GuiScreen {
 						module.setClickguiExtended(!module.isClickguiExtended());
 						isRightClick = false;
 					}
+					hasHovered = true;
 				}
 				
 				yOffset += tabModuleFontRenderer.getFontHeight() + 4;
+				
+				// Offset for setting height
+				double moduleExpand = module.getClickguiExtension();
+				double settingOffset = 0;
+				for (Setting<?> setting : module.getSettings()) {
+					if (setting.isHidden())
+						continue;
+					settingOffset += tabModuleFontRenderer.getFontHeight() + 4;
+				}
+				settingOffset *= 1 - moduleExpand;
+				double scissor2 = Math.max(tab.getPosY() + yOffset, scissor1);
+				yOffset -= settingOffset;
+				
+				// Draw module settings
+				for (Setting<?> setting : module.getSettings()) {
+					if (setting.isHidden())
+						continue;
+					UiUtils.enableScissor(tab.getPosX(), scissor2, tab.getPosX() + tabWidth, height);
+					if (moduleExpand > 0.001) {
+						drawRect(0, yOffset, tabWidth, yOffset + tabModuleFontRenderer.getFontHeight() + 4, tabTitleColor);
+						
+						// Text scroll animation
+						boolean isInsideBasicSettingsRect = false;
+						if (!hasHovered && UiUtils.isMouseInsideRoundedRect(mouseX - tab.getPosX(), mouseY - tab.getPosY() - -heightOffset * tab.getExpandAnimation(), 0, yOffset, tabWidth, yOffset + tabModuleFontRenderer.getFontHeight() + 4, 0)) {
+							hoveredText = setting;
+							if (oldHoveredText != hoveredText) {
+								textScrollAnimation = 0;
+								this.textScrollAnimation = 0;
+							}
+							hasHovered = true;
+							isInsideBasicSettingsRect = true;
+						}
+						
+						double scroll = setting == hoveredText ? -textScrollAnimation : 0;
+						final double textIndent = TAB_CORNER_SIZE * 2;
+						switch (MiscUtils.getSettingType(setting)) {
+							case "bool":{
+								String text = setting.getName() + "        ";
+								double textWidth = tabModuleFontRenderer.getStringWidth(text);
+								UiUtils.enableScissor(tab.getPosX() + textIndent, scissor2, tab.getPosX() + Math.min(textIndent + textWidth, tabWidth), height);
+								if (textWidth + textIndent + TAB_CORNER_SIZE < tabWidth)
+									scroll = 0;
+								if (scroll > 0) {
+									textScrollWidth = textWidth;
+								}
+								tabModuleFontRenderer.drawString(text, textIndent + scroll * textWidth, yOffset + 2, textColor);
+								if (textIndent + textWidth > tabWidth) {
+									tabModuleFontRenderer.drawString(text, textIndent + textWidth + scroll * textWidth, yOffset + 2, textColor);
+									drawGradientRectH(tabWidth - (tabModuleFontRenderer.getFontHeight() + 4) * 2, yOffset, tabWidth - (tabModuleFontRenderer.getFontHeight() + 4), yOffset + tabModuleFontRenderer.getFontHeight() + 4, tabTitleColor, 0x00000000);
+								}
+								if (isLeftClick && isInsideBasicSettingsRect) {
+									((BooleanSetting)setting).toggle();
+									isLeftClick = false;
+								}
+								UiUtils.enableScissor(tab.getPosX(), scissor2, tab.getPosX() + tabWidth, height);
+								drawRect(tabWidth - (tabModuleFontRenderer.getFontHeight() + 4), yOffset, tabWidth, yOffset + tabModuleFontRenderer.getFontHeight() + 4, tabTitleColor);
+								if (((BooleanSetting)setting).isEnabled()) {
+									drawRect(tabWidth - (tabModuleFontRenderer.getFontHeight() + 2), yOffset + 2, tabWidth - 2, yOffset + tabModuleFontRenderer.getFontHeight() + 2, coolColor);
+								}
+							}break;
+							case "error":{
+								String text = setting.getName() + "        ";
+								double textWidth = tabModuleFontRenderer.getStringWidth(text);
+								UiUtils.enableScissor(tab.getPosX() + textIndent, scissor2, tab.getPosX() + Math.min(textIndent + textWidth, tabWidth), height);
+								if (textWidth + textIndent < tabWidth)
+									scroll = 0;
+								if (scroll > 0) {
+									textScrollWidth = textWidth;
+								}
+								tabModuleFontRenderer.drawString(text, textIndent + scroll * textWidth, yOffset + 2, textColor);
+								if (textIndent + textWidth > tabWidth) {
+									tabModuleFontRenderer.drawString(text, textIndent + textWidth + scroll * textWidth, yOffset + 2, textColor);
+									drawGradientRectH(tabWidth - (tabModuleFontRenderer.getFontHeight() + 4), yOffset, tabWidth, yOffset + tabModuleFontRenderer.getFontHeight() + 4, tabTitleColor, 0x00000000);
+								}
+							}break;
+						}
+					}
+					yOffset += tabModuleFontRenderer.getFontHeight() + 4;
+				}
+				
 			}
 			UiUtils.disableScissor();
 			yOffset--;
@@ -309,28 +413,55 @@ public class GuiDropdownClickgui extends GuiScreen {
 		
 		isLeftClick = false;
 		isRightClick = false;
+		this.hoveredText = hoveredText;
 	}
 	
 	@EventHandler
 	private Handler<EventCheatRenderTick> onCheatRenderTick = e -> {
-		if (e.isPost() || (!ModuleManager.modClickGui.getMode().is("Dropdown") && Minecraft.getMinecraft().getCurrentScreen() != getInstance()))
+		if (e.isPost())
 			return;
 		
 		double animationSpeed = 0.1;
 		Minecraft mc = Minecraft.getMinecraft();
 		
+		// bg image animation
 		if (mc.getCurrentScreen() instanceof GuiDropdownClickgui) {
 			bgImageAnimation += (1 - bgImageAnimation) * animationSpeed;
 		}else {
 			bgImageAnimation -= bgImageAnimation * animationSpeed;
+			return;
 		}
 		
+		// Tab and module animations
 		for (Tab tab : TABS) {
+			
+			// Tab expansion animation
 			if (!tab.isExpanded()) {
 				tab.setExpandAnimation(tab.getExpandAnimation() + (1 - tab.getExpandAnimation()) * animationSpeed);
 			}else {
 				tab.setExpandAnimation(tab.getExpandAnimation() - tab.getExpandAnimation() * animationSpeed);
 			}
+			
+			// Module expansion animation
+			boolean tabExpanded = tab.isExpanded();
+			double tabExpand = tab.getExpandAnimation();
+			for (Module module : categoryModules.get(tab.getCategory())) {
+				if (module.isClickguiExtended() && tabExpanded) {
+					module.setClickguiExtension(module.getClickguiExtension() + (1 - module.getClickguiExtension()) * animationSpeed);
+				}else {
+					module.setClickguiExtension(module.getClickguiExtension() - module.getClickguiExtension() * animationSpeed);
+				}
+			}
+			
+		}
+		
+		// Text scroll animation
+		if (hoveredText != null) {
+			textScrollAnimation += (0.4 / textScrollWidth) / 100;
+			if (textScrollAnimation > 1)
+				textScrollAnimation = 0;
+		}else {
+			textScrollAnimation = 0;
 		}
 		
 	};
@@ -349,7 +480,9 @@ public class GuiDropdownClickgui extends GuiScreen {
 		 */
 		public Tab(Category category) {
 			this.category = category;
-			width = (int)Math.ceil(TAB_TITLE_FR.getStringWidth(category.getName()) * 1.5);
+			width = (int)Math.ceil(TAB_TITLE_FR.getStringWidth("HHHHHHHH") * 1.5);
+			if (width < (int)Math.ceil(TAB_TITLE_FR.getStringWidth(category.getName()) * 1.5))
+				width = (int)Math.ceil(TAB_TITLE_FR.getStringWidth(category.getName()) * 1.5);
 			
 			// Expand the size of the tab if a module name is too big for it
 			for (Module module : categoryModules.get(category)) {

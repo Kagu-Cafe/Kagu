@@ -89,22 +89,12 @@ public class ModTest extends Module {
 
 	@EventHandler
 	private Handler<EventPlayerUpdate> onPlayerUpdate = e -> {
-		if (e.isPost())
-			return;
-		if (mc.thePlayer.hurtResistantTime == 19) {
-			mc.thePlayer.offsetPosition(1, 5.324, 1);
-			e.setPosY(mc.thePlayer.posY);
-//			MovementUtils.setMotion(2);
-		}
+		
 	};
 	
 	@EventHandler
 	private Handler<EventPacketSend> onPacketSend = e -> {
-		if (e.isPost())
-			return;
-		if (e.getPacket() instanceof C00PacketKeepAlive) {
-//			e.cancel();
-		}
+		
 	};
 	
 }

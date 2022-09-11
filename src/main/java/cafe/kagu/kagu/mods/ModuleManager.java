@@ -47,6 +47,7 @@ import cafe.kagu.kagu.mods.impl.player.ModChestStealer;
 import cafe.kagu.kagu.mods.impl.player.ModDisabler;
 import cafe.kagu.kagu.mods.impl.player.ModInventoryManager;
 import cafe.kagu.kagu.mods.impl.player.ModNoFall;
+import cafe.kagu.kagu.mods.impl.player.ModSlashSpawn;
 import cafe.kagu.kagu.mods.impl.visual.ModAmbience;
 import cafe.kagu.kagu.mods.impl.visual.ModAnimations;
 import cafe.kagu.kagu.mods.impl.visual.ModCamera;
@@ -99,6 +100,7 @@ public class ModuleManager {
 	public static ModInventoryManager modInventoryManager = new ModInventoryManager();
 	public static ModAntiBot modAntiBot = new ModAntiBot();
 	public static ModNoFall modNoFall = new ModNoFall();
+	public static ModSlashSpawn modSlashSpawn = new ModSlashSpawn();
 	
 	// Visual
 	public static ModClickGui modClickGui = new ModClickGui();
@@ -193,6 +195,7 @@ public class ModuleManager {
 			modNoHitDelay,
 			modChangeRightClickDelay,
 			modAimAssist,
+			modSlashSpawn,
 			
 			modBlink
 	};

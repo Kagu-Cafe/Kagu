@@ -71,7 +71,8 @@ public class ModAntiBot extends Module {
 			return;
 		switch (mode.getMode()) {
 			case "Hypixel": {
-				for (Entity ent : mc.theWorld.loadedEntityList) {
+				List<Entity> loadedEntityList = new ArrayList<Entity>(mc.theWorld.loadedEntityList);
+				for (Entity ent : loadedEntityList) {
 					if (!(ent instanceof EntityPlayer) || ent == mc.thePlayer || hypixelWhitelistedPlayers.contains(ent))
 						continue;
 					

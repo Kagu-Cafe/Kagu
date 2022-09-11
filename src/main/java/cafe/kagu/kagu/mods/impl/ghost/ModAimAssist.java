@@ -43,9 +43,9 @@ public class ModAimAssist extends Module {
 	}
 	
 	private ModeSetting mode = new ModeSetting("Mode", "Passive", "Passive", "Lock");
-	private DoubleSetting passiveSlowdown = new DoubleSetting("Slowdown", 0.4, 0, 1, 0.01).setDependency(() -> mode.is("Passive"));
+	private DoubleSetting passiveSlowdown = new DoubleSetting("Slowdown", 0.55, 0, 1, 0.01).setDependency(() -> mode.is("Passive"));
 	private DoubleSetting activeSpeed = new DoubleSetting("Speed", 3, 0.1, 10, 0.05).setDependency(() -> mode.is("Active"));
-	private DoubleSetting range = new DoubleSetting("Range", 6, 2, 12, 0.05);
+	private DoubleSetting range = new DoubleSetting("Range", 12, 2, 12, 0.05);
 	
 	private EntityLivingBase target = null;
 	

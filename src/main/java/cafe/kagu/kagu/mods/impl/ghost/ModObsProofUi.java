@@ -42,7 +42,9 @@ public class ModObsProofUi extends Module {
 		if (!OSUtil.isWindows()) {
 			ChatUtils.addChatMessage("This is a windows only feature, sorry " + System.getProperty("os.name").toLowerCase() + " user");
 			toggle();
+			return;
 		}
+		ChatUtils.addChatMessage("Use game capture to record the game, other means of recording (like display capture) will pick up the ui");
 	}
 	
 	private static final Color COLOR = new Color(214, 140, 255, 100);
