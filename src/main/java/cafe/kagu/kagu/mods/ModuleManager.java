@@ -6,6 +6,7 @@ package cafe.kagu.kagu.mods;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import cafe.kagu.kagu.Kagu;
 import cafe.kagu.kagu.eventBus.EventBus;
 import cafe.kagu.kagu.mods.impl.combat.ModBacktrack;
 import cafe.kagu.kagu.mods.impl.combat.ModHitboxes;
@@ -207,7 +208,7 @@ public class ModuleManager {
 		logger.info("Loading modules...");
 		
 		for (Module module : MODULES) {
-			EventBus.setSubscriber(module, true); // Subscribe any listeners to the event bus
+			Kagu.getEventBus().subscribe(module); // Subscribe any listeners to the event bus
 		}
 		
 		logger.info("Loaded all the modules");

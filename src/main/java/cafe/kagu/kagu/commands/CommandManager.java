@@ -5,6 +5,7 @@ package cafe.kagu.kagu.commands;
 
 import org.lwjgl.input.Keyboard;
 
+import cafe.kagu.kagu.Kagu;
 import cafe.kagu.kagu.commands.Command.ActionRequirement;
 import cafe.kagu.kagu.commands.impl.CommandBind;
 import cafe.kagu.kagu.commands.impl.CommandChangeSkin;
@@ -32,7 +33,7 @@ public class CommandManager {
 	 * Called when the client starts, creates a new command manager object and hooks it onto the event bus
 	 */
 	public static void start() {
-		EventBus.setSubscriber(new CommandManager(), true);
+		Kagu.getEventBus().subscribe(new CommandManager());
 	}
 	
 	private static final Command[] COMMANDS = new Command[] {

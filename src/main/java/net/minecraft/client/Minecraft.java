@@ -1082,8 +1082,6 @@ public class Minecraft implements IThreadListener, IPlayerUsage
             this.shutdown();
         }
         
-        boolean f1 = Kagu.isDestroyDisplay();
-        
         if (this.isGamePaused && this.theWorld != null)
         {
             float f = this.timer.renderPartialTicks;

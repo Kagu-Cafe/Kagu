@@ -3,6 +3,7 @@
  */
 package cafe.kagu.kagu.utils;
 
+import cafe.kagu.kagu.Kagu;
 import cafe.kagu.kagu.eventBus.EventBus;
 import cafe.kagu.kagu.eventBus.EventHandler;
 import cafe.kagu.kagu.eventBus.Handler;
@@ -27,7 +28,7 @@ public class SpoofUtils {
 	 * Called at the start of the client
 	 */
 	public static void start() {
-		EventBus.setSubscriber(new SpoofUtils(), true);
+		Kagu.getEventBus().subscribe(new SpoofUtils());
 	}
 	
 	@EventHandler

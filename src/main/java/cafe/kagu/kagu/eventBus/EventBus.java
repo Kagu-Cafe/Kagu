@@ -1,161 +1,150 @@
+/**
+ * 
+ */
 package cafe.kagu.kagu.eventBus;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import cafe.kagu.kagu.eventBus.impl.EventCheatRenderTick;
-import cafe.kagu.kagu.eventBus.impl.EventPlayerUpdate;
-import cafe.kagu.kagu.eventBus.impl.EventRender2D;
-import cafe.kagu.kagu.eventBus.impl.EventRender3D;
-import cafe.kagu.kagu.eventBus.impl.EventTick;
-import cafe.kagu.kagu.mods.Module;
-import cafe.kagu.kagu.mods.ModuleManager;
-import cafe.kagu.kagu.mods.impl.visual.ModClickGui;
-import cafe.kagu.kagu.utils.DrawUtils3D;
+import cafe.kagu.kagu.eventBus.Event.EventPosition;
+import cafe.kagu.kagu.mods.Toggleable;
 import net.minecraft.client.Minecraft;
 
+
 /**
- * @author lavaflowglow
+ * @author DistastefulBannock
  *
  */
 public class EventBus {
 	
-	private static Map<Handler<? extends Event>, Class<? extends Event>> subscribers = new LinkedHashMap<Handler<? extends Event>, Class<? extends Event>>();
-	private static Map<Handler<? extends Event>, Module> moduleSubscribers = new LinkedHashMap<Handler<? extends Event>, Module>();
-	private static Logger logger = LogManager.getLogger();
+	private Map<Class<? extends Event>, ArrayList<EventSubscriber>> subscribers = new LinkedHashMap<>();
 	
 	/**
-	 * Starts the event manager, this class is used to push events to subscribers
+	 * Scans an object for handlers and subscribes them to the event bus
+	 * @param obj The object to scan
 	 */
-	public static void start() {
-		setSubscriber(new EventBus(), true);
-	}
-	
-	/**
-	 * Distributes the event to all the subscribers
-	 * 
-	 * @param e The event that's being distributed
-	 */
-	public static void distribute(Event e) {
-		// Don't send events if the world or player is null
-		Minecraft mc = Minecraft.getMinecraft();
-		if ((mc.theWorld == null || mc.thePlayer == null) && !(e instanceof EventCheatRenderTick)) {
-			return;
-		}
-		
-		// Disable specific visuals if they are disabled in the conifg
-		if (ModuleManager.modHud != null && ModuleManager.modHud.getVisual3dEnabled().isDisabled() && e instanceof EventRender3D) {
-			return;
-		}
-		if (ModuleManager.modHud != null && ModuleManager.modHud.getHudEnabled().isDisabled() && e instanceof EventRender2D) {
-			return;
-		}
-		
-		// Send the event
-		Set<Handler<? extends Event>> handlers = subscribers.keySet();
-		try {
-			for (Handler<? extends Event> subscriber : handlers) {
-				
-				if (!e.getClass().isAssignableFrom(subscribers.get(subscriber))) {
-					continue;
-				}
-				
-				// If subscriber is linked to module AND the module is disabled then cancel
-				if (moduleSubscribers.containsKey(subscriber) && moduleSubscribers.get(subscriber).isDisabled() && !(moduleSubscribers.get(subscriber) instanceof ModClickGui)) {
-					continue;
-				}
-				
-				// Send event
-				try {
-					subscriber.onEventNoGeneric(e);
-				} catch (Exception e2) {
-					logger.error("Had an issue dispatching an event", e2);
-				}
-				
-			}
-		} catch (Exception e2) {
-			// TODO: handle exception
-		}
-	}
-	
-	/**
-	 * Finds all event subscribers in an object
-	 * @param obj The object to check
-	 * @param subscribed True if the subscribers that the object contains should be added to the event bus, false if they should be unsubscribed
-	 */
-	@SuppressWarnings("unchecked")
-	public static void setSubscriber(Object obj, boolean subscribed){
-		
-		// Search through all fields and find ones with the @EventHandler annotation
-		for (Field field : obj.getClass().getDeclaredFields()) {
-			
-			// If field is null than check next field
-			if (field == null) {
-				continue;
-			}
-			
-			// If the field has the @EventHandler annotation than register it
-			EventHandler[] events = field.getDeclaredAnnotationsByType(EventHandler.class);
-			if (events.length == 0) {
-				continue;
-			}
+	public void subscribe(Object obj) {
+		Field[] fields = obj.getClass().getDeclaredFields();
+		for (Field field : fields) {
 			field.setAccessible(true);
 			
+			// Get event handler annotations
+			Annotation[] annotations = field.getAnnotationsByType(EventHandler.class);
+			if (annotations.length == 0)
+				continue;
+			
+			// Add toggleable if the field is in a class for one
+			Toggleable linkedToggleable = null;
+			if (obj instanceof Toggleable)
+				linkedToggleable = (Toggleable)obj;
+			
+			// Check if the field is of a handler, then get the handler
+			Handler handler = null;
 			try {
-				
-				// Check if the field is a subscriber object
-				if (!(field.get(obj) instanceof Handler<?>)) {
-					continue;
-				}
-				
-				// Get the event it's listening for
-				Type type = ((ParameterizedType)field.getGenericType()).getActualTypeArguments()[0];
-				Class<?> eventClass = (Class<?>) Class.forName(type.getTypeName());
-				
-				// Check if the event class is an instance of event
-				if (!Event.class.isAssignableFrom(eventClass)) {
-					continue;
-				}
-				
-				// Subscribe or unsubscribe the subscriber
-				if (subscribed) {
-					subscribers.putIfAbsent((Handler<?>) field.get(obj), (Class<? extends Event>) eventClass);
-					
-					// If module then map the subscriber to the module
-					if (obj instanceof Module) {
-						moduleSubscribers.putIfAbsent((Handler<?>) field.get(obj), (Module) obj);
-					}
-				}else {
-					subscribers.remove((Handler<?>) field.get(obj), eventClass);
-					
-					// If module then remove map the subscriber to the module
-					if (obj instanceof Module) {
-						moduleSubscribers.remove((Handler<?>) field.get(obj), (Module) obj);
-					}
-				}
-				
+				if (field.get(obj) instanceof Handler)
+					handler = (Handler)field.get(obj);
+				else continue;
 			} catch (Exception e) {
-				logger.error("Failed to register event listener " + obj.getClass().getName().replace(".", "/") + field.getName(), e);
+				e.printStackTrace();
+				continue; // This shouldn't happen
+			}
+			
+			Class<?> maybeListenedEvent = null;
+			try {
+				// Still class.forname, but shouldn't initialize the class
+				maybeListenedEvent = Class.forName(((ParameterizedType)field.getGenericType()).getActualTypeArguments()[0].getTypeName(), false, getClass().getClassLoader());
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+				continue; // Should not happen
+			}
+			Class<? extends Event> listenedEvent = (Class<? extends Event>)maybeListenedEvent;
+			
+			// Make sure the listened event is actually an event and not some other shit
+			if (!Event.class.isAssignableFrom(listenedEvent)) {
+				continue; // This shouldn't happen, but should check
+			}
+			
+			// Go through each event handler annotation and subscribe them to the bus
+			for (Annotation annotation : annotations) {
+				EventHandler eventHandler = (EventHandler)annotation;
+				ArrayList<EventSubscriber> subList = subscribers.get(listenedEvent);
+				if (subList == null)
+					subList = new ArrayList<>();
+				subList.add(new EventSubscriber(handler, linkedToggleable));
+				subscribers.put(listenedEvent, subList);
 			}
 			
 		}
-		
 	}
 	
 	/**
-	 * Boots all the event listeners
+	 * Posts an event to all the handlers
+	 * @param evt The event to post
 	 */
-	public static void bootAll() {
-		subscribers.clear();
-		moduleSubscribers.clear();
+	public void postEvent(Event evt) {
+		
+		// Don't post the event if the player or the world is null
+		if (Minecraft.getMinecraft().thePlayer == null || Minecraft.getMinecraft().theWorld == null)
+			return;
+		
+		// Start checks then post event the handlers
+		Class<? extends Event> eventClass = evt.getClass();
+		if (subscribers.get(eventClass) == null)
+			return; // Prevent crash
+		subscribers.get(eventClass).stream().filter(sub -> sub != null && (sub.getLinkedToggleable() == null || sub.getLinkedToggleable().isEnabled())).forEach(sub -> {
+			// Post the event
+			try {
+				sub.getHandler().onEventNoGeneric(evt);
+			} catch (Exception e) {
+				// If a handler throws something then it will be caught here
+				System.err.println("Something went wrong while posting an event, view logs below:");
+				e.printStackTrace();
+			}
+		});
+	}
+	
+	private class EventSubscriber {
+		
+		/**
+		 * @param handler
+		 * @param linkToggleable
+		 * @param listenedEvent
+		 * @param subscribedLocation
+		 */
+		public EventSubscriber(Handler handler, Toggleable linkedToggleable) {
+			this.handler = handler;
+			this.linkedToggleable = linkedToggleable;
+		}
+		
+		/**
+		 * The handler to post the event to
+		 */
+		private Handler handler;
+
+		/**
+		 * If null then it's not linked to a toggleable
+		 */
+		private Toggleable linkedToggleable;
+		
+		/**
+		 * @return the handler
+		 */
+		public Handler getHandler() {
+			return handler;
+		}
+
+		/**
+		 * @return the linkToggleable
+		 */
+		public Toggleable getLinkedToggleable() {
+			return linkedToggleable;
+		}
+		
 	}
 	
 }

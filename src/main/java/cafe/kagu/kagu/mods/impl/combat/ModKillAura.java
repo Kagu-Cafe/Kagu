@@ -15,6 +15,7 @@ import javax.vecmath.Vector3d;
 
 import org.apache.commons.lang3.RandomUtils;
 
+import cafe.kagu.kagu.Kagu;
 import cafe.kagu.kagu.eventBus.EventBus;
 import cafe.kagu.kagu.eventBus.EventHandler;
 import cafe.kagu.kagu.eventBus.Handler;
@@ -65,7 +66,7 @@ public class ModKillAura extends Module {
 				preferredTargetMetrics, targetSelectionMode, swingMode, clickMode, hitRange, blockRange, hitChance,
 				minAps, maxAps, slowOnBlock, blockSlowdown, silentRotations, movementMatchRotation, targetAll,
 				targetPlayers, targetAnimals, targetMobs);
-		EventBus.setSubscriber(new ApsMinMaxFixer(this), true);
+		Kagu.getEventBus().subscribe(new ApsMinMaxFixer(this));
 	}
 	
 	private ModeSetting rotationMode = new ModeSetting("Rotation Mode", "Lock", "None", "Lock", "Lock+", "Linear", "Linear+", "Linear Humanized", "Quadratic Curve", "Cubic Curve");

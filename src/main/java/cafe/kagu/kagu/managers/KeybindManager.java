@@ -31,7 +31,7 @@ public class KeybindManager {
 	 */
 	private KeybindManager() {}
 	
-	private static Map<String, Integer[]> keybinds = new HashMap<>();
+	private static Map<String, ArrayList<Integer>> keybinds = new HashMap<>();
 	
 	/**
 	 * Called when the client starts
@@ -42,12 +42,12 @@ public class KeybindManager {
 		if (FileManager.DEFAULT_KEYBINDS.exists()) {
 			load(FileManager.DEFAULT_KEYBINDS);
 		}else {
-			keybinds.put(ModuleManager.modClickGui.getName().toLowerCase(), new Integer[] {Keyboard.KEY_RSHIFT});
+			keybinds.put(ModuleManager.modClickGui.getName().toLowerCase(), new ArrayList<>(Keyboard.KEY_RSHIFT));
 			save(FileManager.DEFAULT_KEYBINDS);
 		}
 		
 		// Subscribe to the key event so we can use the keybinds
-		EventBus.setSubscriber(new KeybindManager(), true);
+		Kagu.getEventBus().subscribe(new KeybindManager());
 		
 	}
 	
@@ -58,15 +58,11 @@ public class KeybindManager {
 	 */
 	public static void addKeybind(String module, int keyCode) {
 		module = module.toLowerCase();
-		List<Integer> binds = new ArrayList<>(Arrays.asList(getKeybinds(module)));
+		ArrayList<Integer> binds = new ArrayList<>(getKeybinds(module));
 		if (binds.contains(keyCode))
 			return;
 		binds.add(keyCode);
-		if (keybinds.containsKey(module)) {
-			keybinds.replace(module, binds.toArray(new Integer[0]));
-		}else {
-			keybinds.put(module, binds.toArray(new Integer[0]));
-		}
+		keybinds.put(module, binds);
 		save(FileManager.DEFAULT_KEYBINDS);
 	}
 	
@@ -85,14 +81,14 @@ public class KeybindManager {
 	 * @param module The name of the module
 	 * @return
 	 */
-	public static Integer[] getKeybinds(String module) {
+	public static ArrayList<Integer> getKeybinds(String module) {
 		module = module.toLowerCase();
-		List<Integer> binds = new ArrayList<>();
+		ArrayList<Integer> binds = new ArrayList<>();
 		try {
-			binds.addAll(Arrays.asList(keybinds.get(module)));
+			binds.addAll(keybinds.get(module));
 		} catch (Exception e) {}
 		
-		return binds.toArray(new Integer[0]);
+		return binds;
 	}
 	
 	/**
@@ -125,12 +121,12 @@ public class KeybindManager {
 			try {
 				String[] bindArray = bind.split(Kagu.GROUP_SEPARATOR);
 				
-				List<Integer> keyCodes = new ArrayList<>();
+				ArrayList<Integer> keyCodes = new ArrayList<>();
 				for (String code : bindArray[1].split(Kagu.RECORD_SEPARATOR)) {
 					keyCodes.add(Integer.valueOf(code));
 				}
 				
-				keybinds.put(bindArray[0], keyCodes.toArray(new Integer[0]));
+				keybinds.put(bindArray[0], keyCodes);
 			} catch (Exception e) {
 				
 			}
@@ -147,7 +143,7 @@ public class KeybindManager {
 		
 		int keyCode = e.getKeyCode();
 		for (Module module : ModuleManager.getModules()) {
-			if (Arrays.asList(getKeybinds(module.getName())).contains(keyCode)) {
+			if (getKeybinds(module.getName()).contains(keyCode)) {
 				module.toggle();
 			}
 		}

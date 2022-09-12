@@ -21,6 +21,7 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
 import cafe.kagu.kagu.eventBus.Event.EventPosition;
+import cafe.kagu.kagu.Kagu;
 import cafe.kagu.kagu.eventBus.EventBus;
 import cafe.kagu.kagu.eventBus.EventHandler;
 import cafe.kagu.kagu.eventBus.Handler;
@@ -87,7 +88,7 @@ public class GuiDropdownClickgui extends GuiScreen {
 	 * Called when the client starts
 	 */
 	public void start() {
-		EventBus.setSubscriber(this, true);
+		Kagu.getEventBus().subscribe(this);
 		
 		// Populate the background image resource location data map
 		String dropdownImageFolder = "Kagu/dropdownClickgui/bgImage/";

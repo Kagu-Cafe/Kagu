@@ -26,6 +26,7 @@ import com.sun.jna.platform.win32.User32;
 import com.sun.jna.platform.win32.WinDef.HWND;
 import com.sun.jna.platform.win32.WinUser;
 
+import cafe.kagu.kagu.Kagu;
 import cafe.kagu.kagu.eventBus.EventBus;
 import cafe.kagu.kagu.eventBus.EventHandler;
 import cafe.kagu.kagu.eventBus.Handler;
@@ -105,7 +106,7 @@ public class GhostUi extends JFrame {
 		User32.INSTANCE.SetWindowLong(handleToWindow, WinUser.GWL_EXSTYLE, windowLong); // Set the window long with our changes
 		
 		// Register this class to the event bus
-		EventBus.setSubscriber(this, true);
+		Kagu.getEventBus().subscribe(this);
 		
 	}
 	

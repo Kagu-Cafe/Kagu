@@ -3,6 +3,8 @@
  */
 package cafe.kagu.kagu.eventBus;
 
+import cafe.kagu.kagu.Kagu;
+
 /**
  * @author lavaflowglow
  *
@@ -24,7 +26,7 @@ public abstract class Event {
 	 * subscribers
 	 */
 	public void post() {
-		EventBus.distribute(this);
+		Kagu.getEventBus().postEvent(this);
 	}
 
 	/**

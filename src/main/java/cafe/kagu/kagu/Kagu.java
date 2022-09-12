@@ -63,6 +63,8 @@ public class Kagu {
 	
 	private static int activeTexture = GL13.GL_TEXTURE0;
 	
+	private static final EventBus EVENT_BUS = new EventBus();
+	
 	// Only used if the font texture size is greater than the size limit
 	public static final char[] FONT_RENDERER_SUPPORTED_CHARACTERS = new char[] {
 			'1', '2', '3', '4', '5', '6', '7', '8', '9', '0', 
@@ -84,11 +86,6 @@ public class Kagu {
 	public static void start() {
 		
 		logger.info("Starting " + name + " v" + version + " :3");
-		
-		// Starts the event bus
-		logger.info("Starting the event bus...");
-		EventBus.start();
-		logger.info("Started the event bus");
 		
 		// Start the stencil util
 		logger.info("Starting the stencil util...");
@@ -178,7 +175,7 @@ public class Kagu {
 		
 		// Hook the hud
 		logger.info("Hooking the hud...");
-		EventBus.setSubscriber(new Hud(), true);
+		EVENT_BUS.subscribe(new Hud());
 		logger.info("Hooked the hud");
 		
 		// Start a cheat loop thread
@@ -262,15 +259,10 @@ public class Kagu {
 	}
 	
 	/**
-	 * @return the destroyDisplay
+	 * @return the eventBus
 	 */
-	public static boolean isDestroyDisplay() {
-		if (destroyDisplay && Display.isCreated()) {
-			Display.destroy();
-			EventBus.bootAll();
-			while (true);
-		}
-		return destroyDisplay;
+	public static EventBus getEventBus() {
+		return EVENT_BUS;
 	}
 	
 }

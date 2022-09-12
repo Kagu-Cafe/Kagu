@@ -83,7 +83,7 @@ public class GuiCsgoClickgui extends GuiScreen {
 	 * Called when the client starts
 	 */
 	public void start() {
-		EventBus.setSubscriber(this, true);
+		Kagu.getEventBus().subscribe(this);
 		
 		// So we can calculate mouse presses
 		degreesPerCategory = 360d / (double)Module.Category.values().length;

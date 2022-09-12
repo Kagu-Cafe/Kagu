@@ -16,7 +16,7 @@ import net.minecraft.client.Minecraft;
  * @author lavaflowglow
  *
  */
-public abstract class Module {
+public abstract class Module implements Toggleable {
 	
 	private String name = ""; // The name of the module
 	private String[] info = new String[0]; // The info displayed next to the name on the arraylist
@@ -113,6 +113,7 @@ public abstract class Module {
 	/**
 	 * @return true if enabled
 	 */
+	@Override
 	public boolean isEnabled() {
 		return enabled;
 	}
@@ -120,6 +121,7 @@ public abstract class Module {
 	/**
 	 * @return true if disabled
 	 */
+	@Override
 	public boolean isDisabled() {
 		return !enabled;
 	}
@@ -183,6 +185,7 @@ public abstract class Module {
 	/**
 	 * Toggles the module
 	 */
+	@Override
 	public void toggle() {
 		// Kagu hook
 		{
@@ -213,6 +216,7 @@ public abstract class Module {
 	/**
 	 * Disables the module, does nothing if the module is already disabled
 	 */
+	@Override
 	public void disable() {
 		// Kagu hook
 		{
@@ -239,6 +243,7 @@ public abstract class Module {
 	/**
 	 * Enables the module, does nothing if the module is already enabled
 	 */
+	@Override
 	public void enable() {
 		// Kagu hook
 		{
