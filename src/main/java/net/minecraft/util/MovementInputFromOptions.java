@@ -40,7 +40,7 @@ public class MovementInputFromOptions extends MovementInput
         }
 
         this.jump = this.gameSettings.keyBindJump.isKeyDown();
-        this.sneak = this.gameSettings.keyBindSneak.isKeyDown();
+        this.sneak = this.gameSettings.keyBindSneak.isKeyDown() || (ModuleManager.modEagle.isEnabled() && ModuleManager.modEagle.isShouldSneak());
 
         if (this.sneak && (modNoSlow.isDisabled() || modNoSlow.getCancelSneakSlowdown().isDisabled()))
         {

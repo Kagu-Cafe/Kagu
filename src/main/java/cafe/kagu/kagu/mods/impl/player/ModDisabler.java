@@ -335,23 +335,12 @@ public class ModDisabler extends Module {
 			case "Test":{
 				if (e.getPacket() instanceof C03PacketPlayer) {
 					C03PacketPlayer c03 = (C03PacketPlayer)e.getPacket();
+					if (thePlayer.ticksExisted % 4 == 0)
+						mc.getNetHandler().getNetworkManager().sendPacket(new C08PacketPlayerBlockPlacement(thePlayer.getPosition().add(0, -1, 0), 1, thePlayer.getCurrentEquippedItem(), 0, 0, 0));
+//					c03.setOnGround(thePlayer.ticksExisted % 2 == 0);
 //					c03.setOnGround(false);
 //					if (thePlayer.ticksExisted < 60)
 //						e.cancel();
-				}
-				else if (e.getPacket() instanceof C0BPacketEntityAction) {
-					
-					// Cancel start and stop spring packets, bypasses omnisprint checks and allows us to sprint scaffold and omni sprint
-					C0BPacketEntityAction c0b = (C0BPacketEntityAction)e.getPacket();
-					if (c0b.getAction() == net.minecraft.network.play.client.C0BPacketEntityAction.Action.START_SPRINTING
-							|| c0b.getAction() == net.minecraft.network.play.client.C0BPacketEntityAction.Action.STOP_SPRINTING)
-						e.cancel();
-					
-				}
-				else if (e.getPacket() instanceof C0FPacketConfirmTransaction || e.getPacket() instanceof C00PacketKeepAlive) {
-//					C0FPacketConfirmTransaction c0f = (C0FPacketConfirmTransaction)e.getPacket();
-//					ChatUtils.addChatMessage(c0f.getUid());
-//					e.cancel();
 				}
 			}break;
 		}

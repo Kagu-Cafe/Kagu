@@ -4,17 +4,22 @@ import com.google.common.collect.Sets;
 
 import cafe.kagu.kagu.eventBus.Event.EventPosition;
 import cafe.kagu.kagu.eventBus.impl.EventKeyUpdate;
+import cafe.kagu.kagu.mods.ModuleManager;
+import cafe.kagu.kagu.mods.impl.ghost.ModInventoryHelper;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Set;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.init.Items;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
@@ -122,12 +127,11 @@ public abstract class GuiContainer extends GuiScreen
         int l = 240;
         OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float)k / 1.0F, (float)l / 1.0F);
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-
         for (int i1 = 0; i1 < this.inventorySlots.inventorySlots.size(); ++i1)
         {
             Slot slot = (Slot)this.inventorySlots.inventorySlots.get(i1);
             this.drawSlot(slot);
-
+            
             if (this.isMouseOverSlot(slot, mouseX, mouseY) && slot.canBeHovered())
             {
                 this.theSlot = slot;
@@ -136,13 +140,12 @@ public abstract class GuiContainer extends GuiScreen
                 int j1 = slot.xDisplayPosition;
                 int k1 = slot.yDisplayPosition;
                 GlStateManager.colorMask(true, true, true, false);
-                this.drawGradientRect(j1, k1, j1 + 16, k1 + 16, -2130706433, -2130706433);
+                drawRect(j1, k1, j1 + 16, k1 + 16, -2130706433);
                 GlStateManager.colorMask(true, true, true, true);
                 GlStateManager.enableLighting();
                 GlStateManager.enableDepth();
             }
         }
-
         RenderHelper.disableStandardItemLighting();
         this.drawGuiContainerForegroundLayer(mouseX, mouseY);
         RenderHelper.enableGUIStandardItemLighting();
@@ -232,6 +235,16 @@ public abstract class GuiContainer extends GuiScreen
 
     private void drawSlot(Slot slotIn)
     {
+    	
+    	// Inventory helper
+    	ModInventoryHelper modInventoryHelper = ModuleManager.modInventoryHelper;
+    	if (modInventoryHelper.isEnabled() && (modInventoryHelper.getBestGearSlots().contains(slotIn) || (slotIn.getHasStack() && slotIn.getStack().getItem() == Items.arrow))) {
+    		int scaleFactor = new ScaledResolution(Minecraft.getMinecraft()).getScaleFactor();
+            int j1 = (slotIn.xDisplayPosition + guiLeft) * scaleFactor;
+            int k1 = (slotIn.yDisplayPosition + guiTop) * scaleFactor;
+    		modInventoryHelper.getBufferSquares().add(new Integer[] {j1, k1, 16 * scaleFactor, 16 * scaleFactor});
+    	}
+    	
         int i = slotIn.xDisplayPosition;
         int j = slotIn.yDisplayPosition;
         ItemStack itemstack = slotIn.getStack();

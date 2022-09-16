@@ -546,6 +546,9 @@ public class ModKillAura extends Module {
 	 * @return the target
 	 */
 	public EntityLivingBase getTarget() {
+		if (isDisabled()) {
+			target = null;
+		}
 		return target;
 	}
 	

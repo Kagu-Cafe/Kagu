@@ -82,9 +82,6 @@ public class ModTargetHud extends Module {
 		if (e.isPost())
 			return;
 		EntityLivingBase target = ModuleManager.modKillAura.getTarget();
-		ModAutoRod modAutoRod = ModuleManager.modAutoRod;
-		if (target == null && modAutoRod.isEnabled() && modAutoRod.getTarget() != null)
-			target = modAutoRod.getTarget();
 		if (target == null)
 			if (mc.getCurrentScreen() != null && (mc.getCurrentScreen() instanceof GuiChat || ClickGuiUtils.isInClickGui()))
 				target = mc.thePlayer;

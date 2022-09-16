@@ -26,7 +26,9 @@ import cafe.kagu.kagu.mods.impl.exploit.ModTimer;
 import cafe.kagu.kagu.mods.impl.ghost.ModAimAssist;
 import cafe.kagu.kagu.mods.impl.ghost.ModAutoRod;
 import cafe.kagu.kagu.mods.impl.ghost.ModChangeRightClickDelay;
+import cafe.kagu.kagu.mods.impl.ghost.ModEagle;
 import cafe.kagu.kagu.mods.impl.ghost.ModHideHud;
+import cafe.kagu.kagu.mods.impl.ghost.ModInventoryHelper;
 import cafe.kagu.kagu.mods.impl.ghost.ModNoHitDelay;
 import cafe.kagu.kagu.mods.impl.ghost.ModObsProofEsp;
 import cafe.kagu.kagu.mods.impl.ghost.ModObsProofUi;
@@ -140,6 +142,8 @@ public class ModuleManager {
 	public static ModNoHitDelay modNoHitDelay = new ModNoHitDelay();
 	public static ModChangeRightClickDelay modChangeRightClickDelay = new ModChangeRightClickDelay();
 	public static ModAimAssist modAimAssist = new ModAimAssist();
+	public static ModEagle modEagle = new ModEagle();
+	public static ModInventoryHelper modInventoryHelper = new ModInventoryHelper();
 	
 	// An array of all the modules in the client
 	private static final Module[] MODULES = new Module[] {
@@ -197,6 +201,8 @@ public class ModuleManager {
 			modChangeRightClickDelay,
 			modAimAssist,
 			modSlashSpawn,
+			modEagle,
+			modInventoryHelper,
 			
 			modBlink
 	};

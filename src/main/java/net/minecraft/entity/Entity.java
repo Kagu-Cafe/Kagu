@@ -19,6 +19,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.block.state.pattern.BlockPattern;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.command.CommandResultStats;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.crash.CrashReport;
@@ -653,7 +654,7 @@ public abstract class Entity implements ICommandSender
             if (flag || (this == Minecraft.getMinecraft().thePlayer && SpoofUtils.isSpoofSneakMovement() && MovementUtils.isTrueOnGround()))
             {
                 double d6;
-
+                boolean eagle = false;
                 for (d6 = 0.05D; x != 0.0D && this.worldObj.getCollidingBoundingBoxes(this, this.getEntityBoundingBox().offset(x, -1.0D, 0.0D)).isEmpty(); d3 = x)
                 {
                     if (x < d6 && x >= -d6)
@@ -668,6 +669,7 @@ public abstract class Entity implements ICommandSender
                     {
                         x += d6;
                     }
+                    eagle = true;
                 }
 
                 for (; z != 0.0D && this.worldObj.getCollidingBoundingBoxes(this, this.getEntityBoundingBox().offset(0.0D, -1.0D, z)).isEmpty(); d5 = z)
@@ -684,6 +686,7 @@ public abstract class Entity implements ICommandSender
                     {
                         z += d6;
                     }
+                    eagle = true;
                 }
 
                 for (; x != 0.0D && z != 0.0D && this.worldObj.getCollidingBoundingBoxes(this, this.getEntityBoundingBox().offset(x, -1.0D, z)).isEmpty(); d5 = z)
@@ -715,6 +718,9 @@ public abstract class Entity implements ICommandSender
                     {
                         z += d6;
                     }
+                }
+                if (this == Minecraft.getMinecraft().thePlayer && ModuleManager.modEagle.isEnabled()) {
+                	ModuleManager.modEagle.setShouldSneak(eagle);
                 }
             }
 

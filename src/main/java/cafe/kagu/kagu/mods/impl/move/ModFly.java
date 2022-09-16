@@ -118,6 +118,7 @@ public class ModFly extends Module {
 				}
 			}break;
 			case "Vanilla":{
+				setInfo("Vanilla");
 				MovementUtils.setMotion(MovementUtils.isPlayerMoving() ? 1 : 0);
 				if (mc.gameSettings.keyBindJump.isKeyDown())
 					thePlayer.motionY = 0.4;

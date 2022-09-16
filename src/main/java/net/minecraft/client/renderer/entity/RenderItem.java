@@ -2,6 +2,10 @@ package net.minecraft.client.renderer.entity;
 
 import java.util.List;
 import java.util.concurrent.Callable;
+
+import cafe.kagu.kagu.font.FontUtils;
+import cafe.kagu.kagu.mods.ModuleManager;
+import cafe.kagu.kagu.mods.impl.visual.ModHud;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDirt;
 import net.minecraft.block.BlockDoublePlant;
@@ -445,7 +449,17 @@ public class RenderItem implements IResourceManagerReloadListener
         GlStateManager.enableBlend();
         GlStateManager.blendFunc(770, 771);
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-        this.setupGuiTransform(x, y, ibakedmodel.isGui3d());
+        ModHud modHud = ModuleManager.modHud;
+        boolean isGui3d = ibakedmodel.isGui3d();
+        switch (modHud.getItemInventoryTransform().getMode()) {
+        	case "All 3D":{
+        		isGui3d = true;
+        	}break;
+        	case "All 2D":{
+        		isGui3d = false;
+        	}break;
+        }
+        this.setupGuiTransform(x, y, isGui3d);
 
         if (Reflector.ForgeHooksClient_handleCameraTransforms.exists())
         {
@@ -477,7 +491,16 @@ public class RenderItem implements IResourceManagerReloadListener
         {
             GlStateManager.scale(40.0F, 40.0F, 40.0F);
             GlStateManager.rotate(210.0F, 1.0F, 0.0F, 0.0F);
-            GlStateManager.rotate(-135.0F, 0.0F, 1.0F, 0.0F);
+            ModHud modHud = ModuleManager.modHud;
+            if (modHud.getRotate3DInventoryItems().isEnabled()) {
+            	if (modHud.getItemRotateMode().is("Float")) {
+            		GlStateManager.rotate((float) ((System.currentTimeMillis() * modHud.getRotateSpeed().getValue()) % 360), 1.0F, 1.0F, 1.0F);
+            	}else {
+            		GlStateManager.rotate((float) ((System.currentTimeMillis() * modHud.getRotateSpeed().getValue()) % 360), 0.0F, 1.0F, 0.0F);
+            	}
+            }else {
+            	GlStateManager.rotate(-135.0F, 0.0F, 1.0F, 0.0F);
+            }
             GlStateManager.enableLighting();
         }
         else
@@ -561,13 +584,21 @@ public class RenderItem implements IResourceManagerReloadListener
                 {
                     s = EnumChatFormatting.RED + String.valueOf(stack.stackSize);
                 }
-
-                GlStateManager.disableLighting();
-                GlStateManager.disableDepth();
-                GlStateManager.disableBlend();
-                fr.drawStringWithShadow(s, (float)(xPosition + 19 - 2 - fr.getStringWidth(s)), (float)(yPosition + 6 + 3), 16777215);
-                GlStateManager.enableLighting();
-                GlStateManager.enableDepth();
+                
+                if (ModuleManager.modHud.getAlternateStackSizeFont().isEnabled()) {
+                    GlStateManager.disableDepth();
+                    FontUtils.STRATUM2_REGULAR_10.drawString(s, (float)(xPosition + 19 - 2 + 1 - fr.getStringWidth(s)), (float)(yPosition + 6 + 4), 0xff000000);
+                    FontUtils.STRATUM2_REGULAR_10.drawString(s, (float)(xPosition + 19 - 2 - fr.getStringWidth(s)), (float)(yPosition + 6 + 3), -1);
+                    GlStateManager.enableDepth();
+                }else {
+                    GlStateManager.disableLighting();
+                    GlStateManager.disableDepth();
+                    GlStateManager.disableBlend();
+                    fr.drawStringWithShadow(s, (float)(xPosition + 19 - 2 - fr.getStringWidth(s)), (float)(yPosition + 6 + 3), 16777215);
+                    GlStateManager.enableLighting();
+                    GlStateManager.enableDepth();
+                }
+                
             }
 
             boolean flag = stack.isItemDamaged();

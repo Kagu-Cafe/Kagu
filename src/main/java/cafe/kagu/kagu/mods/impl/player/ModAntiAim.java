@@ -31,6 +31,8 @@ public class ModAntiAim extends Module {
 	private Handler<EventPlayerUpdate> onPlayerUpdate = e -> {
 		if (e.isPost())
 			return;
+		mc.thePlayer.setLastReportedPitch(mc.thePlayer.getLastReportedPitch() + 1);
+		mc.thePlayer.setLastReportedPitch(mc.thePlayer.getLastReportedYaw() + 1);
 		
 		if (mc.thePlayer.isUsingItem() && mc.thePlayer.inventory.getCurrentItem().getItem() instanceof ItemBow)
 			return;
