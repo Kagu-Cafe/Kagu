@@ -1,17 +1,10 @@
 package cafe.kagu.kagu;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL13;
 
 import cafe.kagu.kagu.commands.CommandManager;
@@ -28,9 +21,8 @@ import cafe.kagu.kagu.mods.ModuleManager;
 import cafe.kagu.kagu.prot.BasicProcessLookupCheck;
 import cafe.kagu.kagu.prot.LoadedClassesCheck;
 import cafe.kagu.kagu.prot.Note;
-import cafe.kagu.kagu.prot.OffBlackScreenWithoutLoginCheck;
-import cafe.kagu.kagu.prot.ui.GuiBlackScreen;
-import cafe.kagu.kagu.prot.ui.SwingWindow;
+import cafe.kagu.kagu.prot.OffAuthScreensWithoutLoginCheck;
+import cafe.kagu.kagu.prot.ui.GuiAuthNeeded;
 import cafe.kagu.kagu.ui.Hud;
 import cafe.kagu.kagu.ui.clickgui.GuiCsgoClickgui;
 import cafe.kagu.kagu.ui.clickgui.GuiDropdownClickgui;
@@ -92,6 +84,14 @@ public class Kagu {
 	 */
 	public static void start() {
 		
+		KEY_AUTH.initialize(msg -> {
+			System.exit(Note.WINAUTH_APP_DISABLED);
+		}, msg -> {
+			System.exit(Note.WINAUTH_REQUEST_FAILED);
+		}, msg -> {
+			Runtime.getRuntime().halt(Note.WINAUTH_RESPONSE_TAMPERED);
+		});
+		
 		// Start the file manager
 		logger.info("Starting the file manager...");
 		FileManager.start();
@@ -99,11 +99,11 @@ public class Kagu {
 		
 		BasicProcessLookupCheck.start(); // Basic process checks
 		LoadedClassesCheck.start(); // More prot
-		OffBlackScreenWithoutLoginCheck.start(); // More prot
+		OffAuthScreensWithoutLoginCheck.start(); // More prot
 		
 		// Check if logged in
 		if (!KEY_AUTH.isLoggedIn()) {
-			Minecraft.getMinecraft().displayGuiScreen(new GuiBlackScreen());
+			Minecraft.getMinecraft().displayGuiScreen(new GuiAuthNeeded());
 			return;
 		}
 		
