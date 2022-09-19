@@ -795,7 +795,7 @@ public class EntityPlayerSP extends AbstractClientPlayer
     public void onLivingUpdate()
     {
     	ModNoSlow modNoSlow = ModuleManager.modNoSlow;
-        if (this.sprintingTicksLeft > 0)
+        if (this.sprintingTicksLeft > 0 && ModuleManager.modKeepSprint.isDisabled())
         {
             --this.sprintingTicksLeft;
 

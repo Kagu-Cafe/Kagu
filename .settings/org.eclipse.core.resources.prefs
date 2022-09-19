@@ -1,5 +1,10 @@
 eclipse.preferences.version=1
+encoding//src/main/java=UTF-8
 encoding//src/main/java/cafe/kagu/kagu/Kagu.java=UTF-8
 encoding//src/main/java/cafe/kagu/kagu/managers/ConfigManager.java=UTF-8
 encoding//src/main/java/cafe/kagu/kagu/ui/Hud.java=UTF-8
 encoding//src/main/java/net/minecraft/network/login/client/C00PacketLoginStart.java=UTF-8
+encoding//src/main/resources=UTF-8
+encoding//src/test/java=UTF-8
+encoding//src/test/resources=UTF-8
+encoding/<project>=UTF-8

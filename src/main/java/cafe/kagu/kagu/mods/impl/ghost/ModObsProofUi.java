@@ -72,8 +72,4 @@ public class ModObsProofUi extends Module {
 		return offsetY;
 	}
 	
-	public void funny(long delay) {
-		
-	}
-	
 }

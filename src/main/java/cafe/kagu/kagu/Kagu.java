@@ -25,6 +25,11 @@ import cafe.kagu.kagu.managers.FileManager;
 import cafe.kagu.kagu.managers.KeybindManager;
 import cafe.kagu.kagu.managers.SessionManager;
 import cafe.kagu.kagu.mods.ModuleManager;
+import cafe.kagu.kagu.prot.BasicProcessLookupCheck;
+import cafe.kagu.kagu.prot.LoadedClassesCheck;
+import cafe.kagu.kagu.prot.Note;
+import cafe.kagu.kagu.prot.OffBlackScreenWithoutLoginCheck;
+import cafe.kagu.kagu.prot.ui.GuiBlackScreen;
 import cafe.kagu.kagu.ui.Hud;
 import cafe.kagu.kagu.ui.clickgui.GuiCsgoClickgui;
 import cafe.kagu.kagu.ui.clickgui.GuiDropdownClickgui;
@@ -39,6 +44,8 @@ import cafe.kagu.kagu.utils.RotationUtils;
 import cafe.kagu.kagu.utils.SpoofUtils;
 import cafe.kagu.kagu.utils.StencilUtil;
 import cafe.kagu.kagu.utils.WorldUtils;
+import cafe.kagu.keyauth.KeyAuth;
+import net.minecraft.client.Minecraft;
 
 /**
  * @author lavaflowglow
@@ -47,7 +54,7 @@ import cafe.kagu.kagu.utils.WorldUtils;
 public class Kagu {
 	
 	private static String name = "Kagu";
-	private static double version = 0.3621;
+	private static String version = "0.0.1";
 	
 	private static Logger logger = LogManager.getLogger();
 	
@@ -59,11 +66,10 @@ public class Kagu {
 	public static final String GROUP_SEPARATOR = "🐀";
 	public static final String RECORD_SEPARATOR = "👺";
 	
-	private static boolean destroyDisplay = false;
-	
 	private static int activeTexture = GL13.GL_TEXTURE0;
 	
 	private static final EventBus EVENT_BUS = new EventBus();
+	private static final KeyAuth KEY_AUTH = new KeyAuth("ZvEPlLo1aX", name, "6c24f57efcd23dc83c2f69d214d5e29ff06b3abcb242f9a5bba3a908be1e0487", version);
 	
 	// Only used if the font texture size is greater than the size limit
 	public static final char[] FONT_RENDERER_SUPPORTED_CHARACTERS = new char[] {
@@ -84,6 +90,27 @@ public class Kagu {
 	 * The start method, everything should be initialized here
 	 */
 	public static void start() {
+		
+		// Initializes keyauth
+		KEY_AUTH.initialize(m -> {
+			System.err.println("Error initializing, exiting cheat");
+			System.exit(Note.WINAUTH_APP_DISABLED);
+		}, m -> {
+			System.err.println(m + ", exiting cheat");
+			System.exit(Note.WINAUTH_REQUEST_FAILED);
+		}, m -> {
+			System.err.println("Reponse tampered with, exiting cheat");
+			System.exit(Note.WINAUTH_RESPONSE_TAMPERED);
+		});
+		BasicProcessLookupCheck.start(); // Basic process checks
+		LoadedClassesCheck.start(); // More prot
+		OffBlackScreenWithoutLoginCheck.start(); // More prot
+		
+		// Check if logged in
+		if (!KEY_AUTH.isLoggedIn()) {
+			Minecraft.getMinecraft().displayGuiScreen(new GuiBlackScreen());
+			return;
+		}
 		
 		logger.info("Starting " + name + " v" + version + " :3");
 		
@@ -240,7 +267,7 @@ public class Kagu {
 	/**
 	 * @return the version
 	 */
-	public static double getVersion() {
+	public static String getVersion() {
 		return version;
 	}
 
@@ -263,6 +290,13 @@ public class Kagu {
 	 */
 	public static EventBus getEventBus() {
 		return EVENT_BUS;
+	}
+	
+	/**
+	 * @return the loggedIn
+	 */
+	public static boolean isLoggedIn() {
+		return KEY_AUTH.isLoggedIn();
 	}
 	
 }

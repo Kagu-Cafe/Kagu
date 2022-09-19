@@ -65,6 +65,8 @@ public class GuiDefaultMainMenu extends GuiScreen {
 	
 	@Override
 	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+		if (!Kagu.isLoggedIn())
+			return;
 		
 //		backgroundAnimation += 0.005f;
 		

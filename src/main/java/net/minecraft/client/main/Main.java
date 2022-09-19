@@ -32,7 +32,7 @@ public class Main
     	
     	// Set the log4j config before we do anything
         try {
-            ConfigurationSource source = new ConfigurationSource(Main.class.getResourceAsStream("log4j.xml"));
+            ConfigurationSource source = new ConfigurationSource(Main.class.getResourceAsStream("log4j2.xml"));
             Configurator.initialize(Main.class.getClassLoader(), source);
             LogManager.getLogger().info("Log4j has been initialized");
         }

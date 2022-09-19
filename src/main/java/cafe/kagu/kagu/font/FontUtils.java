@@ -33,10 +33,17 @@ public class FontUtils {
 	public static final FontRenderer STRATUM2_MEDIUM_15_AA = new FontRenderer(getFontFromInputStream(FontUtils.class.getResourceAsStream("stratum2-medium.ttf"), 30, Font.PLAIN), 0.5, true);
 	public static final FontRenderer STRATUM2_MEDIUM_18_AA = new FontRenderer(getFontFromInputStream(FontUtils.class.getResourceAsStream("stratum2-medium.ttf"), 36, Font.PLAIN), 0.5, true);
 	
+	// The CS:GO font in normal font object form for the obs proof hud
+	public static final Font AWT_STRATUM2_MEDIUM_26 = getFontFromInputStream(FontUtils.class.getResourceAsStream("stratum2-medium.ttf"), 26, Font.PLAIN);
+	
 	// San francisco
 	public static final FontRenderer SAN_FRANCISCO_REGULAR_16_AA = new FontRenderer(getFontFromInputStream(FontUtils.class.getResourceAsStream("SFUIDisplay-Regular.ttf"), 32, Font.PLAIN), 0.5, true);
 	public static final FontRenderer SAN_FRANCISCO_REGULAR_10_AA = new FontRenderer(getFontFromInputStream(FontUtils.class.getResourceAsStream("SFUIDisplay-Regular.ttf"), 20, Font.PLAIN), 0.5, true);
 	public static final FontRenderer SAN_FRANCISCO_THIN_10_AA = new FontRenderer(getFontFromInputStream(FontUtils.class.getResourceAsStream("SFUIDisplay-Light.ttf"), 20, Font.PLAIN), 0.5, true);
+	
+	// San francisco in normal font object form for the obs proof hud
+	public static final Font AWT_SAN_FRANCISCO_REGULAR_20 = getFontFromInputStream(FontUtils.class.getResourceAsStream("SFUIDisplay-Regular.ttf"), 20, Font.PLAIN);
+	public static final Font AWT_SAN_FRANCISCO_THIN_20 = getFontFromInputStream(FontUtils.class.getResourceAsStream("SFUIDisplay-Light.ttf"), 20, Font.PLAIN);
 	
 	// Small pixel
 	public static final FontRenderer SMALL_PIXEL_4 = new FontRenderer(getFontFromInputStream(FontUtils.class.getResourceAsStream("small_pixel.ttf"), 16, Font.PLAIN), 0.25);

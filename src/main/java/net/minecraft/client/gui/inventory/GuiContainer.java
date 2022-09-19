@@ -19,9 +19,11 @@ import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.client.C0DPacketCloseWindow;
 import net.minecraft.util.EnumChatFormatting;
@@ -238,7 +240,7 @@ public abstract class GuiContainer extends GuiScreen
     	
     	// Inventory helper
     	ModInventoryHelper modInventoryHelper = ModuleManager.modInventoryHelper;
-    	if (modInventoryHelper.isEnabled() && (modInventoryHelper.getBestGearSlots().contains(slotIn) || (slotIn.getHasStack() && slotIn.getStack().getItem() == Items.arrow))) {
+    	if (modInventoryHelper.isEnabled() && (modInventoryHelper.getBestGearSlots().contains(slotIn) || (slotIn.getHasStack() && (slotIn.getStack().getItem() == Items.arrow || slotIn.getStack().getItem() instanceof ItemBlock)))) {
     		int scaleFactor = new ScaledResolution(Minecraft.getMinecraft()).getScaleFactor();
             int j1 = (slotIn.xDisplayPosition + guiLeft) * scaleFactor;
             int k1 = (slotIn.yDisplayPosition + guiTop) * scaleFactor;

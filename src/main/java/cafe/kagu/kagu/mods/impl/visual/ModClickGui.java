@@ -3,6 +3,8 @@
  */
 package cafe.kagu.kagu.mods.impl.visual;
 
+import cafe.kagu.kagu.Kagu;
+import cafe.kagu.kagu.eventBus.EventBus;
 import cafe.kagu.kagu.eventBus.EventHandler;
 import cafe.kagu.kagu.eventBus.Handler;
 import cafe.kagu.kagu.eventBus.impl.EventSettingUpdate;
@@ -23,6 +25,7 @@ public class ModClickGui extends Module {
 	public ModClickGui() {
 		super("ClickGui", Category.VISUAL);
 		setSettings(mode, bgImage, bgImageAnimation, bgImageScale, bgImageFlip, resetClickGuiTabs);
+		Kagu.getEventBus().subscribe(new DisabledFix());
 	}
 	
 	private ModeSetting mode = new ModeSetting("Mode", "CS:GO", "CS:GO", "Dropdown");
@@ -35,28 +38,30 @@ public class ModClickGui extends Module {
 	private BooleanSetting bgImageFlip = new BooleanSetting("Flip BG Image", false).setDependency(() -> mode.is("Dropdown"));
 	private BooleanSetting resetClickGuiTabs = new BooleanSetting("Reset Tabs", false).setDependency(() -> mode.is("Dropdown"));
 	
-	@EventHandler
-	private Handler<EventSettingUpdate> onSettingUpdate = e -> {
-		if (e.getSetting() == bgImage) {
-			GuiDropdownClickgui.getInstance().resetBackgroundImage();
-		}
-		else if (e.getSetting() == resetClickGuiTabs) {
-			if (resetClickGuiTabs.isEnabled()) {
-				GuiDropdownClickgui.getInstance().resetTabs();
-				resetClickGuiTabs.toggle();
+	private class DisabledFix{
+		@EventHandler
+		private Handler<EventSettingUpdate> onSettingUpdate = e -> {
+			if (e.getSetting() == bgImage) {
+				GuiDropdownClickgui.getInstance().resetBackgroundImage();
 			}
-		}
-		else if (e.getSetting() != mode)
-			return;
-//		switch (mode.getMode()) {
-//			case "CS:GO":{
-//				mc.displayGuiScreen(GuiCsgoClickgui.getInstance());
-//			}break;
-//			case "Dropdown":{
-//				mc.displayGuiScreen(GuiDropdownClickgui.getInstance());
-//			}break;
-//		}
-	};
+			else if (e.getSetting() == resetClickGuiTabs) {
+				if (resetClickGuiTabs.isEnabled()) {
+					GuiDropdownClickgui.getInstance().resetTabs();
+					resetClickGuiTabs.toggle();
+				}
+			}
+			else if (e.getSetting() != mode)
+				return;
+//			switch (mode.getMode()) {
+//				case "CS:GO":{
+//					mc.displayGuiScreen(GuiCsgoClickgui.getInstance());
+//				}break;
+//				case "Dropdown":{
+//					mc.displayGuiScreen(GuiDropdownClickgui.getInstance());
+//				}break;
+//			}
+		};
+	}
 	
 	@Override
 	public boolean isEnabled() {

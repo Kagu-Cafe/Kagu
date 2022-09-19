@@ -55,8 +55,8 @@ public class Hud {
 		
 		// Render hud
 		String watermark = Kagu.getName() + " v" + Kagu.getVersion();
-		mainFr.drawString(watermark, 2, 1, 0x80000000);
-		mainFr.drawString(watermark, 1, 0, -1);
+		mainFr.drawString(watermark, 1.5, 1, 0x80000000);
+		mainFr.drawString(watermark, 0.5, 0, -1);
 		
 		// Arraylist
 		drawArraylist(mc, sr);

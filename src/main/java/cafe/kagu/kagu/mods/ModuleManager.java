@@ -31,9 +31,11 @@ import cafe.kagu.kagu.mods.impl.ghost.ModHideHud;
 import cafe.kagu.kagu.mods.impl.ghost.ModInventoryHelper;
 import cafe.kagu.kagu.mods.impl.ghost.ModNoHitDelay;
 import cafe.kagu.kagu.mods.impl.ghost.ModObsProofEsp;
+import cafe.kagu.kagu.mods.impl.ghost.ModObsProofHud;
 import cafe.kagu.kagu.mods.impl.ghost.ModObsProofUi;
 import cafe.kagu.kagu.mods.impl.move.ModAntiVoid;
 import cafe.kagu.kagu.mods.impl.move.ModFly;
+import cafe.kagu.kagu.mods.impl.move.ModKeepSprint;
 import cafe.kagu.kagu.mods.impl.move.ModMagnetAura;
 import cafe.kagu.kagu.mods.impl.move.ModMoonJump;
 import cafe.kagu.kagu.mods.impl.move.ModNoSlow;
@@ -95,6 +97,7 @@ public class ModuleManager {
 	public static ModSafeWalk modSafeWalk = new ModSafeWalk();
 	public static ModSpider modSpider = new ModSpider();
 	public static ModMagnetAura modMagnetAura = new ModMagnetAura();
+	public static ModKeepSprint modKeepSprint = new ModKeepSprint();
 	
 	// Player
 	public static ModAntiAim modAntiAim = new ModAntiAim();
@@ -119,6 +122,7 @@ public class ModuleManager {
 	public static ModTargetHud modTargetHud = new ModTargetHud();
 	public static ModCamera modCamera = new ModCamera();
 	public static ModFunnyLimbs modFunnyLimbs = new ModFunnyLimbs();
+	public static ModObsProofHud modObsProofHud = new ModObsProofHud();
 	
 	// Exploit
 	public static ModCreative64Stack modCreative64Stack = new ModCreative64Stack();
@@ -203,6 +207,8 @@ public class ModuleManager {
 			modSlashSpawn,
 			modEagle,
 			modInventoryHelper,
+			modKeepSprint,
+			modObsProofHud,
 			
 			modBlink
 	};
