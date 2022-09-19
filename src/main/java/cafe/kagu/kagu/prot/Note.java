@@ -17,5 +17,6 @@ public class Note {
 	public static final int WINAUTH_REQUEST_FAILED = 0x3626; // Triggered when there is an issue while sending a request to the auth server
 	public static final int WINAUTH_RESPONSE_TAMPERED = 0x3627; // Triggered when the response from the auth server is tampered with
 	public static final int GUISCREEN_CHANGING_WITHOUT_LOGIN = 0x3628; // Triggered when the gui screen keeps changing away from the default blank one when the user isn't logged in
+	public static final int WINAUTH_LOGIN_FAILED = 0x3629; // Triggered when the login is invalid
 	
 }

@@ -30,7 +30,7 @@ public class LoadedClassesCheck {
 					"joptsimple", "org.apache.logging", "javax", "com.sun", "com.google", "org.lwjgl", "org.apache.commons", "org.json",
 					"org.apache.http", "org.yaml", "com.sparkjava", "spark", "org.slf4j", "net.java.dev.jna", "com.mojang.authlib",
 					"io.netty", "com.mojang.util", "oshi", "tv.twitch", "paulscode", "com.ibm.icu", "org.eclipse.jetty", "com.fasterxml",
-					"com.jcraft", "com.mojang.patchy", "sun.security", "cafe.kagu.keyauth", "okhttp3", "kotlin", "okio"};
+					"com.jcraft", "com.mojang.patchy", "sun.security", "cafe.kagu.keyauth", "okhttp3", "kotlin", "okio", "com.formdev"};
 			while (true) try {
 				Thread.sleep(ThreadLocalRandom.current().nextLong(1001) + 1500);
 				ClassLoader myCL = Thread.currentThread().getContextClassLoader();

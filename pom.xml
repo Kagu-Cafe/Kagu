@@ -295,7 +295,12 @@
 			<artifactId>keyauth</artifactId>
 			<version>0.0.1</version>
 		</dependency>
-
+		<dependency>
+			<groupId>com.formdev</groupId>
+			<artifactId>flatlaf</artifactId>
+			<version>2.4</version>
+		</dependency>
+		
 	</dependencies>
 
 	<build>

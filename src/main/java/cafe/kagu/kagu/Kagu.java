@@ -30,6 +30,7 @@ import cafe.kagu.kagu.prot.LoadedClassesCheck;
 import cafe.kagu.kagu.prot.Note;
 import cafe.kagu.kagu.prot.OffBlackScreenWithoutLoginCheck;
 import cafe.kagu.kagu.prot.ui.GuiBlackScreen;
+import cafe.kagu.kagu.prot.ui.SwingWindow;
 import cafe.kagu.kagu.ui.Hud;
 import cafe.kagu.kagu.ui.clickgui.GuiCsgoClickgui;
 import cafe.kagu.kagu.ui.clickgui.GuiDropdownClickgui;
@@ -91,17 +92,11 @@ public class Kagu {
 	 */
 	public static void start() {
 		
-		// Initializes keyauth
-		KEY_AUTH.initialize(m -> {
-			System.err.println("Error initializing, exiting cheat");
-			System.exit(Note.WINAUTH_APP_DISABLED);
-		}, m -> {
-			System.err.println(m + ", exiting cheat");
-			System.exit(Note.WINAUTH_REQUEST_FAILED);
-		}, m -> {
-			System.err.println("Reponse tampered with, exiting cheat");
-			System.exit(Note.WINAUTH_RESPONSE_TAMPERED);
-		});
+		// Start the file manager
+		logger.info("Starting the file manager...");
+		FileManager.start();
+		logger.info("Started the file manager");
+		
 		BasicProcessLookupCheck.start(); // Basic process checks
 		LoadedClassesCheck.start(); // More prot
 		OffBlackScreenWithoutLoginCheck.start(); // More prot
@@ -123,11 +118,6 @@ public class Kagu {
 		logger.info("Starting the spoof utils...");
 		SpoofUtils.start();
 		logger.info("Started the spoof utils");
-		
-		// Start the file manager
-		logger.info("Starting the file manager...");
-		FileManager.start();
-		logger.info("Started the file manager");
 		
 		// Start the module manager
 		logger.info("Starting the module manager...");
@@ -297,6 +287,13 @@ public class Kagu {
 	 */
 	public static boolean isLoggedIn() {
 		return KEY_AUTH.isLoggedIn();
+	}
+	
+	/**
+	 * @return the keyAuth
+	 */
+	public static KeyAuth getKeyAuth() {
+		return KEY_AUTH;
 	}
 	
 }

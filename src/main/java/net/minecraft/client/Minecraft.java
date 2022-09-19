@@ -21,6 +21,7 @@ import cafe.kagu.kagu.eventBus.impl.EventTick;
 import cafe.kagu.kagu.mods.ModuleManager;
 import cafe.kagu.kagu.mods.impl.ghost.ModChangeRightClickDelay;
 import cafe.kagu.kagu.mods.impl.ghost.ModNoHitDelay;
+import cafe.kagu.kagu.prot.ui.SwingWindow;
 import cafe.kagu.kagu.ui.gui.GuiDefaultMainMenu;
 import cafe.kagu.kagu.ui.gui.MainMenuHandler;
 
@@ -634,6 +635,7 @@ public class Minecraft implements IThreadListener, IPlayerUsage
 
         try
         {
+        	SwingWindow.start();
             Display.create((new PixelFormat()).withDepthBits(24));
         }
         catch (LWJGLException lwjglexception)

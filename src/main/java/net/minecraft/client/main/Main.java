@@ -5,8 +5,6 @@ import com.google.gson.GsonBuilder;
 import com.mojang.authlib.properties.PropertyMap;
 import com.mojang.authlib.properties.PropertyMap.Serializer;
 
-import cafe.kagu.kagu.Kagu;
-
 import java.io.File;
 import java.net.Authenticator;
 import java.net.InetSocketAddress;
@@ -40,7 +38,7 @@ public class Main
             e.printStackTrace();
             System.err.println("Log4j has failed to initialize, this may cause issues");
         }
-    	
+        
         System.setProperty("java.net.preferIPv4Stack", "true");
         OptionParser optionparser = new OptionParser();
         optionparser.allowsUnrecognizedOptions();
