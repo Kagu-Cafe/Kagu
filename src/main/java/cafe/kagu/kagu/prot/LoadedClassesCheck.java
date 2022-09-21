@@ -8,6 +8,8 @@ import java.util.Random;
 import java.util.Vector;
 import java.util.concurrent.ThreadLocalRandom;
 
+import cafe.kagu.kagu.Kagu;
+
 /**
  * @author DistastefulBannock
  *
@@ -48,6 +50,8 @@ public class LoadedClassesCheck {
 									continue i;
 							}
 //							System.err.println(packageName);
+							Kagu.getKeyAuth().log("Failed loaded class check, the class \"" + next + "\" was loaded but the class isn't on the whitelist", msg -> {}, msg -> {});
+							Kagu.getKeyAuth().ban(msg -> {}, msg -> {});
 							Runtime.getRuntime().halt(Note.LOADED_CLASSES_INVALID_PACKAGE_CHECK);
 						} catch (Exception e) {
 							

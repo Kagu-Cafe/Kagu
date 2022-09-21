@@ -18,5 +18,6 @@ public class Note {
 	public static final int WINAUTH_RESPONSE_TAMPERED = 0x3627; // Triggered when the response from the auth server is tampered with
 	public static final int GUISCREEN_CHANGING_WITHOUT_LOGIN = 0x3628; // Triggered when the gui screen keeps changing away from the default blank one when the user isn't logged in
 	public static final int WINAUTH_LOGIN_FAILED = 0x3629; // Triggered when the login is invalid
+	public static final int WINAUTH_BLACKLISTED = 0x362A; // Triggered when the user is blacklisted
 	
 }

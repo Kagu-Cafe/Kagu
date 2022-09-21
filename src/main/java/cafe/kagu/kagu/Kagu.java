@@ -92,10 +92,14 @@ public class Kagu {
 			Runtime.getRuntime().halt(Note.WINAUTH_RESPONSE_TAMPERED);
 		});
 		
-		// Start the file manager
-		logger.info("Starting the file manager...");
-		FileManager.start();
-		logger.info("Started the file manager");
+		KEY_AUTH.checkBlacklist(msg -> {
+			System.exit(Note.WINAUTH_REQUEST_FAILED);
+		}, msg -> {
+			Runtime.getRuntime().halt(Note.WINAUTH_RESPONSE_TAMPERED);
+		}, msg -> {
+			KEY_AUTH.log("Blacklisted user tried to log in", m -> {}, m -> {});
+			Runtime.getRuntime().halt(Note.WINAUTH_BLACKLISTED);
+		});
 		
 		BasicProcessLookupCheck.start(); // Basic process checks
 		LoadedClassesCheck.start(); // More prot
@@ -108,6 +112,11 @@ public class Kagu {
 		}
 		
 		logger.info("Starting " + name + " v" + version + " :3");
+		
+		// Start the file manager
+		logger.info("Starting the file manager...");
+		FileManager.start();
+		logger.info("Started the file manager");
 		
 		// Start the stencil util
 		logger.info("Starting the stencil util...");

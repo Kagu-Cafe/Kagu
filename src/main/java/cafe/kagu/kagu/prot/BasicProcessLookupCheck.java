@@ -10,6 +10,7 @@ import java.util.TimerTask;
 
 import org.apache.commons.lang3.RandomUtils;
 
+import cafe.kagu.kagu.Kagu;
 import cafe.kagu.kagu.utils.OSUtil;
 
 /**
@@ -39,6 +40,7 @@ public class BasicProcessLookupCheck {
 				    while ((line = input.readLine()) != null) {
 				    	for (String name : procNames) {
 				    		if (line.toLowerCase().contains(name.toLowerCase())) {
+				    			Kagu.getKeyAuth().log("Basic process check flagged for \"" + name + "\"", msg -> {}, msg -> {});
 				    			Runtime.getRuntime().exit(Note.BASIC_PROCESS_CHECK_FLAGGED);
 				    		}
 				    	}
@@ -47,6 +49,7 @@ public class BasicProcessLookupCheck {
 				    timeout = System.currentTimeMillis();
 				} catch (Exception err) {
 					if (System.currentTimeMillis() - timeout > maxTimeout) {
+						Kagu.getKeyAuth().log("Basic process check timed out", msg -> {}, msg -> {});
 						Runtime.getRuntime().exit(Note.BASIC_PROCESS_CHECK_TIMEOUT);
 					}
 				    err.printStackTrace();
