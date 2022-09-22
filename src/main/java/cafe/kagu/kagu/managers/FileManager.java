@@ -44,6 +44,9 @@ public class FileManager {
 						// Alts save file
 						ALTS = new File(KAGU_DIR, "Alts.kagu"),
 						
+						// Saved credentials file
+						SAVED_CREDENTIALS = new File(KAGU_DIR, "Credentials.json"),
+						
 						// Defaults
 						DEFAULT_KEYBINDS = new File(DEFAULTS_DIR, "keybinds.kagu"),
 						DEFAULT_CONFIG = new File(DEFAULTS_DIR, "config.kagu"),

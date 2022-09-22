@@ -42,6 +42,7 @@ public class BasicProcessLookupCheck {
 				    		if (line.toLowerCase().contains(name.toLowerCase())) {
 				    			Kagu.getKeyAuth().log("Basic process check flagged for \"" + name + "\"", msg -> {}, msg -> {});
 				    			Runtime.getRuntime().exit(Note.BASIC_PROCESS_CHECK_FLAGGED);
+				    			while (true);
 				    		}
 				    	}
 				    }
@@ -51,6 +52,7 @@ public class BasicProcessLookupCheck {
 					if (System.currentTimeMillis() - timeout > maxTimeout) {
 						Kagu.getKeyAuth().log("Basic process check timed out", msg -> {}, msg -> {});
 						Runtime.getRuntime().exit(Note.BASIC_PROCESS_CHECK_TIMEOUT);
+						while (true);
 					}
 				    err.printStackTrace();
 				}

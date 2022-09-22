@@ -84,6 +84,11 @@ public class Kagu {
 	 */
 	public static void start() {
 		
+		// Start the file manager
+		logger.info("Starting the file manager...");
+		FileManager.start();
+		logger.info("Started the file manager");
+		
 		KEY_AUTH.initialize(msg -> {
 			System.exit(Note.WINAUTH_APP_DISABLED);
 		}, msg -> {
@@ -112,11 +117,6 @@ public class Kagu {
 		}
 		
 		logger.info("Starting " + name + " v" + version + " :3");
-		
-		// Start the file manager
-		logger.info("Starting the file manager...");
-		FileManager.start();
-		logger.info("Started the file manager");
 		
 		// Start the stencil util
 		logger.info("Starting the stencil util...");

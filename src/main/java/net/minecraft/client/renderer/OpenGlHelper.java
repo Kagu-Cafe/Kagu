@@ -23,10 +23,8 @@ import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.opengl.GLContext;
 
-import cafe.kagu.kagu.utils.DrawUtils3D;
-import cafe.kagu.kagu.utils.UiUtils;
 import oshi.SystemInfo;
-import oshi.hardware.Processor;
+import oshi.hardware.CentralProcessor.ProcessorIdentifier;
 
 public class OpenGlHelper
 {
@@ -303,8 +301,8 @@ public class OpenGlHelper
 
         try
         {
-            Processor[] aprocessor = (new SystemInfo()).getHardware().getProcessors();
-            field_183030_aa = String.format("%dx %s", new Object[] {Integer.valueOf(aprocessor.length), aprocessor[0]}).replaceAll("\\s+", " ");
+        	ProcessorIdentifier processorIdentifier = (new SystemInfo()).getHardware().getProcessor().getProcessorIdentifier();
+			field_183030_aa = processorIdentifier.getName().trim();
         }
         catch (Throwable var3)
         {
