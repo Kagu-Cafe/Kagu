@@ -135,14 +135,12 @@ public class ModSpeed extends Module {
 				
 			}break;
 			case "Test":{
-//				MovementUtils.setMotion(0.1);
-				
-				if (thePlayer.ticksExisted % 3 == 0) {
-					thePlayer.setPosition(thePlayer.posX, thePlayer.lastTickPosY, thePlayer.posZ);
+				if (MovementUtils.isTrueOnGround()) {
+					MovementUtils.setMotion(1);
+					thePlayer.jump();
 				}else {
-					e.setPosY(-999);
+//					MovementUtils.setMotion(1);
 				}
-				
 			}break;
 		}
 		

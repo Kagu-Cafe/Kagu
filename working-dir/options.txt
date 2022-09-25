@@ -1,5 +1,5 @@
 invertYMouse:false
-mouseSensitivity:0.21830986
+mouseSensitivity:0.13380282
 fov:1.0
 gamma:0.0
 saturation:0.0

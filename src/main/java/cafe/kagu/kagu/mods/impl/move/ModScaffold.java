@@ -70,7 +70,7 @@ public class ModScaffold extends Module {
 				blockSwitchDelay, extend, extendDistance, tower, towerMode);
 	}
 	
-	private ModeSetting rotationMode = new ModeSetting("Rotation Mode", "None", "None", "Lock", "Snap", "Hypixel", "Vulcan");
+	private ModeSetting rotationMode = new ModeSetting("Rotation Mode", "None", "None", "Lock", "Snap", "Hypixel", "Vulcan", "Negativity");
 	private ModeSetting c08Position = new ModeSetting("C08 Position", "PRE", "PRE", "POST"); // PRE sends before the c03, this is default mc behaviour. POST sends after the c03, this isn't default behaviour but may bypass other anticheats
 	private ModeSetting itemMode = new ModeSetting("Item Selection", "Server", "Server", "Synced", "Spoof");
 	private ModeSetting swingMode = new ModeSetting("Swing Mode", "Server", "Server", "Synced", "No Swing");
@@ -246,7 +246,7 @@ public class ModScaffold extends Module {
 	 */
 	@EventHandler
 	private Handler<EventTick> onTickItem = e -> {
-		if (e.isPost())
+		if (e.isPost() || !switchDelayTimer.hasTimeElapsed(blockSwitchDelay.getValue()))
 			return;
 		
 		int largestBlocks = -1;
@@ -516,6 +516,14 @@ public class ModScaffold extends Module {
 					}break;
 				}
 			}break;
+			case "Negativity":{
+				rotations[0] = System.currentTimeMillis() % 360;
+				RotationUtils.makeRotationValuesLoopCorrectly(lastRotations, rotations);
+				lastRotations[0] = rotations[0];
+				rotations[1] = 90;
+				lastRotations[1] = 90;
+				canPlace = true;
+			}break;
 			
 		}
 		
@@ -551,7 +559,7 @@ public class ModScaffold extends Module {
 		placedBlockUpdateTicks--;
 		
 		// Only attempt place if place pos and place on info is set, canPlace is set to true, and there is something the player can place with
-		if (placePos == null || placeOnInfo == null || !canPlace || !switchDelayTimer.hasTimeElapsed(blockSwitchDelay.getValue()))
+		if (placePos == null || placeOnInfo == null || !canPlace)
 			return;
 		
 		// Vars

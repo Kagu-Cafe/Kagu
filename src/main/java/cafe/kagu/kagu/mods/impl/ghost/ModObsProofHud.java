@@ -44,6 +44,8 @@ public class ModObsProofHud extends Module {
 		}
 	}
 	
+	private final Color KINDA_BLACK = new Color(0, 0, 0, 0x80);
+	
 	@EventHandler
 	private Handler<EventRenderObs> onRenderObs = e -> {
 		if (e.isPost())
@@ -54,7 +56,7 @@ public class ModObsProofHud extends Module {
 		// Watermark
 		graphics2d.setStroke(new BasicStroke(2));
 		graphics2d.setFont(FontUtils.AWT_STRATUM2_MEDIUM_26);
-		graphics2d.setColor(Color.BLACK);
+		graphics2d.setColor(KINDA_BLACK);
 		graphics2d.drawString(Kagu.getName() + " v" + Kagu.getVersion(), 3, 23);
 		graphics2d.setColor(Color.WHITE);
 		graphics2d.drawString(Kagu.getName() + " v" + Kagu.getVersion(), 1, 21);

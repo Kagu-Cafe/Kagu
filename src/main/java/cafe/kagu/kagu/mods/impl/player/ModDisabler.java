@@ -119,7 +119,8 @@ public class ModDisabler extends Module {
 					NetworkManager networkManager = mc.getNetHandler().getNetworkManager();
 //					pingPackets.iterator().forEachRemaining(networkManager::sendPacketNoEvent);
 					List<Packet> removePackets = new ArrayList();
-					pingPackets.iterator().forEachRemaining(p -> {
+					Packet<?> p = null;
+					while ((p = pingPackets.poll()) != null) {
 						if (p instanceof C00PacketKeepAlive && (pingPackets.size() - removePackets.size()) - c0fsInQueue > 15) {
 							networkManager.sendPacketNoEvent(p);
 							removePackets.add(p);
@@ -129,7 +130,7 @@ public class ModDisabler extends Module {
 							networkManager.sendPacketNoEvent(p);
 							removePackets.add(p);
 						}
-					});
+					}
 //					pingPackets.clear();
 					pingPackets.removeAll(removePackets);
 //					c0fsInQueue = 0;
