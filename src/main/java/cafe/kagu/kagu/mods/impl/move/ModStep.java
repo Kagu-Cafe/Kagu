@@ -6,13 +6,13 @@ package cafe.kagu.kagu.mods.impl.move;
 import cafe.kagu.kagu.eventBus.EventHandler;
 import cafe.kagu.kagu.eventBus.Handler;
 import cafe.kagu.kagu.eventBus.impl.EventMovementUpdate;
+import cafe.kagu.kagu.eventBus.impl.EventPacketReceive;
 import cafe.kagu.kagu.eventBus.impl.EventPlayerUpdate;
 import cafe.kagu.kagu.mods.Module;
 import cafe.kagu.kagu.settings.impl.ModeSetting;
-import cafe.kagu.kagu.utils.ChatUtils;
 import cafe.kagu.kagu.utils.MovementUtils;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.network.play.server.S08PacketPlayerPosLook;
 
 /**
  * @author DistastefulBannock
@@ -25,11 +25,12 @@ public class ModStep extends Module {
 		setSettings(mode);
 	}
 	
-	private ModeSetting mode = new ModeSetting("Mode", "Vanilla", "Vanilla", "0.38 Motion", "Vulcan", "Test");
+	private ModeSetting mode = new ModeSetting("Mode", "Vanilla", "Vanilla", "0.38 Motion", "Vulcan", "Hypixel", "Test");
 	
 	private int ticks = 0;
-	private boolean isStepping = false;
+	private boolean isStepping = false, expandJump = false;
 	private float[] movementInput = new float[2];
+	private long lastS08Millis = 0;
 	
 	@Override
 	public void onEnable() {
@@ -74,14 +75,49 @@ public class ModStep extends Module {
 					}
 				}
 			}break;
-			case "Test":{
-				if (thePlayer.motionY != -0.0784000015258789 && !MovementUtils.isTrueOnGround())
-					ChatUtils.addChatMessage(thePlayer.motionY);
-				if (MovementUtils.canStep(1) && MovementUtils.isTrueOnGround()) {
-					thePlayer.jump();
-					Minecraft.getMinecraft().thePlayer.motionY += 0.05;
-					if (!MovementUtils.isTrueOnGround(0.2))
-						thePlayer.motionY -= 0.05;
+			case "Hypixel":{
+				if (MovementUtils.canStep(1.01) && !MovementUtils.canStep(0.8) && MovementUtils.isTrueOnGround()) {
+					ticks = 0;
+					isStepping = true;
+					expandJump = false;
+				}
+				else if (MovementUtils.canStep(1.1) && !MovementUtils.canStep(1.01) && MovementUtils.isTrueOnGround()) {
+					ticks = 0;
+					isStepping = true;
+					expandJump = true;
+				}
+				if (System.currentTimeMillis() - lastS08Millis < 500)
+					isStepping = false;
+				ticks++;
+				if (isStepping) {
+					/*
+					 * 2022-09-25 12:18:40,900                 [Client thread] INFO  net.minecraft.client.gui.GuiNewChat - [CHAT] [ Kagu ] 0.41999998688697815
+2022-09-25 12:18:40,955                 [Client thread] INFO  net.minecraft.client.gui.GuiNewChat - [CHAT] [ Kagu ] 0.33319999363422365
+2022-09-25 12:18:41,003                 [Client thread] INFO  net.minecraft.client.gui.GuiNewChat - [CHAT] [ Kagu ] 0.24813599859094576
+2022-09-25 12:18:41,056                 [Client thread] INFO  net.minecraft.client.gui.GuiNewChat - [CHAT] [ Kagu ] 0.16477328182606651
+2022-09-25 12:18:41,104                 [Client thread] INFO  net.minecraft.client.gui.GuiNewChat - [CHAT] [ Kagu ] 0.08307781780646721
+2022-09-25 12:18:41,154                 [Client thread] INFO  net.minecraft.client.gui.GuiNewChat - [CHAT] [ Kagu ] 0.0030162615090425808
+					 */
+					switch (ticks){
+						case 1:{
+//							thePlayer.offsetPosition(0, 0.4f, 0);
+							thePlayer.onGround = false;
+							thePlayer.motionY = 0.42f;
+						}break;
+						case 4:{
+//							thePlayer.offsetPosition(0, 0.0030162615090425808f, 0);
+							if (!expandJump)
+								thePlayer.motionY *= 0.0;
+						}break;
+						case 5:{
+//							thePlayer.offsetPosition(0, 0.0030162615090425808f, 0);
+							thePlayer.motionY = -0.0784000015258789;
+						}break;
+						case 12:{
+							isStepping = false;
+						}break;
+					}
+					e.setPosY(thePlayer.posY);
 				}
 			}break;
 		}
@@ -93,6 +129,20 @@ public class ModStep extends Module {
 			case "Vulcan":{
 				if (isStepping)
 					e.cancel();
+			}break;
+		}
+	};
+	
+	@EventHandler
+	private Handler<EventPacketReceive> onPacketReceive = e -> {
+		if (e.isPost())
+			return;
+		switch (mode.getMode()) {
+			case "Hypixel":{
+				if (isStepping && e.getPacket() instanceof S08PacketPlayerPosLook) {
+					lastS08Millis = System.currentTimeMillis();
+					isStepping = false;
+				}
 			}break;
 		}
 	};

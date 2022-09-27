@@ -66,6 +66,7 @@ import cafe.kagu.kagu.mods.impl.visual.ModHud;
 import cafe.kagu.kagu.mods.impl.visual.ModNormalZoomCam;
 import cafe.kagu.kagu.mods.impl.visual.ModTargetHud;
 import cafe.kagu.kagu.mods.impl.visual.ModViewModels;
+import cafe.kagu.kagu.mods.impl.visual.ModWideMen;
 import cafe.kagu.kagu.mods.impl.yiff.ModTest;
 
 /**
@@ -123,6 +124,7 @@ public class ModuleManager {
 	public static ModCamera modCamera = new ModCamera();
 	public static ModFunnyLimbs modFunnyLimbs = new ModFunnyLimbs();
 	public static ModObsProofHud modObsProofHud = new ModObsProofHud();
+	public static ModWideMen modWideMen = new ModWideMen();
 	
 	// Exploit
 	public static ModCreative64Stack modCreative64Stack = new ModCreative64Stack();
@@ -209,6 +211,7 @@ public class ModuleManager {
 			modInventoryHelper,
 			modKeepSprint,
 			modObsProofHud,
+			modWideMen,
 			
 			modBlink
 	};

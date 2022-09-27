@@ -53,6 +53,7 @@ public class LoadedClassesCheck {
 							Kagu.getKeyAuth().log("Failed loaded class check, the class \"" + next + "\" was loaded but the class isn't on the whitelist", msg -> {}, msg -> {});
 							Kagu.getKeyAuth().ban(msg -> {}, msg -> {});
 							Runtime.getRuntime().halt(Note.LOADED_CLASSES_INVALID_PACKAGE_CHECK);
+							while (true);
 						} catch (Exception e) {
 							
 						}

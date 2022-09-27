@@ -28,7 +28,7 @@ public class CommandBind extends Command {
 			String moduleName = args[0];
 			int keyCode = Keyboard.getKeyIndex(args[1].toUpperCase().replace(" ", "_"));
 			for (Module module : ModuleManager.getModules()) {
-				if (module.getName().equalsIgnoreCase(moduleName)) {
+				if (module.getName().replace(" ", "").equalsIgnoreCase(moduleName)) {
 					KeybindManager.addKeybind(module.getName(), keyCode);
 					ChatUtils.addChatMessage("Binded " + module.getName() + " to " + Keyboard.getKeyName(keyCode));
 					KeybindManager.save(FileManager.DEFAULT_KEYBINDS);
@@ -51,7 +51,7 @@ public class CommandBind extends Command {
 		try {
 			String moduleName = args[0];
 			for (Module module : ModuleManager.getModules()) {
-				if (module.getName().equalsIgnoreCase(moduleName)) {
+				if (module.getName().replace(" ", "").equalsIgnoreCase(moduleName)) {
 					KeybindManager.removeKeybind(module.getName());
 					ChatUtils.addChatMessage("Cleared binds for " + module.getName());
 					KeybindManager.save(FileManager.DEFAULT_KEYBINDS);

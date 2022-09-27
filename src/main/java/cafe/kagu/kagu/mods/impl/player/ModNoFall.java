@@ -28,7 +28,7 @@ public class ModNoFall extends Module {
 		setSettings(mode);
 	}
 	
-	private ModeSetting mode = new ModeSetting("Mode", "Hypixel", "Hypixel", "Always On Ground", "Always Off Ground", "Packet", "Ground Clip", "Test");
+	private ModeSetting mode = new ModeSetting("Mode", "Hypixel", "Hypixel", "Always On Ground", "Always Off Ground", "Packet", "GroundClip", "FastClip", "Test");
 	
 	@EventHandler
 	private Handler<EventTick> onTick = e ->{
@@ -60,8 +60,11 @@ public class ModNoFall extends Module {
 					mc.getNetHandler().getNetworkManager().sendPacketNoEvent(new C03PacketPlayer(true));
 				}
 			}break;
-			case "Test":{
-				
+			case "FastClip":{
+				if (thePlayer.fallDistance > 3 && thePlayer.motionY < 0 && !MovementUtils.isTrueOnGround() && MovementUtils.isTrueOnGround(-thePlayer.motionY)) {
+					thePlayer.fallDistance = 0;
+					thePlayer.offsetPosition(0, thePlayer.motionY - 0.08, 0);
+				}
 			}break;
 		}
 	};
@@ -72,7 +75,7 @@ public class ModNoFall extends Module {
 			return;
 		EntityPlayerSP thePlayer = mc.thePlayer;
 		switch (mode.getMode()) {
-			case "Ground Clip":{
+			case "GroundClip":{
 				if (e.getPacket() instanceof S08PacketPlayerPosLook && thePlayer.fallDistance >= 3) {
 					thePlayer.fallDistance = 0;
 					thePlayer.jump();

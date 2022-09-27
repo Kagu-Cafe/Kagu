@@ -44,9 +44,11 @@ public class ModCamera extends Module {
 			wantedYaw = 0;
 			wantedPitch = 0;
 			wantedDistance = 0;
+			wantedFunny = 0;
 			currentYaw = 0;
 			currentPitch = 0;
 			currentDistance = 0;
+			currentFunny = 0;
 			return;
 		}
 		

@@ -52,6 +52,7 @@ import net.minecraft.network.play.server.S09PacketHeldItemChange;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.util.MovingObjectPosition.MovingObjectType;
@@ -98,7 +99,7 @@ public class ModScaffold extends Module {
 	
 	// Tower
 	private BooleanSetting tower = new BooleanSetting("Tower", false);
-	private ModeSetting towerMode = (ModeSetting) new ModeSetting("Tower Mode", "Vanilla", "Vanilla").setDependency(tower::isEnabled);
+	private ModeSetting towerMode = (ModeSetting) new ModeSetting("Tower Mode", "Vanilla", "Vanilla", "Verus", "Test").setDependency(tower::isEnabled);
 	
 	// Vars used in the scaffold
 	private BlockPos placePos = null;
@@ -170,6 +171,8 @@ public class ModScaffold extends Module {
 			return;
 		
 		EntityPlayerSP thePlayer = mc.thePlayer;
+		
+		// Not towering
 		if (!isTowering()) {
 			switch (towerMode.getMode()) {
 				
@@ -179,9 +182,31 @@ public class ModScaffold extends Module {
 		
 		MovementUtils.setMotion(0);
 		
+		// Towering
 		switch (towerMode.getMode()) {
-			case "Vanilla":{
-				
+			case "Test":{
+//				if (MovementUtils.isTrueOnGround()) {
+//					thePlayer.jump();
+//				}
+//				else if (MovementUtils.isTrueOnGround(0.5)) {
+//					thePlayer.motionY = 0.3584000015258789f - (Math.random() / 500);
+//				}
+				if (thePlayer.ticksExisted % 2 == 0)
+					thePlayer.setPosition(thePlayer.lastTickPosX, thePlayer.lastTickPosY, thePlayer.lastTickPosZ);
+				else
+					thePlayer.offsetPosition(0, 0.5, 0);
+//				if (MovementUtils.isTrueOnGround())
+//					thePlayer.offsetPosition(0, 0.41999998688697815f, 0);
+//				else if (MovementUtils.isTrueOnGround(0.2)) {
+//					thePlayer.offsetPosition(0, 0.3399998688697815f, 0);
+//				}
+//				else if (MovementUtils.isTrueOnGround(0.41999998688697815f))
+//					thePlayer.offsetPosition(0, 0.58000001311f, 0);
+//				e.setPosX(thePlayer.posX);
+//				e.setPosY(thePlayer.posY);
+//				e.setPosZ(thePlayer.posZ);
+//				thePlayer.jump();
+//				thePlayer.motionY += Math.random() / 500f;
 			}break;
 		}
 	};
@@ -487,34 +512,50 @@ public class ModScaffold extends Module {
 					break;
 				else if (lastPlaceOnInfo == null)
 					lastPlaceOnInfo = placeOnInfo;
-				
-				lastRotations = rotations = new float[] {-88.3f, 31.9f};
-				
-				// Used to not flag expand checks
-//				lastRotations = rotations;
-				EnumFacing placeFace = lastPlaceOnInfo.getPlaceFacing();
-				BlockPos placeOn = lastPlaceOnInfo.getPlaceOn();
-				Vector3d blockPos = new Vector3d(placeOn.getX() + 0.5 + (double) placeFace.getFrontOffsetX() / 2 + (double) placeFace.getFrontOffsetZ() / 2,
-						placeOn.getY() + 0.5 + (double) placeFace.getFrontOffsetY() / 2,
-						placeOn.getZ() + 0.5 + (double) placeFace.getFrontOffsetZ() / 2 + (double) placeFace.getFrontOffsetX() / 2);
 				EntityPlayerSP thePlayer = mc.thePlayer;
-				switch (placeFace) {
-					case NORTH:{
-						canPlace = thePlayer.posZ < blockPos.z;
+				if (placeOnInfo == null) {
+					break;
+				}else {
+					Vector3d targetPos = new Vector3d(placeOnInfo.getPlaceOn().getX(), placeOnInfo.getPlaceOn().getY(), placeOnInfo.getPlaceOn().getZ());
+					switch (placeOnInfo.getPlaceFacing()) {
+						case EAST:{
+							targetPos.setX(targetPos.getX() + 1);
+						}break;
+						case SOUTH:{
+							targetPos.setZ(targetPos.getZ() + 1);
+						}break;	
+						default:break;
+					}
+					rotations[0] = RotationUtils.getRotations(targetPos)[0] + 180;
+				}
+				
+				RotationUtils.makeRotationValuesLoopCorrectly(lastRotations, rotations);
+				lastRotations[0] = rotations[0];
+				rotations[1] = 90;
+				lastRotations[1] = 90;
+				if (placeOnInfo == null || placeOnInfo.getPlaceFacing() == null || placeOnInfo.getPlaceOn() == null)
+					break;
+				switch (placeOnInfo.getPlaceFacing()) {
+					case NORTH: {
+						canPlace = thePlayer.lastTickPosZ - placeOnInfo.getPlaceOn().getZ() < 1;
 					}break;
-					case EAST:{
-						canPlace = thePlayer.posX > blockPos.x;
+					case EAST: {
+						canPlace = (placeOnInfo.getPlaceOn().getX() + 1) - thePlayer.lastTickPosX < 1;
 					}break;
-					case SOUTH:{
-						canPlace = thePlayer.posZ > blockPos.z;
-					}break;	
-					case WEST:{
-						canPlace = thePlayer.posX < blockPos.x;
+					case SOUTH: {
+						canPlace = (placeOnInfo.getPlaceOn().getZ() + 1) - thePlayer.lastTickPosZ < 1;
 					}break;
-					default:{
+					case WEST: {
+						canPlace = thePlayer.lastTickPosX - placeOnInfo.getPlaceOn().getX() < 1;
+					}break;
+					default: {
 						canPlace = true;
 					}break;
 				}
+				if (!canPlace)
+					canPlace = EnumFacing.getHorizontal(MathHelper.floor_double((double)(lastRotations[0] * 4.0F / 360.0F) + 0.5D) & 3) != placeOnInfo.getPlaceFacing();
+				if (!canPlace)
+					ChatUtils.addChatMessage(placeOnInfo.getPlaceFacing());
 			}break;
 			case "Negativity":{
 				rotations[0] = System.currentTimeMillis() % 360;
@@ -647,7 +688,17 @@ public class ModScaffold extends Module {
         if (isTowering()) {
 			switch (towerMode.getMode()) {
 				case "Vanilla":{
-					thePlayer.offsetPosition(0, 1, 0);
+					if (placedBlock) {
+						thePlayer.offsetPosition(0, 1, 0);
+						thePlayer.motionY = -0.0784000015258789;
+					}
+				}break;
+				case "Verus":{
+					if (placedBlock && MovementUtils.isTrueOnGround(2))
+						thePlayer.motionY = 1;
+				}break;
+				case "Test":{
+					
 				}break;
 			}
         }

@@ -14,6 +14,7 @@ import cafe.kagu.kagu.utils.ChatUtils;
 import cafe.kagu.kagu.utils.MovementUtils;
 import cafe.kagu.kagu.utils.RotationUtils;
 import cafe.kagu.kagu.utils.WorldUtils;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.init.Items;
@@ -21,6 +22,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.client.C03PacketPlayer;
 import net.minecraft.network.play.client.C08PacketPlayerBlockPlacement;
 import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MathHelper;
 
 /**
@@ -34,7 +36,7 @@ public class ModSpeed extends Module {
 		setSettings(mode, speed);
 	}
 	
-	private ModeSetting mode = new ModeSetting("Mode", "Vanilla", "Vanilla", "Strafe", "Strafe On Ground", "Hypixel", "Vulcan Hover", "Test");
+	private ModeSetting mode = new ModeSetting("Mode", "Vanilla", "Vanilla", "Strafe", "Strafe On Ground", "Hypixel", "Vulcan Hover", "Verus Lowhop", "Test");
 	private DoubleSetting speed = new DoubleSetting("Speed", 1, 0.1, 10, 0.1).setDependency(() -> mode.is("Vanilla"));
 	
 	private double speedDouble = 0;
@@ -133,6 +135,36 @@ public class ModSpeed extends Module {
 //					}
 				}
 				
+			}break;
+			case "Verus Lowhop": {
+				if (mc.thePlayer.movementInput.moveForward > 0) {
+					if (!thePlayer.isSprinting()) {
+						thePlayer.setSprinting(true);
+//						return;
+					}
+					if (MovementUtils.isTrueOnGround()) {
+						mc.thePlayer.jump();
+						MovementUtils.setMotion(0.465);
+					} else {
+						MovementUtils.setMotion(0.3625);
+					}
+					float yaw = RotationUtils.getStrafeYaw() + 90;
+					
+					// Only lowhop if the player isn't running towards a block
+					for (double d = 0.1; d < 2.5; d += 0.25) {
+						BlockPos checkPos = new BlockPos(thePlayer.posX + d * Math.cos(Math.toRadians(yaw)), thePlayer.posY, 
+								thePlayer.posZ + d * Math.sin(Math.toRadians(yaw)));
+						IBlockState state = mc.theWorld.getBlockState(checkPos);
+						IBlockState stateUpper = mc.theWorld.getBlockState(checkPos.add(0, 1, 0));
+						if (state.getBlock().isBlockSolid(mc.theWorld, checkPos, EnumFacing.UP) && !stateUpper.getBlock().isBlockSolid(mc.theWorld, checkPos.add(0, 1, 0), EnumFacing.UP)) {
+							MovementUtils.setMotion(0.3525);
+							return;
+						}
+					}
+					if (mc.thePlayer.motionY == 0.33319999363422365) {
+						mc.thePlayer.motionY = -0.0784000015258789;
+					}
+				}
 			}break;
 			case "Test":{
 				if (MovementUtils.isTrueOnGround()) {

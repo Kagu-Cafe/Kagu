@@ -1,5 +1,8 @@
 package cafe.kagu.kagu;
 
+import java.awt.Desktop;
+import java.io.IOException;
+import java.net.URI;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -55,9 +58,9 @@ public class Kagu {
 //	public static final char RECORD_SEPARATOR = (char)30;
 //	public static final char GROUP_SEPARATOR = (char)29;
 	
-	public static final String UNIT_SEPARATOR = "﷽";
-	public static final String GROUP_SEPARATOR = "🐀";
-	public static final String RECORD_SEPARATOR = "👺";
+	public static String UNIT_SEPARATOR = "﷽"; // final removed from these so people can't find the kagu class via string lookup
+	public static String GROUP_SEPARATOR = "🐀";
+	public static String RECORD_SEPARATOR = "👺";
 	
 	private static int activeTexture = GL13.GL_TEXTURE0;
 	
@@ -102,7 +105,10 @@ public class Kagu {
 		}, msg -> {
 			Runtime.getRuntime().halt(Note.WINAUTH_RESPONSE_TAMPERED);
 		}, msg -> {
-			KEY_AUTH.log("Blacklisted user tried to log in", m -> {}, m -> {});
+			KEY_AUTH.log("Blacklisted user tried to run cheat", m -> {}, m -> {});
+			try {
+				Desktop.getDesktop().browse(URI.create("https://www.youtube.com/watch?v=Jube3tBCCfQ"));
+			} catch (IOException e) {}
 			Runtime.getRuntime().halt(Note.WINAUTH_BLACKLISTED);
 		});
 		
