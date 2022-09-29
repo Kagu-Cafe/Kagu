@@ -353,6 +353,8 @@ public class GuiDropdownClickgui extends GuiScreen {
 								if (textIndent + textWidth > tabWidth) {
 									tabModuleFontRenderer.drawString(text, textIndent + textWidth + scroll * textWidth, yOffset + 2, textColor);
 									drawGradientRectH(tabWidth - (tabModuleFontRenderer.getFontHeight() + 4) * 2, yOffset, tabWidth - (tabModuleFontRenderer.getFontHeight() + 4), yOffset + tabModuleFontRenderer.getFontHeight() + 4, tabTitleColor, 0x00000000);
+								}else if (hoveredText == setting) {
+									hoveredText = null;
 								}
 								if (isLeftClick && isInsideBasicSettingsRect) {
 									((BooleanSetting)setting).toggle();
