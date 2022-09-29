@@ -20,6 +20,7 @@ import javax.vecmath.Vector3d;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockBed;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.entity.EntityOtherPlayerMP;
 import net.minecraft.client.gui.FontRenderer;
@@ -464,7 +465,7 @@ public class RenderManager
                     	Vector3d[] backtrackPositions = null;
                     	
                         // Sets up the backtrack positions
-                        if (ModuleManager.modBacktrack.isEnabled() && ModuleManager.modBacktrack.getBacktracks().containsKey(entity)) {
+                        if (ModuleManager.modBacktrack.isEnabled() && ModuleManager.modBacktrack.getBacktracks().containsKey(entity) && entity != Minecraft.getMinecraft().thePlayer) {
                         	List<Vector3d> positions = new ArrayList<>(Arrays.asList(ModuleManager.modBacktrack.getBacktracks().get(entity)));
                         	positions.add(0, new Vector3d(entity.posX, entity.posY, entity.posZ));
                         	backtrackPositions = positions.toArray(new Vector3d[0]);
