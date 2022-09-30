@@ -471,4 +471,17 @@ public class UiUtils {
 		return new Vector4d(red, green, blue, alpha);
 	}
 	
+	/**
+	 * Turns an int color into a float array
+	 * @param color The color to convert
+	 * @return The color in the form of a float array
+	 */
+	public static float[] getFloatArrayFromColor(int color) {
+		float red = (float) (color >> 16 & 255) / 255.0F;
+		float green = (float) (color >> 8 & 255) / 255.0F;
+		float blue = (float) (color & 255) / 255.0F;
+		float alpha = (float) (color >> 24 & 255) / 255.0F;
+		return new float[] {red, green, blue, alpha};
+	}
+	
 }

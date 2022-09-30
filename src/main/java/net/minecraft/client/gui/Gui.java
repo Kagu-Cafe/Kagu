@@ -105,7 +105,7 @@ public class Gui
         GlStateManager.disableTexture2D();
         GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
         GlStateManager.color(f, f1, f2, f3);
-        worldrenderer.begin(7, DefaultVertexFormats.POSITION);
+        worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION);
         worldrenderer.pos((double)left, (double)bottom, 0.0D).endVertex();
         worldrenderer.pos((double)right, (double)bottom, 0.0D).endVertex();
         worldrenderer.pos((double)right, (double)top, 0.0D).endVertex();

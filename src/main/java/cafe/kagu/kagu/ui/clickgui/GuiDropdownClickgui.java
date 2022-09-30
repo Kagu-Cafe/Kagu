@@ -16,9 +16,12 @@ import java.util.Map;
 
 import javax.imageio.ImageIO;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL20;
 
 import cafe.kagu.kagu.eventBus.Event.EventPosition;
 import cafe.kagu.kagu.Kagu;
@@ -29,16 +32,21 @@ import cafe.kagu.kagu.eventBus.impl.EventCheatRenderTick;
 import cafe.kagu.kagu.eventBus.impl.EventKeyUpdate;
 import cafe.kagu.kagu.font.FontRenderer;
 import cafe.kagu.kagu.font.FontUtils;
+import cafe.kagu.kagu.managers.FileManager;
 import cafe.kagu.kagu.mods.Module.Category;
 import cafe.kagu.kagu.mods.Module;
 import cafe.kagu.kagu.mods.ModuleManager;
 import cafe.kagu.kagu.mods.impl.visual.ModClickGui;
 import cafe.kagu.kagu.settings.Setting;
 import cafe.kagu.kagu.settings.impl.BooleanSetting;
+import cafe.kagu.kagu.settings.impl.DoubleSetting;
 import cafe.kagu.kagu.settings.impl.KeybindSetting;
 import cafe.kagu.kagu.utils.ChatUtils;
+import cafe.kagu.kagu.utils.MathUtils;
 import cafe.kagu.kagu.utils.MiscUtils;
+import cafe.kagu.kagu.utils.Shader;
 import cafe.kagu.kagu.utils.UiUtils;
+import cafe.kagu.kagu.utils.Shader.ShaderType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiScreen;
@@ -237,6 +245,8 @@ public class GuiDropdownClickgui extends GuiScreen {
 		Object hoveredText = null, oldHoveredText = this.hoveredText;
 		double textScrollAnimation = this.textScrollAnimation;
 		boolean hasHovered = false;
+		float[] coolFloatArray = UiUtils.getFloatArrayFromColor(coolColor);
+		float[] normalFloatArray = UiUtils.getFloatArrayFromColor(tabTitleColor);
 		for (Tab tab : TABS) {
 			
 			if (draggedTab == tab) {
@@ -365,6 +375,54 @@ public class GuiDropdownClickgui extends GuiScreen {
 								if (((BooleanSetting)setting).isEnabled()) {
 									drawRect(tabWidth - (tabModuleFontRenderer.getFontHeight() + 2), yOffset + 2, tabWidth - 2, yOffset + tabModuleFontRenderer.getFontHeight() + 2, coolColor);
 								}
+								else {
+									drawHorizontalLine(tabWidth - (tabModuleFontRenderer.getFontHeight() + 2), tabWidth - 3, yOffset + 2, coolColor);
+									drawHorizontalLine(tabWidth - (tabModuleFontRenderer.getFontHeight() + 2), tabWidth - 3, yOffset + tabModuleFontRenderer.getFontHeight() + 1, coolColor);
+									drawVerticalLine(tabWidth - (tabModuleFontRenderer.getFontHeight() + 2), yOffset + 2, yOffset + tabModuleFontRenderer.getFontHeight() + 1, coolColor);
+									drawVerticalLine(tabWidth - 3, yOffset + 2, yOffset + tabModuleFontRenderer.getFontHeight() + 1, coolColor);
+								}
+							}break;
+							case "dec":{
+								DoubleSetting doubleSetting = (DoubleSetting)setting;
+								String text = setting.getName() + ":        ";
+								double textWidth = tabModuleFontRenderer.getStringWidth(text);
+								
+								{ // Slider percent
+									double value = doubleSetting.getValue();
+									double range = doubleSetting.getMax() - doubleSetting.getMin();
+									
+									// Drag slider
+									if (selectedSetting == setting){
+										double newPercent = Math.max(Math.min((mouseX - tab.getPosX()) / tabWidth, 100), 0);
+										doubleSetting.setValue((newPercent * range) + doubleSetting.getMin());
+									}
+									
+									double sliderValue = value - doubleSetting.getMin();
+									double sliderPercent = sliderValue / range;
+									drawRect(0, yOffset, tabWidth * sliderPercent, yOffset + tabModuleFontRenderer.getFontHeight() + 4, coolColor);
+								}
+								UiUtils.enableScissor(tab.getPosX() + textIndent, scissor2, tab.getPosX() + Math.min(textIndent + textWidth, tabWidth), height);
+								String value = ((DoubleSetting)setting).getValue() + "";
+								double valueWidth = tabModuleFontRenderer.getStringWidth(value);
+								if (textWidth + textIndent + TAB_CORNER_SIZE < tabWidth - valueWidth)
+									scroll = 0;
+								if (scroll > 0) {
+									textScrollWidth = textWidth;
+								}
+								tabModuleFontRenderer.drawString(text, textIndent + scroll * textWidth, yOffset + 2, textColor);
+								if (textIndent + textWidth > tabWidth - valueWidth) {
+									tabModuleFontRenderer.drawString(text, textIndent + textWidth + scroll * textWidth, yOffset + 2, textColor);
+									drawGradientRectH(tabWidth - 4 - valueWidth - (tabModuleFontRenderer.getFontHeight() + 4), yOffset, tabWidth - 4 - valueWidth, yOffset + tabModuleFontRenderer.getFontHeight() + 4, tabTitleColor, 0x00000000);
+								}else if (hoveredText == setting) {
+									hoveredText = null;
+								}
+								if (isLeftClick && isInsideBasicSettingsRect) {
+									selectedSetting = setting;
+									isLeftClick = false;
+								}
+								UiUtils.enableScissor(tab.getPosX(), scissor2, tab.getPosX() + tabWidth, height);
+								drawRect(tabWidth - valueWidth - 4, yOffset, tabWidth, yOffset + tabModuleFontRenderer.getFontHeight() + 4, tabTitleColor);
+								tabModuleFontRenderer.drawString(value, tabWidth - 2 - valueWidth, yOffset + 2, textColor);
 							}break;
 							case "error":{
 								String text = setting.getName() + "        ";
@@ -702,6 +760,7 @@ public class GuiDropdownClickgui extends GuiScreen {
 		switch (state) {
 			case 0:{
 				draggedTab = null;
+				selectedSetting = null;
 			}break;
 		}
 	}
