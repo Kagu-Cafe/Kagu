@@ -311,6 +311,29 @@ public class Gui
     }
     
     /**
+     * Draws a texture to the screen
+     * @param x The x coord of the texture
+     * @param y The y coord of the texture
+     * @param width The width the texture should appear on screen
+     * @param height The height the texture should appear on screen
+     * @param linear Whether the image should render with linear or nearest neighbor, in other words set to true for smoothing on the pixels and set to false for things like pixel art
+     */
+    public static void drawTextureNoColorOverride(double x, double y, double width, double height, boolean linear) {
+    	GlStateManager.pushMatrix();
+    	GlStateManager.pushAttrib();
+		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, linear ? GL11.GL_LINEAR : GL11.GL_NEAREST);
+		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, linear ? GL11.GL_LINEAR : GL11.GL_NEAREST);
+		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL11.GL_CLAMP);
+		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, GL11.GL_CLAMP);
+    	GL11.glEnable(GL11.GL_BLEND);
+    	GlStateManager.enableBlend();
+    	GlStateManager.enableAlpha();
+    	drawModalRectWithCustomSizedTexture(x, y, 0, 0, width, height, width, height);
+    	GlStateManager.popAttrib();
+    	GlStateManager.popMatrix();
+    }
+    
+    /**
      * Draws a textured rectangle at z = 0. Args: x, y, u, v, width, height, textureWidth, textureHeight
      */
     public static void drawModalRectWithCustomSizedTexture(double x, double y, double u, double v, double width, double height, double textureWidth, double textureHeight)

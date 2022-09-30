@@ -40,11 +40,13 @@ import cafe.kagu.kagu.mods.impl.visual.ModClickGui;
 import cafe.kagu.kagu.settings.Setting;
 import cafe.kagu.kagu.settings.impl.BooleanSetting;
 import cafe.kagu.kagu.settings.impl.DoubleSetting;
+import cafe.kagu.kagu.settings.impl.IntegerSetting;
 import cafe.kagu.kagu.settings.impl.KeybindSetting;
 import cafe.kagu.kagu.utils.ChatUtils;
 import cafe.kagu.kagu.utils.MathUtils;
 import cafe.kagu.kagu.utils.MiscUtils;
 import cafe.kagu.kagu.utils.Shader;
+import cafe.kagu.kagu.utils.StencilUtil;
 import cafe.kagu.kagu.utils.UiUtils;
 import cafe.kagu.kagu.utils.Shader.ShaderType;
 import net.minecraft.client.Minecraft;
@@ -87,6 +89,7 @@ public class GuiDropdownClickgui extends GuiScreen {
 	private Map<Category, Module[]> categoryModules = new HashMap<>();
 	private Object hoveredText = null;
 	private double textScrollAnimation = 0, textScrollWidth = 1;
+	private ResourceLocation expand = new ResourceLocation("Kagu/dropdownClickgui/expand.png");
 	
 	private static final int TAB_CORNER_SIZE = 5;
 	private static final FontRenderer TAB_TITLE_FR = FontUtils.STRATUM2_MEDIUM_15_AA;
@@ -245,8 +248,6 @@ public class GuiDropdownClickgui extends GuiScreen {
 		Object hoveredText = null, oldHoveredText = this.hoveredText;
 		double textScrollAnimation = this.textScrollAnimation;
 		boolean hasHovered = false;
-		float[] coolFloatArray = UiUtils.getFloatArrayFromColor(coolColor);
-		float[] normalFloatArray = UiUtils.getFloatArrayFromColor(tabTitleColor);
 		for (Tab tab : TABS) {
 			
 			if (draggedTab == tab) {
@@ -311,6 +312,25 @@ public class GuiDropdownClickgui extends GuiScreen {
 						isRightClick = false;
 					}
 					hasHovered = true;
+				}
+				
+				// Expand icon
+				if (module.getSettings().length > 0) {
+					int expandIconBorder = 2;
+					int size = (int) (tabModuleFontRenderer.getFontHeight() + 4 - expandIconBorder * 2);
+					size -= size % 2;
+					mc.getTextureManager().bindTexture(expand);
+					UiUtils.glColorWithInt(coolColor);
+					GlStateManager.pushMatrix();
+					GlStateManager.translate(tabWidth - size - expandIconBorder + size / 2, yOffset + expandIconBorder + size / 2, 0);
+					GlStateManager.scale(1, (1 - module.getClickguiExtension()) * 2 - 1, 0);
+					GlStateManager.rotate(90, 0, 0, 1);
+					GlStateManager.translate(-(tabWidth - size - expandIconBorder + size / 2), -(yOffset + expandIconBorder + size / 2), 0);
+					GL11.glDisable(GL11.GL_CULL_FACE);
+					drawTextureNoColorOverride(tabWidth - size - expandIconBorder, yOffset + expandIconBorder, size, size, true);
+					GL11.glEnable(GL11.GL_CULL_FACE);
+					GlStateManager.popMatrix();
+					GlStateManager.color(1, 1, 1, 1);
 				}
 				
 				yOffset += tabModuleFontRenderer.getFontHeight() + 4;
@@ -397,12 +417,21 @@ public class GuiDropdownClickgui extends GuiScreen {
 										doubleSetting.setValue((newPercent * range) + doubleSetting.getMin());
 									}
 									
+									// Draw slider
+									StencilUtil.enableStencilTest();
+									StencilUtil.enableWrite();
+									StencilUtil.clearStencil();
+									StencilUtil.setTestOutcome(GL11.GL_REPLACE, GL11.GL_REPLACE, GL11.GL_REPLACE);
 									double sliderValue = value - doubleSetting.getMin();
 									double sliderPercent = sliderValue / range;
 									drawRect(0, yOffset, tabWidth * sliderPercent, yOffset + tabModuleFontRenderer.getFontHeight() + 4, coolColor);
+									StencilUtil.disableWrite();
+									StencilUtil.glStencilFunc(GL11.GL_ALWAYS, 0xff);
+									StencilUtil.setTestOutcome(GL11.GL_REPLACE, GL11.GL_REPLACE, GL11.GL_REPLACE);
 								}
+								
 								UiUtils.enableScissor(tab.getPosX() + textIndent, scissor2, tab.getPosX() + Math.min(textIndent + textWidth, tabWidth), height);
-								String value = ((DoubleSetting)setting).getValue() + "";
+								String value = doubleSetting.getValue() + "";
 								double valueWidth = tabModuleFontRenderer.getStringWidth(value);
 								if (textWidth + textIndent + TAB_CORNER_SIZE < tabWidth - valueWidth)
 									scroll = 0;
@@ -412,7 +441,14 @@ public class GuiDropdownClickgui extends GuiScreen {
 								tabModuleFontRenderer.drawString(text, textIndent + scroll * textWidth, yOffset + 2, textColor);
 								if (textIndent + textWidth > tabWidth - valueWidth) {
 									tabModuleFontRenderer.drawString(text, textIndent + textWidth + scroll * textWidth, yOffset + 2, textColor);
+									StencilUtil.glStencilFunc(GL11.GL_EQUAL, 0x00);
+									StencilUtil.setTestOutcome(GL11.GL_KEEP, GL11.GL_REPLACE, GL11.GL_REPLACE);
 									drawGradientRectH(tabWidth - 4 - valueWidth - (tabModuleFontRenderer.getFontHeight() + 4), yOffset, tabWidth - 4 - valueWidth, yOffset + tabModuleFontRenderer.getFontHeight() + 4, tabTitleColor, 0x00000000);
+									StencilUtil.glStencilFunc(GL11.GL_NOTEQUAL, 0x00);
+									float[] coolColorArrayShit = UiUtils.getFloatArrayFromColor(coolColor);
+									drawGradientRectH(tabWidth - 4 - valueWidth - (tabModuleFontRenderer.getFontHeight() + 4), yOffset, tabWidth - 4 - valueWidth, yOffset + tabModuleFontRenderer.getFontHeight() + 4, coolColor, new Color(coolColorArrayShit[0], coolColorArrayShit[1], coolColorArrayShit[2], 0).getRGB());
+									StencilUtil.glStencilFunc(GL11.GL_ALWAYS, 0xff);
+									StencilUtil.setTestOutcome(GL11.GL_REPLACE, GL11.GL_REPLACE, GL11.GL_REPLACE);
 								}else if (hoveredText == setting) {
 									hoveredText = null;
 								}
@@ -421,8 +457,80 @@ public class GuiDropdownClickgui extends GuiScreen {
 									isLeftClick = false;
 								}
 								UiUtils.enableScissor(tab.getPosX(), scissor2, tab.getPosX() + tabWidth, height);
+								StencilUtil.glStencilFunc(GL11.GL_EQUAL, 0x00);
+								StencilUtil.setTestOutcome(GL11.GL_KEEP, GL11.GL_REPLACE, GL11.GL_REPLACE);
 								drawRect(tabWidth - valueWidth - 4, yOffset, tabWidth, yOffset + tabModuleFontRenderer.getFontHeight() + 4, tabTitleColor);
+								StencilUtil.glStencilFunc(GL11.GL_NOTEQUAL, 0x00);
+								drawRect(tabWidth - valueWidth - 4, yOffset, tabWidth, yOffset + tabModuleFontRenderer.getFontHeight() + 4, coolColor);
+								StencilUtil.glStencilFunc(GL11.GL_ALWAYS, 0xff);
+								StencilUtil.setTestOutcome(GL11.GL_REPLACE, GL11.GL_REPLACE, GL11.GL_REPLACE);
 								tabModuleFontRenderer.drawString(value, tabWidth - 2 - valueWidth, yOffset + 2, textColor);
+								StencilUtil.disableStencilTest();
+							}break;
+							case "int":{
+								IntegerSetting integerSetting = (IntegerSetting)setting;
+								String text = setting.getName() + ":        ";
+								double textWidth = tabModuleFontRenderer.getStringWidth(text);
+								
+								{ // Slider percent
+									double value = integerSetting.getValue();
+									double range = integerSetting.getMax() - integerSetting.getMin();
+									
+									// Drag slider
+									if (selectedSetting == setting){
+										double newPercent = Math.max(Math.min((mouseX - tab.getPosX()) / tabWidth, 100), 0);
+										integerSetting.setValue((int) ((newPercent * range) + integerSetting.getMin()));
+									}
+									
+									// Draw slider
+									StencilUtil.enableStencilTest();
+									StencilUtil.enableWrite();
+									StencilUtil.clearStencil();
+									StencilUtil.setTestOutcome(GL11.GL_REPLACE, GL11.GL_REPLACE, GL11.GL_REPLACE);
+									double sliderValue = value - integerSetting.getMin();
+									double sliderPercent = sliderValue / range;
+									drawRect(0, yOffset, tabWidth * sliderPercent, yOffset + tabModuleFontRenderer.getFontHeight() + 4, coolColor);
+									StencilUtil.disableWrite();
+									StencilUtil.glStencilFunc(GL11.GL_ALWAYS, 0xff);
+									StencilUtil.setTestOutcome(GL11.GL_REPLACE, GL11.GL_REPLACE, GL11.GL_REPLACE);
+								}
+								
+								UiUtils.enableScissor(tab.getPosX() + textIndent, scissor2, tab.getPosX() + Math.min(textIndent + textWidth, tabWidth), height);
+								String value = integerSetting.getValue() + "";
+								double valueWidth = tabModuleFontRenderer.getStringWidth(value);
+								if (textWidth + textIndent + TAB_CORNER_SIZE < tabWidth - valueWidth)
+									scroll = 0;
+								if (scroll > 0) {
+									textScrollWidth = textWidth;
+								}
+								tabModuleFontRenderer.drawString(text, textIndent + scroll * textWidth, yOffset + 2, textColor);
+								if (textIndent + textWidth > tabWidth - valueWidth) {
+									tabModuleFontRenderer.drawString(text, textIndent + textWidth + scroll * textWidth, yOffset + 2, textColor);
+									StencilUtil.glStencilFunc(GL11.GL_EQUAL, 0x00);
+									StencilUtil.setTestOutcome(GL11.GL_KEEP, GL11.GL_REPLACE, GL11.GL_REPLACE);
+									drawGradientRectH(tabWidth - 4 - valueWidth - (tabModuleFontRenderer.getFontHeight() + 4), yOffset, tabWidth - 4 - valueWidth, yOffset + tabModuleFontRenderer.getFontHeight() + 4, tabTitleColor, 0x00000000);
+									StencilUtil.glStencilFunc(GL11.GL_NOTEQUAL, 0x00);
+									float[] coolColorArrayShit = UiUtils.getFloatArrayFromColor(coolColor);
+									drawGradientRectH(tabWidth - 4 - valueWidth - (tabModuleFontRenderer.getFontHeight() + 4), yOffset, tabWidth - 4 - valueWidth, yOffset + tabModuleFontRenderer.getFontHeight() + 4, coolColor, new Color(coolColorArrayShit[0], coolColorArrayShit[1], coolColorArrayShit[2], 0).getRGB());
+									StencilUtil.glStencilFunc(GL11.GL_ALWAYS, 0xff);
+									StencilUtil.setTestOutcome(GL11.GL_REPLACE, GL11.GL_REPLACE, GL11.GL_REPLACE);
+								}else if (hoveredText == setting) {
+									hoveredText = null;
+								}
+								if (isLeftClick && isInsideBasicSettingsRect) {
+									selectedSetting = setting;
+									isLeftClick = false;
+								}
+								UiUtils.enableScissor(tab.getPosX(), scissor2, tab.getPosX() + tabWidth, height);
+								StencilUtil.glStencilFunc(GL11.GL_EQUAL, 0x00);
+								StencilUtil.setTestOutcome(GL11.GL_KEEP, GL11.GL_REPLACE, GL11.GL_REPLACE);
+								drawRect(tabWidth - valueWidth - 4, yOffset, tabWidth, yOffset + tabModuleFontRenderer.getFontHeight() + 4, tabTitleColor);
+								StencilUtil.glStencilFunc(GL11.GL_NOTEQUAL, 0x00);
+								drawRect(tabWidth - valueWidth - 4, yOffset, tabWidth, yOffset + tabModuleFontRenderer.getFontHeight() + 4, coolColor);
+								StencilUtil.glStencilFunc(GL11.GL_ALWAYS, 0xff);
+								StencilUtil.setTestOutcome(GL11.GL_REPLACE, GL11.GL_REPLACE, GL11.GL_REPLACE);
+								tabModuleFontRenderer.drawString(value, tabWidth - 2 - valueWidth, yOffset + 2, textColor);
+								StencilUtil.disableStencilTest();
 							}break;
 							case "error":{
 								String text = setting.getName() + "        ";
@@ -456,9 +564,6 @@ public class GuiDropdownClickgui extends GuiScreen {
 					mouseOffsets[1] = mouseY - tab.getPosY();
 					draggedTab = tab;
 					isLeftClick = false;
-				}else if (isRightClick) {
-					tab.setExpanded(!tab.isExpanded());
-					isRightClick = false;
 				}
 			}
 			UiUtils.drawRoundedRect(0, yOffset + 1 ,tabWidth, yOffset += (TAB_CORNER_SIZE * 2), tabTitleColor, 0d, 0d, TAB_CORNER_SIZE, TAB_CORNER_SIZE);
@@ -550,6 +655,9 @@ public class GuiDropdownClickgui extends GuiScreen {
 				if (Math.ceil(TAB_MODULE_FR.getStringWidth(module.getName())) + TAB_CORNER_SIZE > width)
 					width = (int) Math.ceil(TAB_MODULE_FR.getStringWidth(module.getName())) + TAB_CORNER_SIZE * 3;
 			}
+			
+			// Make room for the module extend icons
+			width += 5;
 			
 		}
 		

@@ -127,6 +127,7 @@ public class GuiAuthNeeded extends GuiScreen {
 										FileManager.writeStringToFile(FileManager.SAVED_CREDENTIALS, json.toString());
 										textFields[0] = "";
 										textFields[1] = "";
+										System.gc();
 										startCheat = true;
 									});
 									loggingIn = false;
