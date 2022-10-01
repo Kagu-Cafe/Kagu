@@ -432,7 +432,7 @@ public class GuiCsgoClickgui extends GuiScreen {
 								double pixelRange = right - (left + toggleSwitchLength);
 								double fixedMouseX = mouseX - (left + toggleSwitchLength);
 								double newValuePercent = MathHelper.clamp_double(fixedMouseX / pixelRange, 0, 1);
-								int endResult = (int) (min + (range * newValuePercent));
+								int endResult = (int) Math.round((min + (range * newValuePercent)));
 								((IntegerSetting)setting).setValue(endResult);
 								sliderPercent = newValuePercent;
 							}

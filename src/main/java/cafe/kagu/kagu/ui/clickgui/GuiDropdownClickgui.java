@@ -341,6 +341,8 @@ public class GuiDropdownClickgui extends GuiScreen {
 				for (Setting<?> setting : module.getSettings()) {
 					if (setting.isHidden())
 						continue;
+					if (moduleExpand <= 0.001)
+						break;
 					settingOffset += tabModuleFontRenderer.getFontHeight() + 4;
 				}
 				settingOffset *= 1 - moduleExpand;
@@ -351,203 +353,236 @@ public class GuiDropdownClickgui extends GuiScreen {
 				for (Setting<?> setting : module.getSettings()) {
 					if (setting.isHidden())
 						continue;
+					if (moduleExpand <= 0.001)
+						break;
 					UiUtils.enableScissor(tab.getPosX(), scissor2, tab.getPosX() + tabWidth, height);
-					if (moduleExpand > 0.001) {
-						drawRect(0, yOffset, tabWidth, yOffset + tabModuleFontRenderer.getFontHeight() + 4, tabTitleColor);
-						
-						// Text scroll animation
-						boolean isInsideBasicSettingsRect = false;
-						if (!hasHovered && UiUtils.isMouseInsideRoundedRect(mouseX - tab.getPosX(), mouseY - tab.getPosY() - -heightOffset * tab.getExpandAnimation(), 0, yOffset, tabWidth, yOffset + tabModuleFontRenderer.getFontHeight() + 4, 0)) {
-							hoveredText = setting;
-							if (oldHoveredText != hoveredText) {
-								textScrollAnimation = 0;
-								this.textScrollAnimation = 0;
+					drawRect(0, yOffset, tabWidth, yOffset + tabModuleFontRenderer.getFontHeight() + 4, tabTitleColor);
+					
+					// Text scroll animation
+					boolean isInsideBasicSettingsRect = false;
+					if (!hasHovered && UiUtils.isMouseInsideRoundedRect(mouseX - tab.getPosX(), mouseY - tab.getPosY() - -heightOffset * tab.getExpandAnimation(), 0, yOffset, tabWidth, yOffset + tabModuleFontRenderer.getFontHeight() + 4, 0)) {
+						hoveredText = setting;
+						if (oldHoveredText != hoveredText) {
+							textScrollAnimation = 0;
+							this.textScrollAnimation = 0;
+						}
+						hasHovered = true;
+						isInsideBasicSettingsRect = true;
+					}
+					
+					double scroll = setting == hoveredText ? -textScrollAnimation : 0;
+					final double textIndent = TAB_CORNER_SIZE * 2;
+					switch (MiscUtils.getSettingType(setting)) {
+						case "bool":{
+							String text = setting.getName() + "        ";
+							double textWidth = tabModuleFontRenderer.getStringWidth(text);
+							UiUtils.enableScissor(tab.getPosX() + textIndent, scissor2, tab.getPosX() + Math.min(textIndent + textWidth, tabWidth), height);
+							if (textWidth + textIndent + TAB_CORNER_SIZE < tabWidth)
+								scroll = 0;
+							if (scroll > 0) {
+								textScrollWidth = textWidth;
 							}
-							hasHovered = true;
-							isInsideBasicSettingsRect = true;
-						}
-						
-						double scroll = setting == hoveredText ? -textScrollAnimation : 0;
-						final double textIndent = TAB_CORNER_SIZE * 2;
-						switch (MiscUtils.getSettingType(setting)) {
-							case "bool":{
-								String text = setting.getName() + "        ";
-								double textWidth = tabModuleFontRenderer.getStringWidth(text);
-								UiUtils.enableScissor(tab.getPosX() + textIndent, scissor2, tab.getPosX() + Math.min(textIndent + textWidth, tabWidth), height);
-								if (textWidth + textIndent + TAB_CORNER_SIZE < tabWidth)
-									scroll = 0;
-								if (scroll > 0) {
-									textScrollWidth = textWidth;
-								}
-								tabModuleFontRenderer.drawString(text, textIndent + scroll * textWidth, yOffset + 2, textColor);
-								if (textIndent + textWidth > tabWidth) {
-									tabModuleFontRenderer.drawString(text, textIndent + textWidth + scroll * textWidth, yOffset + 2, textColor);
-									drawGradientRectH(tabWidth - (tabModuleFontRenderer.getFontHeight() + 4) * 2, yOffset, tabWidth - (tabModuleFontRenderer.getFontHeight() + 4), yOffset + tabModuleFontRenderer.getFontHeight() + 4, tabTitleColor, 0x00000000);
-								}else if (hoveredText == setting) {
-									hoveredText = null;
-								}
-								if (isLeftClick && isInsideBasicSettingsRect) {
-									((BooleanSetting)setting).toggle();
-									isLeftClick = false;
-								}
-								UiUtils.enableScissor(tab.getPosX(), scissor2, tab.getPosX() + tabWidth, height);
-								drawRect(tabWidth - (tabModuleFontRenderer.getFontHeight() + 4), yOffset, tabWidth, yOffset + tabModuleFontRenderer.getFontHeight() + 4, tabTitleColor);
-								if (((BooleanSetting)setting).isEnabled()) {
-									drawRect(tabWidth - (tabModuleFontRenderer.getFontHeight() + 2), yOffset + 2, tabWidth - 2, yOffset + tabModuleFontRenderer.getFontHeight() + 2, coolColor);
-								}
-								else {
-									drawHorizontalLine(tabWidth - (tabModuleFontRenderer.getFontHeight() + 2), tabWidth - 3, yOffset + 2, coolColor);
-									drawHorizontalLine(tabWidth - (tabModuleFontRenderer.getFontHeight() + 2), tabWidth - 3, yOffset + tabModuleFontRenderer.getFontHeight() + 1, coolColor);
-									drawVerticalLine(tabWidth - (tabModuleFontRenderer.getFontHeight() + 2), yOffset + 2, yOffset + tabModuleFontRenderer.getFontHeight() + 1, coolColor);
-									drawVerticalLine(tabWidth - 3, yOffset + 2, yOffset + tabModuleFontRenderer.getFontHeight() + 1, coolColor);
-								}
-							}break;
-							case "dec":{
-								DoubleSetting doubleSetting = (DoubleSetting)setting;
-								String text = setting.getName() + ":        ";
-								double textWidth = tabModuleFontRenderer.getStringWidth(text);
+							tabModuleFontRenderer.drawString(text, textIndent + scroll * textWidth, yOffset + 2, textColor);
+							if (textIndent + textWidth > tabWidth) {
+								tabModuleFontRenderer.drawString(text, textIndent + textWidth + scroll * textWidth, yOffset + 2, textColor);
+								drawGradientRectH(tabWidth - (tabModuleFontRenderer.getFontHeight() + 4) * 2, yOffset, tabWidth - (tabModuleFontRenderer.getFontHeight() + 4), yOffset + tabModuleFontRenderer.getFontHeight() + 4, tabTitleColor, 0x00000000);
+							}else if (hoveredText == setting) {
+								hoveredText = null;
+							}
+							if (isLeftClick && isInsideBasicSettingsRect) {
+								((BooleanSetting)setting).toggle();
+								isLeftClick = false;
+							}
+							UiUtils.enableScissor(tab.getPosX(), scissor2, tab.getPosX() + tabWidth, height);
+							drawRect(tabWidth - (tabModuleFontRenderer.getFontHeight() + 4), yOffset, tabWidth, yOffset + tabModuleFontRenderer.getFontHeight() + 4, tabTitleColor);
+							if (((BooleanSetting)setting).isEnabled()) {
+								drawRect(tabWidth - (tabModuleFontRenderer.getFontHeight() + 2), yOffset + 2, tabWidth - 2, yOffset + tabModuleFontRenderer.getFontHeight() + 2, coolColor);
+							}
+							else {
+								drawHorizontalLine(tabWidth - (tabModuleFontRenderer.getFontHeight() + 2), tabWidth - 3, yOffset + 2, coolColor);
+								drawHorizontalLine(tabWidth - (tabModuleFontRenderer.getFontHeight() + 2), tabWidth - 3, yOffset + tabModuleFontRenderer.getFontHeight() + 1, coolColor);
+								drawVerticalLine(tabWidth - (tabModuleFontRenderer.getFontHeight() + 2), yOffset + 2, yOffset + tabModuleFontRenderer.getFontHeight() + 1, coolColor);
+								drawVerticalLine(tabWidth - 3, yOffset + 2, yOffset + tabModuleFontRenderer.getFontHeight() + 1, coolColor);
+							}
+						}break;
+						case "dec":{
+							DoubleSetting doubleSetting = (DoubleSetting)setting;
+							String text = setting.getName() + ":        ";
+							double textWidth = tabModuleFontRenderer.getStringWidth(text);
+							
+							{ // Slider percent
+								double value = doubleSetting.getValue();
+								double range = doubleSetting.getMax() - doubleSetting.getMin();
 								
-								{ // Slider percent
-									double value = doubleSetting.getValue();
-									double range = doubleSetting.getMax() - doubleSetting.getMin();
-									
-									// Drag slider
-									if (selectedSetting == setting){
-										double newPercent = Math.max(Math.min((mouseX - tab.getPosX()) / tabWidth, 100), 0);
-										doubleSetting.setValue((newPercent * range) + doubleSetting.getMin());
-									}
-									
-									// Draw slider
-									StencilUtil.enableStencilTest();
-									StencilUtil.enableWrite();
-									StencilUtil.clearStencil();
-									StencilUtil.setTestOutcome(GL11.GL_REPLACE, GL11.GL_REPLACE, GL11.GL_REPLACE);
-									double sliderValue = value - doubleSetting.getMin();
-									double sliderPercent = sliderValue / range;
-									drawRect(0, yOffset, tabWidth * sliderPercent, yOffset + tabModuleFontRenderer.getFontHeight() + 4, coolColor);
-									StencilUtil.disableWrite();
-									StencilUtil.glStencilFunc(GL11.GL_ALWAYS, 0xff);
-									StencilUtil.setTestOutcome(GL11.GL_REPLACE, GL11.GL_REPLACE, GL11.GL_REPLACE);
+								// Drag slider
+								if (selectedSetting == setting){
+									double newPercent = Math.max(Math.min((mouseX - tab.getPosX()) / tabWidth, 100), 0);
+									doubleSetting.setValue((newPercent * range) + doubleSetting.getMin());
 								}
 								
-								UiUtils.enableScissor(tab.getPosX() + textIndent, scissor2, tab.getPosX() + Math.min(textIndent + textWidth, tabWidth), height);
-								String value = doubleSetting.getValue() + "";
-								double valueWidth = tabModuleFontRenderer.getStringWidth(value);
-								if (textWidth + textIndent + TAB_CORNER_SIZE < tabWidth - valueWidth)
-									scroll = 0;
-								if (scroll > 0) {
-									textScrollWidth = textWidth;
-								}
-								tabModuleFontRenderer.drawString(text, textIndent + scroll * textWidth, yOffset + 2, textColor);
-								if (textIndent + textWidth > tabWidth - valueWidth) {
-									tabModuleFontRenderer.drawString(text, textIndent + textWidth + scroll * textWidth, yOffset + 2, textColor);
-									StencilUtil.glStencilFunc(GL11.GL_EQUAL, 0x00);
-									StencilUtil.setTestOutcome(GL11.GL_KEEP, GL11.GL_REPLACE, GL11.GL_REPLACE);
-									drawGradientRectH(tabWidth - 4 - valueWidth - (tabModuleFontRenderer.getFontHeight() + 4), yOffset, tabWidth - 4 - valueWidth, yOffset + tabModuleFontRenderer.getFontHeight() + 4, tabTitleColor, 0x00000000);
-									StencilUtil.glStencilFunc(GL11.GL_NOTEQUAL, 0x00);
-									float[] coolColorArrayShit = UiUtils.getFloatArrayFromColor(coolColor);
-									drawGradientRectH(tabWidth - 4 - valueWidth - (tabModuleFontRenderer.getFontHeight() + 4), yOffset, tabWidth - 4 - valueWidth, yOffset + tabModuleFontRenderer.getFontHeight() + 4, coolColor, new Color(coolColorArrayShit[0], coolColorArrayShit[1], coolColorArrayShit[2], 0).getRGB());
-									StencilUtil.glStencilFunc(GL11.GL_ALWAYS, 0xff);
-									StencilUtil.setTestOutcome(GL11.GL_REPLACE, GL11.GL_REPLACE, GL11.GL_REPLACE);
-								}else if (hoveredText == setting) {
-									hoveredText = null;
-								}
-								if (isLeftClick && isInsideBasicSettingsRect) {
-									selectedSetting = setting;
-									isLeftClick = false;
-								}
-								UiUtils.enableScissor(tab.getPosX(), scissor2, tab.getPosX() + tabWidth, height);
-								StencilUtil.glStencilFunc(GL11.GL_EQUAL, 0x00);
-								StencilUtil.setTestOutcome(GL11.GL_KEEP, GL11.GL_REPLACE, GL11.GL_REPLACE);
-								drawRect(tabWidth - valueWidth - 4, yOffset, tabWidth, yOffset + tabModuleFontRenderer.getFontHeight() + 4, tabTitleColor);
-								StencilUtil.glStencilFunc(GL11.GL_NOTEQUAL, 0x00);
-								drawRect(tabWidth - valueWidth - 4, yOffset, tabWidth, yOffset + tabModuleFontRenderer.getFontHeight() + 4, coolColor);
+								// Draw slider
+								StencilUtil.enableStencilTest();
+								StencilUtil.enableWrite();
+								StencilUtil.clearStencil();
+								StencilUtil.setTestOutcome(GL11.GL_REPLACE, GL11.GL_REPLACE, GL11.GL_REPLACE);
+								double sliderValue = value - doubleSetting.getMin();
+								double sliderPercent = sliderValue / range;
+								drawRect(0, yOffset, selectedSetting == setting ? mouseX - tab.getPosX() : tabWidth * sliderPercent, yOffset + tabModuleFontRenderer.getFontHeight() + 4, coolColor);
+								StencilUtil.disableWrite();
 								StencilUtil.glStencilFunc(GL11.GL_ALWAYS, 0xff);
 								StencilUtil.setTestOutcome(GL11.GL_REPLACE, GL11.GL_REPLACE, GL11.GL_REPLACE);
-								tabModuleFontRenderer.drawString(value, tabWidth - 2 - valueWidth, yOffset + 2, textColor);
-								StencilUtil.disableStencilTest();
-							}break;
-							case "int":{
-								IntegerSetting integerSetting = (IntegerSetting)setting;
-								String text = setting.getName() + ":        ";
-								double textWidth = tabModuleFontRenderer.getStringWidth(text);
-								
-								{ // Slider percent
-									double value = integerSetting.getValue();
-									double range = integerSetting.getMax() - integerSetting.getMin();
-									
-									// Drag slider
-									if (selectedSetting == setting){
-										double newPercent = Math.max(Math.min((mouseX - tab.getPosX()) / tabWidth, 100), 0);
-										integerSetting.setValue((int) ((newPercent * range) + integerSetting.getMin()));
-									}
-									
-									// Draw slider
-									StencilUtil.enableStencilTest();
-									StencilUtil.enableWrite();
-									StencilUtil.clearStencil();
-									StencilUtil.setTestOutcome(GL11.GL_REPLACE, GL11.GL_REPLACE, GL11.GL_REPLACE);
-									double sliderValue = value - integerSetting.getMin();
-									double sliderPercent = sliderValue / range;
-									drawRect(0, yOffset, tabWidth * sliderPercent, yOffset + tabModuleFontRenderer.getFontHeight() + 4, coolColor);
-									StencilUtil.disableWrite();
-									StencilUtil.glStencilFunc(GL11.GL_ALWAYS, 0xff);
-									StencilUtil.setTestOutcome(GL11.GL_REPLACE, GL11.GL_REPLACE, GL11.GL_REPLACE);
-								}
-								
-								UiUtils.enableScissor(tab.getPosX() + textIndent, scissor2, tab.getPosX() + Math.min(textIndent + textWidth, tabWidth), height);
-								String value = integerSetting.getValue() + "";
-								double valueWidth = tabModuleFontRenderer.getStringWidth(value);
-								if (textWidth + textIndent + TAB_CORNER_SIZE < tabWidth - valueWidth)
-									scroll = 0;
-								if (scroll > 0) {
-									textScrollWidth = textWidth;
-								}
-								tabModuleFontRenderer.drawString(text, textIndent + scroll * textWidth, yOffset + 2, textColor);
-								if (textIndent + textWidth > tabWidth - valueWidth) {
-									tabModuleFontRenderer.drawString(text, textIndent + textWidth + scroll * textWidth, yOffset + 2, textColor);
-									StencilUtil.glStencilFunc(GL11.GL_EQUAL, 0x00);
-									StencilUtil.setTestOutcome(GL11.GL_KEEP, GL11.GL_REPLACE, GL11.GL_REPLACE);
-									drawGradientRectH(tabWidth - 4 - valueWidth - (tabModuleFontRenderer.getFontHeight() + 4), yOffset, tabWidth - 4 - valueWidth, yOffset + tabModuleFontRenderer.getFontHeight() + 4, tabTitleColor, 0x00000000);
-									StencilUtil.glStencilFunc(GL11.GL_NOTEQUAL, 0x00);
-									float[] coolColorArrayShit = UiUtils.getFloatArrayFromColor(coolColor);
-									drawGradientRectH(tabWidth - 4 - valueWidth - (tabModuleFontRenderer.getFontHeight() + 4), yOffset, tabWidth - 4 - valueWidth, yOffset + tabModuleFontRenderer.getFontHeight() + 4, coolColor, new Color(coolColorArrayShit[0], coolColorArrayShit[1], coolColorArrayShit[2], 0).getRGB());
-									StencilUtil.glStencilFunc(GL11.GL_ALWAYS, 0xff);
-									StencilUtil.setTestOutcome(GL11.GL_REPLACE, GL11.GL_REPLACE, GL11.GL_REPLACE);
-								}else if (hoveredText == setting) {
-									hoveredText = null;
-								}
-								if (isLeftClick && isInsideBasicSettingsRect) {
-									selectedSetting = setting;
-									isLeftClick = false;
-								}
-								UiUtils.enableScissor(tab.getPosX(), scissor2, tab.getPosX() + tabWidth, height);
+							}
+							
+							UiUtils.enableScissor(tab.getPosX() + textIndent, scissor2, tab.getPosX() + Math.min(textIndent + textWidth, tabWidth), height);
+							String value = doubleSetting.getValue() + "";
+							double valueWidth = tabModuleFontRenderer.getStringWidth(value);
+							if (textWidth + textIndent + TAB_CORNER_SIZE < tabWidth - valueWidth)
+								scroll = 0;
+							if (scroll > 0) {
+								textScrollWidth = textWidth;
+							}
+							tabModuleFontRenderer.drawString(text, textIndent + scroll * textWidth, yOffset + 2, textColor);
+							if (textIndent + textWidth > tabWidth - valueWidth) {
+								tabModuleFontRenderer.drawString(text, textIndent + textWidth + scroll * textWidth, yOffset + 2, textColor);
 								StencilUtil.glStencilFunc(GL11.GL_EQUAL, 0x00);
 								StencilUtil.setTestOutcome(GL11.GL_KEEP, GL11.GL_REPLACE, GL11.GL_REPLACE);
-								drawRect(tabWidth - valueWidth - 4, yOffset, tabWidth, yOffset + tabModuleFontRenderer.getFontHeight() + 4, tabTitleColor);
+								drawGradientRectH(tabWidth - 4 - valueWidth - (tabModuleFontRenderer.getFontHeight() + 4), yOffset, tabWidth - 4 - valueWidth, yOffset + tabModuleFontRenderer.getFontHeight() + 4, tabTitleColor, 0x00000000);
 								StencilUtil.glStencilFunc(GL11.GL_NOTEQUAL, 0x00);
-								drawRect(tabWidth - valueWidth - 4, yOffset, tabWidth, yOffset + tabModuleFontRenderer.getFontHeight() + 4, coolColor);
+								float[] coolColorArrayShit = UiUtils.getFloatArrayFromColor(coolColor);
+								drawGradientRectH(tabWidth - 4 - valueWidth - (tabModuleFontRenderer.getFontHeight() + 4), yOffset, tabWidth - 4 - valueWidth, yOffset + tabModuleFontRenderer.getFontHeight() + 4, coolColor, new Color(coolColorArrayShit[0], coolColorArrayShit[1], coolColorArrayShit[2], 0).getRGB());
 								StencilUtil.glStencilFunc(GL11.GL_ALWAYS, 0xff);
 								StencilUtil.setTestOutcome(GL11.GL_REPLACE, GL11.GL_REPLACE, GL11.GL_REPLACE);
-								tabModuleFontRenderer.drawString(value, tabWidth - 2 - valueWidth, yOffset + 2, textColor);
-								StencilUtil.disableStencilTest();
-							}break;
-							case "error":{
-								String text = setting.getName() + "        ";
-								double textWidth = tabModuleFontRenderer.getStringWidth(text);
-								UiUtils.enableScissor(tab.getPosX() + textIndent, scissor2, tab.getPosX() + Math.min(textIndent + textWidth, tabWidth), height);
-								if (textWidth + textIndent < tabWidth)
-									scroll = 0;
-								if (scroll > 0) {
-									textScrollWidth = textWidth;
+							}else if (hoveredText == setting) {
+								hoveredText = null;
+							}
+							if (isLeftClick && isInsideBasicSettingsRect) {
+								selectedSetting = setting;
+								isLeftClick = false;
+							}
+							UiUtils.enableScissor(tab.getPosX(), scissor2, tab.getPosX() + tabWidth, height);
+							StencilUtil.glStencilFunc(GL11.GL_EQUAL, 0x00);
+							StencilUtil.setTestOutcome(GL11.GL_KEEP, GL11.GL_REPLACE, GL11.GL_REPLACE);
+							drawRect(tabWidth - valueWidth - 4, yOffset, tabWidth, yOffset + tabModuleFontRenderer.getFontHeight() + 4, tabTitleColor);
+							StencilUtil.glStencilFunc(GL11.GL_NOTEQUAL, 0x00);
+							drawRect(tabWidth - valueWidth - 4, yOffset, tabWidth, yOffset + tabModuleFontRenderer.getFontHeight() + 4, coolColor);
+							StencilUtil.glStencilFunc(GL11.GL_ALWAYS, 0xff);
+							StencilUtil.setTestOutcome(GL11.GL_REPLACE, GL11.GL_REPLACE, GL11.GL_REPLACE);
+							tabModuleFontRenderer.drawString(value, tabWidth - 2 - valueWidth, yOffset + 2, textColor);
+							StencilUtil.disableStencilTest();
+						}break;
+						case "int":{
+							IntegerSetting integerSetting = (IntegerSetting)setting;
+							String text = setting.getName() + ":        ";
+							double textWidth = tabModuleFontRenderer.getStringWidth(text);
+							
+							{ // Slider percent
+								double value = integerSetting.getValue();
+								double range = integerSetting.getMax() - integerSetting.getMin();
+								
+								// Drag slider
+								if (selectedSetting == setting){
+									double newPercent = Math.max(Math.min((mouseX - tab.getPosX()) / tabWidth, 100), 0);
+									integerSetting.setValue((int) (Math.round((newPercent * range) + integerSetting.getMin())));
 								}
-								tabModuleFontRenderer.drawString(text, textIndent + scroll * textWidth, yOffset + 2, textColor);
-								if (textIndent + textWidth > tabWidth) {
-									tabModuleFontRenderer.drawString(text, textIndent + textWidth + scroll * textWidth, yOffset + 2, textColor);
-									drawGradientRectH(tabWidth - (tabModuleFontRenderer.getFontHeight() + 4), yOffset, tabWidth, yOffset + tabModuleFontRenderer.getFontHeight() + 4, tabTitleColor, 0x00000000);
-								}
-							}break;
-						}
+								
+								// Draw slider
+								StencilUtil.enableStencilTest();
+								StencilUtil.enableWrite();
+								StencilUtil.clearStencil();
+								StencilUtil.setTestOutcome(GL11.GL_REPLACE, GL11.GL_REPLACE, GL11.GL_REPLACE);
+								double sliderValue = value - integerSetting.getMin();
+								double sliderPercent = sliderValue / range;
+								drawRect(0, yOffset, selectedSetting == setting ? mouseX - tab.getPosX() : tabWidth * sliderPercent, yOffset + tabModuleFontRenderer.getFontHeight() + 4, coolColor);
+								StencilUtil.disableWrite();
+								StencilUtil.glStencilFunc(GL11.GL_ALWAYS, 0xff);
+								StencilUtil.setTestOutcome(GL11.GL_REPLACE, GL11.GL_REPLACE, GL11.GL_REPLACE);
+							}
+							
+							UiUtils.enableScissor(tab.getPosX() + textIndent, scissor2, tab.getPosX() + Math.min(textIndent + textWidth, tabWidth), height);
+							String value = integerSetting.getValue() + "";
+							double valueWidth = tabModuleFontRenderer.getStringWidth(value);
+							if (textWidth + textIndent + TAB_CORNER_SIZE < tabWidth - valueWidth)
+								scroll = 0;
+							if (scroll > 0) {
+								textScrollWidth = textWidth;
+							}
+							tabModuleFontRenderer.drawString(text, textIndent + scroll * textWidth, yOffset + 2, textColor);
+							if (textIndent + textWidth > tabWidth - valueWidth) {
+								tabModuleFontRenderer.drawString(text, textIndent + textWidth + scroll * textWidth, yOffset + 2, textColor);
+								StencilUtil.glStencilFunc(GL11.GL_EQUAL, 0x00);
+								StencilUtil.setTestOutcome(GL11.GL_KEEP, GL11.GL_REPLACE, GL11.GL_REPLACE);
+								drawGradientRectH(tabWidth - 4 - valueWidth - (tabModuleFontRenderer.getFontHeight() + 4), yOffset, tabWidth - 4 - valueWidth, yOffset + tabModuleFontRenderer.getFontHeight() + 4, tabTitleColor, 0x00000000);
+								StencilUtil.glStencilFunc(GL11.GL_NOTEQUAL, 0x00);
+								float[] coolColorArrayShit = UiUtils.getFloatArrayFromColor(coolColor);
+								drawGradientRectH(tabWidth - 4 - valueWidth - (tabModuleFontRenderer.getFontHeight() + 4), yOffset, tabWidth - 4 - valueWidth, yOffset + tabModuleFontRenderer.getFontHeight() + 4, coolColor, new Color(coolColorArrayShit[0], coolColorArrayShit[1], coolColorArrayShit[2], 0).getRGB());
+								StencilUtil.glStencilFunc(GL11.GL_ALWAYS, 0xff);
+								StencilUtil.setTestOutcome(GL11.GL_REPLACE, GL11.GL_REPLACE, GL11.GL_REPLACE);
+							}else if (hoveredText == setting) {
+								hoveredText = null;
+							}
+							if (isLeftClick && isInsideBasicSettingsRect) {
+								selectedSetting = setting;
+								isLeftClick = false;
+							}
+							UiUtils.enableScissor(tab.getPosX(), scissor2, tab.getPosX() + tabWidth, height);
+							StencilUtil.glStencilFunc(GL11.GL_EQUAL, 0x00);
+							StencilUtil.setTestOutcome(GL11.GL_KEEP, GL11.GL_REPLACE, GL11.GL_REPLACE);
+							drawRect(tabWidth - valueWidth - 4, yOffset, tabWidth, yOffset + tabModuleFontRenderer.getFontHeight() + 4, tabTitleColor);
+							StencilUtil.glStencilFunc(GL11.GL_NOTEQUAL, 0x00);
+							drawRect(tabWidth - valueWidth - 4, yOffset, tabWidth, yOffset + tabModuleFontRenderer.getFontHeight() + 4, coolColor);
+							StencilUtil.glStencilFunc(GL11.GL_ALWAYS, 0xff);
+							StencilUtil.setTestOutcome(GL11.GL_REPLACE, GL11.GL_REPLACE, GL11.GL_REPLACE);
+							tabModuleFontRenderer.drawString(value, tabWidth - 2 - valueWidth, yOffset + 2, textColor);
+							StencilUtil.disableStencilTest();
+						}break;
+						case "bind":{
+							KeybindSetting keybindSetting = (KeybindSetting)setting;
+							String text = setting.getName() + ":        ";
+							double textWidth = tabModuleFontRenderer.getStringWidth(text);
+							
+							if (isLeftClick && isInsideBasicSettingsRect) {
+								selectedSetting = setting;
+								isLeftClick = false;
+							}
+							
+							UiUtils.enableScissor(tab.getPosX() + textIndent, scissor2, tab.getPosX() + Math.min(textIndent + textWidth, tabWidth), height);
+							String value = selectedSetting == setting ? "..." : Keyboard.getKeyName(keybindSetting.getKeybind());
+							double valueWidth = tabModuleFontRenderer.getStringWidth(value);
+							if (textWidth + textIndent + TAB_CORNER_SIZE < tabWidth - valueWidth)
+								scroll = 0;
+							if (scroll > 0) {
+								textScrollWidth = textWidth;
+							}
+							tabModuleFontRenderer.drawString(text, textIndent + scroll * textWidth, yOffset + 2, textColor);
+							if (textIndent + textWidth > tabWidth - valueWidth) {
+								tabModuleFontRenderer.drawString(text, textIndent + textWidth + scroll * textWidth, yOffset + 2, textColor);
+								drawGradientRectH(tabWidth - 4 - valueWidth - (tabModuleFontRenderer.getFontHeight() + 4), yOffset, tabWidth - 4 - valueWidth, yOffset + tabModuleFontRenderer.getFontHeight() + 4, tabTitleColor, 0x00000000);
+							}else if (hoveredText == setting) {
+								hoveredText = null;
+							}
+							if (isLeftClick && isInsideBasicSettingsRect) {
+								selectedSetting = setting;
+								isLeftClick = false;
+							}
+							UiUtils.enableScissor(tab.getPosX(), scissor2, tab.getPosX() + tabWidth, height);
+							drawRect(tabWidth - valueWidth - 4, yOffset, tabWidth, yOffset + tabModuleFontRenderer.getFontHeight() + 4, tabTitleColor);
+							tabModuleFontRenderer.drawString(value, tabWidth - 2 - valueWidth, yOffset + 2, textColor);
+						}break;
+						case "error":{
+							String text = setting.getName() + "        ";
+							double textWidth = tabModuleFontRenderer.getStringWidth(text);
+							UiUtils.enableScissor(tab.getPosX() + textIndent, scissor2, tab.getPosX() + Math.min(textIndent + textWidth, tabWidth), height);
+							if (textWidth + textIndent < tabWidth)
+								scroll = 0;
+							if (scroll > 0) {
+								textScrollWidth = textWidth;
+							}
+							tabModuleFontRenderer.drawString(text, textIndent + scroll * textWidth, yOffset + 2, textColor);
+							if (textIndent + textWidth > tabWidth) {
+								tabModuleFontRenderer.drawString(text, textIndent + textWidth + scroll * textWidth, yOffset + 2, textColor);
+								drawGradientRectH(tabWidth - (tabModuleFontRenderer.getFontHeight() + 4), yOffset, tabWidth, yOffset + tabModuleFontRenderer.getFontHeight() + 4, tabTitleColor, 0x00000000);
+							}
+						}break;
 					}
 					yOffset += tabModuleFontRenderer.getFontHeight() + 4;
 				}
@@ -868,7 +903,8 @@ public class GuiDropdownClickgui extends GuiScreen {
 		switch (state) {
 			case 0:{
 				draggedTab = null;
-				selectedSetting = null;
+				if (!(selectedSetting instanceof KeybindSetting))
+					selectedSetting = null;
 			}break;
 		}
 	}
