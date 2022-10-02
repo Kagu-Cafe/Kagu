@@ -79,7 +79,7 @@ public class ModKillAura extends Module {
 	private ModeSetting preferredTargetMetrics = new ModeSetting("Preferred Target Metrics", "Distance", "Distance");
 	private ModeSetting targetSelectionMode = new ModeSetting("Target Selection", "Instant", "Instant");
 	private ModeSetting swingMode = new ModeSetting("Swing Mode", "Swing", "Swing", "Server Side", "No Swing");
-	private ModeSetting clickMode = new ModeSetting("Click Mode", "Random >=Min & <=Max", "Random >=Min & <=Max", "Gaussian");
+	private ModeSetting clickMode = new ModeSetting("Click Mode", "Random", "Random", "Gaussian");
 	
 	// Ranges
 	private DoubleSetting hitRange = new DoubleSetting("Hit Range", 3, 1, 7, 0.1);
@@ -172,8 +172,8 @@ public class ModKillAura extends Module {
 //			if (blockMode.is("Hypixel") && blocking && mc.thePlayer.ticksExisted % 10 == 0) {
 //				mc.getNetHandler().getNetworkManager().sendPacketNoEvent(new C09PacketHeldItemChange(mc.thePlayer.inventory.currentItem));
 //			}
-			if ((blockMode.is("Hypixel") && mc.thePlayer.ticksExisted % 10 == 0))
-				blocking = false;
+//			if ((blockMode.is("Hypixel") && mc.thePlayer.ticksExisted % 10 == 0))
+//				blocking = false;
 			
 			if (distanceFromPlayer <= blockRange.getValue())
 				startBlocking();

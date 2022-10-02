@@ -42,6 +42,7 @@ import cafe.kagu.kagu.settings.impl.BooleanSetting;
 import cafe.kagu.kagu.settings.impl.DoubleSetting;
 import cafe.kagu.kagu.settings.impl.IntegerSetting;
 import cafe.kagu.kagu.settings.impl.KeybindSetting;
+import cafe.kagu.kagu.settings.impl.ModeSetting;
 import cafe.kagu.kagu.utils.ChatUtils;
 import cafe.kagu.kagu.utils.MathUtils;
 import cafe.kagu.kagu.utils.MiscUtils;
@@ -187,7 +188,6 @@ public class GuiDropdownClickgui extends GuiScreen {
 		isLeftClick = false;
 		isRightClick = false;
 		draggedTab = null;
-		ModuleManager.modClickGui.getMode().setMode("CS:GO");
 	}
 	
 	@Override
@@ -211,13 +211,13 @@ public class GuiDropdownClickgui extends GuiScreen {
 		double animationX = 0;
 		double animationY = 0;
 		switch(modClickGui.getBgImageAnimation().getMode()) {
-			case "Up From Bottom":{
+			case "From Bottom":{
 				animationY = imageHeight * (1 - bgImageAnimation);
 			}break;
 			case "From Side":{
 				animationX = imageWidth * (1 - bgImageAnimation);
 			}break;
-			case "Diagonal From Corner":{
+			case "From Corner":{
 				animationX = imageWidth * (1 - bgImageAnimation);
 				animationY = imageHeight * (1 - bgImageAnimation);
 			}break;
@@ -535,6 +535,69 @@ public class GuiDropdownClickgui extends GuiScreen {
 							tabModuleFontRenderer.drawString(value, tabWidth - 2 - valueWidth, yOffset + 2, textColor);
 							StencilUtil.disableStencilTest();
 						}break;
+						case "mode":{
+							ModeSetting modeSetting = (ModeSetting)setting;
+							String text = setting.getName() + ":        ";
+							double textWidth = tabModuleFontRenderer.getStringWidth(text);
+							
+							if ((isLeftClick || isRightClick) && isInsideBasicSettingsRect) {
+								modeSetting.setClickguiExtended(!modeSetting.isClickguiExtended());
+								isLeftClick = false;
+								isRightClick = false;
+							}
+							
+							UiUtils.enableScissor(tab.getPosX() + textIndent, scissor2, tab.getPosX() + Math.min(textIndent + textWidth, tabWidth), height);
+							String value = modeSetting.isClickguiExtended() ? "..." : modeSetting.getMode();
+							double valueWidth = tabModuleFontRenderer.getStringWidth(value);
+							if (textWidth + textIndent + TAB_CORNER_SIZE < tabWidth - valueWidth)
+								scroll = 0;
+							if (scroll > 0) {
+								textScrollWidth = textWidth;
+							}
+							tabModuleFontRenderer.drawString(text, textIndent + scroll * textWidth, yOffset + 2, textColor);
+							if (textIndent + textWidth > tabWidth - valueWidth) {
+								tabModuleFontRenderer.drawString(text, textIndent + textWidth + scroll * textWidth, yOffset + 2, textColor);
+								drawGradientRectH(tabWidth - 4 - valueWidth - (tabModuleFontRenderer.getFontHeight() + 4), yOffset, tabWidth - 4 - valueWidth, yOffset + tabModuleFontRenderer.getFontHeight() + 4, tabTitleColor, 0x00000000);
+							}else if (hoveredText == setting) {
+								hoveredText = null;
+							}
+							UiUtils.enableScissor(tab.getPosX(), scissor2, tab.getPosX() + tabWidth, height);
+							drawRect(tabWidth - valueWidth - 4, yOffset, tabWidth, yOffset + tabModuleFontRenderer.getFontHeight() + 4, tabTitleColor);
+							tabModuleFontRenderer.drawString(value, tabWidth - 2 - valueWidth, yOffset + 2, textColor);
+							
+							if (modeSetting.getClickguiToggleStatus() <= 0.001)
+								break;
+							
+							// Get height of modes fully expanded
+							double scissor3 = Math.max(tab.getPosY() + yOffset + tabModuleFontRenderer.getFontHeight() + 4, scissor2);
+							double modesHeightOffset = 0;
+							for (String mode : modeSetting.getModes()) {
+								modesHeightOffset += tabModuleFontRenderer.getFontHeight() + 4;
+							}
+							yOffset -= modesHeightOffset * (1 - modeSetting.getClickguiToggleStatus());
+							
+							// Display modes
+							yOffset += tabModuleFontRenderer.getFontHeight() + 4;
+							for (String mode : modeSetting.getModes()) {
+								UiUtils.enableScissor(tab.getPosX(), scissor3, tab.getPosX() + tabWidth, height);
+								
+								boolean isOverMode = UiUtils.isMouseInsideRoundedRect(mouseX - tab.getPosX(), mouseY - tab.getPosY() - -heightOffset * tab.getExpandAnimation(), 0, yOffset, tabWidth, yOffset + tabModuleFontRenderer.getFontHeight() + 4, 0);
+								
+								drawRect(0, yOffset, tabWidth, yOffset + tabModuleFontRenderer.getFontHeight() + 4, tabTitleColor);
+								drawRect(textIndent * 2 - 5, yOffset, textIndent * 2 - (isOverMode ? 3 : 4), yOffset + tabModuleFontRenderer.getFontHeight() + 4, coolColor);
+								tabModuleFontRenderer.drawString(mode, textIndent * 2, yOffset + 2, textColor);
+								
+								if (isLeftClick && isOverMode) {
+									modeSetting.setMode(mode);
+									modeSetting.setClickguiExtended(false);
+									isLeftClick = false;
+								}
+								
+								yOffset += tabModuleFontRenderer.getFontHeight() + 4;
+							}
+							yOffset -= tabModuleFontRenderer.getFontHeight() + 4;
+							
+						}break;
 						case "bind":{
 							KeybindSetting keybindSetting = (KeybindSetting)setting;
 							String text = setting.getName() + ":        ";
@@ -568,7 +631,7 @@ public class GuiDropdownClickgui extends GuiScreen {
 							drawRect(tabWidth - valueWidth - 4, yOffset, tabWidth, yOffset + tabModuleFontRenderer.getFontHeight() + 4, tabTitleColor);
 							tabModuleFontRenderer.drawString(value, tabWidth - 2 - valueWidth, yOffset + 2, textColor);
 						}break;
-						case "error":{
+						default:{
 							String text = setting.getName() + "        ";
 							double textWidth = tabModuleFontRenderer.getStringWidth(text);
 							UiUtils.enableScissor(tab.getPosX() + textIndent, scissor2, tab.getPosX() + Math.min(textIndent + textWidth, tabWidth), height);
@@ -652,6 +715,19 @@ public class GuiDropdownClickgui extends GuiScreen {
 				}else {
 					module.setClickguiExtension(module.getClickguiExtension() - module.getClickguiExtension() * animationSpeed);
 				}
+				
+				// ModeSetting expansion animation
+				for (Setting<?> setting : module.getSettings()) {
+					if (!(setting instanceof ModeSetting))
+						continue;
+					ModeSetting modeSetting = (ModeSetting)setting;
+					if (module.isClickguiExtended() && tabExpanded && modeSetting.isClickguiExtended()) {
+						modeSetting.setClickguiToggleStatus(modeSetting.getClickguiToggleStatus() + (1 - modeSetting.getClickguiToggleStatus()) * animationSpeed);
+					}else {
+						modeSetting.setClickguiToggleStatus(modeSetting.getClickguiToggleStatus() - modeSetting.getClickguiToggleStatus() * animationSpeed);
+					}
+				}
+				
 			}
 			
 		}

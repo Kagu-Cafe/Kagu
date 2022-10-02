@@ -480,32 +480,34 @@ public class ModScaffold extends Module {
 				else if (lastPlaceOnInfo == null)
 					lastPlaceOnInfo = placeOnInfo;
 				BlockPos placeOn = lastPlaceOnInfo.getPlaceOn();
-				EnumFacing placeFace = lastPlaceOnInfo.getPlaceFacing();
-				lastRotations = rotations;
-				rotations = RotationUtils
-						.getRotations(new Vector3d(placeOn.getX() + 0.5 + (double) placeFace.getFrontOffsetX() / 2 + (double) placeFace.getFrontOffsetZ() / 2 * hypixelPositions[0],
-								placeOn.getY() + 0.75 + (double) placeFace.getFrontOffsetY() / 2,
-								placeOn.getZ() + 0.5 + (double) placeFace.getFrontOffsetZ() / 2 + (double) placeFace.getFrontOffsetX() / 2 * hypixelPositions[1]));
-				if (Math.abs((rotations[0] - lastRotations[0])) > 30) {
-					
-				}
-				else if (!placedBlock) {
-					rotations[1] = lastRotations[1];
-				}
-				if (placedBlock) {
-//					if (hypixelPositions[0] == 0.25)
-//						hypixelPositions[0] = -0.25;
-//					else
-//						hypixelPositions[0] = 0.25;
-//					hypixelPositions[1] = hypixelPositions[0];
-					hypixelPositions[0] = ThreadLocalRandom.current().nextGaussian() * 0.15;
-					hypixelPositions[1] = hypixelPositions[0];
-//					ChatUtils.addChatMessage(hypixelPositions[0], hypixelPositions[1]);
-				}
+//				lastRotations = rotations;
+				rotations = RotationUtils.getRotations(new Vector3d(placeOn.getX() + 0.5, placeOn.getY(), placeOn.getZ() + 0.5));
 				RotationUtils.makeRotationValuesLoopCorrectly(lastRotations, rotations);
-//				canPlace = true;
-				canPlace = Math.abs(rotations[0] - lastRotations[0]) < 18;
-				rotations[0] = lastRotations[0] + (rotations[0] - lastRotations[0]) * (0.9f + RandomUtils.nextFloat(0.0f, 0.5f));
+				if (!placedBlock) {
+					rotations[0] = lastRotations[0];
+				}
+				canPlace = (lastRotations[0] - rotations[0] < 20) && placeOnInfo != null;
+				if (canPlace) {
+					EntityPlayerSP thePlayer = mc.thePlayer;
+					switch (placeOnInfo.getPlaceFacing()) {
+						case NORTH: {
+							canPlace = thePlayer.lastTickPosZ - placeOnInfo.getPlaceOn().getZ() < 0;
+						}break;
+						case EAST: {
+							canPlace = (placeOnInfo.getPlaceOn().getX() + 1) - thePlayer.lastTickPosX < 0;
+						}break;
+						case SOUTH: {
+							canPlace = (placeOnInfo.getPlaceOn().getZ() + 1) - thePlayer.lastTickPosZ < 0;
+						}break;
+						case WEST: {
+							canPlace = thePlayer.lastTickPosX - placeOnInfo.getPlaceOn().getX() < 0;
+						}break;
+						default: {
+							canPlace = true;
+						}break;
+					}
+				}
+				lastRotations = rotations;
 			}break;
 			case "Vulcan":{
 				if (lastPlaceOnInfo == null && placeOnInfo == null)

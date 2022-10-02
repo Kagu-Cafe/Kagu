@@ -33,7 +33,7 @@ public class ModClickGui extends Module {
 			"Cheddar 1", "Cheddar 2", "Sylveon 1", "Vaporeon 1", "Wolf O'Donnell", "Astolfo 1", "Astolfo 2",
 			"Astolfo 3", "Felix 1", "Felix 2", "Miku 1", "Miku 2", "Peter Griffin 1", "Peter Griffin 2", "Yoshi 1",
 			"Yoshi 2", "Crazy Frog 1", "Jeremy Clarkson", "Niko 1").setDependency(() -> mode.is("Dropdown"));
-	private ModeSetting bgImageAnimation = new ModeSetting("BG Image Animation", "Up From Bottom", "None", "Up From Bottom", "From Side", "Diagonal From Corner").setDependency(() -> mode.is("Dropdown"));
+	private ModeSetting bgImageAnimation = new ModeSetting("BG Image Animation", "From Bottom", "None", "From Bottom", "From Side", "From Corner").setDependency(() -> mode.is("Dropdown"));
 	private DoubleSetting bgImageScale = new DoubleSetting("BG Image Scale", 1, 0.1, 4, 0.1).setDependency(() -> mode.is("Dropdown"));
 	private BooleanSetting bgImageFlip = new BooleanSetting("Flip BG Image", false).setDependency(() -> mode.is("Dropdown"));
 	private BooleanSetting resetClickGuiTabs = new BooleanSetting("Reset Tabs", false).setDependency(() -> mode.is("Dropdown"));
@@ -52,14 +52,14 @@ public class ModClickGui extends Module {
 			}
 			else if (e.getSetting() != mode)
 				return;
-//			switch (mode.getMode()) {
-//				case "CS:GO":{
-//					mc.displayGuiScreen(GuiCsgoClickgui.getInstance());
-//				}break;
-//				case "Dropdown":{
-//					mc.displayGuiScreen(GuiDropdownClickgui.getInstance());
-//				}break;
-//			}
+			switch (mode.getMode()) {
+				case "CS:GO":{
+					mc.displayGuiScreen(GuiCsgoClickgui.getInstance());
+				}break;
+				case "Dropdown":{
+					mc.displayGuiScreen(GuiDropdownClickgui.getInstance());
+				}break;
+			}
 		};
 	}
 	
