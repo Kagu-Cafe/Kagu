@@ -338,7 +338,33 @@ public class ModDisabler extends Module {
 				}
 			}break;
 			case "Test":{
-				
+				if (e.getPacket() instanceof C00PacketKeepAlive) {
+//					ChatUtils.addChatMessage("Changed " + ((C00PacketKeepAlive)e.getPacket()).getKey() + " to " + (((C00PacketKeepAlive)e.getPacket()).getKey() - 100));
+					if (((C00PacketKeepAlive)e.getPacket()).getKey() == 1) {
+						synced = false;
+						ChatUtils.addChatMessage("Desyncing");
+					}
+					if (!synced)
+						e.cancel();
+//					((C00PacketKeepAlive)e.getPacket()).setKey(((C00PacketKeepAlive)e.getPacket()).getKey() - 5);
+				}
+				else if (e.getPacket() instanceof C03PacketPlayer) {
+					if (!synced) {
+						if (pingPackets.size() == 0)
+							pingPackets.add(e.getPacket());
+//						ChatUtils.addChatMessage("Cancel");
+						e.cancel();
+					}
+				}
+				else if (e.getPacket() instanceof C0FPacketConfirmTransaction) {
+					if (thePlayer.ticksExisted >= 60 && !synced) {
+						synced = true;
+						while (pingPackets.size() > 0)
+							mc.getNetHandler().getNetworkManager().sendPacketNoEvent(pingPackets.poll());
+						ChatUtils.addChatMessage("Synced");
+//						e.cancel();
+					}
+				}
 			}break;
 		}
 	};
