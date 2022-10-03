@@ -1,12 +1,23 @@
 package net.minecraft.client.network;
 
+import java.io.IOException;
+import java.net.URL;
+
+import javax.imageio.ImageIO;
+
 import com.google.common.base.Objects;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
+
+import cafe.kagu.kagu.Kagu;
+import cafe.kagu.kagu.managers.FileManager;
+import cafe.kagu.kagu.utils.ChatUtils;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.resources.DefaultPlayerSkin;
 import net.minecraft.client.resources.SkinManager;
+import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.S38PacketPlayerListItem;
 import net.minecraft.scoreboard.ScorePlayerTeam;
 import net.minecraft.util.IChatComponent;

@@ -485,6 +485,7 @@ public class ModScaffold extends Module {
 				RotationUtils.makeRotationValuesLoopCorrectly(lastRotations, rotations);
 				if (!placedBlock) {
 					rotations[0] = lastRotations[0];
+					rotations[1] = lastRotations[1];
 				}
 				canPlace = (lastRotations[0] - rotations[0] < 20) && placeOnInfo != null;
 				if (canPlace) {

@@ -33,6 +33,7 @@ import net.minecraft.network.play.client.C00PacketKeepAlive;
 import net.minecraft.network.play.client.C03PacketPlayer;
 import net.minecraft.network.play.client.C08PacketPlayerBlockPlacement;
 import net.minecraft.network.play.client.C0BPacketEntityAction;
+import net.minecraft.network.play.client.C0BPacketEntityAction.Action;
 import net.minecraft.network.play.client.C0FPacketConfirmTransaction;
 import net.minecraft.network.play.client.C03PacketPlayer.C04PacketPlayerPosition;
 import net.minecraft.network.play.client.C03PacketPlayer.C05PacketPlayerLook;
@@ -206,6 +207,9 @@ public class ModDisabler extends Module {
 //					ChatUtils.addChatMessage("C03");
 				}
 			}break;
+			case "Test":{
+//				e.setOnGround(thePlayer.ticksExisted % 2 == 0);
+			}break;
 		}
 	};
 	
@@ -334,15 +338,7 @@ public class ModDisabler extends Module {
 				}
 			}break;
 			case "Test":{
-				if (e.getPacket() instanceof C03PacketPlayer) {
-					C03PacketPlayer c03 = (C03PacketPlayer)e.getPacket();
-					if (thePlayer.ticksExisted % 4 == 0)
-						mc.getNetHandler().getNetworkManager().sendPacket(new C08PacketPlayerBlockPlacement(thePlayer.getPosition().add(0, -1, 0), 1, thePlayer.getCurrentEquippedItem(), 0, 0, 0));
-//					c03.setOnGround(thePlayer.ticksExisted % 2 == 0);
-//					c03.setOnGround(false);
-//					if (thePlayer.ticksExisted < 60)
-//						e.cancel();
-				}
+				
 			}break;
 		}
 	};

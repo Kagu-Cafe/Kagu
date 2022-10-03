@@ -70,4 +70,12 @@ public class S02PacketChat implements Packet<INetHandlerPlayClient>
     {
         return this.type;
     }
+    
+    /**
+	 * @param chatComponent the chatComponent to set
+	 */
+	public void setChatComponent(IChatComponent chatComponent) {
+		this.chatComponent = chatComponent;
+	}
+    
 }

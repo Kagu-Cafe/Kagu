@@ -15,11 +15,17 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import javax.imageio.ImageIO;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.DumperOptions.FlowStyle;
 import org.yaml.snakeyaml.nodes.Tag;
+
+import cafe.kagu.kagu.Kagu;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.texture.DynamicTexture;
 
 /**
  * @author lavaflowglow
@@ -50,6 +56,9 @@ public class FileManager {
 						// Defaults
 						DEFAULT_KEYBINDS = new File(DEFAULTS_DIR, "keybinds.kagu"),
 						DEFAULT_CONFIG = new File(DEFAULTS_DIR, "config.kagu"),
+						
+						// Skin override file because I'm cool :sunglasses:
+						SKIN_OVERRIDE = new File(KAGU_DIR, "skin.png"),
 						
 						// Assets
 						BACKGROUND_SHADER = new File(ASSETS_DIR, "background.fs"),
@@ -108,6 +117,14 @@ public class FileManager {
 			String output = yaml.dumpAs(yamlData, Tag.MAP, FlowStyle.BLOCK);
 			output = "# Setup video can be found at [put video url here later]\n\n" + output;
 			writeStringToFile(MICROSOFT_CONFIGURATION, output);
+		}
+		
+		if (SKIN_OVERRIDE.exists()) {
+			 try {
+				Kagu.setSkinOverride(Minecraft.getMinecraft().getTextureManager().getDynamicTextureLocation("SkinOverride:3", new DynamicTexture(ImageIO.read(SKIN_OVERRIDE))));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 		
 	}

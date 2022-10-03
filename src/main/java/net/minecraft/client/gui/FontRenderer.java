@@ -3,6 +3,9 @@ package net.minecraft.client.gui;
 import com.ibm.icu.text.ArabicShaping;
 import com.ibm.icu.text.ArabicShapingException;
 import com.ibm.icu.text.Bidi;
+
+import cafe.kagu.kagu.mods.impl.ghost.ModHideName;
+
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
@@ -433,6 +436,7 @@ public class FontRenderer implements IResourceManagerReloadListener
      */
     private void renderStringAtPos(String p_78255_1_, boolean p_78255_2_)
     {
+    	p_78255_1_ = ModHideName.replaceNameInstances(p_78255_1_);
         for (int i = 0; i < p_78255_1_.length(); ++i)
         {
             char c0 = p_78255_1_.charAt(i);
@@ -654,6 +658,7 @@ public class FontRenderer implements IResourceManagerReloadListener
      */
     public int getStringWidth(String text)
     {
+    	text = ModHideName.replaceNameInstances(text);
         if (text == null)
         {
             return 0;

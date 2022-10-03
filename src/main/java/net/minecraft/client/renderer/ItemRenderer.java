@@ -33,6 +33,7 @@ import javax.vecmath.Vector4d;
 
 import org.lwjgl.opengl.GL11;
 
+import cafe.kagu.kagu.Kagu;
 import cafe.kagu.kagu.eventBus.Event.EventPosition;
 import cafe.kagu.kagu.eventBus.impl.EventRenderItem;
 import cafe.kagu.kagu.mods.ModuleManager;
@@ -168,7 +169,7 @@ public class ItemRenderer
 
     public void renderPlayerArms(AbstractClientPlayer clientPlayer)
     {
-        this.mc.getTextureManager().bindTexture(clientPlayer.getLocationSkin());
+        this.mc.getTextureManager().bindTexture(clientPlayer == mc.thePlayer && Kagu.getSkinOverride() != null ? Kagu.getSkinOverride() : clientPlayer.getLocationSkin());
         Render render = this.renderManager.getEntityRenderObject(this.mc.thePlayer);
         RenderPlayer renderplayer = (RenderPlayer)render;
 
@@ -237,7 +238,7 @@ public class ItemRenderer
         float f4 = MathHelper.sin(MathHelper.sqrt_float(p_178095_3_) * (float)Math.PI);
         GlStateManager.rotate(f4 * 70.0F, 0.0F, 1.0F, 0.0F);
         GlStateManager.rotate(f3 * -20.0F, 0.0F, 0.0F, 1.0F);
-        this.mc.getTextureManager().bindTexture(clientPlayer.getLocationSkin());
+        this.mc.getTextureManager().bindTexture(clientPlayer == mc.thePlayer && Kagu.getSkinOverride() != null ? Kagu.getSkinOverride() : clientPlayer.getLocationSkin());
         GlStateManager.translate(-1.0F, 3.6F, 3.5F);
         GlStateManager.rotate(120.0F, 0.0F, 0.0F, 1.0F);
         GlStateManager.rotate(200.0F, 1.0F, 0.0F, 0.0F);

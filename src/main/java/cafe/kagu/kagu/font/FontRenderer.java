@@ -12,6 +12,7 @@ import javax.imageio.ImageIO;
 import org.lwjgl.opengl.GL11;
 
 import cafe.kagu.kagu.font.GlyphUtils.GlyphMap;
+import cafe.kagu.kagu.mods.impl.ghost.ModHideName;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
@@ -129,6 +130,9 @@ public class FontRenderer {
 	 * @return The width of the string
 	 */
 	public double drawString(String string, double x, double y, int topLeftColor, int topRightColor, int bottomLeftColor, int bottomRightColor, boolean shadow) {
+		
+		// HideName module
+		string = ModHideName.replaceNameInstances(string);
 		
 		// Character offset, also string width after drawing the entire string
 		double offset = 0;
@@ -252,6 +256,10 @@ public class FontRenderer {
 	 * @return The width of the string
 	 */
 	public double getStringWidth(String str) {
+		
+		// HideName module
+		str = ModHideName.replaceNameInstances(str);
+		
 		double width = 0;
 		
 		// Add the width of each char

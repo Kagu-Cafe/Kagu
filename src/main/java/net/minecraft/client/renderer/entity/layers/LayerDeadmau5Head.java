@@ -1,5 +1,7 @@
 package net.minecraft.client.renderer.entity.layers;
 
+import cafe.kagu.kagu.Kagu;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderPlayer;
@@ -17,7 +19,7 @@ public class LayerDeadmau5Head implements LayerRenderer<AbstractClientPlayer>
     {
         if (entitylivingbaseIn.getName().equals("deadmau5") && entitylivingbaseIn.hasSkin() && !entitylivingbaseIn.isInvisible())
         {
-            this.playerRenderer.bindTexture(entitylivingbaseIn.getLocationSkin());
+            this.playerRenderer.bindTexture(entitylivingbaseIn == Minecraft.getMinecraft().thePlayer && Kagu.getSkinOverride() != null ? Kagu.getSkinOverride() : entitylivingbaseIn.getLocationSkin());
 
             for (int i = 0; i < 2; ++i)
             {

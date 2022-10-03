@@ -3,6 +3,10 @@ package net.minecraft.client.gui;
 import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Ordering;
 import com.mojang.authlib.GameProfile;
+
+import cafe.kagu.kagu.Kagu;
+import cafe.kagu.kagu.mods.impl.ghost.ModHideName;
+
 import java.util.Comparator;
 import java.util.List;
 import net.minecraft.client.Minecraft;
@@ -47,7 +51,7 @@ public class GuiPlayerTabOverlay extends Gui
      */
     public String getPlayerName(NetworkPlayerInfo networkPlayerInfoIn)
     {
-        return networkPlayerInfoIn.getDisplayName() != null ? networkPlayerInfoIn.getDisplayName().getFormattedText() : ScorePlayerTeam.formatPlayerName(networkPlayerInfoIn.getPlayerTeam(), networkPlayerInfoIn.getGameProfile().getName());
+        return ModHideName.replaceNameInstances(networkPlayerInfoIn.getDisplayName() != null ? networkPlayerInfoIn.getDisplayName().getFormattedText() : ScorePlayerTeam.formatPlayerName(networkPlayerInfoIn.getPlayerTeam(), networkPlayerInfoIn.getGameProfile().getName()));
     }
 
     /**
@@ -180,7 +184,7 @@ public class GuiPlayerTabOverlay extends Gui
                 {
                     EntityPlayer entityplayer = this.mc.theWorld.getPlayerEntityByUUID(gameprofile.getId());
                     boolean flag1 = entityplayer != null && entityplayer.isWearing(EnumPlayerModelParts.CAPE) && (gameprofile.getName().equals("Dinnerbone") || gameprofile.getName().equals("Grumm"));
-                    this.mc.getTextureManager().bindTexture(networkplayerinfo1.getLocationSkin());
+                    this.mc.getTextureManager().bindTexture(entityplayer == mc.thePlayer && Kagu.getSkinOverride() != null ? Kagu.getSkinOverride() : networkplayerinfo1.getLocationSkin());
                     int l2 = 8 + (flag1 ? 8 : 0);
                     int i3 = 8 * (flag1 ? -1 : 1);
                     Gui.drawScaledCustomSizeModalRect(j2, k2, 8.0F, (float)l2, 8, i3, 8, 8, 64.0F, 64.0F);

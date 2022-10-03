@@ -82,9 +82,12 @@ public class ModTest extends Module {
 	@Override
 	public void onEnable() {
 		EntityPlayerSP thePlayer = mc.thePlayer;
-		lastRotations[0] = thePlayer.rotationYaw;
-		lastRotations[1] = thePlayer.rotationPitch;
-		ticks = 0;
+//		lastRotations[0] = thePlayer.rotationYaw;
+//		lastRotations[1] = thePlayer.rotationPitch;
+//		ticks = 0;
+//		float yaw = RotationUtils.getStrafeYaw() + 90;
+//		thePlayer.setPosition(thePlayer.posX + Math.cos(Math.toRadians(yaw)) * 2, thePlayer.posY - 0.9I, thePlayer.posZ + Math.sin(Math.toRadians(yaw)) * 2);
+//		toggle();
 	}
 
 	@EventHandler

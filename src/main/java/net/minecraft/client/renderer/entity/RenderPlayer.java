@@ -1,5 +1,7 @@
 package net.minecraft.client.renderer.entity;
 
+import cafe.kagu.kagu.Kagu;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.model.ModelPlayer;
@@ -122,7 +124,7 @@ public class RenderPlayer extends RendererLivingEntity<AbstractClientPlayer>
      */
     protected ResourceLocation getEntityTexture(AbstractClientPlayer entity)
     {
-        return entity.getLocationSkin();
+        return entity == Minecraft.getMinecraft().thePlayer && Kagu.getSkinOverride() != null ? Kagu.getSkinOverride() : entity.getLocationSkin();
     }
 
     public void transformHeldFull3DItemLayer()

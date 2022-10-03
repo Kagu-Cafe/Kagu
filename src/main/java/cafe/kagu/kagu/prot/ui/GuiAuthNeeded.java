@@ -125,6 +125,7 @@ public class GuiAuthNeeded extends GuiScreen {
 										}
 										json.put("save", saveCredentials);
 										FileManager.writeStringToFile(FileManager.SAVED_CREDENTIALS, json.toString());
+										Kagu.setLoggedInUser(textFields[0]);
 										textFields[0] = "";
 										textFields[1] = "";
 										System.gc();

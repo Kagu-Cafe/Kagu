@@ -2,6 +2,8 @@ package optifine;
 
 import java.awt.Dimension;
 import java.awt.image.BufferedImage;
+
+import cafe.kagu.kagu.Kagu;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.model.ModelBiped;
@@ -41,7 +43,7 @@ public class PlayerItemModel
 
         if (this.usePlayerTexture)
         {
-            texturemanager.bindTexture(p_render_2_.getLocationSkin());
+            texturemanager.bindTexture(p_render_2_ == Minecraft.getMinecraft().thePlayer && Kagu.getSkinOverride() != null ? Kagu.getSkinOverride() : p_render_2_.getLocationSkin());
         }
         else if (this.textureLocation != null)
         {

@@ -1,6 +1,9 @@
 package net.minecraft.client.entity;
 
 import com.mojang.authlib.GameProfile;
+
+import cafe.kagu.kagu.Kagu;
+
 import java.io.File;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.network.NetworkPlayerInfo;
@@ -129,6 +132,9 @@ public abstract class AbstractClientPlayer extends EntityPlayer
 
     public String getSkinType()
     {
+    	if (this == Minecraft.getMinecraft().thePlayer && Kagu.getSkinOverride() != null) {
+    		return "slim";
+    	}
         NetworkPlayerInfo networkplayerinfo = this.getPlayerInfo();
         return networkplayerinfo == null ? DefaultPlayerSkin.getSkinType(this.getUniqueID()) : networkplayerinfo.getSkinType();
     }

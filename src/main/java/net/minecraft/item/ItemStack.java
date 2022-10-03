@@ -3,6 +3,9 @@ package net.minecraft.item;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
+
+import cafe.kagu.kagu.mods.impl.ghost.ModHideName;
+
 import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Random;

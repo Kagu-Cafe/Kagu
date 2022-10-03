@@ -42,6 +42,7 @@ import cafe.kagu.kagu.utils.StencilUtil;
 import cafe.kagu.kagu.utils.WorldUtils;
 import cafe.kagu.keyauth.KeyAuth;
 import net.minecraft.client.Minecraft;
+import net.minecraft.util.ResourceLocation;
 
 /**
  * @author lavaflowglow
@@ -51,6 +52,7 @@ public class Kagu {
 	
 	private static String name = "Kagu";
 	private static String version = "0.0.1";
+	private static String loggedInUser = null;
 	
 	private static Logger logger = LogManager.getLogger();
 	
@@ -81,6 +83,8 @@ public class Kagu {
 			';', ':', '\'', '"', 
 			'<', '>', ',', '.', '/', '?', ' '
 	};
+	
+	private static ResourceLocation skinOverride = null;
 	
 	/**
 	 * The start method, everything should be initialized here
@@ -309,6 +313,34 @@ public class Kagu {
 	 */
 	public static KeyAuth getKeyAuth() {
 		return KEY_AUTH;
+	}
+	
+	/**
+	 * @return the skinOverride
+	 */
+	public static ResourceLocation getSkinOverride() {
+		return skinOverride;
+	}
+	
+	/**
+	 * @param skinOverride the skinOverride to set
+	 */
+	public static void setSkinOverride(ResourceLocation skinOverride) {
+		Kagu.skinOverride = skinOverride;
+	}
+	
+	/**
+	 * @return the loggedInUser
+	 */
+	public static String getLoggedInUser() {
+		return loggedInUser;
+	}
+	
+	/**
+	 * @param loggedInUser the loggedInUser to set
+	 */
+	public static void setLoggedInUser(String loggedInUser) {
+		Kagu.loggedInUser = loggedInUser;
 	}
 	
 }

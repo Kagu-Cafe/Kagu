@@ -19,6 +19,8 @@ import cafe.kagu.kagu.Kagu;
 import cafe.kagu.kagu.eventBus.EventBus;
 import cafe.kagu.kagu.eventBus.EventHandler;
 import cafe.kagu.kagu.eventBus.Handler;
+import cafe.kagu.kagu.eventBus.impl.EventPacketReceive;
+import cafe.kagu.kagu.eventBus.impl.EventPacketSend;
 import cafe.kagu.kagu.eventBus.impl.EventPlayerUpdate;
 import cafe.kagu.kagu.eventBus.impl.EventSettingUpdate;
 import cafe.kagu.kagu.mods.Module;
@@ -47,6 +49,8 @@ import net.minecraft.item.ItemSword;
 import net.minecraft.network.play.client.C02PacketUseEntity;
 import net.minecraft.network.play.client.C0APacketAnimation;
 import net.minecraft.network.play.client.C02PacketUseEntity.Action;
+import net.minecraft.network.play.client.C03PacketPlayer;
+import net.minecraft.network.play.server.S08PacketPlayerPosLook;
 import net.minecraft.network.play.client.C07PacketPlayerDigging;
 import net.minecraft.network.play.client.C08PacketPlayerBlockPlacement;
 import net.minecraft.network.play.client.C09PacketHeldItemChange;
@@ -112,6 +116,7 @@ public class ModKillAura extends Module {
 	private TimerUtil apsTimer = new TimerUtil();
 	private float[] lastRotations = new float[] {0, 0};
 	private boolean canHit = false;
+	private boolean hypixelFlagged = false;
 	private int spike = 3;
 	private CurvedLineHelper curvedPointHelper = null;
 	
@@ -237,10 +242,29 @@ public class ModKillAura extends Module {
 				startBlocking();
 			}
 			
+			if (hypixelFlagged)
+				hypixelFlagged = false;
+			
 			setAps();
 			
 		}
 		
+	};
+	
+	@EventHandler
+	private Handler<EventPacketReceive> onPacketReceive = e -> {
+		if (e.isPost())
+			return;
+		if (blockMode.is("Hypixel") && isBlocking() && e.getPacket() instanceof S08PacketPlayerPosLook) {
+			stopBlocking();
+//			startBlocking();
+//			hypixelFlagged = true;
+//			mc.thePlayer.onGround = false;
+			mc.getNetHandler().getNetworkManager().sendPacketNoEvent(new C03PacketPlayer(false));
+			startBlocking();
+//			mc.getNetHandler().getNetworkManager().sendPacketNoEvent(new C03PacketPlayer(true));
+			ChatUtils.addChatMessage("Flagged");
+		}
 	};
 	
 	/**
@@ -449,6 +473,10 @@ public class ModKillAura extends Module {
 						new C08PacketPlayerBlockPlacement(BlockPos.ORIGIN, 255, thePlayer.getHeldItem(), 0, 0, 0));
 			}break;
 			case "Hypixel":{
+				if (hypixelFlagged) {
+					blocking = false;
+					return;
+				}
 				mc.getNetHandler().getNetworkManager().sendPacketNoEvent(
 						new C08PacketPlayerBlockPlacement(BlockPos.ORIGIN, 255, thePlayer.getHeldItem(), 0, 0, 0));
 				mc.getNetHandler().getNetworkManager().sendPacketNoEvent(new C09PacketHeldItemChange(mc.thePlayer.inventory.currentItem));

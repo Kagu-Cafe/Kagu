@@ -13,6 +13,7 @@ import cafe.kagu.kagu.commands.impl.CommandConfig;
 import cafe.kagu.kagu.commands.impl.CommandHelp;
 import cafe.kagu.kagu.commands.impl.CommandKeybinds;
 import cafe.kagu.kagu.commands.impl.CommandSay;
+import cafe.kagu.kagu.commands.impl.CommandSpoofSkin;
 import cafe.kagu.kagu.eventBus.EventBus;
 import cafe.kagu.kagu.eventBus.Handler;
 import cafe.kagu.kagu.eventBus.EventHandler;
@@ -41,8 +42,8 @@ public class CommandManager {
 			new CommandKeybinds(),
 			new CommandConfig(),
 			new CommandBind(),
-			new CommandSay()
-//			new CommandChangeSkin()
+			new CommandSay(),
+			new CommandSpoofSkin()
 	};
 	
 	/**

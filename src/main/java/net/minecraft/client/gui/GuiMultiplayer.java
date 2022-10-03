@@ -197,7 +197,7 @@ public class GuiMultiplayer extends GuiScreen implements GuiYesNoCallback
             	}break;
             	case 3621:{
             		String startName = "";
-            		switch (RandomUtils.nextInt(2, 30)) {
+            		switch (RandomUtils.nextInt(2, 32)) {
             			case 2:{
             				startName = "Kagu"; // name of the client, the rest are names of people in the comm
             			}break;
@@ -281,6 +281,12 @@ public class GuiMultiplayer extends GuiScreen implements GuiYesNoCallback
             			}break;
             			case 29:{
             				startName = "nandji";
+            			}break;
+            			case 30:{
+            				startName = "tear";
+            			}break;
+            			case 31:{
+            				startName = "creida";
             			}break;
             		}
             		SessionManager.loginCracked(startName + RandomUtils.nextInt(1000, 10000));
