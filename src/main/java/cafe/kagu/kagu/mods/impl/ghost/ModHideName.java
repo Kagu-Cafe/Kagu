@@ -9,6 +9,7 @@ import cafe.kagu.kagu.eventBus.Handler;
 import cafe.kagu.kagu.eventBus.impl.EventPacketReceive;
 import cafe.kagu.kagu.mods.Module;
 import cafe.kagu.kagu.mods.ModuleManager;
+import cafe.kagu.kagu.mods.impl.player.ModNoFall;
 import net.minecraft.network.play.server.S02PacketChat;
 import net.minecraft.util.IChatComponent;
 
@@ -28,7 +29,7 @@ public class ModHideName extends Module {
 	 * @return The text with all instances of the users ign replaced by their kagu name
 	 */
 	public static String replaceNameInstances(String text) {
-		if (ModuleManager.modHideName.isDisabled())
+		if (Kagu.getModuleManager().getModule(ModHideName.class).isDisabled())
 			return text;
 		return text.replace(mc.getSession().getUsername(), Kagu.getLoggedInUser());
 	}

@@ -4,8 +4,10 @@ import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.google.common.collect.Maps;
 
+import cafe.kagu.kagu.Kagu;
 import cafe.kagu.kagu.mods.ModuleManager;
 import cafe.kagu.kagu.mods.impl.move.ModNoSlow;
+import cafe.kagu.kagu.mods.impl.visual.ModEsp;
 import cafe.kagu.kagu.mods.impl.visual.ModFunnyLimbs;
 import cafe.kagu.kagu.utils.ChatUtils;
 import cafe.kagu.kagu.utils.SpoofUtils;
@@ -1602,7 +1604,7 @@ public abstract class EntityLivingBase extends Entity
      */
     public void moveEntityWithHeading(float strafe, float forward)
     {
-    	ModNoSlow modNoSlow = ModuleManager.modNoSlow;
+    	ModNoSlow modNoSlow = Kagu.getModuleManager().getModule(ModNoSlow.class);
         if (this.isServerWorld())
         {
             if (!this.isInWater() || this instanceof EntityPlayer && ((EntityPlayer)this).capabilities.isFlying)
@@ -1748,7 +1750,7 @@ public abstract class EntityLivingBase extends Entity
             f7 = 1.0F;
         }
         
-        ModFunnyLimbs modFunnyLimbs = ModuleManager.modFunnyLimbs;
+        ModFunnyLimbs modFunnyLimbs = Kagu.getModuleManager().getModule(ModFunnyLimbs.class);
         boolean funnyLimbs = (modFunnyLimbs.getSelfOnly().isDisabled() || this == Minecraft.getMinecraft().thePlayer) && modFunnyLimbs.isEnabled();
         
         if (funnyLimbs && modFunnyLimbs.getMode().is("Walk")) {

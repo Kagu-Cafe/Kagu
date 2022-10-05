@@ -1,6 +1,10 @@
 package net.minecraft.client.multiplayer;
 
+import cafe.kagu.kagu.Kagu;
 import cafe.kagu.kagu.mods.ModuleManager;
+import cafe.kagu.kagu.mods.impl.combat.ModBacktrack;
+import cafe.kagu.kagu.mods.impl.combat.ModReach;
+import cafe.kagu.kagu.mods.impl.exploit.ModCivBreak;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -224,8 +228,8 @@ public class PlayerControllerMP
         }
         else
         {
-        	boolean civBreak = ModuleManager.modCivBreak.isEnabled();
-        	if (civBreak && ModuleManager.modCivBreak.getNoBlockHitDelay().isEnabled()) {
+        	boolean civBreak = Kagu.getModuleManager().getModule(ModCivBreak.class).isEnabled();
+        	if (civBreak && Kagu.getModuleManager().getModule(ModCivBreak.class).getNoBlockHitDelay().isEnabled()) {
         		blockHitDelay = 0;
         	}
             if (this.currentGameType.isCreative())
@@ -294,8 +298,8 @@ public class PlayerControllerMP
     {
         this.syncCurrentPlayItem();
         
-        boolean civBreak = ModuleManager.modCivBreak.isEnabled();
-        if (civBreak && ModuleManager.modCivBreak.getNoBlockHitDelay().isEnabled()) {
+        boolean civBreak = Kagu.getModuleManager().getModule(ModCivBreak.class).isEnabled();
+        if (civBreak && Kagu.getModuleManager().getModule(ModCivBreak.class).getNoBlockHitDelay().isEnabled()) {
         	blockHitDelay = 0;
         }
         
@@ -356,7 +360,7 @@ public class PlayerControllerMP
      */
     public float getBlockReachDistance()
     {
-        return (float) Math.max((ModuleManager.modReach.isEnabled() ? ModuleManager.modReach.getBlockReach().getValue() : 0), (this.currentGameType.isCreative() ? 5.0F : 4.5F));
+        return (float) Math.max((Kagu.getModuleManager().getModule(ModReach.class).isEnabled() ? Kagu.getModuleManager().getModule(ModReach.class).getBlockReach().getValue() : 0), (this.currentGameType.isCreative() ? 5.0F : 4.5F));
     }
 
     public void updateController()

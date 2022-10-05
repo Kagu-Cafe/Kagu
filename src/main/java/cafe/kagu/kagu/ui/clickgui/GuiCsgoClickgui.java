@@ -100,7 +100,7 @@ public class GuiCsgoClickgui extends GuiScreen {
 		{
 			for (Category category : Category.values()) {
 				List<Module> modules = new ArrayList<>();
-				for (Module module : ModuleManager.getModules()) {
+				for (Module module : Kagu.getModuleManager().getModules()) {
 					if (module.getCategory() == category) {
 						modules.add(module);
 					}
@@ -843,7 +843,7 @@ public class GuiCsgoClickgui extends GuiScreen {
 	// For anybody trying to port this to their own client, the cheat tick loop runs at 64 ticks a second
 	@EventHandler
 	public Handler<EventCheatRenderTick> onPreTick = e -> {
-		if (e.isPost() || (!ModuleManager.modClickGui.getMode().is("CS:GO") && Minecraft.getMinecraft().getCurrentScreen() != getInstance()))
+		if (e.isPost() || (!Kagu.getModuleManager().getModule(ModClickGui.class).getMode().is("CS:GO") && Minecraft.getMinecraft().getCurrentScreen() != getInstance()))
 			return;
 		
 		targetOuterCircleRadius = (width * 0.35) * 0.5;
@@ -924,7 +924,7 @@ public class GuiCsgoClickgui extends GuiScreen {
 		}
 		
 		// Module animations
-		for (Module mod : ModuleManager.getModules()) {
+		for (Module mod : Kagu.getModuleManager().getModules()) {
 			
 			// Toggle
 			if (mod.isDisabled()) {

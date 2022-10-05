@@ -22,7 +22,9 @@ import optifine.Config;
 
 import org.lwjgl.opengl.GL11;
 
+import cafe.kagu.kagu.Kagu;
 import cafe.kagu.kagu.mods.ModuleManager;
+import cafe.kagu.kagu.mods.impl.visual.ModViewModels;
 import shadersmod.client.Shaders;
 
 public abstract class Render<T extends Entity>
@@ -172,7 +174,7 @@ public abstract class Render<T extends Entity>
      */
     private void renderShadow(Entity entityIn, double x, double y, double z, float shadowAlpha, float partialTicks)
     {
-    	if (ModuleManager.modViewModels.isRenderingDesync())return;
+    	if (Kagu.getModuleManager().getModule(ModViewModels.class).isRenderingDesync())return;
         if (!Config.isShaders() || !Shaders.shouldSkipDefaultShadow)
         {
             GlStateManager.enableBlend();
@@ -344,7 +346,7 @@ public abstract class Render<T extends Entity>
      */
     protected void renderLivingLabel(T entityIn, String str, double x, double y, double z, int maxDistance)
     {
-    	if (ModuleManager.modViewModels.isRenderingDesync())return;
+    	if (Kagu.getModuleManager().getModule(ModViewModels.class).isRenderingDesync())return;
     	
         double d0 = entityIn.getDistanceSqToEntity(this.renderManager.livingPlayer);
 

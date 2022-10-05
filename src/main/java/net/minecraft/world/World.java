@@ -4,6 +4,7 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
+import cafe.kagu.kagu.Kagu;
 import cafe.kagu.kagu.mods.ModuleManager;
 import cafe.kagu.kagu.mods.impl.visual.ModAmbience;
 
@@ -3407,7 +3408,7 @@ public abstract class World implements IBlockAccess
     {
     	
         // Ambience mod
-        ModAmbience modAmbience = ModuleManager.modAmbience;
+        ModAmbience modAmbience = Kagu.getModuleManager().getModule(ModAmbience.class);
         if (modAmbience.isEnabled()) {
         	switch (modAmbience.getWorldTime().getMode()) {
         		case "Unchanged":break;

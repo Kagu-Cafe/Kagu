@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import cafe.kagu.kagu.Kagu;
 import cafe.kagu.kagu.eventBus.EventHandler;
 import cafe.kagu.kagu.eventBus.Handler;
 import cafe.kagu.kagu.eventBus.impl.EventRender2D;
@@ -44,8 +45,8 @@ public class ModInventoryHelper extends Module {
 	
 	@Override
 	public void onEnable() {
-		ModuleManager.modObsProofUi.enable();
-		if (ModuleManager.modObsProofUi.isDisabled()) {
+		Kagu.getModuleManager().getModule(ModObsProofUi.class).enable();
+		if (Kagu.getModuleManager().getModule(ModObsProofUi.class).isDisabled()) {
 			toggle();
 			return;
 		}

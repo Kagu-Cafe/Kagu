@@ -1,5 +1,6 @@
 package net.minecraft.world;
 
+import cafe.kagu.kagu.Kagu;
 import cafe.kagu.kagu.mods.ModuleManager;
 import cafe.kagu.kagu.mods.impl.visual.ModAmbience;
 import net.minecraft.block.material.Material;
@@ -113,7 +114,7 @@ public class ChunkCache implements IBlockAccess
     {
     	
         // Ambience mod
-        ModAmbience modAmbience = ModuleManager.modAmbience;
+        ModAmbience modAmbience = Kagu.getModuleManager().getModule(ModAmbience.class);
         if (modAmbience.isEnabled()) {
         	switch (modAmbience.getBlockLighting().getMode()) {
         		case "Unchanged":break;
@@ -176,7 +177,7 @@ public class ChunkCache implements IBlockAccess
     {
     	
         // Ambience mod
-        ModAmbience modAmbience = ModuleManager.modAmbience;
+        ModAmbience modAmbience = Kagu.getModuleManager().getModule(ModAmbience.class);
         if (modAmbience.isEnabled()) {
         	switch (modAmbience.getBlockLighting().getMode()) {
         		case "Unchanged":break;

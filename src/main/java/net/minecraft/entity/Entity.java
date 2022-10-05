@@ -5,8 +5,17 @@ import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 
+import cafe.kagu.kagu.Kagu;
 import cafe.kagu.kagu.mods.ModuleManager;
+import cafe.kagu.kagu.mods.impl.combat.ModHitboxes;
+import cafe.kagu.kagu.mods.impl.combat.ModKillAura;
+import cafe.kagu.kagu.mods.impl.exploit.ModGroundClip;
+import cafe.kagu.kagu.mods.impl.exploit.ModNoHCollisionSlowdown;
+import cafe.kagu.kagu.mods.impl.ghost.ModEagle;
+import cafe.kagu.kagu.mods.impl.ghost.ModHideName;
 import cafe.kagu.kagu.mods.impl.move.ModNoSlow;
+import cafe.kagu.kagu.mods.impl.player.ModDisabler;
+import cafe.kagu.kagu.mods.impl.player.ModNoFall;
 import cafe.kagu.kagu.utils.ChatUtils;
 import cafe.kagu.kagu.utils.MovementUtils;
 import cafe.kagu.kagu.utils.SpoofUtils;
@@ -622,7 +631,7 @@ public abstract class Entity implements ICommandSender
      */
     public void moveEntity(double x, double y, double z)
     {
-    	ModNoSlow modNoSlow = ModuleManager.modNoSlow;
+    	ModNoSlow modNoSlow = Kagu.getModuleManager().getModule(ModNoSlow.class);
         if (this.noClip)
         {
             this.setEntityBoundingBox(this.getEntityBoundingBox().offset(x, y, z));
@@ -719,8 +728,8 @@ public abstract class Entity implements ICommandSender
                         z += d6;
                     }
                 }
-                if (this == Minecraft.getMinecraft().thePlayer && ModuleManager.modEagle.isEnabled()) {
-                	ModuleManager.modEagle.setShouldSneak(eagle);
+                if (this == Minecraft.getMinecraft().thePlayer && Kagu.getModuleManager().getModule(ModEagle.class).isEnabled()) {
+                	Kagu.getModuleManager().getModule(ModEagle.class).setShouldSneak(eagle);
                 }
             }
 
@@ -729,8 +738,8 @@ public abstract class Entity implements ICommandSender
             
             // For y block collision
 			if (!(this == Minecraft.getMinecraft().thePlayer
-					&& (ModuleManager.modGroundClip.isEnabled() || (ModuleManager.modNoFall.isEnabled()
-							&& ModuleManager.modNoFall.getMode().is("GroundClip") && fallDistance >= 3))))
+					&& (Kagu.getModuleManager().getModule(ModGroundClip.class).isEnabled() || (Kagu.getModuleManager().getModule(ModNoFall.class).isEnabled()
+							&& Kagu.getModuleManager().getModule(ModNoFall.class).getMode().is("GroundClip") && fallDistance >= 3))))
 	            for (AxisAlignedBB axisalignedbb1 : list1)
 	            {
 	                y = axisalignedbb1.calculateYOffset(this.getEntityBoundingBox(), y);
@@ -850,7 +859,7 @@ public abstract class Entity implements ICommandSender
             this.worldObj.theProfiler.endSection();
             this.worldObj.theProfiler.startSection("rest");
             this.resetPositionToBB();
-            if (ModuleManager.modNoHCollisionSlowdown.isEnabled() && this == Minecraft.getMinecraft().thePlayer && !Minecraft.getMinecraft().theWorld.isAnyLiquid(getEntityBoundingBox()) && !((EntityPlayer)this).isOnLadder()) {
+            if (Kagu.getModuleManager().getModule(ModNoHCollisionSlowdown.class).isEnabled() && this == Minecraft.getMinecraft().thePlayer && !Minecraft.getMinecraft().theWorld.isAnyLiquid(getEntityBoundingBox()) && !((EntityPlayer)this).isOnLadder()) {
             	d3 = x;
             	d5 = z;
             }
@@ -2079,8 +2088,8 @@ public abstract class Entity implements ICommandSender
 
     public float getCollisionBorderSize()
     {
-    	if (this instanceof EntityLivingBase && ModuleManager.modHitboxes.isEnabled()) {
-    		return (float) (0.1 + ModuleManager.modHitboxes.getExpansion().getValue());
+    	if (this instanceof EntityLivingBase && Kagu.getModuleManager().getModule(ModHitboxes.class).isEnabled()) {
+    		return (float) (0.1 + Kagu.getModuleManager().getModule(ModHitboxes.class).getExpansion().getValue());
     	}
         return 0.1F;
     }

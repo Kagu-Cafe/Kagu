@@ -11,6 +11,7 @@ import org.lwjgl.opengl.GL20;
 
 import com.mojang.authlib.GameProfile;
 
+import cafe.kagu.kagu.Kagu;
 import cafe.kagu.kagu.eventBus.EventHandler;
 import cafe.kagu.kagu.eventBus.Handler;
 import cafe.kagu.kagu.eventBus.impl.EventEntityRender;
@@ -95,7 +96,7 @@ public class ModViewModels extends Module {
 			GL11.glEnable(GL11.GL_BLEND);
 			GlStateManager.tryBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
 			GlStateManager.disableDepth();
-			if (ModuleManager.modEsp.isEnabled() && ModuleManager.modEsp.getChams().isEnabled()) {
+			if (Kagu.getModuleManager().getModule(ModEsp.class).isEnabled() && Kagu.getModuleManager().getModule(ModEsp.class).getChams().isEnabled()) {
 				GL11.glEnable(GL11.GL_POLYGON_OFFSET_FILL);
 				GL11.glPolygonOffset(1.0f, -1099998.0f);
 			}

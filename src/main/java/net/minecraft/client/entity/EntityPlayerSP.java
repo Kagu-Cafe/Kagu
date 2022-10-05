@@ -4,13 +4,17 @@ import java.util.UUID;
 
 import com.mojang.authlib.GameProfile;
 
+import cafe.kagu.kagu.Kagu;
 import cafe.kagu.kagu.eventBus.Event.EventPosition;
 import cafe.kagu.kagu.eventBus.impl.EventChatSendMessage;
 import cafe.kagu.kagu.eventBus.impl.EventMovementUpdate;
 import cafe.kagu.kagu.eventBus.impl.EventPlayerUpdate;
 import cafe.kagu.kagu.mods.ModuleManager;
+import cafe.kagu.kagu.mods.impl.ghost.ModObsProofUi;
+import cafe.kagu.kagu.mods.impl.move.ModKeepSprint;
 import cafe.kagu.kagu.mods.impl.move.ModNoSlow;
 import cafe.kagu.kagu.mods.impl.move.ModScaffold;
+import cafe.kagu.kagu.mods.impl.visual.ModHud;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.MovingSoundMinecartRiding;
 import net.minecraft.client.audio.PositionedSoundRecord;
@@ -579,7 +583,7 @@ public class EntityPlayerSP extends AbstractClientPlayer
      */
     public void setSprinting(boolean sprinting)
     {
-    	ModScaffold modScaffold = ModuleManager.modScaffold;
+    	ModScaffold modScaffold = Kagu.getModuleManager().getModule(ModScaffold.class);
     	if (modScaffold.isEnabled() && modScaffold.getSprint().isDisabled())
     		sprinting = false;
         super.setSprinting(sprinting);
@@ -794,8 +798,8 @@ public class EntityPlayerSP extends AbstractClientPlayer
      */
     public void onLivingUpdate()
     {
-    	ModNoSlow modNoSlow = ModuleManager.modNoSlow;
-        if (this.sprintingTicksLeft > 0 && ModuleManager.modKeepSprint.isDisabled())
+    	ModNoSlow modNoSlow = Kagu.getModuleManager().getModule(ModNoSlow.class);
+        if (this.sprintingTicksLeft > 0 && Kagu.getModuleManager().getModule(ModKeepSprint.class).isDisabled())
         {
             --this.sprintingTicksLeft;
 

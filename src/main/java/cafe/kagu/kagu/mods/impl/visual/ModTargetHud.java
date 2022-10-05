@@ -7,6 +7,7 @@ import java.text.DecimalFormat;
 
 import org.lwjgl.opengl.GL11;
 
+import cafe.kagu.kagu.Kagu;
 import cafe.kagu.kagu.eventBus.EventHandler;
 import cafe.kagu.kagu.eventBus.Handler;
 import cafe.kagu.kagu.eventBus.impl.EventCheatRenderTick;
@@ -17,6 +18,7 @@ import cafe.kagu.kagu.font.FontRenderer;
 import cafe.kagu.kagu.font.FontUtils;
 import cafe.kagu.kagu.mods.Module;
 import cafe.kagu.kagu.mods.ModuleManager;
+import cafe.kagu.kagu.mods.impl.combat.ModKillAura;
 import cafe.kagu.kagu.mods.impl.ghost.ModAutoRod;
 import cafe.kagu.kagu.settings.impl.DoubleSetting;
 import cafe.kagu.kagu.settings.impl.IntegerSetting;
@@ -81,7 +83,7 @@ public class ModTargetHud extends Module {
 	private Handler<EventRender2D> onRender2D = e -> {
 		if (e.isPost())
 			return;
-		EntityLivingBase target = ModuleManager.modKillAura.getTarget();
+		EntityLivingBase target = Kagu.getModuleManager().getModule(ModKillAura.class).getTarget();
 		if (target == null)
 			if (mc.getCurrentScreen() != null && (mc.getCurrentScreen() instanceof GuiChat || ClickGuiUtils.isInClickGui()))
 				target = mc.thePlayer;
@@ -218,8 +220,8 @@ public class ModTargetHud extends Module {
 	public void setLeftMouseDown(boolean isLeftMouseDown) {
 		if (isLeftMouseDown) {
 			ScaledResolution sr = new ScaledResolution(mc);
-			EntityLivingBase target = ModuleManager.modKillAura.getTarget();
-			if (ModuleManager.modKillAura.isDisabled() || target == null)
+			EntityLivingBase target = Kagu.getModuleManager().getModule(ModKillAura.class).getTarget();
+			if (Kagu.getModuleManager().getModule(ModKillAura.class).isDisabled() || target == null)
 				if (mc.getCurrentScreen() != null && mc.getCurrentScreen() instanceof GuiChat)
 					target = mc.thePlayer;
 			

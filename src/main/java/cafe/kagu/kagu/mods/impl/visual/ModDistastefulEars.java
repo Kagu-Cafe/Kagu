@@ -4,11 +4,14 @@
 package cafe.kagu.kagu.mods.impl.visual;
 
 import org.lwjgl.opengl.GL11;
+
+import cafe.kagu.kagu.Kagu;
 import cafe.kagu.kagu.eventBus.EventHandler;
 import cafe.kagu.kagu.eventBus.Handler;
 import cafe.kagu.kagu.eventBus.impl.EventRender3D;
 import cafe.kagu.kagu.mods.Module;
 import cafe.kagu.kagu.mods.ModuleManager;
+import cafe.kagu.kagu.mods.impl.ghost.ModEagle;
 import cafe.kagu.kagu.utils.SpoofUtils;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
@@ -16,7 +19,7 @@ import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 
 /**
- * @author lavaflowglow
+ * @author DistastefulBannock
  *
  */
 public class ModDistastefulEars extends Module {
@@ -35,7 +38,7 @@ public class ModDistastefulEars extends Module {
 		GlStateManager.pushMatrix();
 		GlStateManager.pushAttrib();
 		GlStateManager.enableDepth();
-		if (ModuleManager.modEsp.isEnabled() && ModuleManager.modEsp.getChams().isEnabled()) {
+		if (Kagu.getModuleManager().getModule(ModEsp.class).isEnabled() && Kagu.getModuleManager().getModule(ModEsp.class).getChams().isEnabled()) {
 			GL11.glEnable(GL11.GL_POLYGON_OFFSET_FILL);
 			GL11.glPolygonOffset(1.0f, -1099998.0f);
 		}
@@ -49,14 +52,14 @@ public class ModDistastefulEars extends Module {
 		double yaw = mc.thePlayer.prevRotationYawHead
 				+ (mc.thePlayer.rotationYawHead - mc.thePlayer.prevRotationYawHead) * timer;
 		
-		if (SpoofUtils.isSpoofYaw() && ModuleManager.modViewModels.getOverrideF3().isEnabled()) {
+		if (SpoofUtils.isSpoofYaw() && Kagu.getModuleManager().getModule(ModViewModels.class).getOverrideF3().isEnabled()) {
 			yaw = SpoofUtils.getSpoofedYaw();
 		}
 
 		GlStateManager.rotate((float) -yaw, 0, 1, 0);
 		GlStateManager.rotate(90, 1, 0, 0);
 		GlStateManager.translate(0, 0, -(mc.thePlayer.getEyeHeight() - pitchFixer));
-		GlStateManager.rotate(SpoofUtils.isSpoofPitch() && ModuleManager.modViewModels.getOverrideF3().isEnabled() ? SpoofUtils.getSpoofedPitch() : mc.thePlayer.rotationPitch, 1,
+		GlStateManager.rotate(SpoofUtils.isSpoofPitch() && Kagu.getModuleManager().getModule(ModViewModels.class).getOverrideF3().isEnabled() ? SpoofUtils.getSpoofedPitch() : mc.thePlayer.rotationPitch, 1,
 				0, 0);
 		GlStateManager.translate(0, 0, -(0.27 + pitchFixer));
 		

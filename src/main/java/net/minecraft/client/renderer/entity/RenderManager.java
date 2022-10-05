@@ -2,10 +2,13 @@ package net.minecraft.client.renderer.entity;
 
 import com.google.common.collect.Maps;
 
+import cafe.kagu.kagu.Kagu;
 import cafe.kagu.kagu.eventBus.Event.EventPosition;
 import cafe.kagu.kagu.eventBus.impl.EventEntityRender;
 import cafe.kagu.kagu.mods.Module;
 import cafe.kagu.kagu.mods.ModuleManager;
+import cafe.kagu.kagu.mods.impl.combat.ModBacktrack;
+import cafe.kagu.kagu.mods.impl.visual.ModDebugBoundingBoxes;
 import cafe.kagu.kagu.mods.impl.visual.ModEsp;
 import cafe.kagu.kagu.utils.DrawUtils3D;
 
@@ -368,7 +371,7 @@ public class RenderManager
         int j = i % 65536;
         int k = i / 65536;
         
-        if (ModuleManager.modEsp.isDisabled() || ModuleManager.modEsp.getChams().isDisabled()) {
+        if (Kagu.getModuleManager().getModule(ModEsp.class).isDisabled() || Kagu.getModuleManager().getModule(ModEsp.class).getChams().isDisabled()) {
         	OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float)j / 1.0F, (float)k / 1.0F);
         }
         else {
@@ -456,7 +459,7 @@ public class RenderManager
                     throw new ReportedException(CrashReport.makeCrashReport(throwable1, "Post-rendering entity in world"));
                 }
 
-                if ((this.debugBoundingBox || ModuleManager.modDebugBoundingBoxes.isEnabled()) && !entity.isInvisible() && !p_147939_10_)
+                if ((this.debugBoundingBox || Kagu.getModuleManager().getModule(ModDebugBoundingBoxes.class).isEnabled()) && !entity.isInvisible() && !p_147939_10_)
                 {
                     try
                     {
@@ -465,8 +468,8 @@ public class RenderManager
                     	Vector3d[] backtrackPositions = null;
                     	
                         // Sets up the backtrack positions
-                        if (ModuleManager.modBacktrack.isEnabled() && ModuleManager.modBacktrack.getBacktracks().containsKey(entity) && entity != Minecraft.getMinecraft().thePlayer) {
-                        	List<Vector3d> positions = new ArrayList<>(Arrays.asList(ModuleManager.modBacktrack.getBacktracks().get(entity)));
+                        if (Kagu.getModuleManager().getModule(ModBacktrack.class).isEnabled() && Kagu.getModuleManager().getModule(ModBacktrack.class).getBacktracks().containsKey(entity) && entity != Minecraft.getMinecraft().thePlayer) {
+                        	List<Vector3d> positions = new ArrayList<>(Arrays.asList(Kagu.getModuleManager().getModule(ModBacktrack.class).getBacktracks().get(entity)));
                         	positions.add(0, new Vector3d(entity.posX, entity.posY, entity.posZ));
                         	backtrackPositions = positions.toArray(new Vector3d[0]);
                         }else {

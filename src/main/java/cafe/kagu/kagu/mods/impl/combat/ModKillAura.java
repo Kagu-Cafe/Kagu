@@ -25,6 +25,7 @@ import cafe.kagu.kagu.eventBus.impl.EventPlayerUpdate;
 import cafe.kagu.kagu.eventBus.impl.EventSettingUpdate;
 import cafe.kagu.kagu.mods.Module;
 import cafe.kagu.kagu.mods.ModuleManager;
+import cafe.kagu.kagu.mods.impl.player.ModAntiBot;
 import cafe.kagu.kagu.settings.SettingDependency;
 import cafe.kagu.kagu.settings.impl.BooleanSetting;
 import cafe.kagu.kagu.settings.impl.DoubleSetting;
@@ -404,6 +405,7 @@ public class ModKillAura extends Module {
 		ArrayList<Entity> potentialTargets = new ArrayList<>(mc.theWorld.loadedEntityList);
 		
 		// Remove non living and out of range entities
+		ModAntiBot modAntiBot = Kagu.getModuleManager().getModule(ModAntiBot.class);
 		potentialTargets = (ArrayList<Entity>) potentialTargets
 				.stream()
 				.filter(ent -> 
@@ -411,7 +413,7 @@ public class ModKillAura extends Module {
 						getDistanceFromPlayerEyes((EntityLivingBase)ent) <= Math.max(hitRange.getValue(), blockRange.getValue()) && 
 						ent != mc.thePlayer && 
 						(((EntityLivingBase)ent).getMaxHealth() <= 0 || ((EntityLivingBase)ent).getHealth() > 0)
-						&& (!(ent instanceof EntityPlayer) || (ModuleManager.modAntiBot.isEnabled() ? !ModuleManager.modAntiBot.isBot((EntityPlayer)ent) : true)))
+						&& (!(ent instanceof EntityPlayer) || (modAntiBot.isEnabled() ? !modAntiBot.isBot((EntityPlayer)ent) : true)))
 				.collect(Collectors.toList());
 		
 		// Remove targets that don't fit the required target settings

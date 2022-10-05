@@ -133,13 +133,13 @@ public class GuiDropdownClickgui extends GuiScreen {
 		bgImages.put("Jeremy Clarkson", new BackgroundImage(dropdownImageFolder + "jeremy_clarkson.png"));
 		bgImages.put("Niko 1", new BackgroundImage(dropdownImageFolder + "niko1.png"));
 		
-		backgroundImage = bgImages.get(ModuleManager.modClickGui.getMode().getMode());
+		backgroundImage = bgImages.get(Kagu.getModuleManager().getModule(ModClickGui.class).getMode().getMode());
 		resetBackgroundImage();
 		
 		// Assign modules to their categories
 		for (Category category : Category.values()) {
 			List<Module> modules = new ArrayList<>();
-			for (Module module : ModuleManager.getModules()) {
+			for (Module module : Kagu.getModuleManager().getModules()) {
 				if (module.getCategory() == category) {
 					modules.add(module);
 				}
@@ -197,7 +197,7 @@ public class GuiDropdownClickgui extends GuiScreen {
 		GlStateManager.pushAttrib();
 		
 		BackgroundImage backgroundImage = this.backgroundImage;
-		ModClickGui modClickGui = ModuleManager.modClickGui;
+		ModClickGui modClickGui = Kagu.getModuleManager().getModule(ModClickGui.class);
 		
 		// Draw background color
 		drawRect(0, 0, width, height, backgroundImage.getSampledColor());
@@ -747,7 +747,7 @@ public class GuiDropdownClickgui extends GuiScreen {
 	 * Rechecks and sets the background image
 	 */
 	public void resetBackgroundImage() {
-		backgroundImage = bgImages.get(ModuleManager.modClickGui.getBgImage().getMode());
+		backgroundImage = bgImages.get(Kagu.getModuleManager().getModule(ModClickGui.class).getBgImage().getMode());
 	}
 	
 	private class Tab {
@@ -1021,7 +1021,7 @@ public class GuiDropdownClickgui extends GuiScreen {
 	 * Resets the tab positioning
 	 */
 	public void resetTabs() {
-		if (ModuleManager.modClickGui.getBgImageFlip().isEnabled()) {
+		if (Kagu.getModuleManager().getModule(ModClickGui.class).getBgImageFlip().isEnabled()) {
 			int spaceShift = new ScaledResolution(Minecraft.getMinecraft()).getScaledWidth() - 25;
 			ArrayList<Tab> tempTabs = new ArrayList<>(Arrays.asList(TABS));
 			Collections.reverse(tempTabs);

@@ -3,6 +3,7 @@
  */
 package cafe.kagu.kagu.mods.impl.move;
 
+import cafe.kagu.kagu.Kagu;
 import cafe.kagu.kagu.eventBus.EventHandler;
 import cafe.kagu.kagu.eventBus.Handler;
 import cafe.kagu.kagu.eventBus.impl.EventPlayerUpdate;
@@ -29,7 +30,7 @@ public class ModMagnetAura extends Module {
 	private Handler<EventPlayerUpdate> onPlayerUpdate = e -> {
 		if (e.isPost())
 			return;
-		ModKillAura modKillAura = ModuleManager.modKillAura;
+		ModKillAura modKillAura = Kagu.getModuleManager().getModule(ModKillAura.class);
 		if (modKillAura.isEnabled() && modKillAura.getTarget() != null) {
 			EntityLivingBase target = modKillAura.getTarget();
 			mc.thePlayer.setPosition(target.posX + (target.posX - target.lastTickPosX), target.posY + (target.posY - target.lastTickPosY), target.posZ + (target.posZ - target.lastTickPosZ));

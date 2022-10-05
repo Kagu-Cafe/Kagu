@@ -1,6 +1,8 @@
 package net.minecraft.util;
 
+import cafe.kagu.kagu.Kagu;
 import cafe.kagu.kagu.mods.ModuleManager;
+import cafe.kagu.kagu.mods.impl.ghost.ModEagle;
 import cafe.kagu.kagu.mods.impl.move.ModNoSlow;
 import net.minecraft.client.settings.GameSettings;
 
@@ -15,7 +17,7 @@ public class MovementInputFromOptions extends MovementInput
 
     public void updatePlayerMoveState()
     {
-    	ModNoSlow modNoSlow = ModuleManager.modNoSlow;
+    	ModNoSlow modNoSlow = Kagu.getModuleManager().getModule(ModNoSlow.class);
         this.moveStrafe = 0.0F;
         this.moveForward = 0.0F;
 
@@ -40,7 +42,8 @@ public class MovementInputFromOptions extends MovementInput
         }
 
         this.jump = this.gameSettings.keyBindJump.isKeyDown();
-        this.sneak = this.gameSettings.keyBindSneak.isKeyDown() || (ModuleManager.modEagle.isEnabled() && ModuleManager.modEagle.isShouldSneak());
+        this.sneak = this.gameSettings.keyBindSneak.isKeyDown() || (Kagu.getModuleManager().getModule(ModEagle.class).isEnabled() 
+        		&& Kagu.getModuleManager().getModule(ModEagle.class).isShouldSneak());
 
         if (this.sneak && (modNoSlow.isDisabled() || modNoSlow.getCancelSneakSlowdown().isDisabled()))
         {

@@ -2,10 +2,12 @@ package net.minecraft.client.gui.inventory;
 
 import com.google.common.collect.Sets;
 
+import cafe.kagu.kagu.Kagu;
 import cafe.kagu.kagu.eventBus.Event.EventPosition;
 import cafe.kagu.kagu.eventBus.impl.EventKeyUpdate;
 import cafe.kagu.kagu.mods.ModuleManager;
 import cafe.kagu.kagu.mods.impl.ghost.ModInventoryHelper;
+import cafe.kagu.kagu.mods.impl.visual.ModHud;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -239,7 +241,7 @@ public abstract class GuiContainer extends GuiScreen
     {
     	
     	// Inventory helper
-    	ModInventoryHelper modInventoryHelper = ModuleManager.modInventoryHelper;
+    	ModInventoryHelper modInventoryHelper = Kagu.getModuleManager().getModule(ModInventoryHelper.class);
     	if (modInventoryHelper.isEnabled() && (modInventoryHelper.getBestGearSlots().contains(slotIn) || (slotIn.getHasStack() && (slotIn.getStack().getItem() == Items.arrow || slotIn.getStack().getItem() instanceof ItemBlock)))) {
     		int scaleFactor = new ScaledResolution(Minecraft.getMinecraft()).getScaleFactor();
             int j1 = (slotIn.xDisplayPosition + guiLeft) * scaleFactor;

@@ -37,8 +37,8 @@ public class ModObsProofHud extends Module {
 	
 	@Override
 	public void onEnable() {
-		ModuleManager.modObsProofUi.enable();
-		if (ModuleManager.modObsProofUi.isDisabled()) {
+		Kagu.getModuleManager().getModule(ModObsProofUi.class).enable();
+		if (Kagu.getModuleManager().getModule(ModObsProofUi.class).isDisabled()) {
 			toggle();
 			return;
 		}
@@ -63,7 +63,7 @@ public class ModObsProofHud extends Module {
 		
 		// Arraylist
 		String separator = " - ";
-		List<Module> mods = new ArrayList<Module>(Arrays.asList(ModuleManager.getModules()));
+		List<Module> mods = new ArrayList<Module>(Kagu.getModuleManager().getModules());
 		Font moduleFr = FontUtils.AWT_SAN_FRANCISCO_REGULAR_20;
 		FontRenderContext moduleFrRenderContext = new FontRenderContext(new AffineTransform(), true, false);
 		FontRenderContext infoFrRenderContext = new FontRenderContext(new AffineTransform(), true, false);

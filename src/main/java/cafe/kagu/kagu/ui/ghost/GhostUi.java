@@ -35,6 +35,7 @@ import cafe.kagu.kagu.eventBus.impl.EventCheatRenderTick;
 import cafe.kagu.kagu.eventBus.impl.EventRenderObs;
 import cafe.kagu.kagu.mods.ModuleManager;
 import cafe.kagu.kagu.mods.impl.ghost.ModObsProofUi;
+import cafe.kagu.kagu.mods.impl.move.ModNoSlow;
 import cafe.kagu.kagu.utils.OSUtil;
 import net.minecraft.client.Minecraft;
 
@@ -115,7 +116,7 @@ public class GhostUi extends JFrame {
 		if (e.isPost() || ghostUi == null || mc == null || !Display.isCreated())
 			return;
 		GhostUi ghostUi = GhostUi.ghostUi;
-		ModObsProofUi modObsProofUi = ModuleManager.modObsProofUi;
+		ModObsProofUi modObsProofUi = Kagu.getModuleManager().getModule(ModObsProofUi.class);
 		
 		// If the game isn't in focus or the obs proof ui is disabled then don't render overlay
 		if (!Display.isActive() || modObsProofUi.isDisabled()) {

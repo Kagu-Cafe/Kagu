@@ -3,240 +3,133 @@
  */
 package cafe.kagu.kagu.mods;
 
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import cafe.kagu.kagu.Kagu;
-import cafe.kagu.kagu.eventBus.EventBus;
-import cafe.kagu.kagu.mods.impl.combat.ModBacktrack;
-import cafe.kagu.kagu.mods.impl.combat.ModHitboxes;
-import cafe.kagu.kagu.mods.impl.combat.ModKillAura;
-import cafe.kagu.kagu.mods.impl.combat.ModReach;
-import cafe.kagu.kagu.mods.impl.exploit.ModAntiCrash;
-import cafe.kagu.kagu.mods.impl.exploit.ModAntiGroundClipStuck;
-import cafe.kagu.kagu.mods.impl.exploit.ModBlink;
-import cafe.kagu.kagu.mods.impl.exploit.ModCivBreak;
-import cafe.kagu.kagu.mods.impl.exploit.ModCrasher;
-import cafe.kagu.kagu.mods.impl.exploit.ModCreative64Stack;
-import cafe.kagu.kagu.mods.impl.exploit.ModGroundClip;
-import cafe.kagu.kagu.mods.impl.exploit.ModKeepSprintAfterCombat;
-import cafe.kagu.kagu.mods.impl.exploit.ModNoHCollisionSlowdown;
-import cafe.kagu.kagu.mods.impl.exploit.ModSpecialSlime;
-import cafe.kagu.kagu.mods.impl.exploit.ModTimer;
-import cafe.kagu.kagu.mods.impl.ghost.ModAimAssist;
-import cafe.kagu.kagu.mods.impl.ghost.ModAutoRod;
-import cafe.kagu.kagu.mods.impl.ghost.ModChangeRightClickDelay;
-import cafe.kagu.kagu.mods.impl.ghost.ModEagle;
-import cafe.kagu.kagu.mods.impl.ghost.ModHideHud;
-import cafe.kagu.kagu.mods.impl.ghost.ModHideName;
-import cafe.kagu.kagu.mods.impl.ghost.ModInventoryHelper;
-import cafe.kagu.kagu.mods.impl.ghost.ModNoHitDelay;
-import cafe.kagu.kagu.mods.impl.ghost.ModObsProofEsp;
-import cafe.kagu.kagu.mods.impl.ghost.ModObsProofHud;
-import cafe.kagu.kagu.mods.impl.ghost.ModObsProofUi;
-import cafe.kagu.kagu.mods.impl.move.ModAntiVoid;
-import cafe.kagu.kagu.mods.impl.move.ModFly;
-import cafe.kagu.kagu.mods.impl.move.ModKeepSprint;
-import cafe.kagu.kagu.mods.impl.move.ModMagnetAura;
-import cafe.kagu.kagu.mods.impl.move.ModMoonJump;
-import cafe.kagu.kagu.mods.impl.move.ModNoSlow;
-import cafe.kagu.kagu.mods.impl.move.ModSafeWalk;
-import cafe.kagu.kagu.mods.impl.move.ModScaffold;
-import cafe.kagu.kagu.mods.impl.move.ModSpeed;
-import cafe.kagu.kagu.mods.impl.move.ModSpider;
-import cafe.kagu.kagu.mods.impl.move.ModSprint;
-import cafe.kagu.kagu.mods.impl.move.ModStep;
-import cafe.kagu.kagu.mods.impl.move.ModVelocity;
-import cafe.kagu.kagu.mods.impl.player.ModAntiAim;
-import cafe.kagu.kagu.mods.impl.player.ModAntiBot;
-import cafe.kagu.kagu.mods.impl.player.ModChestStealer;
-import cafe.kagu.kagu.mods.impl.player.ModDisabler;
-import cafe.kagu.kagu.mods.impl.player.ModInventoryManager;
-import cafe.kagu.kagu.mods.impl.player.ModNoFall;
-import cafe.kagu.kagu.mods.impl.player.ModSlashSpawn;
-import cafe.kagu.kagu.mods.impl.visual.ModAmbience;
-import cafe.kagu.kagu.mods.impl.visual.ModAnimations;
-import cafe.kagu.kagu.mods.impl.visual.ModCamera;
-import cafe.kagu.kagu.mods.impl.visual.ModDistastefulEars;
-import cafe.kagu.kagu.mods.impl.visual.ModChestEsp;
-import cafe.kagu.kagu.mods.impl.visual.ModClickGui;
-import cafe.kagu.kagu.mods.impl.visual.ModDebugBoundingBoxes;
-import cafe.kagu.kagu.mods.impl.visual.ModEsp;
-import cafe.kagu.kagu.mods.impl.visual.ModFunnyLimbs;
-import cafe.kagu.kagu.mods.impl.visual.ModHud;
-import cafe.kagu.kagu.mods.impl.visual.ModNormalZoomCam;
-import cafe.kagu.kagu.mods.impl.visual.ModTargetHud;
-import cafe.kagu.kagu.mods.impl.visual.ModViewModels;
-import cafe.kagu.kagu.mods.impl.visual.ModWideMen;
-import cafe.kagu.kagu.mods.impl.yiff.ModTest;
+import cafe.kagu.kagu.mods.impl.yiff.*;
+import cafe.kagu.kagu.mods.impl.visual.*;
+import cafe.kagu.kagu.mods.impl.player.*;
+import cafe.kagu.kagu.mods.impl.move.*;
+import cafe.kagu.kagu.mods.impl.ghost.*;
+import cafe.kagu.kagu.mods.impl.exploit.*;
+import cafe.kagu.kagu.mods.impl.combat.*;
 
 /**
- * @author lavaflowglow
+ * @author DistastefulBannock
  *
  */
 public class ModuleManager {
 
-	private static Logger logger = LogManager.getLogger();
-	
-	// All the modules in the client
-	
-	// Combat
-	public static ModKillAura modKillAura = new ModKillAura();
-	public static ModBacktrack modBacktrack = new ModBacktrack();
-	public static ModReach modReach = new ModReach();
-	public static ModHitboxes modHitboxes = new ModHitboxes();
-	
-	// Movement
-	public static ModMoonJump modMoonJump = new ModMoonJump();
-	public static ModSprint modSprint = new ModSprint();
-	public static ModSpeed modSpeed = new ModSpeed();
-	public static ModFly modFly = new ModFly();
-	public static ModScaffold modScaffold = new ModScaffold();
-	public static ModVelocity modVelocity = new ModVelocity();
-	public static ModNoSlow modNoSlow = new ModNoSlow();
-	public static ModStep modStep = new ModStep();
-	public static ModAntiVoid modAntiVoid = new ModAntiVoid();
-	public static ModSafeWalk modSafeWalk = new ModSafeWalk();
-	public static ModSpider modSpider = new ModSpider();
-	public static ModMagnetAura modMagnetAura = new ModMagnetAura();
-	public static ModKeepSprint modKeepSprint = new ModKeepSprint();
-	
-	// Player
-	public static ModAntiAim modAntiAim = new ModAntiAim();
-	public static ModDisabler modDisabler = new ModDisabler();
-	public static ModChestStealer modChestStealer = new ModChestStealer();
-	public static ModInventoryManager modInventoryManager = new ModInventoryManager();
-	public static ModAntiBot modAntiBot = new ModAntiBot();
-	public static ModNoFall modNoFall = new ModNoFall();
-	public static ModSlashSpawn modSlashSpawn = new ModSlashSpawn();
-	
-	// Visual
-	public static ModClickGui modClickGui = new ModClickGui();
-	public static ModHud modHud = new ModHud();
-	public static ModDebugBoundingBoxes modDebugBoundingBoxes = new ModDebugBoundingBoxes();
-	public static ModViewModels modViewModels = new ModViewModels();
-	public static ModAnimations modAnimations = new ModAnimations();
-	public static ModChestEsp modChestEsp = new ModChestEsp();
-	public static ModEsp modEsp = new ModEsp();
-	public static ModNormalZoomCam modNormalZoomCam = new ModNormalZoomCam();
-	public static ModDistastefulEars modDistastefulEars = new ModDistastefulEars();
-	public static ModAmbience modAmbience = new ModAmbience();
-	public static ModTargetHud modTargetHud = new ModTargetHud();
-	public static ModCamera modCamera = new ModCamera();
-	public static ModFunnyLimbs modFunnyLimbs = new ModFunnyLimbs();
-	public static ModObsProofHud modObsProofHud = new ModObsProofHud();
-	public static ModWideMen modWideMen = new ModWideMen();
-	
-	// Exploit
-	public static ModCreative64Stack modCreative64Stack = new ModCreative64Stack();
-	public static ModTest modTest = new ModTest();
-	public static ModAntiCrash modAntiCrash = new ModAntiCrash();
-	public static ModTimer modTimer = new ModTimer();
-	public static ModBlink modBlink = new ModBlink();
-	public static ModCrasher modCrasher = new ModCrasher();
-	public static ModNoHCollisionSlowdown modNoHCollisionSlowdown = new ModNoHCollisionSlowdown();
-	public static ModGroundClip modGroundClip = new ModGroundClip();
-	public static ModSpecialSlime modSpecialSlime = new ModSpecialSlime();
-	public static ModKeepSprintAfterCombat modKeepSprintAfterCombat = new ModKeepSprintAfterCombat();
-	public static ModCivBreak modCivBreak = new ModCivBreak();
-	public static ModAntiGroundClipStuck modAntiGroundClipStuck = new ModAntiGroundClipStuck();
-	
-	// Ghost
-	public static ModHideHud modHideHud = new ModHideHud();
-	public static ModObsProofUi modObsProofUi = new ModObsProofUi();
-	public static ModObsProofEsp modObsProofEsp = new ModObsProofEsp();
-	public static ModAutoRod modAutoRod = new ModAutoRod();
-	public static ModNoHitDelay modNoHitDelay = new ModNoHitDelay();
-	public static ModChangeRightClickDelay modChangeRightClickDelay = new ModChangeRightClickDelay();
-	public static ModAimAssist modAimAssist = new ModAimAssist();
-	public static ModEagle modEagle = new ModEagle();
-	public static ModInventoryHelper modInventoryHelper = new ModInventoryHelper();
-	public static ModHideName modHideName = new ModHideName();
+	private Logger logger = LogManager.getLogger();
 	
 	// An array of all the modules in the client
-	private static final Module[] MODULES = new Module[] {
-			modClickGui,
-			modAntiAim,
-			modHud,
-			modAnimations,
-			modChestEsp,
-			modEsp,
-			modNormalZoomCam,
-			modMoonJump,
-			modSprint,
-			modDisabler,
-			modCreative64Stack,
-			modDebugBoundingBoxes,
-			modTest,
-			modAntiCrash,
-			modViewModels,
-			modKillAura,
-			modBacktrack,
-			modTimer,
-			modCrasher,
-			modReach,
-			modHitboxes,
-			modNoHCollisionSlowdown,
-			modSpeed,
-			modDistastefulEars,
-			modAmbience,
-			modFly,
-			modScaffold,
-			modChestStealer,
-			modGroundClip,
-			modSpecialSlime,
-			modVelocity,
-			modInventoryManager,
-			modAntiBot,
-			modNoSlow,
-			modKeepSprintAfterCombat,
-			modCivBreak,
-			modStep,
-			modTargetHud,
-			modNoFall,
-			modAntiVoid,
-			modHideHud,
-			modCamera,
-			modObsProofUi,
-			modObsProofEsp,
-			modSafeWalk,
-			modFunnyLimbs,
-			modSpider,
-			modAntiGroundClipStuck,
-			modMagnetAura,
-			modAutoRod,
-			modNoHitDelay,
-			modChangeRightClickDelay,
-			modAimAssist,
-			modSlashSpawn,
-			modEagle,
-			modInventoryHelper,
-			modKeepSprint,
-			modObsProofHud,
-			modWideMen,
-			modHideName,
-			
-			modBlink
-	};
+	private final Map<Class<? extends Module>, Module> MODULES = new LinkedHashMap<>(); // Why hashmap no preserve order :(
 
 	/**
 	 * Called at the start of the client
 	 */
-	public static void start() {
-		logger.info("Loading modules...");
+	public void start() {
+		logger.info("Registering modules...");
 		
-		for (Module module : MODULES) {
+		registerModule(new ModClickGui());
+		registerModule(new ModAntiAim());
+		registerModule(new ModHud());
+		registerModule(new ModAnimations());
+		registerModule(new ModChestEsp());
+		registerModule(new ModEsp());
+		registerModule(new ModNormalZoomCam());
+		registerModule(new ModMoonJump());
+		registerModule(new ModSprint());
+		registerModule(new ModDisabler());
+		registerModule(new ModCreative64Stack());
+		registerModule(new ModDebugBoundingBoxes());
+		registerModule(new ModTest());
+		registerModule(new ModAntiCrash());
+		registerModule(new ModViewModels());
+		registerModule(new ModKillAura());
+		registerModule(new ModBacktrack());
+		registerModule(new ModTimer());
+		registerModule(new ModCrasher());
+		registerModule(new ModReach());
+		registerModule(new ModHitboxes());
+		registerModule(new ModNoHCollisionSlowdown());
+		registerModule(new ModSpeed());
+		registerModule(new ModDistastefulEars());
+		registerModule(new ModAmbience());
+		registerModule(new ModFly());
+		registerModule(new ModScaffold());
+		registerModule(new ModChestStealer());
+		registerModule(new ModGroundClip());
+		registerModule(new ModSpecialSlime());
+		registerModule(new ModVelocity());
+		registerModule(new ModInventoryManager());
+		registerModule(new ModAntiBot());
+		registerModule(new ModNoSlow());
+		registerModule(new ModKeepSprintAfterCombat());
+		registerModule(new ModCivBreak());
+		registerModule(new ModStep());
+		registerModule(new ModTargetHud());
+		registerModule(new ModNoFall());
+		registerModule(new ModAntiVoid());
+		registerModule(new ModHideHud());
+		registerModule(new ModCamera());
+		registerModule(new ModObsProofUi());
+		registerModule(new ModObsProofEsp());
+		registerModule(new ModSafeWalk());
+		registerModule(new ModFunnyLimbs());
+		registerModule(new ModSpider());
+		registerModule(new ModAntiGroundClipStuck());
+		registerModule(new ModMagnetAura());
+		registerModule(new ModAutoRod());
+		registerModule(new ModNoHitDelay());
+		registerModule(new ModChangeRightClickDelay());
+		registerModule(new ModAimAssist());
+		registerModule(new ModSlashSpawn());
+		registerModule(new ModEagle());
+		registerModule(new ModInventoryHelper());
+		registerModule(new ModKeepSprint());
+		registerModule(new ModObsProofHud());
+		registerModule(new ModWideMen());
+		registerModule(new ModHideName());
+		
+		registerModule(new ModBlink()); // Blink last because we want it to get events last (event bus no priority options 😭)
+		logger.info("Registered the modules...");
+		
+		logger.info("Loading modules...");
+		for (Module module : MODULES.values()) {
 			Kagu.getEventBus().subscribe(module); // Subscribe any listeners to the event bus
 		}
-		
-		logger.info("Loaded all the modules");
+		logger.info("Loaded the modules");
 	}
-
+	
+	/**
+	 * Registers a module
+	 * @param module The module to register
+	 */
+	private void registerModule(Module module) {
+		MODULES.put(module.getClass(), module);
+	}
+	
+	/**
+	 * Gets a module
+	 * @param module the class of the module
+	 * @return The module object, or null if it doesn't exit
+	 */
+	@SuppressWarnings("unchecked")
+	public <M extends Module> M getModule(Class<M> module) {
+		return (M) MODULES.get(module);
+	}
+	
 	/**
 	 * @return the modules
 	 */
-	public static Module[] getModules() {
-		return MODULES;
+	public Collection<Module> getModules() {
+		return MODULES.values();
 	}
 
 }

@@ -5,6 +5,7 @@ package cafe.kagu.kagu.commands.impl;
 
 import org.lwjgl.input.Keyboard;
 
+import cafe.kagu.kagu.Kagu;
 import cafe.kagu.kagu.commands.Command;
 import cafe.kagu.kagu.commands.CommandAction;
 import cafe.kagu.kagu.managers.FileManager;
@@ -27,7 +28,7 @@ public class CommandBind extends Command {
 		try {
 			String moduleName = args[0];
 			int keyCode = Keyboard.getKeyIndex(args[1].toUpperCase().replace(" ", "_"));
-			for (Module module : ModuleManager.getModules()) {
+			for (Module module : Kagu.getModuleManager().getModules()) {
 				if (module.getName().replace(" ", "").equalsIgnoreCase(moduleName)) {
 					KeybindManager.addKeybind(module.getName(), keyCode);
 					ChatUtils.addChatMessage("Binded " + module.getName() + " to " + Keyboard.getKeyName(keyCode));
@@ -50,7 +51,7 @@ public class CommandBind extends Command {
 		
 		try {
 			String moduleName = args[0];
-			for (Module module : ModuleManager.getModules()) {
+			for (Module module : Kagu.getModuleManager().getModules()) {
 				if (module.getName().replace(" ", "").equalsIgnoreCase(moduleName)) {
 					KeybindManager.removeKeybind(module.getName());
 					ChatUtils.addChatMessage("Cleared binds for " + module.getName());

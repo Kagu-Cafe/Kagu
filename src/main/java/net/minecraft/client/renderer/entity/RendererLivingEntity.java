@@ -2,7 +2,10 @@ package net.minecraft.client.renderer.entity;
 
 import com.google.common.collect.Lists;
 
+import cafe.kagu.kagu.Kagu;
 import cafe.kagu.kagu.mods.ModuleManager;
+import cafe.kagu.kagu.mods.impl.player.ModAntiBot;
+import cafe.kagu.kagu.mods.impl.visual.ModEsp;
 import cafe.kagu.kagu.mods.impl.visual.ModFunnyLimbs;
 import cafe.kagu.kagu.mods.impl.visual.ModViewModels;
 import cafe.kagu.kagu.utils.SpoofUtils;
@@ -109,7 +112,7 @@ public abstract class RendererLivingEntity<T extends EntityLivingBase> extends R
         if (!Reflector.RenderLivingEvent_Pre_Constructor.exists() || !Reflector.postForgeBusEvent(Reflector.RenderLivingEvent_Pre_Constructor, new Object[] {entity, this, Double.valueOf(x), Double.valueOf(y), Double.valueOf(z)}))
         {
         	
-            ModFunnyLimbs modFunnyLimbs = ModuleManager.modFunnyLimbs;
+            ModFunnyLimbs modFunnyLimbs = Kagu.getModuleManager().getModule(ModFunnyLimbs.class);
             boolean funnyLimbs = (modFunnyLimbs.getSelfOnly().isDisabled() || entity == Minecraft.getMinecraft().thePlayer) && modFunnyLimbs.isEnabled();
             if (funnyLimbs && modFunnyLimbs.getMode().is("Choppy")) {
             	partialTicks = Math.round(partialTicks);
@@ -133,13 +136,13 @@ public abstract class RendererLivingEntity<T extends EntityLivingBase> extends R
                 float f1 = this.interpolateRotation(entity.prevRotationYawHead, entity.rotationYawHead, partialTicks);
                 
                 // Spoofed rotation
-                if (SpoofUtils.isSpoofYaw() && entity == Minecraft.getMinecraft().thePlayer && ModuleManager.modViewModels.getOverrideF3().isEnabled()) {
+                if (SpoofUtils.isSpoofYaw() && entity == Minecraft.getMinecraft().thePlayer && Kagu.getModuleManager().getModule(ModViewModels.class).getOverrideF3().isEnabled()) {
                 	f = SpoofUtils.getSpoofedLastYaw() + (SpoofUtils.getSpoofedYaw() - SpoofUtils.getSpoofedLastYaw()) * partialTicks;
                 	f1 = f;
                 }
                 
                 // Desync entity
-                if (ModuleManager.modViewModels.isRenderingDesync() && SpoofUtils.isSpoofYaw() && entity == Minecraft.getMinecraft().thePlayer) {
+                if (Kagu.getModuleManager().getModule(ModViewModels.class).isRenderingDesync() && SpoofUtils.isSpoofYaw() && entity == Minecraft.getMinecraft().thePlayer) {
                 	f = SpoofUtils.getSpoofedLastYaw() + (SpoofUtils.getSpoofedYaw() - SpoofUtils.getSpoofedLastYaw()) * partialTicks;
                 	f1 = f;
                 }
@@ -174,12 +177,12 @@ public abstract class RendererLivingEntity<T extends EntityLivingBase> extends R
                 float f8 = entity.prevRotationPitch + (entity.rotationPitch - entity.prevRotationPitch) * partialTicks;
                 
                 // Spoofed rotations
-                if (SpoofUtils.isSpoofPitch() && entity == Minecraft.getMinecraft().thePlayer && ModuleManager.modViewModels.getOverrideF3().isEnabled()) {
+                if (SpoofUtils.isSpoofPitch() && entity == Minecraft.getMinecraft().thePlayer && Kagu.getModuleManager().getModule(ModViewModels.class).getOverrideF3().isEnabled()) {
                 	f8 = SpoofUtils.getSpoofedLastPitch() + (SpoofUtils.getSpoofedPitch() - SpoofUtils.getSpoofedLastPitch()) * partialTicks;
                 }
                 
                 // Desync entity
-                if (ModuleManager.modViewModels.isRenderingDesync() && SpoofUtils.isSpoofPitch() && entity == Minecraft.getMinecraft().thePlayer) {
+                if (Kagu.getModuleManager().getModule(ModViewModels.class).isRenderingDesync() && SpoofUtils.isSpoofPitch() && entity == Minecraft.getMinecraft().thePlayer) {
                 	f8 = SpoofUtils.getSpoofedLastPitch() + (SpoofUtils.getSpoofedPitch() - SpoofUtils.getSpoofedLastPitch()) * partialTicks;
                 }
                 
@@ -232,7 +235,7 @@ public abstract class RendererLivingEntity<T extends EntityLivingBase> extends R
 
                     if (!(entity instanceof EntityPlayer) || !((EntityPlayer)entity).isSpectator())
                     {
-                    	if (!ModuleManager.modViewModels.isRenderingDesync()) {
+                    	if (!Kagu.getModuleManager().getModule(ModViewModels.class).isRenderingDesync()) {
                     		this.renderLayers(entity, f6, f5, partialTicks, f7, f2, f8, 0.0625F);
                     	}
                     }
@@ -314,10 +317,12 @@ public abstract class RendererLivingEntity<T extends EntityLivingBase> extends R
         boolean flag1 = !flag && !entitylivingbaseIn.isInvisibleToPlayer(Minecraft.getMinecraft().thePlayer);
         
         // Kagu view invisible
+        ModAntiBot modAntiBot = Kagu.getModuleManager().getModule(ModAntiBot.class);
+        ModEsp modEsp = Kagu.getModuleManager().getModule(ModEsp.class);
         l:
-        if (ModuleManager.modEsp.isEnabled() && ModuleManager.modEsp.getRenderInvisibleModels().isEnabled()) {
-    		if (ModuleManager.modAntiBot.isEnabled() && entitylivingbaseIn instanceof EntityPlayer
-    				&& ModuleManager.modAntiBot.isBot((EntityPlayer) entitylivingbaseIn))
+        if (modEsp.isEnabled() && modEsp.getRenderInvisibleModels().isEnabled()) {
+    		if (modAntiBot.isEnabled() && entitylivingbaseIn instanceof EntityPlayer
+    				&& modAntiBot.isBot((EntityPlayer) entitylivingbaseIn))
     			break l;
         	flag = true;
         	flag1 = false;
@@ -588,7 +593,9 @@ public abstract class RendererLivingEntity<T extends EntityLivingBase> extends R
             if (this.canRenderName(entity))
             {
             	
-            	if (ModuleManager.modEsp.isEnabled() && ModuleManager.modEsp.getMode().is("Kagu 2D")) {
+            	if (Kagu.getModuleManager().getModule(ModEsp.class).isEnabled() && Kagu.getModuleManager().getModule(ModEsp.class).getMode().is("Kagu 2D")
+            			&& (!(entity instanceof EntityPlayer) || Kagu.getModuleManager().getModule(ModAntiBot.class).isDisabled() 
+            			|| !Kagu.getModuleManager().getModule(ModAntiBot.class).isBot((EntityPlayer) entity))) {
             		return;
             	}
             	

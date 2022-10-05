@@ -19,6 +19,7 @@ import cafe.kagu.kagu.eventBus.Event.EventPosition;
 import cafe.kagu.kagu.eventBus.impl.EventKeyUpdate;
 import cafe.kagu.kagu.eventBus.impl.EventTick;
 import cafe.kagu.kagu.mods.ModuleManager;
+import cafe.kagu.kagu.mods.impl.combat.ModKillAura;
 import cafe.kagu.kagu.mods.impl.ghost.ModChangeRightClickDelay;
 import cafe.kagu.kagu.mods.impl.ghost.ModNoHitDelay;
 import cafe.kagu.kagu.ui.gui.GuiDefaultMainMenu;
@@ -1513,7 +1514,7 @@ public class Minecraft implements IThreadListener, IPlayerUsage
 
     private void clickMouse()
     {
-    	ModNoHitDelay modNoHitDelay = ModuleManager.modNoHitDelay;
+    	ModNoHitDelay modNoHitDelay = Kagu.getModuleManager().getModule(ModNoHitDelay.class);
         if (this.leftClickCounter <= 0)
         {
             this.thePlayer.swingItem();
@@ -1564,7 +1565,7 @@ public class Minecraft implements IThreadListener, IPlayerUsage
     {
         if (!this.playerController.isHittingBlock())
         {
-        	ModChangeRightClickDelay modChangeRightClickDelay = ModuleManager.modChangeRightClickDelay;
+        	ModChangeRightClickDelay modChangeRightClickDelay = Kagu.getModuleManager().getModule(ModChangeRightClickDelay.class);
             this.rightClickDelayTimer = modChangeRightClickDelay.isEnabled() ? modChangeRightClickDelay.getDelay().getValue() : 4;
             boolean flag = true;
             ItemStack itemstack = this.thePlayer.inventory.getCurrentItem();

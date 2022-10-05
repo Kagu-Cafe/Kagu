@@ -19,6 +19,7 @@ import cafe.kagu.kagu.eventBus.EventHandler;
 import cafe.kagu.kagu.eventBus.impl.EventKeyUpdate;
 import cafe.kagu.kagu.mods.Module;
 import cafe.kagu.kagu.mods.ModuleManager;
+import cafe.kagu.kagu.mods.impl.visual.ModClickGui;
 
 /**
  * @author lavaflowglow
@@ -42,8 +43,7 @@ public class KeybindManager {
 		if (FileManager.DEFAULT_KEYBINDS.exists()) {
 			load(FileManager.DEFAULT_KEYBINDS);
 		}else {
-			keybinds.put(ModuleManager.modClickGui.getName().toLowerCase(), new ArrayList<>(Keyboard.KEY_RSHIFT));
-			save(FileManager.DEFAULT_KEYBINDS);
+			addKeybind(Kagu.getModuleManager().getModule(ModClickGui.class).getName(), Keyboard.KEY_RSHIFT);
 		}
 		
 		// Subscribe to the key event so we can use the keybinds
@@ -142,7 +142,7 @@ public class KeybindManager {
 			return;
 		
 		int keyCode = e.getKeyCode();
-		for (Module module : ModuleManager.getModules()) {
+		for (Module module : Kagu.getModuleManager().getModules()) {
 			if (getKeybinds(module.getName()).contains(keyCode)) {
 				module.toggle();
 			}

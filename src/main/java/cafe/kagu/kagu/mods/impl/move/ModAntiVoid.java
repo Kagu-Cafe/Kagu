@@ -6,6 +6,7 @@ package cafe.kagu.kagu.mods.impl.move;
 import java.util.LinkedList;
 import java.util.Queue;
 
+import cafe.kagu.kagu.Kagu;
 import cafe.kagu.kagu.eventBus.EventHandler;
 import cafe.kagu.kagu.eventBus.Handler;
 import cafe.kagu.kagu.eventBus.impl.EventChatSendMessage;
@@ -16,6 +17,7 @@ import cafe.kagu.kagu.eventBus.impl.EventPlayerUpdate;
 import cafe.kagu.kagu.mods.Module;
 import cafe.kagu.kagu.mods.ModuleManager;
 import cafe.kagu.kagu.mods.impl.exploit.ModBlink;
+import cafe.kagu.kagu.mods.impl.player.ModNoFall;
 import cafe.kagu.kagu.mods.impl.visual.ModTargetHud;
 import cafe.kagu.kagu.settings.impl.BooleanSetting;
 import cafe.kagu.kagu.settings.impl.DoubleSetting;
@@ -105,7 +107,7 @@ public class ModAntiVoid extends Module {
 					}
 					if (resetCooldownOnCatch.isEnabled())
 						cooldownTimer.reset();
-					ModBlink modBlink = ModuleManager.modBlink;
+					ModBlink modBlink = Kagu.getModuleManager().getModule(ModBlink.class);
 					if (modBlink.isEnabled()) {
 						modBlink.getSentPackets().removeAll(blinkPackets);
 					}

@@ -3,12 +3,14 @@
  */
 package cafe.kagu.kagu.mods.impl.move;
 
+import cafe.kagu.kagu.Kagu;
 import cafe.kagu.kagu.eventBus.EventHandler;
 import cafe.kagu.kagu.eventBus.Handler;
 import cafe.kagu.kagu.eventBus.impl.EventPacketSend;
 import cafe.kagu.kagu.eventBus.impl.EventPlayerUpdate;
 import cafe.kagu.kagu.mods.Module;
 import cafe.kagu.kagu.mods.ModuleManager;
+import cafe.kagu.kagu.mods.impl.combat.ModKillAura;
 import cafe.kagu.kagu.settings.impl.BooleanSetting;
 import cafe.kagu.kagu.settings.impl.ModeSetting;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -46,7 +48,8 @@ public class ModNoSlow extends Module {
 		EntityPlayerSP thePlayer = mc.thePlayer;
 		switch (itemNoSlowBypass.getMode()) {
 			case "NCP":{
-				if (!(e.getPacket() instanceof C03PacketPlayer) || !((C03PacketPlayer)e.getPacket()).isMoving() || !(thePlayer.isUsingItem() || thePlayer.isBlocking() || ModuleManager.modKillAura.isBlocking()))
+				if (!(e.getPacket() instanceof C03PacketPlayer) || !((C03PacketPlayer)e.getPacket()).isMoving() || !(thePlayer.isUsingItem() || thePlayer.isBlocking() 
+						|| Kagu.getModuleManager().getModule(ModKillAura.class).isBlocking()))
 					return;
 				if (e.isPre()) {
 					mc.getNetHandler().getNetworkManager().sendPacket(
@@ -57,7 +60,8 @@ public class ModNoSlow extends Module {
 				}
 			}break;
 			case "AACv4":{
-				if (!(e.getPacket() instanceof C03PacketPlayer) || !((C03PacketPlayer)e.getPacket()).isMoving() || !(thePlayer.isUsingItem() || thePlayer.isBlocking() || ModuleManager.modKillAura.isBlocking()))
+				if (!(e.getPacket() instanceof C03PacketPlayer) || !((C03PacketPlayer)e.getPacket()).isMoving() || !(thePlayer.isUsingItem() || thePlayer.isBlocking() 
+						||Kagu.getModuleManager().getModule(ModKillAura.class).isBlocking()))
 					return;
 				if (thePlayer.ticksExisted % 2 != 0)
 					return;

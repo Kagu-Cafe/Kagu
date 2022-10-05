@@ -11,6 +11,7 @@ import javax.vecmath.Vector4d;
 
 import org.lwjgl.opengl.GL11;
 
+import cafe.kagu.kagu.Kagu;
 import cafe.kagu.kagu.eventBus.EventHandler;
 import cafe.kagu.kagu.eventBus.Handler;
 import cafe.kagu.kagu.eventBus.impl.EventRender2D;
@@ -21,6 +22,7 @@ import cafe.kagu.kagu.font.FontRenderer;
 import cafe.kagu.kagu.font.FontUtils;
 import cafe.kagu.kagu.mods.Module;
 import cafe.kagu.kagu.mods.ModuleManager;
+import cafe.kagu.kagu.mods.impl.player.ModAntiBot;
 import cafe.kagu.kagu.settings.SettingDependency;
 import cafe.kagu.kagu.settings.impl.BooleanSetting;
 import cafe.kagu.kagu.settings.impl.DoubleSetting;
@@ -215,7 +217,7 @@ public class ModEsp extends Module {
 					}
 					
 					// Antibot
-					if (ModuleManager.modAntiBot.isEnabled() && ent instanceof EntityPlayer && ModuleManager.modAntiBot.isBot((EntityPlayer)ent))
+					if (Kagu.getModuleManager().getModule(ModAntiBot.class).isEnabled() && ent instanceof EntityPlayer && Kagu.getModuleManager().getModule(ModAntiBot.class).isBot((EntityPlayer)ent))
 						continue;
 					
 					// Render targeting
@@ -301,8 +303,8 @@ public class ModEsp extends Module {
 	private Handler<EventEntityRender> onEntityRender = e -> {
 		
 		// Antibot
-		if (ModuleManager.modAntiBot.isEnabled() && ((EventEntityRender) e).getEntity() instanceof EntityPlayer
-				&& ModuleManager.modAntiBot.isBot((EntityPlayer) ((EventEntityRender) e).getEntity()))
+		if (Kagu.getModuleManager().getModule(ModAntiBot.class).isEnabled() && ((EventEntityRender) e).getEntity() instanceof EntityPlayer
+				&& Kagu.getModuleManager().getModule(ModAntiBot.class).isBot((EntityPlayer) ((EventEntityRender) e).getEntity()))
 			return;
 		
 		// Chams

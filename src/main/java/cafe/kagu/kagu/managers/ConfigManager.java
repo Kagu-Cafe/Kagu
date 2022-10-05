@@ -4,6 +4,7 @@
 package cafe.kagu.kagu.managers;
 
 import java.io.File;
+import java.util.Collection;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -37,7 +38,7 @@ public class ConfigManager {
 		
 		// Serialize all the modules and settings in a format that our client can read
 		String config = "";
-		for (Module module : ModuleManager.getModules()) {
+		for (Module module : Kagu.getModuleManager().getModules()) {
 			config += (config.isEmpty() ? "" : Kagu.UNIT_SEPARATOR) + module.getName() + Kagu.GROUP_SEPARATOR
 				+ module.getCategory() + Kagu.GROUP_SEPARATOR
 				+ module.isEnabled();
@@ -93,7 +94,7 @@ public class ConfigManager {
 		String config = FileManager.readStringFromFile(file);
 		
 		{ // Disable all modules, this way if the config doesn't contain the module it will just be disabled
-			Module[] modules = ModuleManager.getModules();
+			Collection<Module> modules = Kagu.getModuleManager().getModules();
 			for (Module module : modules)
 				module.disable();
 		}
@@ -112,7 +113,7 @@ public class ConfigManager {
 			boolean enabled = moduleSplit[2].equals("true");
 			
 			// Find the module
-			for (Module module : ModuleManager.getModules()) {
+			for (Module module : Kagu.getModuleManager().getModules()) {
 				if (!(module.getCategory() == category && module.getName().equals(name)))
 					continue;
 				

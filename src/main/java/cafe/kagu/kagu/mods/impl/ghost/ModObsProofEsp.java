@@ -16,6 +16,7 @@ import javax.vecmath.Vector4d;
 
 import org.lwjgl.opengl.GL11;
 
+import cafe.kagu.kagu.Kagu;
 import cafe.kagu.kagu.eventBus.EventHandler;
 import cafe.kagu.kagu.eventBus.Handler;
 import cafe.kagu.kagu.eventBus.impl.EventEntityRender;
@@ -27,6 +28,7 @@ import cafe.kagu.kagu.font.FontRenderer;
 import cafe.kagu.kagu.font.FontUtils;
 import cafe.kagu.kagu.mods.Module;
 import cafe.kagu.kagu.mods.ModuleManager;
+import cafe.kagu.kagu.mods.impl.player.ModAntiBot;
 import cafe.kagu.kagu.mods.impl.visual.ModEsp.EspEntity;
 import cafe.kagu.kagu.settings.impl.BooleanSetting;
 import cafe.kagu.kagu.settings.impl.DoubleSetting;
@@ -69,8 +71,8 @@ public class ModObsProofEsp extends Module {
 	
 	@Override
 	public void onEnable() {
-		ModuleManager.modObsProofUi.enable();
-		if (ModuleManager.modObsProofUi.isDisabled()) {
+		Kagu.getModuleManager().getModule(ModObsProofUi.class).enable();
+		if (Kagu.getModuleManager().getModule(ModObsProofUi.class).isDisabled()) {
 			toggle();
 			return;
 		}
@@ -162,7 +164,7 @@ public class ModObsProofEsp extends Module {
 		if (e.isPost())
 			return;
 		setInfo(mode.getMode());
-		if (ModuleManager.modObsProofUi.isDisabled())
+		if (Kagu.getModuleManager().getModule(ModObsProofUi.class).isDisabled())
 			toggle();
 	};
 	
@@ -181,7 +183,8 @@ public class ModObsProofEsp extends Module {
 					}
 					
 					// Antibot
-					if (ModuleManager.modAntiBot.isEnabled() && ent instanceof EntityPlayer && ModuleManager.modAntiBot.isBot((EntityPlayer)ent))
+					if (Kagu.getModuleManager().getModule(ModAntiBot.class).isEnabled() && ent instanceof EntityPlayer 
+							&& Kagu.getModuleManager().getModule(ModAntiBot.class).isBot((EntityPlayer)ent))
 						continue;
 					
 					// Render targeting

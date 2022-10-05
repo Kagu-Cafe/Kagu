@@ -3,11 +3,16 @@ package net.minecraft.client.renderer;
 import com.google.common.base.Predicates;
 import com.google.gson.JsonSyntaxException;
 
+import cafe.kagu.kagu.Kagu;
 import cafe.kagu.kagu.eventBus.Event.EventPosition;
 import cafe.kagu.kagu.eventBus.impl.EventRender3D;
 import cafe.kagu.kagu.eventBus.impl.EventEntitiesRender;
 import cafe.kagu.kagu.mods.ModuleManager;
+import cafe.kagu.kagu.mods.impl.combat.ModBacktrack;
+import cafe.kagu.kagu.mods.impl.combat.ModReach;
+import cafe.kagu.kagu.mods.impl.exploit.ModBlink;
 import cafe.kagu.kagu.mods.impl.visual.ModCamera;
+import cafe.kagu.kagu.mods.impl.visual.ModNormalZoomCam;
 import cafe.kagu.kagu.ui.gui.GuiDefaultMainMenu;
 import cafe.kagu.kagu.utils.ChatUtils;
 import cafe.kagu.kagu.utils.SpoofUtils;
@@ -394,7 +399,7 @@ public class EntityRenderer implements IResourceManagerReloadListener
         this.fogColor2 = this.fogColor1;
         this.thirdPersonDistanceTemp = this.thirdPersonDistance;
         
-        if (this.mc.gameSettings.smoothCamera && ModuleManager.modNormalZoomCam.isDisabled())
+        if (this.mc.gameSettings.smoothCamera && Kagu.getModuleManager().getModule(ModNormalZoomCam.class).isDisabled())
         {
             float f = this.mc.gameSettings.mouseSensitivity * 0.6F + 0.2F;
             float f1 = f * f * f * 8.0F;
@@ -491,7 +496,7 @@ public class EntityRenderer implements IResourceManagerReloadListener
             }
             else
             {
-                if (d0 > Math.max((ModuleManager.modReach.isEnabled() ? ModuleManager.modReach.getCombatReach().getValue() : 0), 3.0D))
+                if (d0 > Math.max((Kagu.getModuleManager().getModule(ModReach.class).isEnabled() ? Kagu.getModuleManager().getModule(ModReach.class).getCombatReach().getValue() : 0), 3.0D))
                 {
                     flag = true;
                 }
@@ -511,7 +516,8 @@ public class EntityRenderer implements IResourceManagerReloadListener
             double d2 = d1;
             
             // Backtracks
-            Map<EntityLivingBase, Vector3d[]> backtracks = ModuleManager.modBacktrack.isEnabled() ? ModuleManager.modBacktrack.getBacktracks() : new HashMap<>();
+            ModBacktrack modBacktrack = Kagu.getModuleManager().getModule(ModBacktrack.class);
+            Map<EntityLivingBase, Vector3d[]> backtracks = modBacktrack.isEnabled() ? modBacktrack.getBacktracks() : new HashMap<>();
 //            list.addAll(backtracks.keySet());
             
             for (int i = 0; i < list.size(); ++i)
@@ -524,7 +530,7 @@ public class EntityRenderer implements IResourceManagerReloadListener
                 Vector3d[] backtrackPositions = null;
                 
                 // Sets up the backtrack positions
-                if (ModuleManager.modBacktrack.isEnabled() && backtracks.containsKey(entity1)) {
+                if (Kagu.getModuleManager().getModule(ModBacktrack.class).isEnabled() && backtracks.containsKey(entity1)) {
                 	List<Vector3d> positions = new ArrayList<>(Arrays.asList(backtracks.get(entity1)));
                 	positions.add(0, new Vector3d(entity1.posX, entity1.posY, entity1.posZ));
                 	backtrackPositions = positions.toArray(new Vector3d[0]);
@@ -545,8 +551,8 @@ public class EntityRenderer implements IResourceManagerReloadListener
                 	MovingObjectPosition movingobjectposition = axisalignedbb.calculateIntercept(vec3, vec32);
                 	
                 	if (movingobjectposition != null) {
-                		if (ModuleManager.modBlink.isEnabled() && ModuleManager.modBlink.getBacktrackCompatibility().isEnabled()) {
-                			ModuleManager.modBacktrack.setBacktrackBlinkTickOverride(k);
+                		if (Kagu.getModuleManager().getModule(ModBlink.class).isEnabled() && Kagu.getModuleManager().getModule(ModBlink.class).getBacktrackCompatibility().isEnabled()) {
+                			Kagu.getModuleManager().getModule(ModBacktrack.class).setBacktrackBlinkTickOverride(k);
                 		}
                 	}
                 	
@@ -592,7 +598,7 @@ public class EntityRenderer implements IResourceManagerReloadListener
                 
             }
 
-            if (this.pointedEntity != null && flag && vec3.distanceTo(vec33) > Math.max((ModuleManager.modReach.isEnabled() ? ModuleManager.modReach.getCombatReach().getValue() : 0), 3.0D))
+            if (this.pointedEntity != null && flag && vec3.distanceTo(vec33) > Math.max((Kagu.getModuleManager().getModule(ModReach.class).isEnabled() ?Kagu.getModuleManager().getModule(ModReach.class).getCombatReach().getValue() : 0), 3.0D))
             {
                 this.pointedEntity = null;
                 this.mc.objectMouseOver = new MovingObjectPosition(MovingObjectPosition.MovingObjectType.MISS, vec33, (EnumFacing)null, new BlockPos(vec33));
@@ -767,7 +773,7 @@ public class EntityRenderer implements IResourceManagerReloadListener
         double d1 = entity.prevPosY + (entity.posY - entity.prevPosY) * (double)partialTicks + (double)f;
         double d2 = entity.prevPosZ + (entity.posZ - entity.prevPosZ) * (double)partialTicks;
         
-    	ModCamera modCamera = ModuleManager.modCamera;
+    	ModCamera modCamera = Kagu.getModuleManager().getModule(ModCamera.class);
     	boolean modCameraEnabled = modCamera.isEnabled();
     	boolean modCameraAnimationEnabled = modCameraEnabled && modCamera.getAnimations().isEnabled() && entity == mc.thePlayer && this.mc.gameSettings.thirdPersonView > 0;
         
@@ -1372,7 +1378,7 @@ public class EntityRenderer implements IResourceManagerReloadListener
                 b0 = -1;
             }
 
-            if (this.mc.gameSettings.smoothCamera && ModuleManager.modNormalZoomCam.isDisabled())
+            if (this.mc.gameSettings.smoothCamera && Kagu.getModuleManager().getModule(ModNormalZoomCam.class).isDisabled())
             {
                 this.smoothCamYaw += f2;
                 this.smoothCamPitch += f3;

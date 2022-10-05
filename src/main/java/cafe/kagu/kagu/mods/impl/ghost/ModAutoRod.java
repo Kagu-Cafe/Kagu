@@ -10,12 +10,14 @@ import java.util.stream.Collectors;
 
 import javax.vecmath.Vector3d;
 
+import cafe.kagu.kagu.Kagu;
 import cafe.kagu.kagu.eventBus.EventHandler;
 import cafe.kagu.kagu.eventBus.Handler;
 import cafe.kagu.kagu.eventBus.impl.EventPacketSend;
 import cafe.kagu.kagu.eventBus.impl.EventTick;
 import cafe.kagu.kagu.mods.Module;
 import cafe.kagu.kagu.mods.ModuleManager;
+import cafe.kagu.kagu.mods.impl.player.ModAntiBot;
 import cafe.kagu.kagu.settings.impl.BooleanSetting;
 import cafe.kagu.kagu.settings.impl.DoubleSetting;
 import cafe.kagu.kagu.settings.impl.LabelSetting;
@@ -236,12 +238,13 @@ public class ModAutoRod extends Module {
 		EntityPlayerSP thePlayer = mc.thePlayer;
 		
 		// Remove non living and out of range entities
+		ModAntiBot modAntiBot = Kagu.getModuleManager().getModule(ModAntiBot.class);
 		potentialTargets = (ArrayList<Entity>) potentialTargets.stream()
 				.filter(ent -> ent instanceof EntityLivingBase && thePlayer.getDistanceToEntity(ent) <= maxDistance.getValue()
 						&& ent != mc.thePlayer
 						&& (((EntityLivingBase) ent).getMaxHealth() <= 0 || ((EntityLivingBase) ent).getHealth() > 0)
-						&& (!(ent instanceof EntityPlayer) || (ModuleManager.modAntiBot.isEnabled()
-								? !ModuleManager.modAntiBot.isBot((EntityPlayer) ent)
+						&& (!(ent instanceof EntityPlayer) || (modAntiBot.isEnabled()
+								? !modAntiBot.isBot((EntityPlayer) ent)
 								: true)))
 				.collect(Collectors.toList());
 		

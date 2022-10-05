@@ -3,6 +3,7 @@ package net.minecraft.client.renderer.entity;
 import java.util.List;
 import java.util.concurrent.Callable;
 
+import cafe.kagu.kagu.Kagu;
 import cafe.kagu.kagu.font.FontUtils;
 import cafe.kagu.kagu.mods.ModuleManager;
 import cafe.kagu.kagu.mods.impl.visual.ModHud;
@@ -449,7 +450,7 @@ public class RenderItem implements IResourceManagerReloadListener
         GlStateManager.enableBlend();
         GlStateManager.blendFunc(770, 771);
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-        ModHud modHud = ModuleManager.modHud;
+        ModHud modHud = Kagu.getModuleManager().getModule(ModHud.class);
         boolean isGui3d = ibakedmodel.isGui3d();
         switch (modHud.getItemInventoryTransform().getMode()) {
         	case "All 3D":{
@@ -491,7 +492,7 @@ public class RenderItem implements IResourceManagerReloadListener
         {
             GlStateManager.scale(40.0F, 40.0F, 40.0F);
             GlStateManager.rotate(210.0F, 1.0F, 0.0F, 0.0F);
-            ModHud modHud = ModuleManager.modHud;
+            ModHud modHud = Kagu.getModuleManager().getModule(ModHud.class);
             if (modHud.getRotate3DInventoryItems().isEnabled()) {
             	if (modHud.getItemRotateMode().is("Float")) {
             		GlStateManager.rotate((float) ((System.currentTimeMillis() * modHud.getRotateSpeed().getValue()) % 360), 1.0F, 1.0F, 1.0F);
@@ -585,7 +586,7 @@ public class RenderItem implements IResourceManagerReloadListener
                     s = EnumChatFormatting.RED + String.valueOf(stack.stackSize);
                 }
                 
-                if (ModuleManager.modHud.getAlternateStackSizeFont().isEnabled()) {
+                if (Kagu.getModuleManager().getModule(ModHud.class).getAlternateStackSizeFont().isEnabled()) {
                     GlStateManager.disableDepth();
                     FontUtils.STRATUM2_REGULAR_10.drawString(s, (float)(xPosition + 19 - 2 + 1 - fr.getStringWidth(s)), (float)(yPosition + 6 + 4), 0xff000000);
                     FontUtils.STRATUM2_REGULAR_10.drawString(s, (float)(xPosition + 19 - 2 - fr.getStringWidth(s)), (float)(yPosition + 6 + 3), -1);

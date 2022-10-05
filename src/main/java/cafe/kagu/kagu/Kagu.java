@@ -65,9 +65,11 @@ public class Kagu {
 	public static String RECORD_SEPARATOR = "👺";
 	
 	private static int activeTexture = GL13.GL_TEXTURE0;
+	private static boolean firstStageInit = false;
 	
 	private static final EventBus EVENT_BUS = new EventBus();
 	private static final KeyAuth KEY_AUTH = new KeyAuth("ZvEPlLo1aX", name, "6c24f57efcd23dc83c2f69d214d5e29ff06b3abcb242f9a5bba3a908be1e0487", version);
+	private static final ModuleManager MODULE_MANAGER = new ModuleManager();
 	
 	// Only used if the font texture size is greater than the size limit
 	public static final char[] FONT_RENDERER_SUPPORTED_CHARACTERS = new char[] {
@@ -91,10 +93,23 @@ public class Kagu {
 	 */
 	public static void start() {
 		
-		// Start the file manager
-		logger.info("Starting the file manager...");
-		FileManager.start();
-		logger.info("Started the file manager");
+		if (!firstStageInit) {
+			// Start the file manager
+			logger.info("Starting the file manager...");
+			FileManager.start();
+			logger.info("Started the file manager");
+			
+			// Start the spoof utils
+			logger.info("Starting the spoof utils...");
+			SpoofUtils.start();
+			logger.info("Started the spoof utils");
+			
+			// Start the module manager
+			logger.info("Starting the module manager...");
+			MODULE_MANAGER.start();
+			logger.info("Started the module manager");
+			firstStageInit = true;
+		}
 		
 		KEY_AUTH.initialize(msg -> {
 			System.exit(Note.WINAUTH_APP_DISABLED);
@@ -132,16 +147,6 @@ public class Kagu {
 		logger.info("Starting the stencil util...");
 		StencilUtil.start();
 		logger.info("Started the stencil util");
-		
-		// Start the spoof utils
-		logger.info("Starting the spoof utils...");
-		SpoofUtils.start();
-		logger.info("Started the spoof utils");
-		
-		// Start the module manager
-		logger.info("Starting the module manager...");
-		ModuleManager.start();
-		logger.info("Started the module manager");
 		
 		// Start the command manager
 		logger.info("Starting the command manager...");
@@ -341,6 +346,13 @@ public class Kagu {
 	 */
 	public static void setLoggedInUser(String loggedInUser) {
 		Kagu.loggedInUser = loggedInUser;
+	}
+	
+	/**
+	 * @return the moduleManager
+	 */
+	public static ModuleManager getModuleManager() {
+		return MODULE_MANAGER;
 	}
 	
 }

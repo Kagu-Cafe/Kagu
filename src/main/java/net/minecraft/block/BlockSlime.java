@@ -1,7 +1,9 @@
 package net.minecraft.block;
 
+import cafe.kagu.kagu.Kagu;
 import cafe.kagu.kagu.mods.ModuleManager;
 import cafe.kagu.kagu.mods.impl.exploit.ModSpecialSlime;
+import cafe.kagu.kagu.mods.impl.move.ModScaffold;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
@@ -47,8 +49,8 @@ public class BlockSlime extends BlockBreakable
     public void onLanded(World worldIn, Entity entityIn)
     {
     	// Special slime
-    	if (ModuleManager.modSpecialSlime.isEnabled() && entityIn == Minecraft.getMinecraft().thePlayer) {
-    		ModSpecialSlime modSpecialSlime = ModuleManager.modSpecialSlime;
+    	if (Kagu.getModuleManager().getModule(ModSpecialSlime.class).isEnabled() && entityIn == Minecraft.getMinecraft().thePlayer) {
+    		ModSpecialSlime modSpecialSlime = Kagu.getModuleManager().getModule(ModSpecialSlime.class);
     		if (modSpecialSlime.getNoBounce().isDisabled()) {
     			entityIn.motionY = -entityIn.motionY * modSpecialSlime.getBounceBoost().getValue();
     		}else {

@@ -21,6 +21,10 @@ import cafe.kagu.kagu.font.FontRenderer;
 import cafe.kagu.kagu.font.FontUtils;
 import cafe.kagu.kagu.mods.Module;
 import cafe.kagu.kagu.mods.ModuleManager;
+import cafe.kagu.kagu.mods.impl.combat.ModHitboxes;
+import cafe.kagu.kagu.mods.impl.ghost.ModHideHud;
+import cafe.kagu.kagu.mods.impl.player.ModNoFall;
+import cafe.kagu.kagu.mods.impl.visual.ModHud;
 import cafe.kagu.kagu.utils.StencilUtil;
 import cafe.kagu.kagu.utils.UiUtils;
 import net.minecraft.client.Minecraft;
@@ -38,7 +42,7 @@ public class Hud {
 	private Handler<EventRender2D> renderHud = e -> {
 		
 		// Don't render if hide hud is enabled
-		if (ModuleManager.modHideHud.isEnabled())
+		if (Kagu.getModuleManager().getModule(ModHideHud.class).isEnabled())
 			return;
 		
 		// We only want to render on the post event
@@ -74,7 +78,7 @@ public class Hud {
 		String separator = " - ";
 		FontRenderer moduleFr = FontUtils.SAN_FRANCISCO_REGULAR_10_AA;
 		FontRenderer infoFr = FontUtils.SAN_FRANCISCO_THIN_10_AA;
-		List<Module> mods = new ArrayList<Module>(Arrays.asList(ModuleManager.getModules()));
+		List<Module> mods = new ArrayList<Module>(Kagu.getModuleManager().getModules());
 		double rightPad = 2;
 		double topPad = 0.5;
 		double index = 0;
@@ -100,7 +104,7 @@ public class Hud {
 			// Animation
 			GlStateManager.pushMatrix();
 			
-			switch(ModuleManager.modHud.getArraylistAnimationModeSetting().getMode()) {
+			switch(Kagu.getModuleManager().getModule(ModHud.class).getArraylistAnimationModeSetting().getMode()) {
 				case "Slide":{
 					indexIncrement = mod.getArraylistAnimation();
 					GlStateManager.translate((moduleFr.getStringWidth(mod.getName()) + infoLength + 4) * (1 - mod.getArraylistAnimation()), 0, 0);
@@ -114,7 +118,7 @@ public class Hud {
 			}
 			
 			// Color for the text
-			int textColor = ModuleManager.modHud.getArraylistColors().is("White") ? -1 : mod.getCategory().getArraylistColor();
+			int textColor = Kagu.getModuleManager().getModule(ModHud.class).getArraylistColors().is("White") ? -1 : mod.getCategory().getArraylistColor();
 			
 			// Module name
 			moduleFr.drawString(mod.getName(), sr.getScaledWidth() - moduleFr.getStringWidth(mod.getName()) - infoLength, index * moduleFr.getFontHeight(), textColor, true);
@@ -141,7 +145,7 @@ public class Hud {
 			return;
 		
 		double animationSpeed = 0.15;
-		for (Module mod : ModuleManager.getModules()) {
+		for (Module mod : Kagu.getModuleManager().getModules()) {
 			
 			// Arraylist animation
 			if (mod.isEnabled()) {
