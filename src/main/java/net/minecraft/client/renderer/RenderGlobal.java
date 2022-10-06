@@ -4,6 +4,9 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.gson.JsonSyntaxException;
+
+import cafe.kagu.kagu.utils.ChatUtils;
+
 import java.io.IOException;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -1881,7 +1884,7 @@ public class RenderGlobal implements IWorldAccess, IResourceManagerReloadListene
             GlStateManager.color(0.0F, 0.0F, 0.0F);
             double d0 = this.mc.thePlayer.getPositionEyes(partialTicks).yCoord - this.theWorld.getHorizon();
 
-            if (d0 < 0.0D)
+            if (d0 < 0.0D && false)
             {
                 GlStateManager.pushMatrix();
                 GlStateManager.translate(0.0F, 12.0F, 0.0F);

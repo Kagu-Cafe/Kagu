@@ -1,7 +1,7 @@
 invertYMouse:false
 mouseSensitivity:0.13380282
 fov:1.0
-gamma:0.0
+gamma:1.0
 saturation:0.0
 renderDistance:8
 guiScale:2
@@ -10,11 +10,11 @@ bobView:true
 anaglyph3d:false
 maxFps:260
 fboEnable:true
-difficulty:1
+difficulty:2
 fancyGraphics:true
 ao:2
-renderClouds:false
-resourcePacks:["DistastefulBannock V1.0"]
+renderClouds:true
+resourcePacks:[]
 incompatibleResourcePacks:[]
 lastServer:
 lang:en_US
@@ -52,7 +52,7 @@ streamChatEnabled:0
 streamChatUserFilter:0
 streamMicToggleBehavior:0
 forceUnicodeFont:false
-allowBlockAlternatives:false
+allowBlockAlternatives:true
 reducedDebugInfo:false
 useNativeTransport:true
 entityShadows:true

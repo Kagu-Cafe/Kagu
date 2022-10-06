@@ -44,6 +44,9 @@ import net.minecraft.world.biome.BiomeGenBase;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
+import cafe.kagu.kagu.Kagu;
+import cafe.kagu.kagu.mods.impl.visual.ModAmbience;
+
 public class CustomColors
 {
     private static String paletteFormatDefault = "vanilla";
@@ -1388,6 +1391,13 @@ public class CustomColors
 
     public static Vec3 getWorldFogColor(Vec3 p_getWorldFogColor_0_, WorldClient p_getWorldFogColor_1_, Entity p_getWorldFogColor_2_, float p_getWorldFogColor_3_)
     {
+        ModAmbience modAmbience = Kagu.getModuleManager().getModule(ModAmbience.class);
+        if (modAmbience.isEnabled() && modAmbience.getCustomSkyColor().isEnabled()) {
+        	return new Vec3(modAmbience.getSkyRed().getValue() / 255d, 
+        			modAmbience.getSkyGreen().getValue() / 255d, 
+        			modAmbience.getSkyBlue().getValue() / 255d);
+        }
+        
         int i = p_getWorldFogColor_1_.provider.getDimensionId();
 
         switch (i)
@@ -1410,6 +1420,13 @@ public class CustomColors
 
     public static Vec3 getWorldSkyColor(Vec3 p_getWorldSkyColor_0_, World p_getWorldSkyColor_1_, Entity p_getWorldSkyColor_2_, float p_getWorldSkyColor_3_)
     {
+        ModAmbience modAmbience = Kagu.getModuleManager().getModule(ModAmbience.class);
+        if (modAmbience.isEnabled() && modAmbience.getCustomSkyColor().isEnabled()) {
+        	return new Vec3(modAmbience.getSkyRed().getValue() / 255d, 
+        			modAmbience.getSkyGreen().getValue() / 255d, 
+        			modAmbience.getSkyBlue().getValue() / 255d);
+        }
+    	
         int i = p_getWorldSkyColor_1_.provider.getDimensionId();
 
         switch (i)

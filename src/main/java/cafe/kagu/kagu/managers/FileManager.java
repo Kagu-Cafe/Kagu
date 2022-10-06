@@ -56,6 +56,7 @@ public class FileManager {
 						// Defaults
 						DEFAULT_KEYBINDS = new File(DEFAULTS_DIR, "keybinds.kagu"),
 						DEFAULT_CONFIG = new File(DEFAULTS_DIR, "config.kagu"),
+						CLICKGUI_OPTIONS = new File(DEFAULTS_DIR, "clickgui.json"),
 						
 						// Skin override file because I'm cool :sunglasses:
 						SKIN_OVERRIDE = new File(KAGU_DIR, "skin.png"),

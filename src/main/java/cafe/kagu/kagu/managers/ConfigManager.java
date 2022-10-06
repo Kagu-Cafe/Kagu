@@ -13,6 +13,7 @@ import cafe.kagu.kagu.Kagu;
 import cafe.kagu.kagu.mods.Module;
 import cafe.kagu.kagu.mods.ModuleManager;
 import cafe.kagu.kagu.mods.Module.Category;
+import cafe.kagu.kagu.mods.impl.visual.ModClickGui;
 import cafe.kagu.kagu.settings.Setting;
 import cafe.kagu.kagu.settings.impl.BooleanSetting;
 import cafe.kagu.kagu.settings.impl.DoubleSetting;
@@ -111,6 +112,11 @@ public class ConfigManager {
 			if (category == null)
 				continue; // Category doesn't exist and wasn't found
 			boolean enabled = moduleSplit[2].equals("true");
+			
+			// Don't override clickgui settings
+			if (Kagu.getModuleManager().getModule(ModClickGui.class).getName().equals(name) 
+					&& Kagu.getModuleManager().getModule(ModClickGui.class).getCategory() == category)
+				continue;
 			
 			// Find the module
 			for (Module module : Kagu.getModuleManager().getModules()) {

@@ -1,5 +1,7 @@
 package net.minecraft.world;
 
+import cafe.kagu.kagu.Kagu;
+import cafe.kagu.kagu.mods.impl.visual.ModAmbience;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.MathHelper;

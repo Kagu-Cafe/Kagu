@@ -23,7 +23,7 @@ import net.minecraft.network.play.client.C01PacketChatMessage;
 public class CommandSpoofSkin extends Command {
 
 	public CommandSpoofSkin() {
-		super("SpoofSkin", "Put file in kagu dir named skin.png, run this command to refresh the file", refresh);
+		super("spoofSkin", "Put file in kagu dir named skin.png, run this command to refresh the file", refresh);
 	}
 
 	private static ActionRequirement refresh = new ActionRequirement((CommandAction) args -> {
@@ -33,12 +33,13 @@ public class CommandSpoofSkin extends Command {
 					Minecraft.getMinecraft().getTextureManager().deleteTexture(Kagu.getSkinOverride());
 				Kagu.setSkinOverride(Minecraft.getMinecraft().getTextureManager().getDynamicTextureLocation(
 						"SkinOverride:3", new DynamicTexture(ImageIO.read(FileManager.SKIN_OVERRIDE))));
+				ChatUtils.addChatMessage("Your skin has been set");
 			} catch (IOException e) {
 				ChatUtils.addChatMessage("Something went wrong while loading the skin");
 				e.printStackTrace();
 			}
 		}else {
-			ChatUtils.addChatMessage("Could not find the skin file for " + FileManager.SKIN_OVERRIDE.getAbsolutePath());
+			ChatUtils.addChatMessage("Could not find the skin file in " + FileManager.SKIN_OVERRIDE.getAbsolutePath());
 			Kagu.setSkinOverride(null);
 		}
 		return true;

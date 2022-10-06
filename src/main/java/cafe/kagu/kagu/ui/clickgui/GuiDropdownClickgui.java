@@ -18,6 +18,7 @@ import javax.imageio.ImageIO;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.json.JSONObject;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
@@ -106,32 +107,32 @@ public class GuiDropdownClickgui extends GuiScreen {
 		String dropdownImageFolder = "Kagu/dropdownClickgui/bgImage/";
 		
 		// Furries
-		bgImages.put("Fleur 1", new BackgroundImage(dropdownImageFolder + "fleur1.png"));
-		bgImages.put("Fleur 2", new BackgroundImage(dropdownImageFolder + "fleur2.png"));
-		bgImages.put("Distasteful", new BackgroundImage(dropdownImageFolder + "dark.png"));
-		bgImages.put("Cheddar 1", new BackgroundImage(dropdownImageFolder + "cheddar1.png"));
-		bgImages.put("Cheddar 2", new BackgroundImage(dropdownImageFolder + "cheddar2.png"));
-		bgImages.put("Sylveon 1", new BackgroundImage(dropdownImageFolder + "sylveon1.png"));
-		bgImages.put("Vaporeon 1", new BackgroundImage(dropdownImageFolder + "vaporeon1.png"));
-		bgImages.put("Wolf O'Donnell", new BackgroundImage(dropdownImageFolder + "wolf_odonnell.png"));
+		bgImages.put("Fleur 1", new BackgroundImage(dropdownImageFolder + "fleur1.png", "Fleur 1"));
+		bgImages.put("Fleur 2", new BackgroundImage(dropdownImageFolder + "fleur2.png", "Fleur 2"));
+		bgImages.put("Distasteful", new BackgroundImage(dropdownImageFolder + "dark.png", "Distasteful"));
+		bgImages.put("Cheddar 1", new BackgroundImage(dropdownImageFolder + "cheddar1.png", "Cheddar 1"));
+		bgImages.put("Cheddar 2", new BackgroundImage(dropdownImageFolder + "cheddar2.png", "Cheddar 2"));
+		bgImages.put("Sylveon 1", new BackgroundImage(dropdownImageFolder + "sylveon1.png", "Sylveon 1"));
+		bgImages.put("Vaporeon 1", new BackgroundImage(dropdownImageFolder + "vaporeon1.png", "Vaporeon 1"));
+		bgImages.put("Wolf O'Donnell", new BackgroundImage(dropdownImageFolder + "wolf_odonnell.png", "Wolf O'Donnell"));
 		
 		// Anime (mostly femboys)
-		bgImages.put("Astolfo 1", new BackgroundImage(dropdownImageFolder + "astolfo1.png"));
-		bgImages.put("Astolfo 2", new BackgroundImage(dropdownImageFolder + "astolfo2.png"));
-		bgImages.put("Astolfo 3", new BackgroundImage(dropdownImageFolder + "astolfo3.png"));
-		bgImages.put("Felix 1", new BackgroundImage(dropdownImageFolder + "felix1.png"));
-		bgImages.put("Felix 2", new BackgroundImage(dropdownImageFolder + "felix2.png"));
-		bgImages.put("Miku 1", new BackgroundImage(dropdownImageFolder + "miku1.png"));
-		bgImages.put("Miku 2", new BackgroundImage(dropdownImageFolder + "miku2.png"));
+		bgImages.put("Astolfo 1", new BackgroundImage(dropdownImageFolder + "astolfo1.png", "Astolfo 1"));
+		bgImages.put("Astolfo 2", new BackgroundImage(dropdownImageFolder + "astolfo2.png", "Astolfo 2"));
+		bgImages.put("Astolfo 3", new BackgroundImage(dropdownImageFolder + "astolfo3.png", "Astolfo 3"));
+		bgImages.put("Felix 1", new BackgroundImage(dropdownImageFolder + "felix1.png", "Felix 1"));
+		bgImages.put("Felix 2", new BackgroundImage(dropdownImageFolder + "felix2.png", "Felix 2"));
+		bgImages.put("Miku 1", new BackgroundImage(dropdownImageFolder + "miku1.png", "Miku 1"));
+		bgImages.put("Miku 2", new BackgroundImage(dropdownImageFolder + "miku2.png", "Miku 2"));
 		
 		// Other
-		bgImages.put("Peter Griffin 1", new BackgroundImage(dropdownImageFolder + "peter1.png"));
-		bgImages.put("Peter Griffin 2", new BackgroundImage(dropdownImageFolder + "peter2.png"));
-		bgImages.put("Yoshi 1", new BackgroundImage(dropdownImageFolder + "yoshi1.png"));
-		bgImages.put("Yoshi 2", new BackgroundImage(dropdownImageFolder + "yoshi2.png"));
-		bgImages.put("Crazy Frog 1", new BackgroundImage(dropdownImageFolder + "crazyfrog1.png"));
-		bgImages.put("Jeremy Clarkson", new BackgroundImage(dropdownImageFolder + "jeremy_clarkson.png"));
-		bgImages.put("Niko 1", new BackgroundImage(dropdownImageFolder + "niko1.png"));
+		bgImages.put("Peter Griffin 1", new BackgroundImage(dropdownImageFolder + "peter1.png", "Peter Griffin 1"));
+		bgImages.put("Peter Griffin 2", new BackgroundImage(dropdownImageFolder + "peter2.png", "Peter Griffin 2"));
+		bgImages.put("Yoshi 1", new BackgroundImage(dropdownImageFolder + "yoshi1.png", "Yoshi 1"));
+		bgImages.put("Yoshi 2", new BackgroundImage(dropdownImageFolder + "yoshi2.png", "Yoshi 2"));
+		bgImages.put("Crazy Frog 1", new BackgroundImage(dropdownImageFolder + "crazyfrog1.png", "Crazy Frog 1"));
+		bgImages.put("Jeremy Clarkson", new BackgroundImage(dropdownImageFolder + "jeremy_clarkson.png", "Jeremy Clarkson"));
+		bgImages.put("Niko 1", new BackgroundImage(dropdownImageFolder + "niko1.png", "Niko 1"));
 		
 		backgroundImage = bgImages.get(Kagu.getModuleManager().getModule(ModClickGui.class).getMode().getMode());
 		resetBackgroundImage();
@@ -155,6 +156,24 @@ public class GuiDropdownClickgui extends GuiScreen {
 			TABS[index++] = new Tab(category);
 		}
 		
+		// Load clickgui data
+		if (FileManager.CLICKGUI_OPTIONS.exists()) {
+			JSONObject json = new JSONObject(FileManager.readStringFromFile(FileManager.CLICKGUI_OPTIONS));
+			try {
+				for (Tab tab : TABS) {
+					JSONObject tabObj = json.getJSONObject(tab.getCategory().getName());
+					if (tabObj == null)
+						continue; // Tab doesn't have any save data
+					tab.setPosX(tabObj.getInt("x"));
+					tab.setPosX(tabObj.getInt("y"));
+					tab.setExpanded(tabObj.getBoolean("expanded"));
+				}
+			} catch (Exception e) {
+				
+			}
+			saveClickguiOptions();
+		}
+		
 	}
 	
 	@Override
@@ -171,7 +190,7 @@ public class GuiDropdownClickgui extends GuiScreen {
 		// Position the tabs in a semi neat order if they're unset
 		boolean setTabPositions = true;
 		for (Tab tab : TABS) {
-			if (tab.getPosX() != 0 || tab.getPosY() != 0)
+			if ((tab.getPosX() != 0 && tab.getPosX() != 25) || tab.getPosY() != 0)
 				setTabPositions = false;
 		}
 		if (setTabPositions) {
@@ -253,6 +272,7 @@ public class GuiDropdownClickgui extends GuiScreen {
 			if (draggedTab == tab) {
 				tab.setPosX(mouseX - mouseOffsets[0]);
 				tab.setPosY(mouseY - mouseOffsets[1]);
+				saveClickguiOptions();
 			}
 			
 			GlStateManager.pushMatrix();
@@ -274,6 +294,7 @@ public class GuiDropdownClickgui extends GuiScreen {
 					isLeftClick = false;
 				}else if (isRightClick) {
 					tab.setExpanded(!tab.isExpanded());
+					saveClickguiOptions();
 					isRightClick = false;
 				}
 				hasHovered = true;
@@ -849,9 +870,18 @@ public class GuiDropdownClickgui extends GuiScreen {
 
 	}
 	
+	/**
+	 * @author DistastefulBannock
+	 *
+	 */
 	private class BackgroundImage {
 		
-		public BackgroundImage(String resourceLocation) {
+		/**
+		 * @param resourceLocation The resourcelocation for the image
+		 * @param name The name of the mode, used for saving config data
+		 */
+		public BackgroundImage(String resourceLocation, String name) {
+			this.name = name;
 			this.resourceLocation = new ResourceLocation(resourceLocation);
 			
 			// Load the image, sample it for the average color, save color and cleanup and streams used
@@ -924,6 +954,7 @@ public class GuiDropdownClickgui extends GuiScreen {
 		
 		private ResourceLocation resourceLocation;
 		private int width, height, sampledColor, sampledSolidColor;
+		private String name;
 		
 		/**
 		 * @return the resourceLocation
@@ -958,6 +989,13 @@ public class GuiDropdownClickgui extends GuiScreen {
 		 */
 		public int getSampledSolidColor() {
 			return sampledSolidColor;
+		}
+		
+		/**
+		 * @return the name
+		 */
+		public String getName() {
+			return name;
 		}
 		
 	}
@@ -1037,6 +1075,31 @@ public class GuiDropdownClickgui extends GuiScreen {
 				tab.setPosY(25);
 				spaceShift += (tab.getWidth() * 1.1);
 			}
+		}
+		saveClickguiOptions();
+	}
+	
+	/**
+	 * Saves the clickgui mode and tab positions
+	 */
+	public void saveClickguiOptions() {
+		try {
+			JSONObject json = new JSONObject();
+			json.put("mode", Kagu.getModuleManager().getModule(ModClickGui.class).getMode().getMode());
+			json.put("bgAnimation", Kagu.getModuleManager().getModule(ModClickGui.class).getBgImageAnimation().getMode());
+			json.put("bgScale", Kagu.getModuleManager().getModule(ModClickGui.class).getBgImageScale().getValue());
+			json.put("bgFlip", Kagu.getModuleManager().getModule(ModClickGui.class).getBgImageFlip().isEnabled());
+			json.put("image", backgroundImage.getName());
+			for (Tab tab : TABS) {
+				JSONObject tabObj = new JSONObject();
+				tabObj.put("x", tab.getPosX());
+				tabObj.put("y", tab.getPosY());
+				tabObj.put("expanded", tab.isExpanded());
+				json.put(tab.getCategory().getName(), tabObj);
+			}
+			FileManager.writeStringToFile(FileManager.CLICKGUI_OPTIONS, json.toString());
+		} catch (Exception e) {
+			// TODO: handle exception
 		}
 	}
 	
