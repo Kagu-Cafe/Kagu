@@ -2487,7 +2487,7 @@ public abstract class EntityPlayer extends EntityLivingBase
     {
         this.hasReducedDebug = reducedDebug;
     }
-
+    
     public static enum EnumChatVisibility
     {
         FULL(0, "options.chat.visibility.full"),
@@ -2526,7 +2526,7 @@ public abstract class EntityPlayer extends EntityLivingBase
             }
         }
     }
-
+    
     public static enum EnumStatus
     {
         OK,

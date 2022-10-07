@@ -10,11 +10,11 @@ bobView:true
 anaglyph3d:false
 maxFps:260
 fboEnable:true
-difficulty:2
+difficulty:3
 fancyGraphics:true
 ao:2
-renderClouds:true
-resourcePacks:[]
+renderClouds:false
+resourcePacks:["DistastefulBannock V1.0"]
 incompatibleResourcePacks:[]
 lastServer:
 lang:en_US

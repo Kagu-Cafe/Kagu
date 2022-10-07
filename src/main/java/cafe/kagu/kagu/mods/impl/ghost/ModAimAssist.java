@@ -42,12 +42,15 @@ public class ModAimAssist extends Module {
 	
 	public ModAimAssist() {
 		super("AimAssist", Category.GHOST);
-		setSettings(mode, passiveSlowdown, activeSpeed, range);
+		setSettings(mode, targets, raytraceCheck, passiveSlowdown, activeSpeed, fov, range);
 	}
 	
 	private ModeSetting mode = new ModeSetting("Mode", "Passive", "Passive", "Lock");
+	private ModeSetting targets = new ModeSetting("Targets", "Players", "Players", "Entities");
+	private ModeSetting raytraceCheck = new ModeSetting("Raytrace", "Off", "Off", "Simple", "Advanced");
 	private DoubleSetting passiveSlowdown = new DoubleSetting("Slowdown", 0.55, 0, 1, 0.01).setDependency(() -> mode.is("Passive"));
 	private DoubleSetting activeSpeed = new DoubleSetting("Speed", 3, 0.1, 10, 0.05).setDependency(() -> mode.is("Active"));
+	private DoubleSetting fov = new DoubleSetting("FOV", 180, 1, 180, 1);
 	private DoubleSetting range = new DoubleSetting("Range", 12, 2, 12, 0.05);
 	
 	private EntityLivingBase target = null;
@@ -113,7 +116,8 @@ public class ModAimAssist extends Module {
 		
 		EntityPlayerSP thePlayer = mc.thePlayer;
 		
-		if (target == null || thePlayer.getDistanceToEntity(target) > range.getValue() || mc.theWorld.getEntityByID(target.getEntityId()) == null) {
+		if (target == null || (!raytraceCheck.is("Off") && (raytraceCheck.is("Simple") ? !mc.thePlayer.canEntityBeSeen(target) : !mc.thePlayer.raytraceEntity(target))) 
+				|| thePlayer.getDistanceToEntity(target) > range.getValue() || mc.theWorld.getEntityByID(target.getEntityId()) == null) {
 			EntityLivingBase[] targets = getTargets();
 			if (targets == null || targets.length == 0) {
 				target = null;
@@ -146,20 +150,16 @@ public class ModAimAssist extends Module {
 		
 		// Remove non living and out of range entities
 		ModAntiBot modAntiBot = Kagu.getModuleManager().getModule(ModAntiBot.class);
-		potentialTargets = (ArrayList<Entity>) potentialTargets.stream()
-				.filter(ent -> ent instanceof EntityLivingBase && thePlayer.getDistanceToEntity(ent) <= range.getValue()
+		potentialTargets = potentialTargets.stream()
+				.filter(ent -> (targets.is("Players") ? ent instanceof EntityPlayer : ent instanceof EntityLivingBase) 
+						&& thePlayer.getDistanceToEntity(ent) <= range.getValue()
 						&& ent != mc.thePlayer
+						&& (raytraceCheck.is("Off") || (raytraceCheck.is("Simple") ? mc.thePlayer.canEntityBeSeen(ent) : mc.thePlayer.raytraceEntity(ent)))
 						&& (((EntityLivingBase) ent).getMaxHealth() <= 0 || ((EntityLivingBase) ent).getHealth() > 0)
 						&& (!(ent instanceof EntityPlayer) || (modAntiBot.isEnabled()
 								? !modAntiBot.isBot((EntityPlayer) ent)
 								: true)))
-				.collect(Collectors.toList());
-		
-		// Remove targets that don't fit the required target settings
-		potentialTargets = (ArrayList<Entity>) potentialTargets
-				.stream()
-				.filter(ent -> ent instanceof EntityPlayer
-				).collect(Collectors.toList());
+				.collect(Collectors.toCollection(ArrayList::new));
 		
 		// Sort them based on the fov distance
 		potentialTargets.sort(Comparator.comparingDouble(ent -> {
@@ -168,6 +168,14 @@ public class ModAimAssist extends Module {
 			return MathUtils.getDistance2D(thePlayer.rotationYaw, thePlayer.rotationPitch, rots[0], rots[1]);
 		}));
 		
+		// Remove out of fov targets
+		potentialTargets = potentialTargets.stream().filter(ent -> {
+			float[] rots = RotationUtils.getRotations(new Vector3d(ent.posX, ent.posY, ent.posZ));
+			RotationUtils.makeRotationValuesLoopCorrectly(new float[] {thePlayer.rotationYaw, thePlayer.rotationPitch}, rots);
+			return MathUtils.getDistance2D(thePlayer.rotationYaw, thePlayer.rotationPitch, rots[0], rots[1]) <= fov.getValue();
+		}).collect(Collectors.toCollection(ArrayList::new));
+		
+		// Return
 		EntityLivingBase[] targets = new EntityLivingBase[0];
 		targets = potentialTargets.toArray(targets);
 		return potentialTargets.toArray(targets);

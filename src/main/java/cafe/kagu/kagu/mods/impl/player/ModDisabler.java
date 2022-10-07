@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.ThreadLocalRandom;
 
 import org.apache.commons.lang3.RandomUtils;
@@ -59,9 +61,9 @@ public class ModDisabler extends Module {
 	private boolean changeNextC06 = false;
 	private float rapidRotation = 0;
 	
-	private boolean synced = false;
+	private boolean synced = false, s08C04 = false;
 	private Queue<Packet<?>> pingPackets = new LinkedList<>();
-	private TimerUtil c03Timer = new TimerUtil();
+	private TimerUtil c03Timer = new TimerUtil(), s08Timer = new TimerUtil();
 	private int c0fsInQueue = 0;
 	private int ticks = 0;
 	
@@ -104,39 +106,8 @@ public class ModDisabler extends Module {
 				thePlayer.setLastReportedPitch(mc.thePlayer.getLastReportedPitch() + 1);
 			}break;
 			case "Hypixel Strafe":{
-				if (thePlayer.ticksExisted == 0) {
-					synced = false;
-					setInfo("Please Wait...");
-					pingPackets.clear();
-				}
-				
-				if (e.isPost()) {
-					if (pingPackets.size() > 0) {
-						setInfo("Made watchdog our bitch");
-						synced = true;
-					}
-					if (c0fsInQueue < 8)
-						return;
-					NetworkManager networkManager = mc.getNetHandler().getNetworkManager();
-//					pingPackets.iterator().forEachRemaining(networkManager::sendPacketNoEvent);
-					List<Packet> removePackets = new ArrayList();
-					Packet<?> p = null;
-					while ((p = pingPackets.poll()) != null) {
-						if (p instanceof C00PacketKeepAlive && (pingPackets.size() - removePackets.size()) - c0fsInQueue > 15) {
-							networkManager.sendPacketNoEvent(p);
-							removePackets.add(p);
-						}
-						if (p instanceof C0FPacketConfirmTransaction) {
-							c0fsInQueue--;
-							networkManager.sendPacketNoEvent(p);
-							removePackets.add(p);
-						}
-					}
-//					pingPackets.clear();
-					pingPackets.removeAll(removePackets);
-//					c0fsInQueue = 0;
-//					if (syncedC06)
-//						ChatUtils.addChatMessage("Cum");
+				if (s08C04) {
+					thePlayer.setPosition(thePlayer.lastTickPosX, thePlayer.lastTickPosY, thePlayer.lastTickPosZ);
 				}
 			}break;
 			case "Basic Desync":{
@@ -174,38 +145,7 @@ public class ModDisabler extends Module {
 			case "Hypixel Strafe":{
 				if (!(thePlayer.isUsingItem() || thePlayer.isBlocking()) || thePlayer.ticksExisted % 3 != 0)
 					return;
-				if (e.isPre()) {
-//					ChatUtils.addChatMessage("test1");
-//					mc.getNetHandler().getNetworkManager().sendPacketNoEvent(new C12PacketUpdateSign(BlockPos.ORIGIN, new IChatComponent[0]));
-					if (thePlayer.isSprinting()) {
-//						mc.getNetHandler().getNetworkManager().sendPacketNoEvent(new C0BPacketEntityAction(thePlayer, net.minecraft.network.play.client.C0BPacketEntityAction.Action.STOP_SPRINTING));
-					}
-//					mc.getNetHandler().getNetworkManager().sendPacket(new C07PacketPlayerDigging(C07PacketPlayerDigging.Action.RELEASE_USE_ITEM, BlockPos.ORIGIN, EnumFacing.DOWN));
-//					mc.getNetHandler().getNetworkManager().sendPacketNoEvent(new C09PacketHeldItemChange(thePlayer.inventory.currentItem == 0 ? 1 : 0));
-//					mc.getNetHandler().getNetworkManager().sendPacketNoEvent(new C09PacketHeldItemChange(thePlayer.inventory.currentItem));
-//					mc.getNetHandler().getNetworkManager().sendPacket(
-//							new C08PacketPlayerBlockPlacement(BlockPos.ORIGIN, 255, thePlayer.inventory.getStackInSlot(thePlayer.inventory.currentItem == 0 ? 1 : 0), 0, 0, 0));
-//					ChatUtils.addChatMessage("Bypass");
-//					mc.getNetHandler().getNetworkManager().sendPacketNoEvent(new C0EPacketClickWindow(0, thePlayer.inventory.currentItem, 40, 2, null, thePlayer.openContainer.getNextTransactionID(thePlayer.inventory)));
-//					mc.getNetHandler().getNetworkManager().sendPacketNoEvent(new C0EPacketClickWindow(0, -999, 0, 0, thePlayer.getCurrentEquippedItem(), thePlayer.openContainer.getNextTransactionID(thePlayer.inventory)));
-//					mc.getNetHandler().getNetworkManager().sendPacket(
-//							new C08PacketPlayerBlockPlacement(thePlayer.getCurrentEquippedItem()));
-				}else {
-//					mc.getNetHandler().getNetworkManager().sendPacket(new C07PacketPlayerDigging(C07PacketPlayerDigging.Action.RELEASE_USE_ITEM, BlockPos.ORIGIN, EnumFacing.DOWN));
-//					mc.getNetHandler().getNetworkManager().sendPacketNoEvent(new C09PacketHeldItemChange(thePlayer.inventory.currentItem)); // Bypasses food and bow noslow check
-//					mc.getNetHandler().getNetworkManager().sendPacket(
-//							new C08PacketPlayerBlockPlacement(BlockPos.ORIGIN, -1, null, 0, 0, 0));
-//					mc.getNetHandler().getNetworkManager().sendPacket(
-//							new C08PacketPlayerBlockPlacement(BlockPos.ORIGIN, 255, thePlayer.inventory.getStackInSlot(thePlayer.inventory.currentItem == 0 ? 1 : 0), 0, 0, 0));
-//					for (int i = 0; i < 3; i++)
-//						mc.getNetHandler().getNetworkManager().sendPacketNoEvent(new C03PacketPlayer(false));
-//					mc.getNetHandler().getNetworkManager().sendPacket(
-//							new C08PacketPlayerBlockPlacement(thePlayer.getCurrentEquippedItem()));
-					if (thePlayer.isSprinting()) {
-//						mc.getNetHandler().getNetworkManager().sendPacketNoEvent(new C0BPacketEntityAction(thePlayer, net.minecraft.network.play.client.C0BPacketEntityAction.Action.START_SPRINTING));
-					}
-//					ChatUtils.addChatMessage("C03");
-				}
+				
 			}break;
 			case "Test":{
 //				e.setOnGround(thePlayer.ticksExisted % 2 == 0);
@@ -225,7 +165,22 @@ public class ModDisabler extends Module {
 					changeNextC06 = true;
 			}break;
 			case "Hypixel Strafe":{
-				
+				if (e.getPacket() instanceof S08PacketPlayerPosLook) {
+					S08PacketPlayerPosLook s08PacketPlayerPosLook = (S08PacketPlayerPosLook)e.getPacket();
+					if (!s08C04 && thePlayer.ticksExisted > 60) {
+						s08Timer.reset();
+						s08C04 = true;
+					}
+					if (s08C04) {
+						if (!s08Timer.hasTimeElapsed(3000, false)) {
+							thePlayer.setPosition(s08PacketPlayerPosLook.getX(), s08PacketPlayerPosLook.getY(), s08PacketPlayerPosLook.getZ());
+							mc.getNetHandler().getNetworkManager().sendPacketNoEvent(new C03PacketPlayer.C04PacketPlayerPosition(thePlayer.posX, thePlayer.posY, thePlayer.posZ, false));
+							e.cancel();
+						}else if (s08Timer.hasTimeElapsed(9000, false)) {
+							s08C04 = false;
+						}
+					}
+				}
 			}break;
 		}
 	};
@@ -274,31 +229,24 @@ public class ModDisabler extends Module {
 					if (c0f.getUid() > 0 || c0f.getWindowId() != 0)
 						return;
 //					ChatUtils.addChatMessage(c0f.getUid());
-					if (pingPackets.offer(c0f)) {
-						c0fsInQueue++;
-						e.cancel();
-					}
+//					if (pingPackets.offer(c0f)) {
+//						c0fsInQueue++;
+//						e.cancel();
+//					}
 				}
 				else if (e.getPacket() instanceof C00PacketKeepAlive) {
-					if (synced)
-						if (pingPackets.offer(e.getPacket()))
-							e.cancel();
+//					if (synced)
+//						if (pingPackets.offer(e.getPacket()))
+//							e.cancel();
 				}
 				else if (e.getPacket() instanceof C03PacketPlayer) {
-					if (!synced && thePlayer.ticksExisted < 60)
-						e.cancel();
-				}
-				else if (e.getPacket() instanceof C08PacketPlayerBlockPlacement) {
-					C08PacketPlayerBlockPlacement c08 = (C08PacketPlayerBlockPlacement)e.getPacket();
-					if (c08.getPlacedBlockDirection() == 255) {
-//						mc.getNetHandler().getNetworkManager().sendPacketNoEvent(new C08PacketPlayerBlockPlacement(
-//								thePlayer.getPosition().add(0, -1, 0), 1, thePlayer.getCurrentEquippedItem(), 0, 0, 0));
+//					if (s08C04)
 //						e.cancel();
-//						mc.getNetHandler().getNetworkManager().sendPacketNoEvent(e.getPacket());
-//						mc.getNetHandler().getNetworkManager().sendPacketNoEvent(new C07PacketPlayerDigging(Action.START_DESTROY_BLOCK, thePlayer.getPosition().add(0, -1, 0), EnumFacing.UP));
-//						mc.getNetHandler().getNetworkManager().sendPacketNoEvent(new C07PacketPlayerDigging(Action.STOP_DESTROY_BLOCK, thePlayer.getPosition().add(0, -1, 0), EnumFacing.UP));
-						ChatUtils.addChatMessage("Cum");
+					if (thePlayer.ticksExisted < 60) {
+						e.cancel();
 					}
+//					if (!synced && thePlayer.ticksExisted < 60)
+//						e.cancel();
 				}
 			}break;
 			case "Basic Desync":{
@@ -338,33 +286,30 @@ public class ModDisabler extends Module {
 				}
 			}break;
 			case "Test":{
-				if (e.getPacket() instanceof C00PacketKeepAlive) {
-//					ChatUtils.addChatMessage("Changed " + ((C00PacketKeepAlive)e.getPacket()).getKey() + " to " + (((C00PacketKeepAlive)e.getPacket()).getKey() - 100));
-					if (((C00PacketKeepAlive)e.getPacket()).getKey() == 1) {
-						synced = false;
-						ChatUtils.addChatMessage("Desyncing");
-					}
-					if (!synced)
-						e.cancel();
-//					((C00PacketKeepAlive)e.getPacket()).setKey(((C00PacketKeepAlive)e.getPacket()).getKey() - 5);
-				}
-				else if (e.getPacket() instanceof C03PacketPlayer) {
-					if (!synced) {
-						if (pingPackets.size() == 0)
-							pingPackets.add(e.getPacket());
-//						ChatUtils.addChatMessage("Cancel");
-						e.cancel();
-					}
-				}
-				else if (e.getPacket() instanceof C0FPacketConfirmTransaction) {
-					if (thePlayer.ticksExisted >= 60 && !synced) {
-						synced = true;
-						while (pingPackets.size() > 0)
-							mc.getNetHandler().getNetworkManager().sendPacketNoEvent(pingPackets.poll());
-						ChatUtils.addChatMessage("Synced");
+				if (thePlayer == null)
+					break;
+//				if (e.getPacket() instanceof C0FPacketConfirmTransaction || e.getPacket() instanceof C00PacketKeepAlive) {
+//					if (pingPackets.offer(e.getPacket()))
 //						e.cancel();
-					}
-				}
+//					mc.getNetHandler().getNetworkManager().sendPacketNoEvent(e.getPacket());
+//					mc.getNetHandler().getNetworkManager().sendPacketNoEvent(e.getPacket());
+//					mc.getNetHandler().getNetworkManager().sendPacketNoEvent(e.getPacket());
+//					new Timer().schedule(new TimerTask() {
+//						
+//						@Override
+//						public void run() {
+//							mc.getNetHandler().getNetworkManager().sendPacketNoEvent(e.getPacket());
+//						}
+//					}, 150);
+//				}
+//				else if (e.getPacket() instanceof C03PacketPlayer) {
+//					while (pingPackets.peek() != null && pingPackets.peek() instanceof C00PacketKeepAlive) {
+//						mc.getNetHandler().getNetworkManager().sendPacketNoEvent(pingPackets.poll());
+//					}
+//					if (pingPackets.peek() != null)
+//						mc.getNetHandler().getNetworkManager().sendPacketNoEvent(pingPackets.poll());
+//					ChatUtils.addChatMessage(pingPackets.size());
+//				}
 			}break;
 		}
 	};
@@ -377,9 +322,8 @@ public class ModDisabler extends Module {
 		EntityPlayerSP thePlayer = mc.thePlayer;
 		switch (mode.getMode()) {
 			case "Hypixel Strafe":{
-				if (synced)
-					return;
-				FontUtils.ROBOTO_REGULAR_10.drawCenteredString("Desyncing (" + (mc.thePlayer.ticksExisted < 60 ? "1" : "2") + "/2)...", sr.getScaledWidth() / 2, sr.getScaledHeight() * 0.75, 0xffff0000);
+				if (s08C04 || thePlayer.ticksExisted < 60)
+					FontUtils.ROBOTO_REGULAR_10.drawCenteredString("Bribing watchdog with sexual favors...", sr.getScaledWidth() / 2, sr.getScaledHeight() * 0.75, 0xffff0000);
 			}break;
 			case "Basic Desync":{
 				if (thePlayer.ticksExisted > 60 || synced)

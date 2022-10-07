@@ -2168,7 +2168,30 @@ public abstract class EntityLivingBase extends Entity
             }
         }
     }
-
+    
+    /**
+     * A better raytrace check for entities, checks the corners of the hitbox and the eyes to improve accuracy and decrease false negatives
+     */
+    public boolean raytraceEntity(Entity entityIn)
+    {
+		double collisionBorderSize = entityIn.getCollisionBorderSize();
+		AxisAlignedBB boundingBox = entityIn.getEntityBoundingBox().expand(collisionBorderSize, collisionBorderSize, collisionBorderSize);
+		AxisAlignedBB lowerBoundingBox = entityIn.getEntityBoundingBox().expand(collisionBorderSize, 0, collisionBorderSize); // Used because the hitbox may clip into the ground
+        return this.worldObj.rayTraceBlocks(new Vec3(this.posX, this.posY + (double)this.getEyeHeight(), this.posZ), new Vec3(entityIn.posX, entityIn.posY + (double)entityIn.getEyeHeight(), entityIn.posZ)) == null 
+        		
+        		|| this.worldObj.rayTraceBlocks(new Vec3(this.posX, this.posY + (double)this.getEyeHeight(), this.posZ), new Vec3(entityIn.posX, boundingBox.minY + (boundingBox.maxY - (entityIn.posY + (double)entityIn.getEyeHeight())), entityIn.posZ)) == null 
+        		
+        		|| this.worldObj.rayTraceBlocks(new Vec3(this.posX, this.posY + (double)this.getEyeHeight(), this.posZ), new Vec3(boundingBox.minX, lowerBoundingBox.minY + 0.13621, boundingBox.minZ)) == null 
+        		|| this.worldObj.rayTraceBlocks(new Vec3(this.posX, this.posY + (double)this.getEyeHeight(), this.posZ), new Vec3(boundingBox.maxX, lowerBoundingBox.minY + 0.13621, boundingBox.minZ)) == null 
+        		|| this.worldObj.rayTraceBlocks(new Vec3(this.posX, this.posY + (double)this.getEyeHeight(), this.posZ), new Vec3(boundingBox.maxX, lowerBoundingBox.minY + 0.13621, boundingBox.maxZ)) == null 
+        		|| this.worldObj.rayTraceBlocks(new Vec3(this.posX, this.posY + (double)this.getEyeHeight(), this.posZ), new Vec3(boundingBox.minX, lowerBoundingBox.minY + 0.13621, boundingBox.maxZ)) == null 
+        		
+        		|| this.worldObj.rayTraceBlocks(new Vec3(this.posX, this.posY + (double)this.getEyeHeight(), this.posZ), new Vec3(boundingBox.minX, boundingBox.maxY - 0.13621, boundingBox.minZ)) == null 
+              	|| this.worldObj.rayTraceBlocks(new Vec3(this.posX, this.posY + (double)this.getEyeHeight(), this.posZ), new Vec3(boundingBox.maxX, boundingBox.maxY - 0.13621, boundingBox.minZ)) == null 
+               	|| this.worldObj.rayTraceBlocks(new Vec3(this.posX, this.posY + (double)this.getEyeHeight(), this.posZ), new Vec3(boundingBox.maxX, boundingBox.maxY - 0.13621, boundingBox.maxZ)) == null 
+           		|| this.worldObj.rayTraceBlocks(new Vec3(this.posX, this.posY + (double)this.getEyeHeight(), this.posZ), new Vec3(boundingBox.minX, boundingBox.maxY - 0.13621, boundingBox.maxZ)) == null ;
+    }
+    
     /**
      * returns true if the entity provided in the argument can be seen. (Raytrace)
      */

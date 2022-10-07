@@ -71,9 +71,9 @@ public class ModChestStealer extends Module {
 		// Name check
 		if (chestNameCheck.isEnabled()
 				&& !guiChest.getLowerChestInventory().getDisplayName().getFormattedText()
-						.equalsIgnoreCase(I18n.format("container.chest") + "§r")
+						.equalsIgnoreCase(I18n.format("container.chest"))
 				&& !guiChest.getLowerChestInventory().getDisplayName().getFormattedText()
-						.equalsIgnoreCase(I18n.format("container.chestDouble") + "§r")) {
+						.equalsIgnoreCase(I18n.format("container.chestDouble"))) {
 			return;
 		}
 		
