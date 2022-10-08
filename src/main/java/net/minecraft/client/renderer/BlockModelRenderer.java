@@ -2,6 +2,9 @@ package net.minecraft.client.renderer;
 
 import java.util.BitSet;
 import java.util.List;
+
+import cafe.kagu.kagu.Kagu;
+import cafe.kagu.kagu.mods.impl.visual.ModAmbience;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLeavesBase;
 import net.minecraft.block.state.IBlockState;
@@ -254,9 +257,21 @@ public class BlockModelRenderer
 
             p_renderModelAmbientOcclusionQuads_4_.putBrightness4(blockmodelrenderer$ambientocclusionface.vertexBrightness[0], blockmodelrenderer$ambientocclusionface.vertexBrightness[1], blockmodelrenderer$ambientocclusionface.vertexBrightness[2], blockmodelrenderer$ambientocclusionface.vertexBrightness[3]);
             int k = CustomColors.getColorMultiplier(bakedquad, p_renderModelAmbientOcclusionQuads_2_, p_renderModelAmbientOcclusionQuads_1_, p_renderModelAmbientOcclusionQuads_3_, p_renderModelAmbientOcclusionQuads_6_);
-
+            ModAmbience modAmbience = Kagu.getModuleManager().getModule(ModAmbience.class);
+            
             if (!bakedquad.hasTintIndex() && k == -1)
-            {
+            e621:{
+                if (modAmbience.isEnabled() && modAmbience.getCustomBlockColor().isEnabled()) {
+                	float[] customColor = modAmbience.getBlockColor();
+                	float r = customColor[0];
+                	float g = customColor[1];
+                	float b = customColor[2];
+                	p_renderModelAmbientOcclusionQuads_4_.putColorMultiplier(r, g, b, 4);
+                	p_renderModelAmbientOcclusionQuads_4_.putColorMultiplier(r, g, b, 3);
+                	p_renderModelAmbientOcclusionQuads_4_.putColorMultiplier(r, g, b, 2);
+                	p_renderModelAmbientOcclusionQuads_4_.putColorMultiplier(r, g, b, 1);
+                	break e621;
+                }
                 p_renderModelAmbientOcclusionQuads_4_.putColorMultiplier(blockmodelrenderer$ambientocclusionface.vertexColorMultiplier[0], blockmodelrenderer$ambientocclusionface.vertexColorMultiplier[0], blockmodelrenderer$ambientocclusionface.vertexColorMultiplier[0], 4);
                 p_renderModelAmbientOcclusionQuads_4_.putColorMultiplier(blockmodelrenderer$ambientocclusionface.vertexColorMultiplier[1], blockmodelrenderer$ambientocclusionface.vertexColorMultiplier[1], blockmodelrenderer$ambientocclusionface.vertexColorMultiplier[1], 3);
                 p_renderModelAmbientOcclusionQuads_4_.putColorMultiplier(blockmodelrenderer$ambientocclusionface.vertexColorMultiplier[2], blockmodelrenderer$ambientocclusionface.vertexColorMultiplier[2], blockmodelrenderer$ambientocclusionface.vertexColorMultiplier[2], 2);
@@ -283,6 +298,12 @@ public class BlockModelRenderer
                 float f = (float)(j >> 16 & 255) / 255.0F;
                 float f1 = (float)(j >> 8 & 255) / 255.0F;
                 float f2 = (float)(j & 255) / 255.0F;
+                if (modAmbience.isEnabled() && modAmbience.getCustomBlockColorMult().isEnabled()) {
+                	float[] customMults = modAmbience.getCustomBlockMult();
+                	f = customMults[0];
+                	f1 = customMults[1];
+                	f2 = customMults[2];
+                }
                 p_renderModelAmbientOcclusionQuads_4_.putColorMultiplier(blockmodelrenderer$ambientocclusionface.vertexColorMultiplier[0] * f, blockmodelrenderer$ambientocclusionface.vertexColorMultiplier[0] * f1, blockmodelrenderer$ambientocclusionface.vertexColorMultiplier[0] * f2, 4);
                 p_renderModelAmbientOcclusionQuads_4_.putColorMultiplier(blockmodelrenderer$ambientocclusionface.vertexColorMultiplier[1] * f, blockmodelrenderer$ambientocclusionface.vertexColorMultiplier[1] * f1, blockmodelrenderer$ambientocclusionface.vertexColorMultiplier[1] * f2, 3);
                 p_renderModelAmbientOcclusionQuads_4_.putColorMultiplier(blockmodelrenderer$ambientocclusionface.vertexColorMultiplier[2] * f, blockmodelrenderer$ambientocclusionface.vertexColorMultiplier[2] * f1, blockmodelrenderer$ambientocclusionface.vertexColorMultiplier[2] * f2, 2);
@@ -429,7 +450,8 @@ public class BlockModelRenderer
 
             p_renderModelStandardQuads_7_.putBrightness4(p_renderModelStandardQuads_5_, p_renderModelStandardQuads_5_, p_renderModelStandardQuads_5_, p_renderModelStandardQuads_5_);
             int i1 = CustomColors.getColorMultiplier(bakedquad, p_renderModelStandardQuads_2_, p_renderModelStandardQuads_1_, p_renderModelStandardQuads_3_, p_renderModelStandardQuads_9_);
-
+            ModAmbience modAmbience = Kagu.getModuleManager().getModule(ModAmbience.class);
+            
             if (bakedquad.hasTintIndex() || i1 != -1)
             {
                 int l;
@@ -451,10 +473,26 @@ public class BlockModelRenderer
                 float f = (float)(l >> 16 & 255) / 255.0F;
                 float f1 = (float)(l >> 8 & 255) / 255.0F;
                 float f2 = (float)(l & 255) / 255.0F;
+                if (modAmbience.isEnabled() && modAmbience.getCustomBlockColorMult().isEnabled()) {
+                	float[] customMults = modAmbience.getCustomBlockMult();
+                	f = customMults[0];
+                	f1 = customMults[1];
+                	f2 = customMults[2];
+                }
                 p_renderModelStandardQuads_7_.putColorMultiplier(f, f1, f2, 4);
                 p_renderModelStandardQuads_7_.putColorMultiplier(f, f1, f2, 3);
                 p_renderModelStandardQuads_7_.putColorMultiplier(f, f1, f2, 2);
                 p_renderModelStandardQuads_7_.putColorMultiplier(f, f1, f2, 1);
+            }
+            else if (modAmbience.isEnabled() && modAmbience.getCustomBlockColor().isEnabled()) {
+            	float[] customColor = modAmbience.getBlockColor();
+            	float r = customColor[0];
+            	float g = customColor[1];
+            	float b = customColor[2];
+                p_renderModelStandardQuads_7_.putColorMultiplier(r, g, b, 4);
+                p_renderModelStandardQuads_7_.putColorMultiplier(r, g, b, 3);
+                p_renderModelStandardQuads_7_.putColorMultiplier(r, g, b, 2);
+                p_renderModelStandardQuads_7_.putColorMultiplier(r, g, b, 1);
             }
 
             p_renderModelStandardQuads_7_.putPosition(d0, d1, d2);

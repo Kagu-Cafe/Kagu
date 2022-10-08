@@ -16,6 +16,7 @@ import cafe.kagu.kagu.mods.impl.ghost.ModHideName;
 import cafe.kagu.kagu.mods.impl.move.ModNoSlow;
 import cafe.kagu.kagu.mods.impl.player.ModDisabler;
 import cafe.kagu.kagu.mods.impl.player.ModNoFall;
+import cafe.kagu.kagu.mods.impl.visual.ModAmbience;
 import cafe.kagu.kagu.utils.ChatUtils;
 import cafe.kagu.kagu.utils.MovementUtils;
 import cafe.kagu.kagu.utils.SpoofUtils;
@@ -1299,6 +1300,10 @@ public abstract class Entity implements ICommandSender
 
     public int getBrightnessForRender(float partialTicks)
     {
+    	ModAmbience modAmbience = Kagu.getModuleManager().getModule(ModAmbience.class);
+    	if (modAmbience.isEnabled() && !modAmbience.getBlockLighting().is("Unchanged")) {
+    		return 15728880;
+    	}
         BlockPos blockpos = new BlockPos(this.posX, this.posY + (double)this.getEyeHeight(), this.posZ);
         return this.worldObj.isBlockLoaded(blockpos) ? this.worldObj.getCombinedLight(blockpos, 0) : 0;
     }
