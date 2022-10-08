@@ -1,6 +1,9 @@
 package net.minecraft.block;
 
 import java.util.Random;
+
+import cafe.kagu.kagu.Kagu;
+import cafe.kagu.kagu.mods.impl.visual.ModAmbience;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyInteger;
@@ -209,6 +212,18 @@ public abstract class BlockLiquid extends Block
 
     public int getMixedBrightnessForBlock(IBlockAccess worldIn, BlockPos pos)
     {
+        // Ambience mod
+        ModAmbience modAmbience = Kagu.getModuleManager().getModule(ModAmbience.class);
+        if (modAmbience.isEnabled()) {
+        	switch (modAmbience.getBlockLighting().getMode()) {
+        		case "Unchanged":break;
+        		case "Midnight":
+        		case "Dusk":
+        		case "Day":{
+        			return super.getMixedBrightnessForBlock(worldIn, pos);
+        		}
+        	}
+        }
         int i = worldIn.getCombinedLight(pos, 0);
         int j = worldIn.getCombinedLight(pos.up(), 0);
         int k = i & 255;

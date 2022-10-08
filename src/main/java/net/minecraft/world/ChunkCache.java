@@ -115,13 +115,14 @@ public class ChunkCache implements IBlockAccess
     	
         // Ambience mod
         ModAmbience modAmbience = Kagu.getModuleManager().getModule(ModAmbience.class);
-        if (modAmbience.isEnabled()) {
-        	switch (modAmbience.getBlockLighting().getMode()) {
-        		case "Unchanged":break;
-        		case "Midnight":return 0;
-        		case "Dusk":return 21;
-        		case "Day":return 12;
-        	}
+        if (modAmbience.isEnabled() && !modAmbience.getBlockLighting().getMode().equals("Unchanged")) {
+//        	switch (modAmbience.getBlockLighting().getMode()) {
+//        		case "Unchanged":break;
+//        		case "Midnight":return 0;
+//        		case "Dusk":return 21;
+//        		case "Day":return 12;
+//        	}
+        	return 0;
         }
         
         if (p_175629_1_ == EnumSkyBlock.SKY && this.worldObj.provider.getHasNoSky())
@@ -178,13 +179,14 @@ public class ChunkCache implements IBlockAccess
     	
         // Ambience mod
         ModAmbience modAmbience = Kagu.getModuleManager().getModule(ModAmbience.class);
-        if (modAmbience.isEnabled()) {
-        	switch (modAmbience.getBlockLighting().getMode()) {
-        		case "Unchanged":break;
-        		case "Midnight":return 0;
-        		case "Dusk":return 21;
-        		case "Day":return 12;
-        	}
+        if (modAmbience.isEnabled() && !modAmbience.getBlockLighting().getMode().equals("Unchanged")) {
+//        	switch (modAmbience.getBlockLighting().getMode()) {
+//        		case "Unchanged":break;
+//        		case "Midnight":return 0;
+//        		case "Dusk":return 21;
+//        		case "Day":return 12;
+//        	}
+        	return 0;
         }
         
         if (pos.getY() >= 0 && pos.getY() < 256)

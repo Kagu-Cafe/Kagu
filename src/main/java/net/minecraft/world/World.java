@@ -3406,18 +3406,6 @@ public abstract class World implements IBlockAccess
 
     public long getWorldTime()
     {
-    	
-        // Ambience mod
-        ModAmbience modAmbience = Kagu.getModuleManager().getModule(ModAmbience.class);
-        if (modAmbience.isEnabled()) {
-        	switch (modAmbience.getWorldTime().getMode()) {
-        		case "Unchanged":break;
-        		case "Midnight":return 18000;
-        		case "Dusk":return 13920;
-        		case "Day":return 1000;
-        	}
-        }
-    	
         return this.worldInfo.getWorldTime();
     }
 

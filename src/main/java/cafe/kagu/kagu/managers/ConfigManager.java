@@ -73,7 +73,7 @@ public class ConfigManager {
 				}
 				
 				config += Kagu.GROUP_SEPARATOR + setting.getName()
-						+ Kagu.RECORD_SEPARATOR + " " // Hidden fields were deprecated and removed, we put this nothing value here for backwards compatibility
+						+ Kagu.RECORD_SEPARATOR + " " // Hidden fields were removed, we put this nothing value here for backwards compatibility
 						+ Kagu.RECORD_SEPARATOR + settingType
 						+ Kagu.RECORD_SEPARATOR + settingValue;
 				
@@ -130,7 +130,7 @@ public class ConfigManager {
 					
 					// Load the setting info
 					String settingName = settingSplit[0];
-//					String settingHidden = settingSplit[1]; Deprecated and removed
+//					String settingHidden = settingSplit[1]; Removed
 					String settingType = settingSplit[2];
 					String settingValue = settingSplit[3];
 					

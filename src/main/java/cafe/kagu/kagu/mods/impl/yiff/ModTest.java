@@ -88,6 +88,7 @@ public class ModTest extends Module {
 //		float yaw = RotationUtils.getStrafeYaw() + 90;
 //		thePlayer.setPosition(thePlayer.posX + Math.cos(Math.toRadians(yaw)) * 2, thePlayer.posY - 0.9I, thePlayer.posZ + Math.sin(Math.toRadians(yaw)) * 2);
 //		toggle();
+//		ChatUtils.addChatMessage(mc.theWorld.getBlockState(thePlayer.getPosition()).getBlock().getLightOpacity());
 	}
 
 	@EventHandler

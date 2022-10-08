@@ -1,6 +1,9 @@
 package net.minecraft.world.storage;
 
 import java.util.concurrent.Callable;
+
+import cafe.kagu.kagu.Kagu;
+import cafe.kagu.kagu.mods.impl.visual.ModAmbience;
 import net.minecraft.crash.CrashReportCategory;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
@@ -411,6 +414,18 @@ public class WorldInfo
      */
     public long getWorldTime()
     {
+    	
+        // Ambience mod
+        ModAmbience modAmbience = Kagu.getModuleManager().getModule(ModAmbience.class);
+        if (modAmbience.isEnabled()) {
+        	switch (modAmbience.getWorldTime().getMode()) {
+        		case "Unchanged":break;
+        		case "Midnight":return 18000;
+        		case "Dusk":return 13920;
+        		case "Day":return 6000;
+        	}
+        }
+    	
         return this.worldTime;
     }
 

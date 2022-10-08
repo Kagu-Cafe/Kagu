@@ -7,6 +7,7 @@ import com.google.common.collect.Maps;
 import cafe.kagu.kagu.Kagu;
 import cafe.kagu.kagu.mods.ModuleManager;
 import cafe.kagu.kagu.mods.impl.move.ModNoSlow;
+import cafe.kagu.kagu.mods.impl.visual.ModAmbience;
 import cafe.kagu.kagu.mods.impl.visual.ModEsp;
 import cafe.kagu.kagu.mods.impl.visual.ModFunnyLimbs;
 import cafe.kagu.kagu.utils.ChatUtils;
@@ -733,11 +734,17 @@ public abstract class EntityLivingBase extends Entity
 
     public boolean isPotionActive(int potionId)
     {
+    	ModAmbience modAmbience = Kagu.getModuleManager().getModule(ModAmbience.class);
+    	if (potionId == Potion.nightVision.getId() && modAmbience.isEnabled() && modAmbience.getDisableNightVision().isEnabled())
+    		return false;
         return this.activePotionsMap.containsKey(Integer.valueOf(potionId));
     }
 
     public boolean isPotionActive(Potion potionIn)
     {
+    	ModAmbience modAmbience = Kagu.getModuleManager().getModule(ModAmbience.class);
+    	if (potionIn == Potion.nightVision && modAmbience.isEnabled() && modAmbience.getDisableNightVision().isEnabled())
+    		return false;
         return this.activePotionsMap.containsKey(Integer.valueOf(potionIn.id));
     }
 
@@ -746,6 +753,9 @@ public abstract class EntityLivingBase extends Entity
      */
     public PotionEffect getActivePotionEffect(Potion potionIn)
     {
+    	ModAmbience modAmbience = Kagu.getModuleManager().getModule(ModAmbience.class);
+    	if (potionIn == Potion.nightVision && modAmbience.isEnabled() && modAmbience.getDisableNightVision().isEnabled())
+    		return null;
         return (PotionEffect)this.activePotionsMap.get(Integer.valueOf(potionIn.id));
     }
 

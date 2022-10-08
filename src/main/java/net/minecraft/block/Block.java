@@ -2,6 +2,9 @@ package net.minecraft.block;
 
 import java.util.List;
 import java.util.Random;
+
+import cafe.kagu.kagu.Kagu;
+import cafe.kagu.kagu.mods.impl.visual.ModAmbience;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
@@ -329,7 +332,14 @@ public class Block
         this.lightValue = (int)(15.0F * value);
         return this;
     }
-
+    
+    /**
+	 * @param lightValue the lightValue to set
+	 */
+	public void setLightValue(int lightValue) {
+		this.lightValue = lightValue;
+	}
+    
     /**
      * Sets the the blocks resistance to explosions. Returns the object for convenience in constructing.
      */
@@ -450,7 +460,7 @@ public class Block
     {
         Block block = worldIn.getBlockState(pos).getBlock();
         int i = worldIn.getCombinedLight(pos, block.getLightValue());
-
+        
         if (i == 0 && block instanceof BlockSlab)
         {
             pos = pos.down();
