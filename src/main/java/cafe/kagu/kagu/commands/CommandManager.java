@@ -8,7 +8,6 @@ import org.lwjgl.input.Keyboard;
 import cafe.kagu.kagu.Kagu;
 import cafe.kagu.kagu.commands.Command.ActionRequirement;
 import cafe.kagu.kagu.commands.impl.CommandBind;
-import cafe.kagu.kagu.commands.impl.CommandChangeSkin;
 import cafe.kagu.kagu.commands.impl.CommandConfig;
 import cafe.kagu.kagu.commands.impl.CommandHelp;
 import cafe.kagu.kagu.commands.impl.CommandKeybinds;

@@ -81,12 +81,13 @@ public class ModChestEsp extends Module {
 		// Draw esp
 		expand -= 0.05;
 		StencilUtil.setTestOutcome(GL11.GL_KEEP, GL11.GL_KEEP, GL11.GL_KEEP);
+		
+		GL11.glEnable(GL11.GL_POLYGON_OFFSET_FILL);
+		GL11.glPolygonOffset(1.0f, -1099998.0f);
+		
 		for (TileEntity tileEntity : mc.theWorld.loadedTileEntityList) {
 			if (!(tileEntity instanceof TileEntityChest || tileEntity instanceof TileEntityEnderChest))
 				continue;
-			
-			GL11.glEnable(GL11.GL_POLYGON_OFFSET_FILL);
-			GL11.glPolygonOffset(1.0f, -1099998.0f);
 			
 			// Visible render
 			StencilUtil.glStencilFunc(GL11.GL_EQUAL, 1);
@@ -100,10 +101,10 @@ public class ModChestEsp extends Module {
 					tileEntity.getPos().getX() + 1 + expand, tileEntity.getPos().getY() + 1 + expand, tileEntity.getPos().getZ() + 1 + expand, 
 					 UiUtils.getColorFromVector(hiddenChestColor));
 			
-			GL11.glPolygonOffset(1.0f, 1099998.0f);
-			GL11.glDisable(GL11.GL_POLYGON_OFFSET_FILL);
-			
 		}
+		
+		GL11.glPolygonOffset(1.0f, 1099998.0f);
+		GL11.glDisable(GL11.GL_POLYGON_OFFSET_FILL);
 		
 		StencilUtil.disableStencilTest();
 		

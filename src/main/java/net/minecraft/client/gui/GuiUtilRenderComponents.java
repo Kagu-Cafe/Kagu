@@ -1,6 +1,12 @@
 package net.minecraft.client.gui;
 
 import com.google.common.collect.Lists;
+
+import cafe.kagu.kagu.Kagu;
+import cafe.kagu.kagu.mods.impl.ghost.ModHideName;
+import cafe.kagu.kagu.mods.impl.player.ModUwuifier;
+import cafe.kagu.kagu.utils.Uwuifier;
+
 import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ChatComponentText;
@@ -39,6 +45,13 @@ public class GuiUtilRenderComponents
             }
 
             String s4 = func_178909_a(ichatcomponent1.getChatStyle().getFormattingCode() + s, p_178908_4_);
+            
+            // Fixes bug that causes strings not the render
+            s4 = ModHideName.replaceNameInstances(s4);
+        	if (Kagu.getModuleManager().getModule(ModUwuifier.class).isEnabled() && Kagu.getModuleManager().getModule(ModUwuifier.class).getWholeGame().isEnabled()) {
+        		s4 = Uwuifier.uwuifyWithoutCuteFace(s4);
+        	}
+        	
             String s5 = s4.endsWith("\n") ? s4.substring(0, s4.length() - 1) : s4;
             int i1 = p_178908_2_.getStringWidth(s5);
             ChatComponentText chatcomponenttext1 = new ChatComponentText(s5);

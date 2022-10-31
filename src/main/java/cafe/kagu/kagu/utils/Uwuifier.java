@@ -37,9 +37,6 @@ public class Uwuifier {
 	public static String uwuify(String stringToUwuify) {
 		if (!enabled)
 			return stringToUwuify;
-		if (stringToUwuify.endsWith(" >_<") || stringToUwuify.endsWith(" >~<")) {
-			stringToUwuify = stringToUwuify.substring(0, stringToUwuify.length() - 4);
-		}
 		stringToUwuify = uwuifyWithoutCuteFace(stringToUwuify);
 		switch (RandomUtils.nextInt(0, 8)) {
 			case 0:break;
@@ -62,9 +59,9 @@ public class Uwuifier {
 	public static String uwuifyWithoutCuteFace(String stringToUwuify) {
 		if (!enabled)
 			return stringToUwuify;
-		stringToUwuify = stringToUwuify.toLowerCase().replaceAll("now", "nyow").replaceAll("hi", "hai").replaceAll("r|l", "w").
-				replaceAll("n([aeiou])", "ny$1").replaceAll("ove", "uve").replaceAll("uck", "uwq").replaceFirst(" i", " i-i")
-				.replaceFirst("(?s)(.*)i-i-i", "$1i-i");
+		stringToUwuify = stringToUwuify.toLowerCase().replaceAll("now", "nyow").replaceAll("you", "nyu").replaceAll("nya", "nya~~").replaceAll("hi", "hai")
+				.replaceAll("novoline", "nowoline").replaceAll("r|l", "w").replaceAll("n([aeiou])", "ny$1").replaceAll("ove", "uve").replaceAll("uck", "uwq")
+				.replaceFirst(" i", " i-i").replaceFirst("i ", "i-i ").replaceFirst("(?s)(.*)i-i-i", "$1i-i");
 		return stringToUwuify;
 	}
 	
