@@ -1,6 +1,10 @@
 package net.minecraft.client.gui;
 
 import com.google.common.collect.Lists;
+
+import cafe.kagu.kagu.Kagu;
+import cafe.kagu.kagu.mods.impl.player.ModUwuifier;
+
 import java.util.Iterator;
 import java.util.List;
 import net.minecraft.client.Minecraft;
@@ -51,7 +55,7 @@ public class GuiNewChat extends Gui
                 GlStateManager.pushAttrib();
                 GlStateManager.translate(2.0F, 20.0F, 0.0F);
                 GlStateManager.scale(f1, f1, 1.0F);
-
+                
                 for (int i1 = 0; i1 + this.scrollPos < this.field_146253_i.size() && i1 < i; ++i1)
                 {
                     ChatLine chatline = (ChatLine)this.field_146253_i.get(i1 + this.scrollPos);

@@ -9,14 +9,21 @@ import java.util.stream.Collectors;
 import javax.vecmath.Vector3d;
 
 import org.apache.commons.lang3.RandomUtils;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.lwjgl.input.Keyboard;
+
+import com.google.gson.Gson;
 
 import cafe.kagu.kagu.eventBus.Handler;
 import cafe.kagu.kagu.eventBus.EventHandler;
+import cafe.kagu.kagu.eventBus.impl.EventPacketReceive;
 import cafe.kagu.kagu.eventBus.impl.EventPacketSend;
 import cafe.kagu.kagu.eventBus.impl.EventPlayerUpdate;
 import cafe.kagu.kagu.eventBus.impl.EventRender3D;
 import cafe.kagu.kagu.eventBus.impl.EventTick;
+import cafe.kagu.kagu.managers.NetworkManager;
 import cafe.kagu.kagu.mods.Module;
 import cafe.kagu.kagu.mods.ModuleManager;
 import cafe.kagu.kagu.settings.impl.BooleanSetting;
@@ -41,7 +48,10 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayer.EnumChatVisibility;
 import net.minecraft.network.play.client.C00PacketKeepAlive;
+import net.minecraft.network.play.client.C02PacketUseEntity;
+import net.minecraft.network.play.client.C02PacketUseEntity.Action;
 import net.minecraft.network.play.client.C03PacketPlayer;
+import net.minecraft.network.play.client.C0BPacketEntityAction;
 import net.minecraft.network.play.client.C0FPacketConfirmTransaction;
 import net.minecraft.network.play.client.C15PacketClientSettings;
 import net.minecraft.network.play.client.C17PacketCustomPayload;
@@ -78,6 +88,8 @@ public class ModTest extends Module {
 
 	private float[] lastRotations = new float[] { 0, 0 };
 	private int ticks = 0;
+	private Logger logger = LogManager.getLogger();
+	private Gson gson = new Gson();
 	
 	@Override
 	public void onEnable() {
@@ -88,17 +100,41 @@ public class ModTest extends Module {
 //		float yaw = RotationUtils.getStrafeYaw() + 90;
 //		thePlayer.setPosition(thePlayer.posX + Math.cos(Math.toRadians(yaw)) * 2, thePlayer.posY - 0.9I, thePlayer.posZ + Math.sin(Math.toRadians(yaw)) * 2);
 //		toggle();
+//		thePlayer.offsetPosition(0, -5, 0);
+//		toggle();
 //		ChatUtils.addChatMessage(mc.theWorld.getBlockState(thePlayer.getPosition()).getBlock().getLightOpacity());
 	}
 
 	@EventHandler
 	private Handler<EventPlayerUpdate> onPlayerUpdate = e -> {
 		
+//		for (int i = 0; i < 10; i++)
+//			try {
+//				NetworkManager.getInstance().sendGet(new HttpGet("https://aimware.net/"));
+//			} catch (Exception e1) {
+//				// TODO Auto-generated catch block
+//				e1.printStackTrace();
+//			}
+		
 	};
 	
 	@EventHandler
 	private Handler<EventPacketSend> onPacketSend = e -> {
-		
+//		if (e.isPre()) {
+//			logger.info("S: " + e.getPacket());
+//		}
+	};
+	
+	@EventHandler
+	private Handler<EventPacketReceive> onPacketReceive = e -> {
+//		if (e.isPre()) {
+//			logger.info("R: " + e.getPacket());
+//		}
+		if (e.getPacket() instanceof C02PacketUseEntity && ((C02PacketUseEntity)e.getPacket()).getAction() == Action.ATTACK) {
+			mc.getNetHandler().getNetworkManager().sendPacketNoEvent(new C0BPacketEntityAction(mc.thePlayer, net.minecraft.network.play.client.C0BPacketEntityAction.Action.START_SPRINTING));
+			mc.getNetHandler().getNetworkManager().sendPacketNoEvent(new C0BPacketEntityAction(mc.thePlayer, net.minecraft.network.play.client.C0BPacketEntityAction.Action.STOP_SPRINTING));
+			mc.getNetHandler().getNetworkManager().sendPacketNoEvent(new C0BPacketEntityAction(mc.thePlayer, net.minecraft.network.play.client.C0BPacketEntityAction.Action.START_SPRINTING));
+		}
 	};
 	
 }

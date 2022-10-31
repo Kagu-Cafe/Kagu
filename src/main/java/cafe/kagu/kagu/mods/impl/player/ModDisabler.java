@@ -260,7 +260,7 @@ public class ModDisabler extends Module {
 			}break;
 			case "Vulcan":{
 				if (e.getPacket() instanceof C0BPacketEntityAction) {
-					// Cancel start and stop spring packets
+					// Cancel start and stop sprint packets
 					C0BPacketEntityAction c0b = (C0BPacketEntityAction)e.getPacket();
 					if (c0b.getAction() == net.minecraft.network.play.client.C0BPacketEntityAction.Action.START_SPRINTING
 							|| c0b.getAction() == net.minecraft.network.play.client.C0BPacketEntityAction.Action.STOP_SPRINTING)

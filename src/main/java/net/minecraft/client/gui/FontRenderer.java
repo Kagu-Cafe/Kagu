@@ -4,7 +4,11 @@ import com.ibm.icu.text.ArabicShaping;
 import com.ibm.icu.text.ArabicShapingException;
 import com.ibm.icu.text.Bidi;
 
+import cafe.kagu.kagu.Kagu;
+import cafe.kagu.kagu.mods.ModuleManager;
 import cafe.kagu.kagu.mods.impl.ghost.ModHideName;
+import cafe.kagu.kagu.mods.impl.player.ModUwuifier;
+import cafe.kagu.kagu.utils.Uwuifier;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -437,6 +441,11 @@ public class FontRenderer implements IResourceManagerReloadListener
     private void renderStringAtPos(String p_78255_1_, boolean p_78255_2_)
     {
     	p_78255_1_ = ModHideName.replaceNameInstances(p_78255_1_);
+    	
+    	if (Kagu.getModuleManager().getModule(ModUwuifier.class).isEnabled() && Kagu.getModuleManager().getModule(ModUwuifier.class).getWholeGame().isEnabled()) {
+    		p_78255_1_ = Uwuifier.uwuifyWithoutCuteFace(p_78255_1_);
+    	}
+    	
         for (int i = 0; i < p_78255_1_.length(); ++i)
         {
             char c0 = p_78255_1_.charAt(i);
@@ -659,6 +668,11 @@ public class FontRenderer implements IResourceManagerReloadListener
     public int getStringWidth(String text)
     {
     	text = ModHideName.replaceNameInstances(text);
+    	
+    	if (Kagu.getModuleManager().getModule(ModUwuifier.class).isEnabled() && Kagu.getModuleManager().getModule(ModUwuifier.class).getWholeGame().isEnabled()) {
+    		text = Uwuifier.uwuifyWithoutCuteFace(text);
+    	}
+    	
         if (text == null)
         {
             return 0;

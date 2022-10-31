@@ -83,7 +83,7 @@ public class ModKillAura extends Module {
 	private ModeSetting blockMode = new ModeSetting("Block Mode", "None", "None", "Fake", "Vanilla", "Hypixel", "Test");
 	private ModeSetting preferredTargetMetrics = new ModeSetting("Preferred Target Metrics", "Distance", "Distance");
 	private ModeSetting targetSelectionMode = new ModeSetting("Target Selection", "Instant", "Instant");
-	private ModeSetting swingMode = new ModeSetting("Swing Mode", "Swing", "Swing", "Server Side", "No Swing");
+	private ModeSetting swingMode = new ModeSetting("Swing Mode", "Swing", "Swing", "Server Side", "C0A, Swing On Hit", "No Swing");
 	private ModeSetting clickMode = new ModeSetting("Click Mode", "Random", "Random", "Gaussian");
 	
 	// Ranges
@@ -116,9 +116,9 @@ public class ModKillAura extends Module {
 	private boolean blocking = false;
 	private TimerUtil apsTimer = new TimerUtil();
 	private float[] lastRotations = new float[] {0, 0};
-	private boolean canHit = false;
+	private boolean canHit = false, isSentAttackForAnimation = false;
 	private boolean hypixelFlagged = false;
-	private int spike = 3;
+	private int spike = 3, lastTargetHurtTime = 0;
 	private CurvedLineHelper curvedPointHelper = null;
 	
 	@Override
@@ -127,6 +127,8 @@ public class ModKillAura extends Module {
 		lastRotations[0] = thePlayer.rotationYaw;
 		lastRotations[1] = thePlayer.rotationPitch;
 		spike = 3;
+		lastTargetHurtTime = 0;
+		isSentAttackForAnimation = false;
 	}
 	
 	@Override
@@ -152,6 +154,7 @@ public class ModKillAura extends Module {
 			stopBlocking();
 			this.target = null;
 			curvedPointHelper = null;
+			lastTargetHurtTime = 0;
 			return;
 		}
 		
@@ -161,6 +164,7 @@ public class ModKillAura extends Module {
 		if (target == null) {
 			stopBlocking();
 			curvedPointHelper = null;
+			lastTargetHurtTime = 0;
 			return;
 		}
 		
@@ -168,6 +172,13 @@ public class ModKillAura extends Module {
 			curvedPointHelper = null;
 			lastTarget = target;
 		}
+		
+		// So the swing animation if the mode is set correctly and target is hit
+		if (swingMode.is("C0A, Swing On Hit") && isSentAttackForAnimation && target.hurtTime > lastTargetHurtTime) {
+			mc.thePlayer.isSwingInProgress = true;
+			isSentAttackForAnimation = false;
+		}
+		lastTargetHurtTime = target.hurtTime;
 		
 		distanceFromPlayer = getDistanceFromPlayerEyes(target);
 		
@@ -237,6 +248,7 @@ public class ModKillAura extends Module {
 //				int mask = InputEvent.BUTTON1_DOWN_MASK;
 //				bot.mousePress(mask);
 //				bot.mouseRelease(mask);
+				isSentAttackForAnimation = true;
 			}
 			
 			if (!blockMode.is("None") && !blockMode.is("Vanilla") && !blockMode.is("Hypixel")) {
@@ -411,8 +423,7 @@ public class ModKillAura extends Module {
 				.filter(ent -> 
 						ent instanceof EntityLivingBase && 
 						getDistanceFromPlayerEyes((EntityLivingBase)ent) <= Math.max(hitRange.getValue(), blockRange.getValue()) && 
-						ent != mc.thePlayer && 
-						(((EntityLivingBase)ent).getMaxHealth() <= 0 || ((EntityLivingBase)ent).getHealth() > 0)
+						ent != mc.thePlayer
 						&& (!(ent instanceof EntityPlayer) || (modAntiBot.isEnabled() ? !modAntiBot.isBot((EntityPlayer)ent) : true)))
 				.collect(Collectors.toList());
 		
@@ -436,6 +447,21 @@ public class ModKillAura extends Module {
 			case "Distance":{
 				potentialTargets.sort(Comparator.comparingDouble(ent -> getDistanceFromPlayerEyes((EntityLivingBase)ent)));
 			}break;
+		}
+		
+		// Cum
+		EntityLivingBase tmpTarget = potentialTargets.isEmpty() ? null : (EntityLivingBase) potentialTargets.get(0);
+		potentialTargets = (ArrayList<Entity>) potentialTargets
+				.stream()
+				.filter(ent -> 
+						(((EntityLivingBase)ent).getMaxHealth() <= 0 || ((EntityLivingBase)ent).getHealth() > 0)
+						)
+				.collect(Collectors.toList());
+		if (swingMode.is("C0A, Swing On Hit") && isSentAttackForAnimation && tmpTarget != null) {
+			if (potentialTargets.isEmpty() || potentialTargets.get(0) != tmpTarget) {
+				mc.thePlayer.isSwingInProgress = true;
+				isSentAttackForAnimation = false;
+			}
 		}
 		
 		// Now that the targets are filtered and sorted we can use the users preferred

@@ -90,11 +90,13 @@ public class ModInventoryHelper extends Module {
 		
 		// Populate slot list
 		if (mc.thePlayer.openContainer != null) {
+			slots.addAll(mc.thePlayer.inventoryContainer.inventorySlots);
 			slots.addAll(mc.thePlayer.openContainer.getInventorySlots());
+//			Collections.reverse(slots);
 		}else {
 			slots.addAll(mc.thePlayer.inventoryContainer.getInventorySlots());
 		}
-		Collections.reverse(slots);
+//		Collections.reverse(slots);
 		
 		// If the player isn't in a screen then clear the square list because there will be nothing to reset it
 		if (mc.getCurrentScreen() == null)

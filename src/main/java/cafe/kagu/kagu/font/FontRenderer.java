@@ -11,8 +11,11 @@ import javax.imageio.ImageIO;
 
 import org.lwjgl.opengl.GL11;
 
+import cafe.kagu.kagu.Kagu;
 import cafe.kagu.kagu.font.GlyphUtils.GlyphMap;
 import cafe.kagu.kagu.mods.impl.ghost.ModHideName;
+import cafe.kagu.kagu.mods.impl.player.ModUwuifier;
+import cafe.kagu.kagu.utils.Uwuifier;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
@@ -133,6 +136,11 @@ public class FontRenderer {
 		
 		// HideName module
 		string = ModHideName.replaceNameInstances(string);
+		
+		// Uwuifier
+    	if (Kagu.getModuleManager().getModule(ModUwuifier.class).isEnabled() && Kagu.getModuleManager().getModule(ModUwuifier.class).getWholeGame().isEnabled()) {
+    		string = Uwuifier.uwuifyWithoutCuteFace(string);
+    	}
 		
 		// Character offset, also string width after drawing the entire string
 		double offset = 0;
@@ -259,6 +267,11 @@ public class FontRenderer {
 		
 		// HideName module
 		str = ModHideName.replaceNameInstances(str);
+		
+		// Uwuifier
+    	if (Kagu.getModuleManager().getModule(ModUwuifier.class).isEnabled() && Kagu.getModuleManager().getModule(ModUwuifier.class).getWholeGame().isEnabled()) {
+    		str = Uwuifier.uwuifyWithoutCuteFace(str);
+    	}
 		
 		double width = 0;
 		

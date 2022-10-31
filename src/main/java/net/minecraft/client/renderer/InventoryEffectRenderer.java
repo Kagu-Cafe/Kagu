@@ -1,6 +1,10 @@
 package net.minecraft.client.renderer;
 
 import java.util.Collection;
+
+import cafe.kagu.kagu.Kagu;
+import cafe.kagu.kagu.mods.impl.exploit.ModAntiCrash;
+import cafe.kagu.kagu.utils.ChatUtils;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.inventory.Container;
@@ -81,13 +85,28 @@ public abstract class InventoryEffectRenderer extends GuiContainer
                 GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
                 this.mc.getTextureManager().bindTexture(inventoryBackground);
                 this.drawTexturedModalRect(i, j, 0, 166, 140, 32);
-
-                if (potion.hasStatusIcon())
-                {
-                    int i1 = potion.getStatusIconIndex();
-                    this.drawTexturedModalRect(i + 6, j + 7, 0 + i1 % 8 * 18, 198 + i1 / 8 * 18, 18, 18);
+                
+                ModAntiCrash modAntiCrash = Kagu.getModuleManager().getModule(ModAntiCrash.class);
+                if (modAntiCrash.isEnabled() && modAntiCrash.getPotionCrash().isEnabled()) {
+                    try {
+                        if (potion.hasStatusIcon())
+                        {
+                            int i1 = potion.getStatusIconIndex();
+                            this.drawTexturedModalRect(i + 6, j + 7, 0 + i1 % 8 * 18, 198 + i1 / 8 * 18, 18, 18);
+                        }
+    				} catch (Exception e) {
+    					e.printStackTrace();
+    					if (modAntiCrash.getWarning().isEnabled())
+    						ChatUtils.addChatMessage("Server may be trying to crash you, detected null potion icon");
+    				}
+                }else {
+                    if (potion.hasStatusIcon())
+                    {
+                        int i1 = potion.getStatusIconIndex();
+                        this.drawTexturedModalRect(i + 6, j + 7, 0 + i1 % 8 * 18, 198 + i1 / 8 * 18, 18, 18);
+                    }
                 }
-
+                
                 String s1 = I18n.format(potion.getName(), new Object[0]);
 
                 if (potioneffect.getAmplifier() == 1)

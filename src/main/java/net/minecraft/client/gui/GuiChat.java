@@ -6,6 +6,7 @@ import cafe.kagu.kagu.Kagu;
 import cafe.kagu.kagu.mods.ModuleManager;
 import cafe.kagu.kagu.mods.impl.exploit.ModSpecialSlime;
 import cafe.kagu.kagu.mods.impl.visual.ModTargetHud;
+import cafe.kagu.kagu.utils.Uwuifier;
 
 import java.io.IOException;
 import java.util.List;
@@ -316,7 +317,9 @@ public class GuiChat extends GuiScreen
     {
     	Kagu.getModuleManager().getModule(ModTargetHud.class).mouseMove(mouseX, mouseY);
         drawRect(2, this.height - 14, this.width - 2, this.height - 2, Integer.MIN_VALUE);
+        Uwuifier.disable();
         this.inputField.drawTextBox();
+        Uwuifier.enable();
         IChatComponent ichatcomponent = this.mc.ingameGUI.getChatGUI().getChatComponent(Mouse.getX(), Mouse.getY());
 
         if (ichatcomponent != null && ichatcomponent.getChatStyle().getChatHoverEvent() != null)

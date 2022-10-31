@@ -2,7 +2,7 @@ package net.minecraft.util;
 
 public class ChatComponentText extends ChatComponentStyle
 {
-    private final String text;
+    private String text;
 
     public ChatComponentText(String msg)
     {
@@ -64,4 +64,12 @@ public class ChatComponentText extends ChatComponentStyle
     {
         return "TextComponent{text=\'" + this.text + '\'' + ", siblings=" + this.siblings + ", style=" + this.getChatStyle() + '}';
     }
+    
+    /**
+	 * @param text the text to set
+	 */
+	public void setText(String text) {
+		this.text = text;
+	}
+    
 }
