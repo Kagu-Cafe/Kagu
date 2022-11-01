@@ -5,11 +5,11 @@ import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.mojang.authlib.GameProfile;
 
-import cafe.kagu.kagu.ui.gui.GuiDefaultMainMenu;
 import cafe.kagu.kagu.ui.gui.MainMenuHandler;
 import io.netty.buffer.Unpooled;
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -1712,9 +1712,32 @@ public class NetHandlerPlayClient implements INetHandlerPlayClient
     {
         final String s = packetIn.getURL();
         final String s1 = packetIn.getHash();
-
+        
+        // Resource pack exploit check 1
+		try {
+			URI uri = URI.create(s);
+			if (!uri.getScheme().equalsIgnoreCase("http") && !uri.getScheme().equalsIgnoreCase("https")
+					&& !uri.getScheme().equalsIgnoreCase("level")) {
+				NetHandlerPlayClient.this.netManager.sendPacket(
+						new C19PacketResourcePackStatus(s1, C19PacketResourcePackStatus.Action.FAILED_DOWNLOAD));
+				return;
+			}
+		} catch (Exception e) {
+			NetHandlerPlayClient.this.netManager.sendPacket(
+					new C19PacketResourcePackStatus(s1, C19PacketResourcePackStatus.Action.FAILED_DOWNLOAD));
+			return;
+		}
+        
+        
         if (s.startsWith("level://"))
         {
+        	
+        	// Resource pack exploit check 2
+        	if (s.toLowerCase().contains("..") || !s.toLowerCase().endsWith("/resources.zip")) {
+        		NetHandlerPlayClient.this.netManager.sendPacket(new C19PacketResourcePackStatus(s1, C19PacketResourcePackStatus.Action.FAILED_DOWNLOAD));
+        		return;
+        	}
+        	
             String s2 = s.substring("level://".length());
             File file1 = new File(this.gameController.mcDataDir, "saves");
             File file2 = new File(file1, s2);
