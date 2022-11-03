@@ -115,6 +115,8 @@ public class GuiDropdownClickgui extends GuiScreen {
 		bgImages.put("Sylveon 1", new BackgroundImage(dropdownImageFolder + "sylveon1.png", "Sylveon 1"));
 		bgImages.put("Vaporeon 1", new BackgroundImage(dropdownImageFolder + "vaporeon1.png", "Vaporeon 1"));
 		bgImages.put("Wolf O'Donnell", new BackgroundImage(dropdownImageFolder + "wolf_odonnell.png", "Wolf O'Donnell"));
+		bgImages.put("Protogen 1", new BackgroundImage(dropdownImageFolder + "protogen1.png", "Protogen 1"));
+		bgImages.put("Protogen 2", new BackgroundImage(dropdownImageFolder + "protogen2.png", "Protogen 2"));
 		
 		// Anime (mostly femboys)
 		bgImages.put("Astolfo 1", new BackgroundImage(dropdownImageFolder + "astolfo1.png", "Astolfo 1"));
