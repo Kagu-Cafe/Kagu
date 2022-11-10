@@ -27,6 +27,7 @@ import cafe.kagu.kagu.managers.NetworkManager;
 import cafe.kagu.kagu.mods.Module;
 import cafe.kagu.kagu.mods.ModuleManager;
 import cafe.kagu.kagu.settings.impl.BooleanSetting;
+import cafe.kagu.kagu.settings.impl.ColorSetting;
 import cafe.kagu.kagu.settings.impl.DoubleSetting;
 import cafe.kagu.kagu.settings.impl.IntegerSetting;
 import cafe.kagu.kagu.settings.impl.KeybindSetting;
@@ -70,7 +71,7 @@ public class ModTest extends Module {
 		slotSetting2.setInvalidSlots(slotSetting1);
 		setSettings(booleanSetting, decimalSetting1, decimalSetting2, decimalSetting3, modeSetting1, modeSetting2,
 				modeSetting3, integerSetting1, integerSetting2, integerSetting3, keybindSetting, slotSetting1,
-				slotSetting2);
+				slotSetting2, colorSetting1, colorSetting2);
 	}
 
 	private BooleanSetting booleanSetting = new BooleanSetting("Boolean setting", false);
@@ -85,6 +86,8 @@ public class ModTest extends Module {
 			modeSetting3 = new ModeSetting("Mode setting 3", "Test 1");
 	private KeybindSetting keybindSetting = new KeybindSetting("Keybind", Keyboard.KEY_W);
 	private SlotSetting slotSetting1 = new SlotSetting("Slot 1", 1), slotSetting2 = new SlotSetting("Slot 2", 2);
+	private ColorSetting colorSetting1 = new ColorSetting("Color 1", 0xffd58cff),
+			colorSetting2 = new ColorSetting("Color 2", 0xffa5e0fe);
 
 	private float[] lastRotations = new float[] { 0, 0 };
 	private int ticks = 0;

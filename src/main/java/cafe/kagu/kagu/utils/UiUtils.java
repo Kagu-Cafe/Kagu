@@ -293,6 +293,15 @@ public class UiUtils {
 	}
 	
 	/**
+	 * Turns a float array into a color that can be used with minecraft's draw utils
+	 * @param color The color in a float array as [r, g, b, a]
+	 * @return The color as an int
+	 */
+	public static int getColorFromFloatArray(float[] color) {
+		return new Color(color[0], color[1], color[2], color[3]).getRGB();
+	}
+	
+	/**
 	 * Enables gl scissor
 	 * @param left The left side of the box
 	 * @param top The top of the box
@@ -482,6 +491,28 @@ public class UiUtils {
 		float blue = (float) (color & 255) / 255.0F;
 		float alpha = (float) (color >> 24 & 255) / 255.0F;
 		return new float[] {red, green, blue, alpha};
+	}
+	
+	/**
+	 * Converts a formatted color int to an mc color int, 
+	 * this is because hex colors are formatted as #RRGGBBAA but mc formats them #AARRGGBB
+	 * @param formattedColor The formatted color in an int form
+	 * @return A new int that works with mc render code
+	 */
+	public static int convertFormattedColor(int formattedColor) {
+		float[] rgba = UiUtils.getFloatArrayFromColor(formattedColor);
+		return UiUtils.getColorFromFloatArray(new float[] {rgba[3], rgba[0], rgba[1], rgba[2]});
+	}
+	
+	/**
+	 * Converts a mc color int to an formatted color int, 
+	 * this is because hex colors are formatted as #RRGGBBAA but mc formats them #AARRGGBB
+	 * @param color The mc color in an int form
+	 * @return A new int in the format of #AARRGGBB
+	 */
+	public static int convertMcColor(int color) {
+		float[] rgba = UiUtils.getFloatArrayFromColor(color);
+		return UiUtils.getColorFromFloatArray(new float[] {rgba[1], rgba[2], rgba[3], rgba[0]});
 	}
 	
 }

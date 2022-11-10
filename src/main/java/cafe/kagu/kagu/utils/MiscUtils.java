@@ -5,6 +5,7 @@ package cafe.kagu.kagu.utils;
 
 import cafe.kagu.kagu.settings.Setting;
 import cafe.kagu.kagu.settings.impl.BooleanSetting;
+import cafe.kagu.kagu.settings.impl.ColorSetting;
 import cafe.kagu.kagu.settings.impl.DoubleSetting;
 import cafe.kagu.kagu.settings.impl.IntegerSetting;
 import cafe.kagu.kagu.settings.impl.KeybindSetting;
@@ -41,6 +42,9 @@ public class MiscUtils {
 		else if (setting instanceof SlotSetting) {
 			return "slot";
 		}
+		else if (setting instanceof ColorSetting) {
+			return "color";
+		}
 		return "error";
 	}
 	
@@ -53,7 +57,7 @@ public class MiscUtils {
 		String output = "";
 		boolean removeNext = false;
 		for (char c : input.toCharArray()) {
-			if (c == '§') {
+			if (c == 'ï¿½') {
 				removeNext = true;
 			}
 			else if (!removeNext) {

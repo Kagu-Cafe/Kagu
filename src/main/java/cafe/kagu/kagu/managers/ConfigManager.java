@@ -16,6 +16,7 @@ import cafe.kagu.kagu.mods.Module.Category;
 import cafe.kagu.kagu.mods.impl.visual.ModClickGui;
 import cafe.kagu.kagu.settings.Setting;
 import cafe.kagu.kagu.settings.impl.BooleanSetting;
+import cafe.kagu.kagu.settings.impl.ColorSetting;
 import cafe.kagu.kagu.settings.impl.DoubleSetting;
 import cafe.kagu.kagu.settings.impl.IntegerSetting;
 import cafe.kagu.kagu.settings.impl.KeybindSetting;
@@ -67,6 +68,9 @@ public class ConfigManager {
 				}
 				else if (setting instanceof SlotSetting) {
 					settingValue = ((SlotSetting)setting).getSelectedSlot() + "";
+				}
+				else if (setting instanceof ColorSetting) {
+					settingValue = Integer.toHexString(setting.get(ColorSetting.class).getColor());
 				}
 				else {
 					settingValue = "error";
@@ -167,6 +171,10 @@ public class ConfigManager {
 								
 								case "slot":{
 									((SlotSetting)setting).setSelectedSlot(Integer.parseInt(settingValue));
+								}break;
+								
+								case "color":{
+									setting.get(ColorSetting.class).setColor((int)Long.parseLong(settingValue, 16));
 								}break;
 								
 								default:

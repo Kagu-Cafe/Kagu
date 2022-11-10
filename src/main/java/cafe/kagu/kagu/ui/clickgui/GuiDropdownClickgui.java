@@ -40,6 +40,7 @@ import cafe.kagu.kagu.mods.ModuleManager;
 import cafe.kagu.kagu.mods.impl.visual.ModClickGui;
 import cafe.kagu.kagu.settings.Setting;
 import cafe.kagu.kagu.settings.impl.BooleanSetting;
+import cafe.kagu.kagu.settings.impl.ColorSetting;
 import cafe.kagu.kagu.settings.impl.DoubleSetting;
 import cafe.kagu.kagu.settings.impl.IntegerSetting;
 import cafe.kagu.kagu.settings.impl.KeybindSetting;
@@ -653,6 +654,30 @@ public class GuiDropdownClickgui extends GuiScreen {
 							UiUtils.enableScissor(tab.getPosX(), scissor2, tab.getPosX() + tabWidth, height);
 							drawRect(tabWidth - valueWidth - 4, yOffset, tabWidth, yOffset + tabModuleFontRenderer.getFontHeight() + 4, tabTitleColor);
 							tabModuleFontRenderer.drawString(value, tabWidth - 2 - valueWidth, yOffset + 2, textColor);
+						}break;
+						case "color":{
+							String text = setting.getName() + ": #" + Integer.toHexString(UiUtils.convertMcColor(setting.get(ColorSetting.class).getColor())).toUpperCase() + "        ";
+							double textWidth = tabModuleFontRenderer.getStringWidth(text);
+							UiUtils.enableScissor(tab.getPosX() + textIndent, scissor2, tab.getPosX() + Math.min(textIndent + textWidth, tabWidth), height);
+							if (textWidth + textIndent + TAB_CORNER_SIZE < tabWidth)
+								scroll = 0;
+							if (scroll > 0) {
+								textScrollWidth = textWidth;
+							}
+							tabModuleFontRenderer.drawString(text, textIndent + scroll * textWidth, yOffset + 2, textColor);
+							if (textIndent + textWidth > tabWidth) {
+								tabModuleFontRenderer.drawString(text, textIndent + textWidth + scroll * textWidth, yOffset + 2, textColor);
+								drawGradientRectH(tabWidth - (tabModuleFontRenderer.getFontHeight() + 4) * 2, yOffset, tabWidth - (tabModuleFontRenderer.getFontHeight() + 4), yOffset + tabModuleFontRenderer.getFontHeight() + 4, tabTitleColor, 0x00000000);
+							}else if (hoveredText == setting) {
+								hoveredText = null;
+							}
+							if (isLeftClick && isInsideBasicSettingsRect) {
+								// TODO add click logic
+								isLeftClick = false;
+							}
+							UiUtils.enableScissor(tab.getPosX(), scissor2, tab.getPosX() + tabWidth, height);
+							drawRect(tabWidth - (tabModuleFontRenderer.getFontHeight() + 4), yOffset, tabWidth, yOffset + tabModuleFontRenderer.getFontHeight() + 4, tabTitleColor);
+							drawRect(tabWidth - (tabModuleFontRenderer.getFontHeight() + 2), yOffset + 2, tabWidth - 2, yOffset + tabModuleFontRenderer.getFontHeight() + 2, setting.get(ColorSetting.class).getColor());
 						}break;
 						default:{
 							String text = setting.getName() + "        ";

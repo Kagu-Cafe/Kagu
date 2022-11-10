@@ -79,5 +79,16 @@ public abstract class Setting<T> {
 		this.dependency = dependency;
 		return (T) this;
 	}
-
+	
+	/**
+	 * Casts the setting for you
+	 * @param <U> The type of the setting
+	 * @param settingClass The class of the setting
+	 * @return The setting casted
+	 */
+	@SuppressWarnings("unchecked")
+	public <U extends Setting<?>> U get(Class<U> settingClass) {
+		return (U)this;
+	}
+	
 }
