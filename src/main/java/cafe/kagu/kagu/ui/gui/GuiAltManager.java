@@ -19,6 +19,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Session;
 
 /**
  * @author lavaflowglow
@@ -55,10 +56,10 @@ public class GuiAltManager extends GuiScreen {
 		double buttonCurve = 5;
 		double playerScale = 1;
 		double playerHeight = buttonWidth * playerScale * 1.62025316;
-		FontRenderer mojangAltFont = FontUtils.MOJANG_LOGO_20;
-		FontRenderer microsoftAltFont = FontUtils.MICROSOFT_LOGO_16;
-		FontRenderer altNameFont = FontUtils.SMALL_PIXEL_16;
-		FontRenderer altInfoFont = FontUtils.SMALL_PIXEL_10;
+		final FontRenderer mojangAltFont = FontUtils.MOJANG_LOGO_20;
+		final FontRenderer microsoftAltFont = FontUtils.MICROSOFT_LOGO_16;
+		final FontRenderer altNameFont = FontUtils.SMALL_PIXEL_16;
+		final FontRenderer altInfoFont = FontUtils.SMALL_PIXEL_10;
 		
 		drawRect(0, 0, width, height, backgroundColor);
 		
@@ -94,8 +95,48 @@ public class GuiAltManager extends GuiScreen {
 				height - buttonHeight / 2 - buttonMargin - microsoftAltFont.getFontHeight() / 2 - 2, microsoftFontColor);
 		
 		// Draw all the alts
+		int offset = 0;
+		final int altButtonHeight = height / 8;
 		for (Alt alt : alts) {
 			
+			UiUtils.drawRoundedRect(5, offset + 5, width - buttonWidth * 2 - buttonMargin * 8, offset + altButtonHeight, 0xff1e1e1e, 5);
+			if (alt.getUsername().equals(mc.getSession().getUsername()))
+				UiUtils.drawRoundedRect(width - buttonWidth * 2 - buttonMargin * 8 - 10, offset + 5, width - buttonWidth * 2 - buttonMargin * 8, offset + altButtonHeight, 0xffd58cff, 5);
+			if (leftMouseClicked && UiUtils.isMouseInsideRoundedRect(mouseX, mouseY, 5, offset + 5, width - buttonWidth * 2 - buttonMargin * 8, offset + altButtonHeight, 5)) {
+				switch (alt.getType()) {
+					case "Microsoft":{
+						try {
+							Session session = mc.getSession();
+							SessionManager.loginToMicrsoftAccount(((MicrosoftAlt)alt).getMinecraftAccessToken());
+							if (session != mc.getSession()) {
+								alt.setUsername(mc.getSession().getUsername());
+								saveAlts();
+							}
+						} catch (Exception e) {
+							try {
+								SessionManager.refreshAltAccessToken(((MicrosoftAlt)alt));
+								Session session = mc.getSession();
+								SessionManager.loginToMicrsoftAccount(((MicrosoftAlt)alt).getMinecraftAccessToken());
+								if (session != mc.getSession()) {
+									alt.setUsername(mc.getSession().getUsername());
+									saveAlts();
+								}
+							} catch (Exception e2) {
+								e.printStackTrace();
+							}
+						}
+					}break;
+					case "Cracked":{
+						SessionManager.loginCracked(alt.getUsername());
+					}break;
+				}
+				leftMouseClicked = false;
+			}
+			mc.getTextureManager().bindTexture(defaultSteveFace);
+			drawTexture(10, offset + 10, altButtonHeight - 15, altButtonHeight - 15, false);
+			altNameFont.drawString(alt.getUsername(), altButtonHeight + 5, offset + 10, -1);
+			
+			offset += altButtonHeight + 5;
 		}
 		
 		if (leftMouseClicked)

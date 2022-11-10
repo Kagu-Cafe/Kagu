@@ -7,6 +7,7 @@ import cafe.kagu.kagu.eventBus.Handler;
 import cafe.kagu.kagu.eventBus.EventHandler;
 import cafe.kagu.kagu.eventBus.impl.EventCheatRenderTick;
 import cafe.kagu.kagu.eventBus.impl.EventRenderItem;
+import cafe.kagu.kagu.eventBus.impl.EventSettingUpdate;
 import cafe.kagu.kagu.eventBus.impl.EventTick;
 import cafe.kagu.kagu.mods.Module;
 import cafe.kagu.kagu.settings.impl.BooleanSetting;
@@ -27,21 +28,44 @@ public class ModAnimations extends Module {
 
 	public ModAnimations() {
 		super("Animations", Category.VISUAL);
-		setSettings(blockAnimations, itemScaleX, itemScaleY, itemScaleZ, itemTranslateX, itemTranslateY, itemTranslateZ);
+		setSettings(blockAnimations, overideFovModifier, fovModifier, transparentHand, itemScaleX, itemScaleY, itemScaleZ, itemTranslateX, itemTranslateY, itemTranslateZ, resetTranslations);
 	}
 	
 	// Block animations
-	public ModeSetting blockAnimations = new ModeSetting("Animation", "1.7", "1.7", "Orbit", "Spin", "Lollipop", "Slash", "Tap", "Wiggle", "Swipe", "Bump", "Float", "None", "Test");
+	private ModeSetting blockAnimations = new ModeSetting("Animation", "1.7", "1.7", "Orbit", "Spin", "Lollipop", "Slash", "Tap", "Wiggle", "Swipe", "Bump", "Float", "None", "Test");
+	
+	// fov modifier override
+	private BooleanSetting overideFovModifier = new BooleanSetting("Override Hand FOV", false);
+	private DoubleSetting fovModifier = new DoubleSetting("Custom Hand FOV", 90, 30, 180, 5).setDependency(overideFovModifier::isEnabled);
+	
+	// See through hand
+	private BooleanSetting transparentHand = new BooleanSetting("Transparent Hand", false);
 	
 	// Item scale
-	public DoubleSetting itemScaleX = new DoubleSetting("Item scale x", 1, -2, 2, 0.05);
-	public DoubleSetting itemScaleY = new DoubleSetting("Item scale y", 1, -2, 2, 0.05);
-	public DoubleSetting itemScaleZ = new DoubleSetting("Item scale z", 1, -2, 2, 0.05);
+	private DoubleSetting itemScaleX = new DoubleSetting("Item scale x", 1, -2, 2, 0.05);
+	private DoubleSetting itemScaleY = new DoubleSetting("Item scale y", 1, -2, 2, 0.05);
+	private DoubleSetting itemScaleZ = new DoubleSetting("Item scale z", 1, -2, 2, 0.05);
 	
 	// Item translate
-	public DoubleSetting itemTranslateX = new DoubleSetting("Item translate x", 0, -2, 2, 0.001);
-	public DoubleSetting itemTranslateY = new DoubleSetting("Item translate y", 0, -2, 2, 0.001);
-	public DoubleSetting itemTranslateZ = new DoubleSetting("Item translate z", 0, -2, 2, 0.001);
+	private DoubleSetting itemTranslateX = new DoubleSetting("Item translate x", 0, -2, 2, 0.001);
+	private DoubleSetting itemTranslateY = new DoubleSetting("Item translate y", 0, -2, 2, 0.001);
+	private DoubleSetting itemTranslateZ = new DoubleSetting("Item translate z", 0, -2, 2, 0.001);
+	
+	// Reset translations
+	private BooleanSetting resetTranslations = new BooleanSetting("Reset Translations", false);
+	
+	@EventHandler
+	private Handler<EventSettingUpdate> onSettingUpdate = e -> {
+		if (e.getSetting() != resetTranslations || resetTranslations.isDisabled())
+			return;
+		resetTranslations.disable();
+		itemScaleX.setValue(1);
+		itemScaleY.setValue(1);
+		itemScaleZ.setValue(1);
+		itemTranslateX.setValue(0);
+		itemTranslateY.setValue(0);
+		itemTranslateZ.setValue(0);
+	};
 	
 	@EventHandler
 	private Handler<EventRenderItem> renderItem = e -> {
@@ -136,5 +160,26 @@ public class ModAnimations extends Module {
 		}
 		
 	};
+	
+	/**
+	 * @return the overideFovModifier
+	 */
+	public BooleanSetting getOverideFovModifier() {
+		return overideFovModifier;
+	}
+	
+	/**
+	 * @return the fovModifier
+	 */
+	public DoubleSetting getFovModifier() {
+		return fovModifier;
+	}
+	
+	/**
+	 * @return the transparentHand
+	 */
+	public BooleanSetting getTransparentHand() {
+		return transparentHand;
+	}
 	
 }

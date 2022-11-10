@@ -11,6 +11,7 @@ import cafe.kagu.kagu.mods.ModuleManager;
 import cafe.kagu.kagu.mods.impl.combat.ModBacktrack;
 import cafe.kagu.kagu.mods.impl.combat.ModReach;
 import cafe.kagu.kagu.mods.impl.exploit.ModBlink;
+import cafe.kagu.kagu.mods.impl.visual.ModAnimations;
 import cafe.kagu.kagu.mods.impl.visual.ModCamera;
 import cafe.kagu.kagu.mods.impl.visual.ModNormalZoomCam;
 import cafe.kagu.kagu.ui.gui.GuiDefaultMainMenu;
@@ -649,7 +650,7 @@ public class EntityRenderer implements IResourceManagerReloadListener
      * Changes the field of view of the player depending on if they are underwater or not
      */
     private float getFOVModifier(float partialTicks, boolean p_78481_2_)
-    {
+    {	
         if (this.debugView)
         {
             return 90.0F;
@@ -1052,7 +1053,16 @@ public class EntityRenderer implements IResourceManagerReloadListener
      */
     private void renderHand(float partialTicks, int xOffset)
     {
-        this.renderHand(partialTicks, xOffset, true, true, false);
+    	ModAnimations modAnimations = Kagu.getModuleManager().getModule(ModAnimations.class);
+    	if (modAnimations.isEnabled() && modAnimations.getTransparentHand().isEnabled()) {
+        	GL11.glEnable(GL11.GL_BLEND);
+        	GL11.glBlendFunc(GL11.GL_SRC_COLOR, GL11.GL_SRC_COLOR);
+            this.renderHand(partialTicks, xOffset, true, true, false);
+        	GL11.glBlendFunc(GL11.GL_SRC_COLOR, GL11.GL_ONE_MINUS_SRC_COLOR);
+        	GL11.glDisable(GL11.GL_BLEND);
+    	}else {
+    		this.renderHand(partialTicks, xOffset, true, true, false);
+    	}
     }
 
     public void renderHand(float p_renderHand_1_, int p_renderHand_2_, boolean p_renderHand_3_, boolean p_renderHand_4_, boolean p_renderHand_5_)
@@ -1072,8 +1082,12 @@ public class EntityRenderer implements IResourceManagerReloadListener
             {
                 Shaders.applyHandDepth();
             }
-
-            Project.gluPerspective(this.getFOVModifier(p_renderHand_1_, false), (float)this.mc.displayWidth / (float)this.mc.displayHeight, 0.05F, this.farPlaneDistance * 2.0F);
+            
+        	ModAnimations modAnimations = Kagu.getModuleManager().getModule(ModAnimations.class);
+        	if (modAnimations.isEnabled() && modAnimations.getOverideFovModifier().isEnabled())
+        		Project.gluPerspective((float)modAnimations.getFovModifier().getValue(), (float)this.mc.displayWidth / (float)this.mc.displayHeight, 0.05F, this.farPlaneDistance * 2.0F);
+        	else
+        		Project.gluPerspective(this.getFOVModifier(p_renderHand_1_, false), (float)this.mc.displayWidth / (float)this.mc.displayHeight, 0.05F, this.farPlaneDistance * 2.0F);
             GlStateManager.matrixMode(5888);
             GlStateManager.loadIdentity();
 

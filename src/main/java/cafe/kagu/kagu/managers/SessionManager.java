@@ -72,11 +72,12 @@ public class SessionManager {
 			MicrosoftAlt alt = new MicrosoftAlt();
 			alt.setUsername("Unknown account");
 			alt.setRefreshToken(jsonResponse.getString("refresh_token"));
+			alt.setMinecraftAccessToken(jsonResponse.getString("access_token"));
 			GuiAltManager.getAlts().add(0, alt);
 			GuiAltManager.saveAlts();
 			
 			// Temp login line
-			loginToMicrsoftAccount(jsonResponse.getString("access_token"));
+//			loginToMicrsoftAccount(jsonResponse.getString("access_token"));
 			
 			return "Added microsoft account to the alt manager, you may close this tab";
 		});
@@ -125,6 +126,28 @@ public class SessionManager {
 	}
 	
 	/**
+	 * Refreshes an alt's access token with the refresh token
+	 * @param alt The alt to refresh
+	 */
+	public static void refreshAltAccessToken(MicrosoftAlt alt) {
+		Map<String, String> authInfo = new Yaml().load(FileManager.readStringFromFile(FileManager.MICROSOFT_CONFIGURATION));
+		String clientId = authInfo.get("Azure Client Id");
+		String secret = authInfo.get("Azure Secret");
+		String tokenResponse = "";
+		try {
+			tokenResponse = getAuthTokenResponseFromAuthCode(clientId, secret, alt.getRefreshToken(), true);
+		} catch (Exception e) {
+			
+		}
+		
+		// Refresh access token
+		JSONObject jsonResponse = new JSONObject(tokenResponse);
+		System.out.println(jsonResponse.toString());
+		alt.setMinecraftAccessToken(jsonResponse.getString("access_token"));
+		GuiAltManager.saveAlts();
+	}
+	
+	/**
 	 * @param clientId The azure client id
 	 * @param secret The azure secret
 	 * @param code The code or refresh token
@@ -134,7 +157,7 @@ public class SessionManager {
 	 */
 	private static String getAuthTokenResponseFromAuthCode(String clientId, String secret, String code, boolean refreshToken) throws Exception {
 		HttpPost post = new HttpPost("https://login.live.com/oauth20_token.srf");
-		String body = "client_id=" + clientId + "&client_secret=" + secret + "&code=" + code + "&grant_type=" + (refreshToken ? "refresh_token" : "authorization_code") + "&redirect_uri=http://localhost:3621";
+		String body = "client_id=" + clientId + "&client_secret=" + secret + (refreshToken ? "&refresh_token=" : "&code=") + code + "&grant_type=" + (refreshToken ? "refresh_token" : "authorization_code") + "&redirect_uri=http://localhost:3621";
 		StringEntity entity = new StringEntity(body);
 		post.setEntity(entity);
 		post.setHeader("Content-Type", "application/x-www-form-urlencoded");
@@ -144,7 +167,7 @@ public class SessionManager {
 	/**
 	 * @param accessToken The access token
 	 */
-	private static void loginToMicrsoftAccount(String accessToken) throws Exception {
+	public static void loginToMicrsoftAccount(String accessToken) throws Exception {
 		
 		JSONObject xblResponse = null;
 		{ // Access token to xbl token
