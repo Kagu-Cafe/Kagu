@@ -47,12 +47,12 @@ public class ColorSetting extends Setting<ColorSetting> {
 	}
 	
 	/**
-	 * Calculates and returns the hue of the color
-	 * @return
+	 * Calculates and returns the hsb values of the color
+	 * @return The hsb value of the color in a float array, the orders of the values in the array are hue, saturation, and brightness
 	 */
-	public float getHue() {
+	public float[] getHsb() {
 		float[] rgba = UiUtils.getFloatArrayFromColor(color);
-		return Color.RGBtoHSB((int)(rgba[0] * 255), (int)(rgba[1] * 255), (int)(rgba[2] * 255), null)[0];
+		return Color.RGBtoHSB((int)(rgba[0] * 255), (int)(rgba[1] * 255), (int)(rgba[2] * 255), null);
 	}
 	
 }

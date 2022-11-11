@@ -17,6 +17,7 @@ import cafe.kagu.kagu.font.FontUtils;
 import cafe.kagu.kagu.managers.FileManager;
 import cafe.kagu.kagu.prot.Note;
 import cafe.kagu.kagu.ui.gui.MainMenuHandler;
+import cafe.kagu.kagu.ui.widgets.WidgetColorPicker;
 import cafe.kagu.kagu.utils.UiUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
@@ -63,7 +64,7 @@ public class GuiAuthNeeded extends GuiScreen {
 		
 		// Background
 		drawRect(0, 0, width, height, 0xff1c161a);
-		 
+		
 		// Main window
 		UiUtils.drawRoundedRect(width * 0.4, height * 0.3, width * 0.6, height * 0.7, 0xff292425, 5);
 		

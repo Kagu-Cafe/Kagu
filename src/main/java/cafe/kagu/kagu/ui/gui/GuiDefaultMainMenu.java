@@ -12,6 +12,7 @@ import cafe.kagu.kagu.font.FontRenderer;
 import cafe.kagu.kagu.font.FontUtils;
 import cafe.kagu.kagu.managers.FileManager;
 import cafe.kagu.kagu.managers.SessionManager;
+import cafe.kagu.kagu.ui.widgets.WidgetColorPicker;
 import cafe.kagu.kagu.utils.Shader;
 import cafe.kagu.kagu.utils.SoundUtils;
 import cafe.kagu.kagu.utils.UiUtils;
@@ -84,6 +85,8 @@ public class GuiDefaultMainMenu extends GuiScreen {
 		GL20.glUniform1f(backgroundShader.getUniform("time"), (float)(System.currentTimeMillis() - backgroundAnimation) / 1200f);
 		drawRect(0, 0, width, height, -1);
 		backgroundShader.unbind();
+		
+		new WidgetColorPicker(0, mouseX, mouseY, null, null).draw(mouseX, mouseY, 100, 100);
 		
 		// Draw menu background
 //		UiUtils.drawRoundedRect(width * 0.4 - 1, height * 0.325 - 1, width * 0.6 + 1, height * 0.675 + 1, -1, 10);

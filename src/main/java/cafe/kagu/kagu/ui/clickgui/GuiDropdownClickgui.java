@@ -93,6 +93,7 @@ public class GuiDropdownClickgui extends GuiScreen {
 	private Object hoveredText = null;
 	private double textScrollAnimation = 0, textScrollWidth = 1;
 	private ResourceLocation expand = new ResourceLocation("Kagu/dropdownClickgui/expand.png");
+	private int[] colorPickerPosition = new int[2];
 	
 	private static final int TAB_CORNER_SIZE = 5;
 	private static final FontRenderer TAB_TITLE_FR = FontUtils.STRATUM2_MEDIUM_15_AA;
