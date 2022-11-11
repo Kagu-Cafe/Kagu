@@ -5,10 +5,16 @@ package cafe.kagu.kagu.ui.widgets;
 
 import java.awt.Color;
 
+import org.lwjgl.opengl.GL11;
+
 import net.minecraft.client.gui.Gui;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 
 /**
- * @author lavaflowglow
+ * @author DistastefulBannock
  * A triangle color picker to mc, doesn't support alpha values
  */
 public class WidgetColorPicker {
@@ -52,11 +58,40 @@ public class WidgetColorPicker {
 			Gui.drawRect(x, y, x + width, y - height, 0xff1e1e1e);
 		}
 		
-		// Draw the color wheel
-		int colorWheelWidth = width / 6;
-		for (int rotate = 0; rotate < 360; rotate++) {
-			int color = Color.HSBtoRGB(rotate / 360, 0.5f, 0.5f);
+		// Draw the hue wheel
+		int hueWheelWidth = width / 9;
+		int originX = x + width / 2;
+		int originY = y - height / 2;
+		
+		Tessellator tessellator = Tessellator.getInstance();
+        WorldRenderer worldrenderer = tessellator.getWorldRenderer();
+        
+		GlStateManager.pushMatrix();
+		GlStateManager.pushAttrib();
+        GlStateManager.disableTexture2D();
+        GlStateManager.enableBlend();
+        GlStateManager.disableAlpha();
+        GL11.glEnable(GL11.GL_POLYGON_SMOOTH);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
+        worldrenderer.begin(GL11.GL_QUAD_STRIP, DefaultVertexFormats.POSITION_COLOR);
+		for (int rotate = 0; rotate <= 360; rotate++) {
+			Color color = Color.getHSBColor(rotate / 360f, 1, 1);
+			int yaw = rotate - 90;
+			double xFar = originX + Math.cos(Math.toRadians(yaw)) * (width / 2);
+			double yFar = originY + Math.sin(Math.toRadians(yaw)) * (height / 2);
+			double xClose = originX + Math.cos(Math.toRadians(yaw)) * (width / 2 - hueWheelWidth);
+			double yClose = originY + Math.sin(Math.toRadians(yaw)) * (height / 2 - hueWheelWidth);
+			worldrenderer.pos(xFar, yFar, 0).color(color.getRed() / 255d, color.getGreen() / 255d, color.getBlue() / 255d, 1d).endVertex();
+			worldrenderer.pos(xClose, yClose, 0).color(color.getRed() / 255d, color.getGreen() / 255d, color.getBlue() / 255d, 1d).endVertex();
 		}
+		tessellator.draw();
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        GlStateManager.shadeModel(GL11.GL_FLAT);
+        GlStateManager.disableBlend();
+        GlStateManager.enableAlpha();
+        GlStateManager.enableTexture2D();
+        GlStateManager.popAttrib();
+        GlStateManager.popMatrix();
 		
 	}
 	
