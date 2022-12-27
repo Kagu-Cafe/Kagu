@@ -58,6 +58,12 @@ public class GuiDefaultMainMenu extends GuiScreen {
 	private static boolean leftMouseClicked = false;
 	private static Shader backgroundShader;
 	private static long backgroundAnimation = 0;
+	private static WidgetColorPicker colorPicker = null;
+	static {
+		colorPicker = new WidgetColorPicker(0, 0xffff0000, 0xff00ff00, null, () -> {
+			System.out.println(Integer.toHexString(colorPicker.getColor()));
+		});
+	}
 	
 	@Override
 	public void initGui() {
@@ -86,7 +92,7 @@ public class GuiDefaultMainMenu extends GuiScreen {
 		drawRect(0, 0, width, height, -1);
 		backgroundShader.unbind();
 		
-		new WidgetColorPicker(0, mouseX, mouseY, null, null).draw(mouseX, mouseY, 100, 100);
+		colorPicker.draw(100, 100, 100, 100, mouseX, mouseY);
 		
 		// Draw menu background
 //		UiUtils.drawRoundedRect(width * 0.4 - 1, height * 0.325 - 1, width * 0.6 + 1, height * 0.675 + 1, -1, 10);
@@ -200,6 +206,12 @@ public class GuiDefaultMainMenu extends GuiScreen {
 	@Override
 	protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
 		leftMouseClicked = true;
+		colorPicker.mouseClick(mouseButton);
+	}
+	
+	@Override
+	protected void mouseReleased(int mouseX, int mouseY, int state) {
+		colorPicker.mouseRelease(state);
 	}
 	
 }

@@ -53,7 +53,7 @@ public class ModClickGui extends Module {
 		Kagu.getEventBus().subscribe(new DisabledFix());
 	}
 
-	private ModeSetting mode = new ModeSetting("Mode", "CS:GO", "CS:GO", "Dropdown");
+	private ModeSetting mode = new ModeSetting("Mode", "Dropdown", "CS:GO", "Dropdown");
 	private ModeSetting bgImage = new ModeSetting("BG Image", "Fleur 1", "Fleur 1", "Fleur 2", "Distasteful",
 			"Cheddar 1", "Cheddar 2", "Sylveon 1", "Vaporeon 1", "Wolf O'Donnell", "Protogen 1", "Protogen 2", "Astolfo 1", 
 			"Astolfo 2", "Astolfo 3", "Felix 1", "Felix 2", "Miku 1", "Miku 2", "Peter Griffin 1", "Peter Griffin 2", 

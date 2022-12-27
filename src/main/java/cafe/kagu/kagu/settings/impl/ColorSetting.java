@@ -5,6 +5,7 @@ package cafe.kagu.kagu.settings.impl;
 
 import java.awt.Color;
 
+import cafe.kagu.kagu.eventBus.impl.EventSettingUpdate;
 import cafe.kagu.kagu.settings.Setting;
 import cafe.kagu.kagu.utils.UiUtils;
 
@@ -37,6 +38,12 @@ public class ColorSetting extends Setting<ColorSetting> {
 	 */
 	public void setColor(int color) {
 		this.color = color;
+		
+		// Kagu hook
+		{
+			EventSettingUpdate eventSettingUpdate = new EventSettingUpdate(this);
+			eventSettingUpdate.post();
+		}
 	}
 	
 	/**

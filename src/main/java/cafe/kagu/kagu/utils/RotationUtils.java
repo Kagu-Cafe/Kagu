@@ -54,6 +54,16 @@ public class RotationUtils {
 	}
 	
 	/**
+	 * Calculates the angle from pos1 needed to look at pos2
+	 * @param pos1 The first position
+	 * @param pos2 The target position
+	 * @return A float array where the first index is the yaw and the second is the pitch
+	 */
+	public static float[] getRotations(double[] pos1, double[] pos2) {
+		return getRotations(new Vector3d(pos1), new Vector3d(pos2));
+	}
+	
+	/**
 	 * @return The strafe yaw of the player, takes the players intended movements and generates a yaw with them
 	 */
 	public static float getStrafeYaw() {
@@ -88,7 +98,7 @@ public class RotationUtils {
 	 * @param pitch The pitch to use for the calculations
 	 * @param lastYaw The last yaw to use for the calculations
 	 * @param lastPitch The last pitch to use for the calculations
-	 * @return The look vec, calculated by modified mc code
+	 * @return The look vec, calculated from modified mc code
 	 */
 	public static Vec3 getLook(float yaw, float pitch, float lastYaw, float lastPitch) {
 		float partialTicks = mc.getTimer().getRenderPartialTicks();

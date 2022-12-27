@@ -75,4 +75,36 @@ public class MathUtils {
 		return Math.abs(value2 - value1);
 	}
 	
+	/**
+	 * @author https://www.geeksforgeeks.org/check-whether-a-given-point-lies-inside-a-triangle-or-not/
+	 * A utility function to calculate area of triangle formed by (x1, y1) (x2, y2)
+	 * and (x3, y3)
+	 */
+	public static double areaTriangle(double x1, double y1, double x2, double y2, double x3, double y3) {
+		return Math.abs((x1 * (y2 - y3) + x2 * (y3 - y1) + x3 * (y1 - y2)) / 2.0);
+	}
+
+	/**
+	 * @author https://www.geeksforgeeks.org/check-whether-a-given-point-lies-inside-a-triangle-or-not/
+	 * A function to check whether point P(x, y) lies inside the triangle formed by
+	 * A(x1, y1), B(x2, y2) and C(x3, y3)
+	 */
+	public static boolean isInsideTriangle(double x1, double y1, double x2, double y2, double x3, double y3, double x, double y) {
+		// Calculate area of triangle ABC
+		double A = areaTriangle(x1, y1, x2, y2, x3, y3);
+
+		// Calculate area of triangle PBC
+		double A1 = areaTriangle(x, y, x2, y2, x3, y3);
+
+		// Calculate area of triangle PAC
+		double A2 = areaTriangle(x1, y1, x, y, x3, y3);
+
+		// Calculate area of triangle PAB
+		double A3 = areaTriangle(x1, y1, x2, y2, x, y);
+
+		// Check if sum of A1, A2 and A3 is same as A
+		return (Math.ceil(A) == Math.ceil(A1 + A2 + A3));
+	}
+	
+	
 }
