@@ -3,18 +3,18 @@ mouseSensitivity:0.13380282
 fov:1.0
 gamma:1.0
 saturation:0.0
-renderDistance:9
+renderDistance:10
 guiScale:2
 particles:0
 bobView:true
 anaglyph3d:false
 maxFps:260
 fboEnable:true
-difficulty:3
+difficulty:2
 fancyGraphics:true
 ao:2
 renderClouds:false
-resourcePacks:["Yiffur V1.0"]
+resourcePacks:["DistastefulBannock V1.0"]
 incompatibleResourcePacks:[]
 lastServer:
 lang:en_US

@@ -1,4 +1,4 @@
-ofRenderDistanceChunks:9
+ofRenderDistanceChunks:10
 ofFogType:2
 ofFogStart:0.8
 ofMipmapType:0

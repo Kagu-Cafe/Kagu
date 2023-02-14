@@ -56,7 +56,7 @@ public class ModClickGui extends Module {
 	private ModeSetting mode = new ModeSetting("Mode", "Dropdown", "CS:GO", "Dropdown");
 	private ModeSetting bgImage = new ModeSetting("BG Image", "Fleur 1", "Fleur 1", "Fleur 2", "Distasteful",
 			"Cheddar 1", "Cheddar 2", "Sylveon 1", "Vaporeon 1", "Wolf O'Donnell", "Protogen 1", "Protogen 2", "Astolfo 1", 
-			"Astolfo 2", "Astolfo 3", "Felix 1", "Felix 2", "Miku 1", "Miku 2", "Peter Griffin 1", "Peter Griffin 2", 
+			"Astolfo 2", "Astolfo 3", "Felix 1", "Felix 2", "Felix 3", "Miku 1", "Miku 2", "Peter Griffin 1", "Peter Griffin 2", 
 			"Yoshi 1", "Yoshi 2", "Crazy Frog 1", "Jeremy Clarkson", "Niko 1").setDependency(() -> mode.is("Dropdown"));
 	private ModeSetting bgImageAnimation = new ModeSetting("BG Image Animation", "From Bottom", "None", "From Bottom",
 			"From Side", "From Corner").setDependency(() -> mode.is("Dropdown"));
@@ -82,7 +82,7 @@ public class ModClickGui extends Module {
 					GuiDropdownClickgui.getInstance().resetTabs();
 					resetClickGuiTabs.toggle();
 				}
-			} else if (e.getSetting() == bgImageAnimation || e.getSetting() == bgImageScale
+			} else if (e.getSetting() == bgImageAnimation
 					|| e.getSetting() == bgImageFlip) {
 				GuiDropdownClickgui.getInstance().saveClickguiOptions();
 			} else if (e.getSetting() != mode)

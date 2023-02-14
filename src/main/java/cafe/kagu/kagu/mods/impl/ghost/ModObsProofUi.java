@@ -3,11 +3,8 @@
  */
 package cafe.kagu.kagu.mods.impl.ghost;
 
-import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
-
-import org.apache.commons.lang3.RandomUtils;
 
 import cafe.kagu.kagu.eventBus.EventHandler;
 import cafe.kagu.kagu.eventBus.Handler;
@@ -19,7 +16,6 @@ import cafe.kagu.kagu.settings.impl.LabelSetting;
 import cafe.kagu.kagu.ui.ghost.GhostUi;
 import cafe.kagu.kagu.utils.ChatUtils;
 import cafe.kagu.kagu.utils.OSUtil;
-import javafx.geometry.Rectangle2D;
 
 /**
  * @author DistastefulBannock

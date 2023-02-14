@@ -126,6 +126,7 @@ public class GuiDropdownClickgui extends GuiScreen {
 		bgImages.put("Astolfo 3", new BackgroundImage(dropdownImageFolder + "astolfo3.png", "Astolfo 3"));
 		bgImages.put("Felix 1", new BackgroundImage(dropdownImageFolder + "felix1.png", "Felix 1"));
 		bgImages.put("Felix 2", new BackgroundImage(dropdownImageFolder + "felix2.png", "Felix 2"));
+		bgImages.put("Felix 3", new BackgroundImage(dropdownImageFolder + "felix3.png", "Felix 3"));
 		bgImages.put("Miku 1", new BackgroundImage(dropdownImageFolder + "miku1.png", "Miku 1"));
 		bgImages.put("Miku 2", new BackgroundImage(dropdownImageFolder + "miku2.png", "Miku 2"));
 		
@@ -1045,8 +1046,12 @@ public class GuiDropdownClickgui extends GuiScreen {
 		switch (state) {
 			case 0:{
 				draggedTab = null;
-				if (!(selectedSetting instanceof KeybindSetting))
+				if (!(selectedSetting instanceof KeybindSetting)) {
+					if (selectedSetting == Kagu.getModuleManager().getModule(ModClickGui.class).getBgImageScale()) {
+						saveClickguiOptions();
+					}
 					selectedSetting = null;
+				}
 			}break;
 		}
 	}
