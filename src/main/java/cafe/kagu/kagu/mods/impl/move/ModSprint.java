@@ -25,7 +25,7 @@ public class ModSprint extends Module {
 		setSettings(mode);
 	}
 
-	public ModeSetting mode = new ModeSetting("Mode", "On Move", "On Move", "Vanilla", "Omni");
+	public ModeSetting mode = new ModeSetting("Mode", "Vanilla", "Vanilla", "On Move", "Omni");
 	
 	@EventHandler
 	private Handler<EventTick> onTick = e -> {

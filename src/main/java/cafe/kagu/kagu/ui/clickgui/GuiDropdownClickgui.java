@@ -114,11 +114,15 @@ public class GuiDropdownClickgui extends GuiScreen {
 		bgImages.put("Distasteful", new BackgroundImage(dropdownImageFolder + "dark.png", "Distasteful"));
 		bgImages.put("Cheddar 1", new BackgroundImage(dropdownImageFolder + "cheddar1.png", "Cheddar 1"));
 		bgImages.put("Cheddar 2", new BackgroundImage(dropdownImageFolder + "cheddar2.png", "Cheddar 2"));
+		bgImages.put("Cheddar 3", new BackgroundImage(dropdownImageFolder + "cheddar3.png", "Cheddar 3"));
 		bgImages.put("Sylveon 1", new BackgroundImage(dropdownImageFolder + "sylveon1.png", "Sylveon 1"));
 		bgImages.put("Vaporeon 1", new BackgroundImage(dropdownImageFolder + "vaporeon1.png", "Vaporeon 1"));
 		bgImages.put("Wolf O'Donnell", new BackgroundImage(dropdownImageFolder + "wolf_odonnell.png", "Wolf O'Donnell"));
 		bgImages.put("Protogen 1", new BackgroundImage(dropdownImageFolder + "protogen1.png", "Protogen 1")); // https://e621.net/posts/3330093
 		bgImages.put("Protogen 2", new BackgroundImage(dropdownImageFolder + "protogen2.png", "Protogen 2")); // https://e621.net/posts/2983700
+		bgImages.put("Presto 1", new BackgroundImage(dropdownImageFolder + "presswer1.png", "Presto 1")); // https://twitter.com/presswer/status/1626277757218099201/photo/2
+		bgImages.put("Presto 2", new BackgroundImage(dropdownImageFolder + "presswer2.png", "Presto 2")); // https://twitter.com/presswer/status/1621499567652093953/photo/3
+		bgImages.put("Presto 3", new BackgroundImage(dropdownImageFolder + "presswer3.png", "Presto 3")); // https://e621.net/posts/3530284?q=presto_%28character%29
 		
 		// Anime (mostly femboys)
 		bgImages.put("Astolfo 1", new BackgroundImage(dropdownImageFolder + "astolfo1.png", "Astolfo 1"));
