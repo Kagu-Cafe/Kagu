@@ -51,7 +51,7 @@ import net.minecraft.util.ResourceLocation;
 public class Kagu {
 	
 	private static String name = "Kagu";
-	private static String version = "0.0.1";
+	private static String version = "0.0.2";
 	private static String loggedInUser = null;
 	
 	private static Logger logger = LogManager.getLogger();

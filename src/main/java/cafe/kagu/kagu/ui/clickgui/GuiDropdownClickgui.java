@@ -122,7 +122,8 @@ public class GuiDropdownClickgui extends GuiScreen {
 		bgImages.put("Protogen 2", new BackgroundImage(dropdownImageFolder + "protogen2.png", "Protogen 2")); // https://e621.net/posts/2983700
 		bgImages.put("Presto 1", new BackgroundImage(dropdownImageFolder + "presswer1.png", "Presto 1")); // https://twitter.com/presswer/status/1626277757218099201/photo/2
 		bgImages.put("Presto 2", new BackgroundImage(dropdownImageFolder + "presswer2.png", "Presto 2")); // https://twitter.com/presswer/status/1621499567652093953/photo/3
-		bgImages.put("Presto 3", new BackgroundImage(dropdownImageFolder + "presswer3.png", "Presto 3")); // https://e621.net/posts/3530284?q=presto_%28character%29
+		bgImages.put("Presto 3", new BackgroundImage(dropdownImageFolder + "presswer3.png", "Presto 3")); // https://e621.net/posts/3530284?q=presto_%28character%29g
+		bgImages.put("Neko Maid 1", new BackgroundImage(dropdownImageFolder + "pawmaid1.png", "Neko Maid 1")); // https://twitter.com/DreamSama/status/1074948080573779968/photo/3
 		
 		// Anime (mostly femboys)
 		bgImages.put("Astolfo 1", new BackgroundImage(dropdownImageFolder + "astolfo1.png", "Astolfo 1"));
