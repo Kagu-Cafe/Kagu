@@ -11,6 +11,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ThreadLocalRandom;
 
+import net.minecraft.network.play.client.C02PacketUseEntity;
+import net.minecraft.util.Vec3;
 import org.apache.commons.lang3.RandomUtils;
 
 import cafe.kagu.kagu.eventBus.EventHandler;
@@ -288,6 +290,12 @@ public class ModDisabler extends Module {
 			case "Test":{
 				if (thePlayer == null)
 					break;
+				if (e.getPacket() instanceof C0BPacketEntityAction)
+					e.setCanceled(true);
+
+				if (e.getPacket() instanceof C02PacketUseEntity){
+					((C02PacketUseEntity) e.getPacket()).setHitVec(new Vec3(0, 0, 0));
+				}
 //				if (e.getPacket() instanceof C0FPacketConfirmTransaction || e.getPacket() instanceof C00PacketKeepAlive) {
 //					if (pingPackets.offer(e.getPacket()))
 //						e.cancel();

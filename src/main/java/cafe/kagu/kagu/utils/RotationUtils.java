@@ -172,5 +172,27 @@ public class RotationUtils {
         float f1 = f * f * f * 8.0F;
         return new float[] {mouseDeltas[0] * f1, (mouseDeltas[1] * f1) * (mc.gameSettings.invertMouse ? -1 : 1)};
 	}
+
+	public static double getMouseGCD() {
+		final float sens = Minecraft.getMinecraft().gameSettings.mouseSensitivity * 0.6F + 0.2F;
+		final float pow = sens * sens * sens * 8.0F;
+		return (double) pow * 0.15;
+	}
+
+	/**
+	 * Applies GCD fix to the rotation
+	 * @param rotations The target rotations
+	 * @param prevRots The last rotations
+	 * @return The corrected rotations
+	 */
+	public static void applyGCD(final float[] rotations,
+								final float[] prevRots) {
+		final float yawDif = rotations[0] - prevRots[0];
+		final float pitchDif = rotations[1] - prevRots[1];
+		final double gcd = getMouseGCD();
+
+		rotations[0] -= yawDif % gcd;
+		rotations[1] -= pitchDif % gcd;
+	}
 	
 }

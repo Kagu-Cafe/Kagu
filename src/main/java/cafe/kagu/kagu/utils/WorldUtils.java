@@ -6,6 +6,7 @@ package cafe.kagu.kagu.utils;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import net.minecraft.block.Block;
@@ -236,6 +237,20 @@ public class WorldUtils {
 		 */
 		public void setPlaceFacing(EnumFacing placeFacing) {
 			this.placeFacing = placeFacing;
+		}
+
+
+		@Override
+		public boolean equals(Object object) {
+			if (this == object) return true;
+			if (object == null || getClass() != object.getClass()) return false;
+			PlaceOnInfo that = (PlaceOnInfo) object;
+			return Objects.equals(placeOn, that.placeOn) && placeFacing == that.placeFacing;
+		}
+
+		@Override
+		public int hashCode() {
+			return Objects.hash(placeOn, placeFacing);
 		}
 
 	}

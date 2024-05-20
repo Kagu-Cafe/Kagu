@@ -286,7 +286,7 @@ public class GuiMultiplayer extends GuiScreen implements GuiYesNoCallback
             				startName = "tear";
             			}break;
             			case 31:{
-            				startName = "creida";
+            				startName = "credia";
             			}break;
             		}
             		SessionManager.loginCracked(startName + RandomUtils.nextInt(1000, 10000));

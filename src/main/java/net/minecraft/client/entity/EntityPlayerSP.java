@@ -2,6 +2,7 @@ package net.minecraft.client.entity;
 
 import java.util.UUID;
 
+import cafe.kagu.kagu.mods.impl.move.ModNewScaffold;
 import com.mojang.authlib.GameProfile;
 
 import cafe.kagu.kagu.Kagu;
@@ -586,6 +587,11 @@ public class EntityPlayerSP extends AbstractClientPlayer
     	ModScaffold modScaffold = Kagu.getModuleManager().getModule(ModScaffold.class);
     	if (modScaffold.isEnabled() && modScaffold.getSprint().isDisabled())
     		sprinting = false;
+
+        ModNewScaffold modNewScaffold = Kagu.getModuleManager().getModule(ModNewScaffold.class);
+        if (modNewScaffold.isEnabled() && modNewScaffold.getSprint().isDisabled())
+            sprinting = false;
+
         super.setSprinting(sprinting);
         this.sprintingTicksLeft = sprinting ? 600 : 0;
     }

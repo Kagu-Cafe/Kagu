@@ -115,7 +115,16 @@ public class ModAimAssist extends Module {
 			return;
 		
 		EntityPlayerSP thePlayer = mc.thePlayer;
-		
+
+		// When a target is found but then goes out of fov, the cheat continues to use them as the target.
+		// This checks for that and resets the target if needed
+		if (target != null){
+			float[] rots = RotationUtils.getRotations(new Vector3d(this.target.posX, this.target.posY, this.target.posZ));
+			RotationUtils.makeRotationValuesLoopCorrectly(new float[] {thePlayer.rotationYaw, thePlayer.rotationPitch}, rots);
+			if (MathUtils.getDistance2D(thePlayer.rotationYaw, thePlayer.rotationPitch, rots[0], rots[1]) > fov.getValue())
+				this.target = null;
+		}
+
 		if (target == null || (!raytraceCheck.is("Off") && (raytraceCheck.is("Simple") ? !mc.thePlayer.canEntityBeSeen(target) : !mc.thePlayer.raytraceEntity(target))) 
 				|| thePlayer.getDistanceToEntity(target) > range.getValue() || mc.theWorld.getEntityByID(target.getEntityId()) == null) {
 			EntityLivingBase[] targets = getTargets();

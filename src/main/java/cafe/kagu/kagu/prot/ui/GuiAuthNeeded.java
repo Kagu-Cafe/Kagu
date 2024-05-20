@@ -165,15 +165,10 @@ public class GuiAuthNeeded extends GuiScreen {
 		GlStateManager.popMatrix();
 		
 		// Authors
-		double centerMultiColorText = authorFr.getStringWidth("Made with <3 by DistastefulBannock & lavaflowglow") / 2;
+		double centerMultiColorText = authorFr.getStringWidth("Made by DistastefulBannock") / 2;
 		double authorOffset = 0;
-		authorOffset += authorFr.drawString("Made with ", width * 0.5 - centerMultiColorText + authorOffset, height - authorFr.getFontHeight() - 2, -1);
-		authorOffset += authorFr.drawString("<", width * 0.5 - centerMultiColorText + authorOffset, height - authorFr.getFontHeight() - 2, 0xffFF5555);
-		authorOffset += authorFr.drawString("3", width * 0.5 - centerMultiColorText + authorOffset, height - authorFr.getFontHeight() - 2, 0xffFF5555);
-		authorOffset += authorFr.drawString(" by ", width * 0.5 - centerMultiColorText + authorOffset, height - authorFr.getFontHeight() - 2, -1);
+		authorOffset += authorFr.drawString("Made by ", width * 0.5 - centerMultiColorText + authorOffset, height - authorFr.getFontHeight() - 2, -1);
 		authorOffset += authorFr.drawString("DistastefulBannock", width * 0.5 - centerMultiColorText + authorOffset, height - authorFr.getFontHeight() - 2, 0xffd58cff);
-		authorOffset += authorFr.drawString(" & ", width * 0.5 - centerMultiColorText + authorOffset, height - authorFr.getFontHeight() - 2, -1);
-		authorOffset += authorFr.drawString("lavaflowglow", width * 0.5 - centerMultiColorText + authorOffset, height - authorFr.getFontHeight() - 2, 0xffa5e0fe);
 		
 		// Error text
 		if (startCheat) {

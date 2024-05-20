@@ -5,8 +5,6 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.gson.JsonSyntaxException;
 
-import cafe.kagu.kagu.utils.ChatUtils;
-
 import java.io.IOException;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -1082,7 +1080,7 @@ public class RenderGlobal implements IWorldAccess, IResourceManagerReloadListene
         if (this.debugFixedClippingHelper != null)
         {
             Frustum frustum = new Frustum(this.debugFixedClippingHelper);
-            frustum.setPosition(this.debugTerrainFrustumPosition.field_181059_a, this.debugTerrainFrustumPosition.field_181060_b, this.debugTerrainFrustumPosition.field_181061_c);
+            frustum.setPosition(this.debugTerrainFrustumPosition.x, this.debugTerrainFrustumPosition.field_181060_b, this.debugTerrainFrustumPosition.field_181061_c);
             camera = frustum;
         }
 
@@ -1378,7 +1376,7 @@ public class RenderGlobal implements IWorldAccess, IResourceManagerReloadListene
         Matrix4f matrix4f2 = new Matrix4f();
         Matrix4f.mul(matrix4f1, matrix4f, matrix4f2);
         matrix4f2.invert();
-        this.debugTerrainFrustumPosition.field_181059_a = x;
+        this.debugTerrainFrustumPosition.x = x;
         this.debugTerrainFrustumPosition.field_181060_b = y;
         this.debugTerrainFrustumPosition.field_181061_c = z;
         this.debugTerrainMatrix[0] = new Vector4f(-1.0F, -1.0F, -1.0F, 1.0F);

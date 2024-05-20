@@ -483,7 +483,7 @@ public class EntityRenderer implements IResourceManagerReloadListener
         {
             this.mc.mcProfiler.startSection("pick");
             this.mc.pointedEntity = null;
-            double d0 = (double)this.mc.playerController.getBlockReachDistance();
+            double d0 = (double)Math.max((Kagu.getModuleManager().getModule(ModReach.class).isEnabled() ? Kagu.getModuleManager().getModule(ModReach.class).getCombatReach().getValue() : 0), this.mc.playerController.getBlockReachDistance());
             this.mc.objectMouseOver = entity.rayTrace(d0, partialTicks);
             double d1 = d0;
             Vec3 vec3 = entity.getPositionEyes(partialTicks);

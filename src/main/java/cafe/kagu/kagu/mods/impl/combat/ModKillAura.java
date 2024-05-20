@@ -200,7 +200,9 @@ public class ModKillAura extends Module {
 		}
 		
 		// Get and set the rotations
+		float[] rotsWithGcd = lastRotations;
 		rotations = getRotations(target, e);
+		RotationUtils.applyGCD(rotations, rotsWithGcd);
 		e.setRotationYaw(rotations[0]);
 		e.setRotationPitch(rotations[1]);
 		if (!rotationMode.is("None")) {

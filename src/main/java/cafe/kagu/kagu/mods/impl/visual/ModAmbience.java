@@ -3,10 +3,12 @@
  */
 package cafe.kagu.kagu.mods.impl.visual;
 
+import java.awt.Color;
 import java.util.HashMap;
 
 import cafe.kagu.kagu.eventBus.EventHandler;
 import cafe.kagu.kagu.eventBus.Handler;
+import cafe.kagu.kagu.eventBus.impl.EventCheatProcessTick;
 import cafe.kagu.kagu.eventBus.impl.EventPacketReceive;
 import cafe.kagu.kagu.eventBus.impl.EventSettingUpdate;
 import cafe.kagu.kagu.mods.Module;
@@ -17,6 +19,7 @@ import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.network.play.server.S03PacketTimeUpdate;
 import net.minecraft.util.ResourceLocation;
+import org.lwjgl.Sys;
 
 /**
  * @author lavaflowglow
@@ -26,7 +29,7 @@ public class ModAmbience extends Module {
 	
 	public ModAmbience() {
 		super("Ambience", Category.VISUAL);
-		setSettings(blockLighting, worldTime, disableNightVision, customSkyColor, skyRed, skyGreen, skyBlue, 
+		setSettings(blockLighting, worldTime, disableNightVision, rainbow, customSkyColor, skyRed, skyGreen, skyBlue,
 				customBlockColorMult, blockMultRed, blockMultGreen, blockMultBlue, customBlockColor, blockColorRed, 
 				blockColorGreen, blockColorBlue);
 		for (ResourceLocation key : Block.blockRegistry.getKeys()) {
@@ -39,6 +42,7 @@ public class ModAmbience extends Module {
 	private ModeSetting blockLighting = new ModeSetting("Block Lighting", "Unchanged", "Unchanged", "Midnight", "Dusk", "Day");
 	private ModeSetting worldTime = new ModeSetting("World Time", "Unchanged", "Unchanged", "Midnight", "Dusk", "Day");
 	private BooleanSetting disableNightVision = new BooleanSetting("Disable Night Vision", true);
+	private BooleanSetting rainbow = new BooleanSetting("Rainbow", false);
 	private BooleanSetting customSkyColor = new BooleanSetting("Custom Sky Color", true);
 	private IntegerSetting skyRed = new IntegerSetting("Sky R", 213, 0, 255, 1).setDependency(customSkyColor::isEnabled);
 	private IntegerSetting skyGreen = new IntegerSetting("Sky G", 140, 0, 255, 1).setDependency(customSkyColor::isEnabled);
@@ -82,7 +86,28 @@ public class ModAmbience extends Module {
 		}
 		mc.renderGlobal.loadRenderers();
 	}
-	
+
+	@EventHandler
+	private Handler<EventCheatProcessTick> onCheatTick = e -> {
+		if (rainbow.isDisabled() || e.isPost())
+			return;
+
+		float hue = (System.currentTimeMillis() % 720) / 720f;
+		Color color = new Color(Color.HSBtoRGB(hue, 0.5f, 1.0f));
+
+		skyRed.setValue(color.getRed());
+		skyGreen.setValue(color.getGreen());
+		skyBlue.setValue(color.getBlue());
+
+		blockColorRed.setValue(color.getRed());
+		blockColorGreen.setValue(color.getGreen());
+		blockColorBlue.setValue(color.getBlue());
+
+		blockMultRed.setValue(color.getRed());
+		blockMultGreen.setValue(color.getGreen());
+		blockMultBlue.setValue(color.getBlue());
+	};
+
 	@EventHandler
 	private Handler<EventSettingUpdate> onSettingUpdate = e -> {
 		if (e.getSetting() == blockLighting) {
