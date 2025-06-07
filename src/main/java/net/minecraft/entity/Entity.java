@@ -136,7 +136,7 @@ public abstract class Entity implements ICommandSender
      */
     public boolean isCollided;
     public boolean velocityChanged;
-    protected boolean isInWeb;
+    public boolean isInWeb;
     private boolean isOutsideBorder;
 
     /**
@@ -729,9 +729,9 @@ public abstract class Entity implements ICommandSender
                         z += d6;
                     }
                 }
-                if (this == Minecraft.getMinecraft().thePlayer && Kagu.getModuleManager().getModule(ModEagle.class).isEnabled()) {
-                	Kagu.getModuleManager().getModule(ModEagle.class).setShouldSneak(eagle);
-                }
+//                if (this == Minecraft.getMinecraft().thePlayer && Kagu.getModuleManager().getModule(ModEagle.class).isEnabled()) {
+//                	Kagu.getModuleManager().getModule(ModEagle.class).setShouldSneak(eagle);
+//                }
             }
 
             List<AxisAlignedBB> list1 = this.worldObj.getCollidingBoundingBoxes(this, this.getEntityBoundingBox().addCoord(x, y, z));

@@ -4,6 +4,7 @@ import cafe.kagu.kagu.Kagu;
 import cafe.kagu.kagu.mods.ModuleManager;
 import cafe.kagu.kagu.mods.impl.ghost.ModEagle;
 import cafe.kagu.kagu.mods.impl.move.ModNoSlow;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.GameSettings;
 
 public class MovementInputFromOptions extends MovementInput
