@@ -16,13 +16,10 @@ import cafe.kagu.kagu.eventBus.impl.EventTick;
 import cafe.kagu.kagu.eventBus.impl.EventMouseDeltasUpdate;
 import cafe.kagu.kagu.eventBus.impl.EventPacketSend;
 import cafe.kagu.kagu.mods.Module;
-import cafe.kagu.kagu.mods.ModuleManager;
-import cafe.kagu.kagu.mods.impl.player.ModAntiAim;
 import cafe.kagu.kagu.mods.impl.player.ModAntiBot;
 import cafe.kagu.kagu.settings.impl.DoubleSetting;
+import cafe.kagu.kagu.settings.impl.IntegerSetting;
 import cafe.kagu.kagu.settings.impl.ModeSetting;
-import cafe.kagu.kagu.utils.ChatUtils;
-import cafe.kagu.kagu.utils.CurvedLineHelper;
 import cafe.kagu.kagu.utils.MathUtils;
 import cafe.kagu.kagu.utils.RotationUtils;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -32,7 +29,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.play.client.C02PacketUseEntity;
 import net.minecraft.network.play.client.C02PacketUseEntity.Action;
 import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.MathHelper;
 
 /**
  * @author DistastefulBannock
@@ -42,10 +38,12 @@ public class ModAimAssist extends Module {
 	
 	public ModAimAssist() {
 		super("AimAssist", Category.GHOST);
-		setSettings(mode, targets, raytraceCheck, passiveSlowdown, activeSpeed, fov, range);
+		setSettings(mode, smoothness, targets, raytraceCheck, passiveSlowdown, activeSpeed, fov, range);
 	}
 	
-	private ModeSetting mode = new ModeSetting("Mode", "Passive", "Passive", "Lock");
+	private ModeSetting mode = new ModeSetting("Mode", "Passive", "Passive", "Lock", "Smooth");
+	private IntegerSetting smoothness = new IntegerSetting("Smoothness", 15, 2, 50, 1)
+			.setDependency(() -> mode.is("Smooth"));
 	private ModeSetting targets = new ModeSetting("Targets", "Players", "Players", "Entities");
 	private ModeSetting raytraceCheck = new ModeSetting("Raytrace", "Off", "Off", "Simple", "Advanced");
 	private DoubleSetting passiveSlowdown = new DoubleSetting("Slowdown", 0.55, 0, 1, 0.01).setDependency(() -> mode.is("Passive"));
@@ -105,6 +103,13 @@ public class ModAimAssist extends Module {
 				float[] mouseMovements = RotationUtils.getMouseDeltasForRotationOffset(rots);
 				e.setDeltaX((int)mouseMovements[0]);
 				e.setDeltaY((int)mouseMovements[1]);
+			}break;
+			case "Smooth":{
+				float[] targetMouseMovements = RotationUtils.getMouseDeltasForRotationOffset(rots);
+				float[] currentMouseMovements = new float[]{e.getDeltaX(), e.getDeltaY()};
+
+				e.setDeltaX((int)(currentMouseMovements[0] + (targetMouseMovements[0] - currentMouseMovements[0]) / smoothness.getValue()));
+				e.setDeltaY((int)(currentMouseMovements[1] + (targetMouseMovements[1] - currentMouseMovements[1]) / smoothness.getValue()));
 			}break;
 		}
 	};

@@ -100,6 +100,7 @@ public class ModuleManager {
 		registerModule(new ModBacktrack());
 		registerModule(new ModGCDFix());
 		registerModule(new ModNewScaffold());
+		registerModule(new ModTriggerBot());
 		
 		registerModule(new ModBlink()); // Blink last because we want it to get events last (event bus no priority options 😭)
 		logger.info("Registered the modules...");

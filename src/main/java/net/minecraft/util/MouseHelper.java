@@ -44,7 +44,7 @@ public class MouseHelper
     	}
         this.deltaX = eventMouseDeltasUpdatePre.getDeltaX();
         this.deltaY = eventMouseDeltasUpdatePre.getDeltaY();
-        EventMouseDeltasUpdate eventMouseDeltasUpdatePost = new EventMouseDeltasUpdate(EventPosition.PRE, deltaX, deltaY);
+        EventMouseDeltasUpdate eventMouseDeltasUpdatePost = new EventMouseDeltasUpdate(EventPosition.POST, deltaX, deltaY);
         eventMouseDeltasUpdatePost.post();
     }
 }
