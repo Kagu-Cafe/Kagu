@@ -131,9 +131,9 @@ public class Kagu {
 			Runtime.getRuntime().halt(Note.WINAUTH_BLACKLISTED);
 		});
 		
-		BasicProcessLookupCheck.start(); // Basic process checks
-		LoadedClassesCheck.start(); // More prot
-		OffAuthScreensWithoutLoginCheck.start(); // More prot
+//		BasicProcessLookupCheck.start(); // Basic process checks
+//		LoadedClassesCheck.start(); // More prot
+		OffAuthScreensWithoutLoginCheck.start(); // More prot. Login screen won't show if not started
 		
 		// Check if logged in
 		if (!KEY_AUTH.isLoggedIn()) {

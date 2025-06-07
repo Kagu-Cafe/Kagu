@@ -36,7 +36,8 @@ public class ModObsProofUi extends Module {
 	@Override
 	public void onEnable() {
 		if (!OSUtil.isWindows()) {
-			ChatUtils.addChatMessage("This is a windows only feature, sorry " + System.getProperty("os.name").toLowerCase() + " user");
+			ChatUtils.addChatMessage("This is a windows only feature because it uses Windows native libraries. " +
+					"Sorry " + System.getProperty("os.name").toLowerCase() + " user");
 			toggle();
 			return;
 		}
