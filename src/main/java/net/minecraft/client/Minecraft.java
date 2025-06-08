@@ -47,6 +47,8 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
 import javax.imageio.ImageIO;
+
+import de.florianmichael.viamcp.fixes.AttackOrder;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.audio.MusicTicker;
@@ -1517,7 +1519,10 @@ public class Minecraft implements IThreadListener, IPlayerUsage
     	ModNoHitDelay modNoHitDelay = Kagu.getModuleManager().getModule(ModNoHitDelay.class);
         if (this.leftClickCounter <= 0 || modNoHitDelay.isEnabled())
         {
-            this.thePlayer.swingItem();
+//            this.thePlayer.swingItem();
+            // ViaMCP
+            AttackOrder.sendConditionalSwing(this.objectMouseOver);
+            // ViaMCP
 
             if (this.objectMouseOver == null)
             {
@@ -1533,7 +1538,10 @@ public class Minecraft implements IThreadListener, IPlayerUsage
                 switch (this.objectMouseOver.typeOfHit)
                 {
                     case ENTITY:
-                        this.playerController.attackEntity(this.thePlayer, this.objectMouseOver.entityHit);
+//                        this.playerController.attackEntity(this.thePlayer, this.objectMouseOver.entityHit);
+                        // ViaMCP
+                        AttackOrder.sendFixedAttack(this.thePlayer, this.objectMouseOver.entityHit);
+                        // ViaMCP
                         break;
 
                     case BLOCK:

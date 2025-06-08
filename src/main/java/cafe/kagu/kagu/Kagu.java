@@ -6,6 +6,9 @@ import java.net.URI;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
+import de.florianmichael.vialoadingbase.ViaLoadingBase;
+import de.florianmichael.viamcp.ViaMCP;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.opengl.GL13;
@@ -266,6 +269,15 @@ public class Kagu {
 		}else {
 			logger.info("Failed to start obs proof ui");
 		}
+
+		logger.info("Initializing ViaMCP...");
+		try {
+			ViaMCP.create();
+			ViaLoadingBase.getInstance().reload(ProtocolVersion.v1_8);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		logger.info("ViaMCP Initialized");
 		
 		logger.info(name + " v" + version + " has been started");
 		

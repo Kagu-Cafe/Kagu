@@ -8,6 +8,9 @@ import cafe.kagu.kagu.managers.SessionManager;
 
 import java.io.IOException;
 import java.util.List;
+
+import de.florianmichael.viamcp.ViaMCP;
+import de.florianmichael.viamcp.gui.GuiProtocolSelector;
 import net.minecraft.client.multiplayer.GuiConnecting;
 import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.client.multiplayer.ServerList;
@@ -108,6 +111,9 @@ public class GuiMultiplayer extends GuiScreen implements GuiYesNoCallback
         this.buttonList.add(new GuiButton(0, this.width / 2 + 4 + 76, this.height - 28, 75, 20, I18n.format("gui.cancel", new Object[0])));
         this.buttonList.add(new GuiButton(3621, this.width / 2 - 271, this.height - 28, 110, 20, "Random Cracked Alt"));
         this.selectServer(this.serverListSelector.func_148193_k());
+
+        // ViaMCP
+        this.buttonList.add(new GuiButton(3622, this.width / 2 - 271, this.height - 52, 110, 20, "ViaVersion (insecure)"));
     }
 
     /**
@@ -291,6 +297,9 @@ public class GuiMultiplayer extends GuiScreen implements GuiYesNoCallback
             		}
             		SessionManager.loginCracked(startName + RandomUtils.nextInt(1000, 10000));
             	}break;
+                case 3622:{
+                    this.mc.displayGuiScreen(new GuiProtocolSelector(this));
+                }break;
             }
             
         }

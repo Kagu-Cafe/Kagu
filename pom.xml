@@ -289,6 +289,22 @@
 			<version>6.2.2</version>
 		</dependency>
 
+		<!-- For ViaMCP -->
+		<dependency>
+			<groupId>com.viaversion</groupId>
+			<artifactId>viaversion-java8</artifactId>
+			<version>5.3.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.viaversion</groupId>
+			<artifactId>viabackwards-java8</artifactId>
+			<version>5.3.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.viaversion</groupId>
+			<artifactId>viarewind-java8</artifactId>
+			<version>4.0.6</version>
+		</dependency>
 	</dependencies>
 
 	<build>

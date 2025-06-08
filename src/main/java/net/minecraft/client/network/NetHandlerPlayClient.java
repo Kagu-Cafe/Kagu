@@ -6,6 +6,8 @@ import com.google.common.util.concurrent.Futures;
 import com.mojang.authlib.GameProfile;
 
 import cafe.kagu.kagu.ui.gui.MainMenuHandler;
+import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
+import de.florianmichael.vialoadingbase.ViaLoadingBase;
 import io.netty.buffer.Unpooled;
 import java.io.File;
 import java.io.IOException;
@@ -1184,6 +1186,14 @@ public class NetHandlerPlayClient implements INetHandlerPlayClient
     public void handleConfirmTransaction(S32PacketConfirmTransaction packetIn)
     {
         PacketThreadUtil.checkThreadAndEnqueue(packetIn, this, this.gameController);
+
+        // ViaMCP
+        if (ViaLoadingBase.getInstance().getTargetVersion().newerThanOrEqualTo(ProtocolVersion.v1_17)) {
+            this.addToSendQueue(new C0FPacketConfirmTransaction(packetIn.getWindowId(), (short) 0, false));
+            return;
+        }
+        // ViaMCP
+
         Container container = null;
         EntityPlayer entityplayer = this.gameController.thePlayer;
 
