@@ -1515,7 +1515,7 @@ public class Minecraft implements IThreadListener, IPlayerUsage
     private void clickMouse()
     {
     	ModNoHitDelay modNoHitDelay = Kagu.getModuleManager().getModule(ModNoHitDelay.class);
-        if (this.leftClickCounter <= 0)
+        if (this.leftClickCounter <= 0 || modNoHitDelay.isEnabled())
         {
             this.thePlayer.swingItem();
 
@@ -1523,7 +1523,7 @@ public class Minecraft implements IThreadListener, IPlayerUsage
             {
                 logger.error("Null returned as \'hitResult\', this shouldn\'t happen!");
 
-                if (this.playerController.isNotCreative() && modNoHitDelay.isDisabled())
+                if (this.playerController.isNotCreative())
                 {
                     this.leftClickCounter = 10;
                 }
@@ -1547,7 +1547,7 @@ public class Minecraft implements IThreadListener, IPlayerUsage
 
                     case MISS:
                     default:
-                        if (this.playerController.isNotCreative() && modNoHitDelay.isDisabled())
+                        if (this.playerController.isNotCreative())
                         {
                             this.leftClickCounter = 10;
                         }
