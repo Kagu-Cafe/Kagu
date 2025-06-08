@@ -11,10 +11,14 @@ import cafe.kagu.kagu.mods.impl.player.ModAntiBot;
 import cafe.kagu.kagu.settings.impl.BooleanSetting;
 import cafe.kagu.kagu.settings.impl.DoubleSetting;
 import cafe.kagu.kagu.settings.impl.IntegerSetting;
+import cafe.kagu.kagu.utils.ChatUtils;
+import cafe.kagu.kagu.utils.InventoryUtils;
 import cafe.kagu.kagu.utils.TimerUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemSword;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.input.Mouse;
@@ -29,7 +33,7 @@ public class ModTriggerBot extends Module {
 
     public ModTriggerBot() {
         super("TriggerBot", Category.GHOST);
-        setSettings(minAps, maxAps, swingAtMissedShots, swingAtMissedShotsLateReactionTime);
+        setSettings(minAps, maxAps, swingAtMissedShots, swingAtMissedShotsLateReactionTime, autoBlockOnTargetDamage);
         Kagu.getEventBus().subscribe(new ModTriggerBot.ApsMinMaxFixer(this));
         setAps();
         try {
@@ -46,10 +50,19 @@ public class ModTriggerBot extends Module {
     private BooleanSetting swingAtMissedShots = new BooleanSetting("Swing at missed shots", true);
     private IntegerSetting swingAtMissedShotsLateReactionTime = new IntegerSetting("Missed shots max reaction time",
             250, 50, 500, 25).setDependency(swingAtMissedShots::isEnabled);
+    private BooleanSetting autoBlockOnTargetDamage = new BooleanSetting("Tap block after on hit", false);
 
     private double currentAps = 14;
     private TimerUtil apsTimer = new TimerUtil(), missedShotReactionTimer = new TimerUtil();
     private Robot robot;
+    private Entity lastTarget = null;
+    private int lastTargetHurtTime = 0;
+
+    @Override
+    public void onEnable() {
+        lastTarget = null;
+    }
+
     private void setAps(){
         this.currentAps = ThreadLocalRandom.current().nextDouble(minAps.getValue(), maxAps.getValue());
         setInfo(new DecimalFormat("0.00").format(this.currentAps) + " APS");
@@ -60,6 +73,12 @@ public class ModTriggerBot extends Module {
         robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
         setAps();
     }
+
+    private void block(){
+        robot.mousePress(InputEvent.BUTTON3_DOWN_MASK);
+        robot.mouseRelease(InputEvent.BUTTON3_DOWN_MASK);
+    }
+
 
     @EventHandler
     private Handler<EventTick> onTick = evt -> {
@@ -82,6 +101,19 @@ public class ModTriggerBot extends Module {
         ModAntiBot modAntiBot = Kagu.getModuleManager().getModule(ModAntiBot.class);
         if (target instanceof EntityPlayer && modAntiBot.isEnabled() && modAntiBot.isBot((EntityPlayer) target)){
             return;
+        }
+
+        try{
+            ItemStack heldItem = mc.thePlayer.getHeldItem();
+            if (lastTarget != null && mc.thePlayer.getDistanceSqToEntity(lastTarget) <= 6
+                    && lastTarget.hurtResistantTime > lastTargetHurtTime
+                    && heldItem != null && heldItem.getItem() instanceof ItemSword){
+                block();
+                return;
+            }
+        }finally {
+            lastTargetHurtTime = target.hurtResistantTime;
+            lastTarget = target;
         }
 
         if (shouldSwing){

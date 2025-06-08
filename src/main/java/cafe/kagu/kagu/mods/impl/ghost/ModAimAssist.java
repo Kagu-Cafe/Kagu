@@ -17,6 +17,7 @@ import cafe.kagu.kagu.eventBus.impl.EventMouseDeltasUpdate;
 import cafe.kagu.kagu.eventBus.impl.EventPacketSend;
 import cafe.kagu.kagu.mods.Module;
 import cafe.kagu.kagu.mods.impl.player.ModAntiBot;
+import cafe.kagu.kagu.settings.impl.BooleanSetting;
 import cafe.kagu.kagu.settings.impl.DoubleSetting;
 import cafe.kagu.kagu.settings.impl.IntegerSetting;
 import cafe.kagu.kagu.settings.impl.ModeSetting;
@@ -38,18 +39,23 @@ public class ModAimAssist extends Module {
 	
 	public ModAimAssist() {
 		super("AimAssist", Category.GHOST);
-		setSettings(mode, smoothness, targets, raytraceCheck, passiveSlowdown, activeSpeed, fov, range);
+		setSettings(mode, smoothness, targets,
+				targetInvis, raytraceCheck, passiveSlowdown,
+				activeSpeed, fov, range,
+				preferredTargetMetrics);
 	}
 	
 	private ModeSetting mode = new ModeSetting("Mode", "Passive", "Passive", "Lock", "Smooth");
 	private IntegerSetting smoothness = new IntegerSetting("Smoothness", 15, 2, 50, 1)
 			.setDependency(() -> mode.is("Smooth"));
 	private ModeSetting targets = new ModeSetting("Targets", "Players", "Players", "Entities");
+	private BooleanSetting targetInvis = new BooleanSetting("Target invisibles", false);
 	private ModeSetting raytraceCheck = new ModeSetting("Raytrace", "Off", "Off", "Simple", "Advanced");
 	private DoubleSetting passiveSlowdown = new DoubleSetting("Slowdown", 0.55, 0, 1, 0.01).setDependency(() -> mode.is("Passive"));
 	private DoubleSetting activeSpeed = new DoubleSetting("Speed", 3, 0.1, 10, 0.05).setDependency(() -> mode.is("Active"));
 	private DoubleSetting fov = new DoubleSetting("FOV", 180, 1, 180, 1);
 	private DoubleSetting range = new DoubleSetting("Range", 12, 2, 12, 0.05);
+	private ModeSetting preferredTargetMetrics = new ModeSetting("Preferred Target Metrics", "Nearest crosshair", "Nearest crosshair", "Health");
 	
 	private EntityLivingBase target = null;
 	
@@ -174,20 +180,38 @@ public class ModAimAssist extends Module {
 								? !modAntiBot.isBot((EntityPlayer) ent)
 								: true)))
 				.collect(Collectors.toCollection(ArrayList::new));
-		
-		// Sort them based on the fov distance
-		potentialTargets.sort(Comparator.comparingDouble(ent -> {
-			float[] rots = RotationUtils.getRotations(new Vector3d(ent.posX, ent.posY, ent.posZ));
-			RotationUtils.makeRotationValuesLoopCorrectly(new float[] {thePlayer.rotationYaw, thePlayer.rotationPitch}, rots);
-			return MathUtils.getDistance2D(thePlayer.rotationYaw, thePlayer.rotationPitch, rots[0], rots[1]);
-		}));
-		
+
 		// Remove out of fov targets
 		potentialTargets = potentialTargets.stream().filter(ent -> {
 			float[] rots = RotationUtils.getRotations(new Vector3d(ent.posX, ent.posY, ent.posZ));
 			RotationUtils.makeRotationValuesLoopCorrectly(new float[] {thePlayer.rotationYaw, thePlayer.rotationPitch}, rots);
 			return MathUtils.getDistance2D(thePlayer.rotationYaw, thePlayer.rotationPitch, rots[0], rots[1]) <= fov.getValue();
 		}).collect(Collectors.toCollection(ArrayList::new));
+
+		if (targetInvis.isDisabled()){
+			potentialTargets = potentialTargets.stream().filter(ent -> !ent.isInvisible())
+					.collect(Collectors.toCollection(ArrayList::new));
+		}
+
+		// Sort them
+		switch(preferredTargetMetrics.getMode()){
+			case "Nearest crosshair":{
+				potentialTargets.sort(Comparator.comparingDouble(ent -> {
+					float[] rots = RotationUtils.getRotations(new Vector3d(ent.posX, ent.posY, ent.posZ));
+					RotationUtils.makeRotationValuesLoopCorrectly(new float[] {thePlayer.rotationYaw, thePlayer.rotationPitch}, rots);
+					return MathUtils.getDistance2D(thePlayer.rotationYaw, thePlayer.rotationPitch, rots[0], rots[1]);
+				}));
+			}break;
+			case "Health":{
+				potentialTargets.sort(Comparator.comparingDouble(ent -> {
+					if (ent instanceof EntityLivingBase){
+						EntityLivingBase target = (EntityLivingBase) ent;
+						return target.getHealth();
+					}
+					return Double.MAX_VALUE;
+				}));
+			}break;
+		}
 		
 		// Return
 		EntityLivingBase[] targets = new EntityLivingBase[0];

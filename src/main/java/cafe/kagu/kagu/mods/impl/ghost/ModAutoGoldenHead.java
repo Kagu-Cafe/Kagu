@@ -6,6 +6,7 @@ import cafe.kagu.kagu.eventBus.impl.EventTick;
 import cafe.kagu.kagu.mods.Module;
 import cafe.kagu.kagu.settings.impl.IntegerSetting;
 import cafe.kagu.kagu.settings.impl.LabelSetting;
+import cafe.kagu.kagu.settings.impl.ModeSetting;
 import cafe.kagu.kagu.utils.InventoryUtils;
 import cafe.kagu.kagu.utils.TimerUtil;
 import net.minecraft.inventory.Slot;
@@ -22,7 +23,7 @@ public class ModAutoGoldenHead extends Module {
 
     public ModAutoGoldenHead() {
         super("AutoGoldenHead", Category.GHOST);
-        setSettings(infoLabel, delayAfterEatSetting, eatAtPercentSetting);
+        setSettings(infoLabel, mode, delayAfterEatSetting, eatAtPercentSetting);
         try {
             robot = new Robot();
         } catch (AWTException e) {
@@ -34,6 +35,7 @@ public class ModAutoGoldenHead extends Module {
     private final Logger logger = LogManager.getLogger();
 
     private LabelSetting infoLabel = new LabelSetting("Automatically eats golden heads so you don't die");
+    private ModeSetting mode = new ModeSetting("Time to gap", "3 ticks", "3 ticks", "2 ticks");
     private IntegerSetting delayAfterEatSetting = new IntegerSetting("Min delay after eat", 750, 0, 3000, 50);
     private IntegerSetting eatAtPercentSetting = new IntegerSetting("Percent to eat", 50, 1, 99, 1);
 
@@ -61,9 +63,11 @@ public class ModAutoGoldenHead extends Module {
         }
 
         Slot heldItemSlot = mc.thePlayer.inventoryContainer.getSlot(mc.thePlayer.inventory.currentItem + 36);
+        if (!mode.is("3 ticks"))
+            isEating = false;
         if (isEating && heldItemSlot.getHasStack() && isGoldenHead(heldItemSlot.getStack())){
-            robot.mousePress(InputEvent.BUTTON2_DOWN_MASK);
-            robot.mouseRelease(InputEvent.BUTTON2_DOWN_MASK);
+            robot.mousePress(InputEvent.BUTTON3_DOWN_MASK);
+            robot.mouseRelease(InputEvent.BUTTON3_DOWN_MASK);
             delayAfterEatingTimer.reset();
             switchingBack = mc.thePlayer.inventory.currentItem != previouslyHeldSlot;
             isEating = false;
@@ -81,8 +85,17 @@ public class ModAutoGoldenHead extends Module {
 
                 if (isGoldenHead(itemStack)) {
                     previouslyHeldSlot = mc.thePlayer.inventory.currentItem;
-                    isEating = true;
                     mc.thePlayer.inventory.currentItem = i - 36;
+
+                    if (mode.is("3 ticks")){
+                        isEating = true;
+                    }else{
+                        robot.mousePress(InputEvent.BUTTON3_DOWN_MASK);
+                        robot.mouseRelease(InputEvent.BUTTON3_DOWN_MASK);
+                        delayAfterEatingTimer.reset();
+                        switchingBack = mc.thePlayer.inventory.currentItem != previouslyHeldSlot;
+                    }
+
                 }
 
             }
